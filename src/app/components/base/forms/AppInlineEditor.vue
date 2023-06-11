@@ -4,7 +4,7 @@
     spellcheck="false" 
     @blur="handleBlur($event)"
     @keydown.enter="handleKeydownEnter($event)"
-    class="app-inline-editor"
+    class="cursor-text"
   >
     <slot/>
   </div>
@@ -28,9 +28,3 @@ function handleKeydownEnter(event) {
   event.target.blur()
 }
 </script>
-
-<style lang="scss">
-.app-inline-editor {
-  cursor: text;
-}
-</style>

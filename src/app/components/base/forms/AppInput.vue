@@ -1,19 +1,21 @@
 <template>
-  <div class="margin-bottom-sm">
-    <label v-if="label" class="form-label margin-bottom-xxs" :for="label">{{ label }}</label>
-    <input 
-      @input="updateValue($event.target.value)"
-      :value="modelValue"
-      :type="type"
-      :name="label"
-      :placeholder="placeholder"
-      :required="required"
-      :autofocus="autofocus"
-      :disabled="disabled"
-      :class="errors ? 'form-control--error' : ''"
-      class="form-control width-100%" 
-    >
-    <div v-if="errors" class="bg-error bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-top-xxxs" role="alert">
+  <div class="mb-4">
+    <label v-if="label" class="block text-sm font-medium leading-6 text-gray-900" :for="label">{{ label }}</label>
+    <div class="mt-1.5">
+      <input 
+        @input="updateValue($event.target.value)"
+        :value="modelValue"
+        :type="type"
+        :name="label"
+        :placeholder="placeholder"
+        :required="required"
+        :autofocus="autofocus"
+        :disabled="disabled"
+        :class="errors ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600'"
+        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset hover:ring-2 hover:ring-indigo-600 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+      >
+    </div>
+    <div v-if="errors" class="mt-2 text-sm text-red-600" role="alert">
       <ul v-if="errors.length > 1" class="list list--ul">
         <li v-for="error in errors" :key="error">{{ error }}</li>
       </ul>

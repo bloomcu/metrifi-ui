@@ -1,5 +1,5 @@
 <template>
-  <LayoutDefault maxWidth="lg">
+  <LayoutDefault>
     <div class="grid gap-md margin-y-md">
       <div class="col-12">
         <h1 class="text-lg">Settings</h1>

@@ -1,5 +1,5 @@
 <template>
-  <LayoutDefault maxWidth="xs">
+  <LayoutDefault>
     <div class="flex items-center justify-between margin-y-md">
       <h1 class="text-lg">Swap plan</h1>
     </div>

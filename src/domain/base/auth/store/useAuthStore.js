@@ -25,7 +25,8 @@ export const useAuthStore = defineStore('authStore', {
     actions: {
       async login(email, password) {
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
-        
+        this.loading = true
+
         await AuthApi.login(email, password)
           .then(response => {      
             // TODO: Do I need to do this if we set the organization in httpClient? No.
@@ -33,8 +34,11 @@ export const useAuthStore = defineStore('authStore', {
             this.organization = response.data.data.organization.slug
             this.user = response.data.data
             this.router.push({ name: redirect, params: { organization: response.data.data.organization.slug }})
+            this.loading = false
           })
-          .catch(error => {})
+          .catch(error => {
+            this.loading = false
+          })
       },
       
       async logout() {

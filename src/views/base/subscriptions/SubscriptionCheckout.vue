@@ -1,5 +1,5 @@
 <template>
-  <LayoutDefault maxWidth="xs">
+  <LayoutDefault>
     <div class="margin-y-md">
       <h1 class="text-lg">Checkout</h1>
     </div>

@@ -5,21 +5,21 @@ import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 
 export const useSiteStore = defineStore('siteStore', {
     state: () => ({
-        sites: null,
+        sites: [],
         site: null,
         isLoading: true,
         createModalOpen: false,
     }),
     
     getters: {
-      launch: (state) => state.site.launch_info
+      // launch: (state) => state.site.launch_info
     },
     
     actions: {
         index(params) {
           const auth = useAuthStore()
           this.isLoading = true
-          this.sites = null
+          this.sites = []
           
           SiteApi.index(auth.organization, params)
             .then(response => {

@@ -1,5 +1,5 @@
 <template>
-  <LayoutDefault maxWidth="xs">
+  <LayoutDefault>
     <div class="flex items-center justify-between margin-y-md">
       <h1 class="text-lg">Subscription plans</h1>
     </div>

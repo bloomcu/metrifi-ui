@@ -27,7 +27,6 @@
             <p class="text-bold">Launch info</p>
           </div>
           
-          <!-- <AppDatePicker/> -->
           <AppInput v-model="siteStore.launch.launch_date" label="Launch date" type="datetime-local"/>
           <AppInput v-model="siteStore.launch.freeze_date" label="Freeze date" type="datetime-local"/>
           <AppInput v-model="siteStore.launch.dev_domain" label="Development server domain" />
@@ -52,7 +51,6 @@ import { useSiteStore } from '@/domain/base/sites/store/useSiteStore'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import IconAngleLeft from '@/app/components/base/icons/IconAngleLeft.vue'
 import AppInput from '@/app/components/base/forms/AppInput.vue'
-// import AppDatePicker from '@/app/components/base/forms/AppDatePicker.vue'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 
 const route = useRoute()
