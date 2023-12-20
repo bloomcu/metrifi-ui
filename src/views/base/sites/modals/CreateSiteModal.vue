@@ -1,18 +1,14 @@
 <template>
   <AppModal 
-    size="xxs"
+    size="md"
     @closed="siteStore.toggleCreateModal" 
-    :class="siteStore.createModalOpen ? 'modal--is-visible' : ''"
+    :open="siteStore.createModalOpen"
   >
-    <h2 class="text-md margin-bottom-sm">Add site</h2>
-
-    <form action="#" @submit.prevent="create()">
+    <form action="#" @submit.prevent="create()" class="flex flex-col gap-3">
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Create site</h3>
       <AppInput v-model="newSite.title" label="Title" placeholder="Primary Website" required />
       <AppInput v-model="newSite.domain" label="Domain" placeholder="acmecu.com" required />
-
-      <div class="margin-top-md margin-bottom-sm">
-        <button type="submit" class="btn btn--primary btn--md width-100%">Add</button>
-      </div>
+      <AppButton :loading="siteStore.loading" class="w-full">Create</AppButton>
     </form>
   </AppModal>
 </template>
@@ -20,8 +16,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useSiteStore } from '@/domain/base/sites/store/useSiteStore'
-import AppModal from '@/app/components/base/modals/AppModal.vue'
-import AppInput from '@/app/components/base/forms/AppInput.vue'
 
 const siteStore = useSiteStore()
 

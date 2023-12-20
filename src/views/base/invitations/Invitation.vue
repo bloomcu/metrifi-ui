@@ -1,51 +1,42 @@
 <template>
-  <div>
-    <!-- <div class="flex items-center justify-between padding-y-sm padding-x-md">
-        <div>Logo</div>
-        <a style="text-decoration: none;" class="reset color-contrast-medium" href="#" target="_blank">What is <span class="text-bold color-primary">BloomCU</span>?</a>
-    </div> -->
-    
-    <div class="container max-width-lg padding-top-xxl">
-      <div v-if="invitationStore.invitation && !invitationStore.isLoading" class="grid gap-xl">
-        <div class="col-6 flex flex-column gap-md">
-          <div class="text-component">
-            <!-- <div>Organization logo</div> -->
-            <h1 class="text-xxxl">
-              You've been invited to join the 
-              <span class="color-primary">{{ invitationStore.invitation.organization.title }}</span> team
-            </h1>
-            <p class="text-md">Join forces with your team inside RateStream.io.</p>
-          </div>
+  <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-20">
+    <div v-if="invitationStore.invitation && !invitationStore.isLoading" class="grid grid-cols-1 sm:grid-cols-2 gap-12 sm:gap-24">
+        <div>
+          <p class="text-lg leading-8 text-gray-500">Invitation</p>
+
+          <h1 class="mt-4 text-4xl font-medium tracking-tight text-gray-900 sm:text-5xl">
+            You've been invited to the <span class="text-indigo-600">{{ invitationStore.invitation.organization.title }}</span> team.
+          </h1>
           
-          <div class="flex items-center">
-            <UserAvatar :name="invitationStore.invitation.user.name"/>
-            <div class="padding-left-xs">
-              <p class="color-contrast-medium text-xs">Invited by</p>
-              <p class="text-sm text-bold">{{ invitationStore.invitation.user.name }}</p>
+          <div class="mt-8 flex items-center">
+              <Avatar :name="invitationStore.invitation.user.name"/>
+              <div class="ml-3">
+                <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">Invited by</p>
+                <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ invitationStore.invitation.user.name }}</p>
+              </div>
             </div>
-          </div>
         </div>
         
-        <div class="col-5">
-          <form class="login-form" action="#" @submit.prevent="register()">
-            <div class="grid gap-x-sm">
-              <AppInput v-model="inputs.name" label="Full name" :errors="errorStore.errors.name" required autofocus />
-              <AppInput v-model="inputs.email" label="Email" required disabled />
-              <AppInput v-model="inputs.password" type="password" label="Password" :errors="errorStore.errors.password" required />
-              <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
-              <AppPasswordChecker :password="inputs.password"/>
+        <div>
+          <form action="#" @submit.prevent="register()">
+            <div v-if="errorStore.errors.credentials" class="bg-red-100 text-red-600 p-2 rounded-md text-sm mb-2" role="alert">
+              <p>{{ errorStore.errors.credentials[0] }}</p>
             </div>
-
-            <div class="margin-bottom-sm">
-              <button class="btn btn--primary btn--md width-100%">Join</button>
+            
+            <div class="flex flex-col gap-3">
+              <AppInput v-model="inputs.name" label="Full name" :errors="errorStore.errors.name" required autofocus />
+              <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" required />
+              <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Password" required />
+              <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm Password" required />
+              <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
+              <AppButton :loading="authStore.loading" class="w-full">Join</AppButton>
             </div>
           </form>
         </div>
       </div>
       
       <InvitationSkeletonLoader v-else/>
-    </div>
-  </div>
+  </main>
 </template>
 
 <script setup>
@@ -54,9 +45,8 @@ import { useRoute } from 'vue-router'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useInvitationStore } from '@/domain/base/invitations/store/useInvitationStore'
-import AppInput from '@/app/components/base/forms/AppInput.vue'
 import AppPasswordChecker from '@/app/components/base/forms/AppPasswordChecker.vue'
-import UserAvatar from '@/domain/base/users/components/UserAvatar.vue'
+import Avatar from '@/app/components/base/avatars/Avatar.vue'
 import InvitationSkeletonLoader from '@/views/base/invitations/loaders/InvitationSkeletonLoader.vue'
 
 const route = useRoute()

@@ -2,8 +2,8 @@
   <div
     contenteditable 
     spellcheck="false" 
-    @blur="handleBlur($event)"
     @keydown.enter="handleKeydownEnter($event)"
+    @blur="handleBlur($event)"
     class="cursor-text"
   >
     <slot/>

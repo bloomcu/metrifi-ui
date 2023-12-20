@@ -1,17 +1,13 @@
 <template>
   <AppModal 
-    size="xxs"
+    size="md"
     @closed="organizationStore.toggleCreateModal()" 
-    :class="organizationStore.createModalOpen ? 'modal--is-visible' : ''"
+    :open="organizationStore.createModalOpen"
   >
-    <h2 class="text-md margin-bottom-sm">Create organization</h2>
-    
-    <form action="#" @submit.prevent="create()">
-      <AppInput v-model="organization.title" label="Title" placeholder="Acme Credit Union" required />
-
-      <div class="margin-top-md margin-bottom-sm">
-        <button class="btn btn--primary btn--md width-100%">Create</button>
-      </div>
+    <form action="#" @submit.prevent="create()" class="flex flex-col gap-3">
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Create organization</h3>
+      <AppInput v-model="newOrganization.title" label="Title" placeholder="Acme Credit Union" required />
+      <AppButton :loading="organizationStore.loading" class="w-full">Create</AppButton>
     </form>
   </AppModal>
 </template>
@@ -19,21 +15,19 @@
 <script setup>
 import { ref } from 'vue'
 import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
-import AppModal from '@/app/components/base/modals/AppModal.vue'
-import AppInput from '@/app/components/base/forms/AppInput.vue'
 
 const organizationStore = useOrganizationStore()
 
-const organization = ref({
+const newOrganization = ref({
   title: '',
 })
 
 function create() {
-  organizationStore.store(organization.value)
+  organizationStore.store(newOrganization.value)
     .then(() => {
       organizationStore.toggleCreateModal()
       
-      organization.value = {
+      newOrganization.value = {
         title: '',
       }
     })

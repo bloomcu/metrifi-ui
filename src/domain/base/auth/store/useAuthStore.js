@@ -54,6 +54,7 @@ export const useAuthStore = defineStore('authStore', {
       
       async register(name, email, organization_title, password, password_confirmation) {
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
+        this.loading = true
         
         await AuthApi.register(name, email, organization_title, password, password_confirmation)
           .then(response => {
@@ -64,6 +65,8 @@ export const useAuthStore = defineStore('authStore', {
             // TODO: The next step for user will be to setup their organization
             // this.router.push({ name: 'onboardOrganization' })
             this.router.push({ name: redirect, params: { organization: response.data.data.organization.slug }})
+
+            this.loading = false
           })
           .catch(error => {})
       },

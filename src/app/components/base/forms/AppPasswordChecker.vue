@@ -1,14 +1,17 @@
 <template>
-  <div class="password-strength flex flex-column gap-xxs margin-bottom-md js-password-strength">
-    <ul class="text-sm">
-      <li 
-        v-for="condition in conditions"
-        :class="{ 'password-strength__req--met': checkSingleCondition(password, condition.requirement) }" 
-        class="password-strength__req"
-      >
-        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><g class="password-strength__icon-group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"><line x1="-6" y1="8" x2="8" y2="8" /><line x1="8" y1="8" x2="22" y2="8" /></g></svg>
-        <span>{{ condition.description }}</span>
-      </li>
+  <div class="my-2">
+    <ul class="max-w-md space-y-1 text-gray-500 list-inside dark:text-gray-400">
+      <template v-for="condition in conditions">
+        <li v-if="checkSingleCondition(password, condition.requirement)" class="flex items-center text-green-500">
+          <svg class="w-5 h-5 mr-1.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+          {{ condition.description }}
+        </li>
+
+        <li v-else class="flex items-center text-gray-400">
+          <svg class="w-5 h-5 mr-1.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+          {{ condition.description }}
+        </li>
+      </template>
     </ul>
   </div>
 </template>
@@ -18,31 +21,10 @@ import { ref, computed } from 'vue'
 import zxcvbn from 'zxcvbn'
 
 const props = defineProps({
-  /**
-   * The password
-   * @type {String}
-   */
   password: {
     type: String,
     required: true,
-  },
-  // /**
-  //  * Password format conditions
-  //  * Requirements for the password format.
-  //  * @type {Array}
-  //  */
-  // conditions: {
-  //   type: Array,
-  // },
-  // /**
-  //  * Password min length
-  //  * Right now only visual for the badge.
-  //  * @type {Number}
-  //  */
-  // secureLength: {
-  //   type: Number,
-  //   default: 12,
-  // },
+  }
 })
 
 // TODO: accept conditions as a prop
@@ -123,104 +105,3 @@ function checkSingleCondition(value, req) {
   return result;
 };
 </script>
-
-<style lang="scss">
-:root {
-  // general
-  --password-strength-meter-height: 8px;
-  --password-strength-meter-radius: 50em;
-
-  // icons
-  --password-strength-icon-size: 16px;
-  --password-strength-icon-margin-right: 4px;
-  --password-strength-icon-stroke-width: 2px;
-}
-
-.password-strength {}
-
-.password-strength__req {
-  line-height: 1.2;
-  margin-bottom: var(--space-xxxxs);
-  display: flex;
-  align-items: center;
-
-  .icon {
-    font-size: var(--password-strength-icon-size);
-    margin-right: var(--password-strength-icon-margin-right);
-  }
-}
-
-.password-strength__icon-group {
-  stroke-width: var(--password-strength-icon-stroke-width);
-
-  * {
-    transition: transform .3s var(--ease-out-back), stroke-dashoffset .3s var(--ease-out-back);
-    transform-origin: 8px 8px;
-    stroke-dasharray: 16;
-  }
-
-  *:first-child {
-    stroke-dashoffset: 24;
-  }
-
-  *:last-child {
-    stroke-dashoffset: 10;
-  }
-}
-
-.password-strength__req--met { // icon = check
-  color: var(--color-success-darker);
-  transition: color .3s;
-
-  .password-strength__icon-group *:first-child {
-    stroke-dashoffset: 23;
-    transform: translateX(-2px) translateY(4px) rotate(45deg);
-  }
-
-  .password-strength__icon-group *:last-child {
-    stroke-dashoffset: 5;
-    transform: translateX(-2px) translateY(4px) rotate(-45deg);
-  }
-}
-
-.password-strength__req--no-met { // icon = X
-  color: var(--color-error);
-  
-  .password-strength__icon-group *:first-child {
-    stroke-dashoffset: 32;
-    transform: translateX(5px) translateY(5px) rotate(45deg);
-  }
-
-  .password-strength__icon-group *:last-child {
-    stroke-dashoffset: 2;
-    transform: translateX(-5px) translateY(5px) rotate(-45deg);
-  }
-}
-
-.password-strength__meter {
-  height: var(--password-strength-meter-height);
-  border-radius: var(--password-strength-meter-radius);
-  overflow: hidden;
-
-  * {
-    will-change: width;
-    transition: width .3s var(--ease-in-out), background-color .3s;
-  }
-}
-
-.password-strength__meter--fill-1 * { // customize meter fill based on strength value
-  background-color: var(--color-error);
-}
-
-.password-strength__meter--fill-2 * {
-  background-color: var(--color-warning);
-}
-
-.password-strength__meter--fill-3 * {
-  background-color: var(--color-success);
-}
-
-.password-strength__meter--fill-4 * {
-  background-color: var(--color-success);
-}
-</style>

@@ -7,7 +7,7 @@
       </div>
     </div>
     
-    <LayoutWithoutNavigation maxWidth="xl">
+    <LayoutDefault maxWidth="xl">
       <div class="flex">
         <main class="position-relative z-index-1 flex-grow height-auto padding-y-md padding-right-md">
           <LaunchHero/>
@@ -22,7 +22,7 @@
           <LaunchSidebar/>
         </aside>
       </div>
-    </LayoutWithoutNavigation>
+    </LayoutDefault>
   </div>
 </template>
 
@@ -30,7 +30,7 @@
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSiteStore } from '@/domain/base/sites/store/useSiteStore'
-import LayoutWithoutNavigation from '@/app/layouts/LayoutWithoutNavigation.vue'
+import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import LaunchHero from '@/views/base/sites/components/launch/LaunchHero.vue'
 import LaunchStep1 from '@/views/base/sites/components/launch/steps/LaunchStep1.vue'
 import LaunchStep2 from '@/views/base/sites/components/launch/steps/LaunchStep2.vue'

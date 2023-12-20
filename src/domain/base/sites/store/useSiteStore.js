@@ -10,9 +10,9 @@ export const useSiteStore = defineStore('siteStore', {
         isLoading: true,
         createModalOpen: false,
     }),
-    
+
     getters: {
-      // launch: (state) => state.site.launch_info
+      launch: (state) => state.site.launch_info
     },
     
     actions: {

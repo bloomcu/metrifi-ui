@@ -40,7 +40,6 @@ import { ref, onMounted } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useSubscriptionStore } from '@/domain/base/subscriptions/store/useSubscriptionStore'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
-import AppInput from '@/app/components/base/forms/AppInput.vue'
 import PlanCard from '@/domain/base/subscriptions/components/PlanCard.vue'
 
 const errorStore = useErrorStore()

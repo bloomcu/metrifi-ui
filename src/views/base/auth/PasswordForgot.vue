@@ -1,55 +1,46 @@
 <template>
-  <LayoutWithoutNavigation>
-    <div class="container max-width-xxs padding-top-lg">
-      <form class="login-form" action="#" @submit.prevent="submit">
-        <!-- Success message -->
-        <div v-if="authStore.passwordResetEmailSent" class="text-component radius-lg bg-success bg-opacity-10% border border-2 border-success padding-md margin-bottom-sm">
-          <h3 class="flex items-center">
-            <IconCheck size="sm" class="color-success margin-right-xxxs"/>
-            Check your inbox
-          </h3>
-          <p>If an account with that email exists, a password reset email has been sent.</p>
+  <main class="py-10 mx-auto max-w-lg px-4 sm:px-6 lg:px-8">
+    <!-- Success message -->
+    <div v-if="authStore.passwordResetEmailSent" class="rounded-md bg-green-50 p-6">
+      <div class="flex">
+        <div class="flex items-center">
+          <CheckCircleIcon class="h-10 w-10 text-green-400" aria-hidden="true" />
+          <p class="ml-3 sm:text-2xl text-xl font-medium leading-7 text-gray-900 tracking-tight">Check you inbox</p>
         </div>
-        
-        <!-- Form -->
-        <div v-else>
-          <div class="text-component text-center margin-bottom-sm">
-            <h1>Forgot your password?</h1>
-          </div>
-          
-          <div v-if="errorStore.errors.credentials" class="bg-error bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-bottom-xs" role="alert">
-            <p>{{ errorStore.errors.credentials[0] }}</p>
-          </div>
-          
-          <div class="text-center margin-bottom-md">
-            <p>Enter your email and we’ll email you a link to reset your password.</p>
-          </div>
-          
-          <AppInput v-model="inputs.email" label="Email" placeholder="email@email.com" required autofocus />
-
-          <div class="margin-bottom-md">
-            <AppSubmit :loading="authStore.passwordResetEmailSending">Send reset link</AppSubmit>
-          </div>
-        </div>
-        
-        <div class="text-center text-component">
-          <p class="text-sm">
-            <RouterLink :to="{ name: 'login' }">Return to log in</RouterLink>
-          </p>
-        </div>
-      </form>
+      </div>
+      <p class="mt-3 text-lg leading-8 text-gray-900">If an account with that email exists, a password reset email has been sent.</p>
     </div>
-  </LayoutWithoutNavigation>
+
+    <!-- Form -->
+    <form v-else action="#" @submit.prevent="submit()">
+      <div class="text-center mb-4">
+        <h1 class="text-3xl font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-4xl">Forgot password</h1>
+        <p class="mt-4 text-lg leading-8 text-gray-500">Enter your email and we’ll send a reset link.</p>
+      </div>
+      
+      <div v-if="errorStore.errors.credentials" class="bg-red-100 text-red-600 p-2 rounded-md text-sm mb-2" role="alert">
+        <p>{{ errorStore.errors.credentials[0] }}</p>
+      </div>
+      
+      <div class="flex flex-col gap-4">
+        <AppInput v-model="inputs.email" label="Email" required autofocus :errors="errorStore.errors.email" />
+        <AppButton :loading="authStore.passwordResetEmailSending" class="w-full">Send reset link</AppButton>
+      </div>
+    </form>
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-gray-500">
+        <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Return to log in</RouterLink>
+      </p>
+    </div>
+  </main>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
-import LayoutWithoutNavigation from '@/app/layouts/LayoutWithoutNavigation.vue'
-import IconCheck from '@/app/components/base/icons/IconCheck.vue'
-import AppInput from '@/app/components/base/forms/AppInput.vue'
-import AppSubmit from '@/app/components/base/forms/AppSubmit.vue'
+import { CheckCircleIcon } from '@heroicons/vue/20/solid'
 
 const errorStore = useErrorStore()
 const authStore = useAuthStore()

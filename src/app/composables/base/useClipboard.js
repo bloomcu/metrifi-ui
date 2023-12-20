@@ -1,5 +1,9 @@
 export default function useClipboard() {
   
+   /**
+   * Write a string to the user's clipboard
+   * @param  {String} value
+   */
   function copyToClipboard(value) {
     let input = document.createElement('input')
     input.value = value
