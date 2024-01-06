@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import UserAvatar from '@/domain/base/users/components/UserAvatar.vue'
+// import Avatar from '@/app/components/base/avatars/Avatar.vue'
 
 const props = defineProps({
   file: {

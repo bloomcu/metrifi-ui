@@ -13,6 +13,8 @@
 
 <script setup>
 const props = defineProps({
-  plan: { type: Object }
+  plan: { 
+    type: Object,
+  }
 })
 </script>

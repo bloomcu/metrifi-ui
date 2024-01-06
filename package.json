@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@braks/vue-flow": "^0.4.6",
+    "@headlessui/vue": "^1.7.13",
+    "@heroicons/vue": "^2.0.17",
     "@tiptap/pm": "^2.0.0-beta.217",
     "@tiptap/starter-kit": "^2.0.0-beta.191",
     "@tiptap/vue-3": "^2.0.0-beta.96",
@@ -27,8 +29,12 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.6",
     "@vitejs/plugin-vue": "^2.3.1",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.23",
     "sass": "^1.51.0",
+    "tailwindcss": "^3.3.2",
     "typescript": "^4.5.4",
     "vite": "^2.9.5",
     "vue-tsc": "^0.34.7"

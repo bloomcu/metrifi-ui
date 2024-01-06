@@ -1,36 +1,43 @@
 <template>
-  <LayoutWithoutNavigation>
-    <div class="flex items-center justify-between padding-y-md">
-      <h1 class="text-lg">Organizations</h1>
-      <button @click="organizationStore.toggleCreateModal" class="btn btn--subtle">
-        <IconPlus size="xs" class="color-primary"/>
-        <span class="margin-left-xxs">Create organization</span>
-      </button>
-    </div>
+  <LayoutDefault>
+    <!-- Header -->
+    <AppHeader>
+      <h1 class="text-3xl font-medium leading-6 text-gray-900">Organizations</h1>
+      <AppButton @click="organizationStore.toggleCreateModal">Create organization</AppButton>
+    </AppHeader>
 
-    <div class="padding-y-sm">
-      <div class="grid gap-sm">
-        <div v-for="(organization, index) in organizationStore.organizations" :key="index" class="col-3">
-          <RouterLink :to="{ name: redirectRoute, params: { organization: organization.slug }}" class="card card--is-link height-xxxl flex flex-column">
-            <h3 class="text-md">{{ organization.title }}</h3>
-          </RouterLink>
-        </div>
-      </div>
-    </div>
+    <!-- Organizations -->
+    <AppCard padding="none">
+      <ul role="list" class="divide-y divide-gray-100">
+        <li v-for="organization in organizationStore.organizations" :key="organization.slug" class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6">
+          <div class="flex gap-x-4">
+            <div class="min-w-0 flex-auto">
+              <p class="text-base font-medium leading-6 text-gray-900">
+                <RouterLink :to="{ name: redirectRoute, params: { organization: organization.slug } }">
+                  <span class="absolute inset-x-0 -top-px bottom-0" />
+                  {{ organization.title }}
+                </RouterLink>
+              </p>
+              <p class="mt-1 text-sm leading-5 text-gray-500">{{ organization.plan.title }}</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-x-4">
+            <ChevronRightIcon class="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+          </div>
+        </li>
+      </ul>
+    </AppCard>
     
     <CreateOrganizationModal/>
-  </LayoutWithoutNavigation>
+  </LayoutDefault>
 </template>
 
 <script setup>
-// TODO
-// TODO: Organizations index should derive from the user.
-// TODO
 import { onMounted } from 'vue'
 import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
-
-import LayoutWithoutNavigation from '@/app/layouts/LayoutWithoutNavigation.vue'
-import IconPlus from '@/app/components/base/icons/IconPlus.vue'
+import { ChevronRightIcon } from '@heroicons/vue/24/outline'
+import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import CreateOrganizationModal from '@/views/base/organizations/modals/CreateOrganizationModal.vue'
 
 const organizationStore = useOrganizationStore()

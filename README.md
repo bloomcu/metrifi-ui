@@ -1,6 +1,7 @@
 # Build UI
 
 A BloomCU build ui.
+TODO: Remove saas npm package after switching to Tailwind
 
 ## Install Locally
 

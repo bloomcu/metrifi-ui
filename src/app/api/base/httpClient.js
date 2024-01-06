@@ -52,6 +52,24 @@ httpClient.interceptors.response.use((response) => {
     const { setErrors } = useErrorStore()
     setErrors(error.response.data.errors)
   }
+
+  /**
+  * Catch internal server errors
+  * Commit errors to the global app error store
+  */
+  if ([500].includes(error.response.status)) {
+    const { setServerError } = useErrorStore()
+    setServerError('There has been a server error. Please refresh. Changes may be lost.')
+  }
+
+  /**
+  * Catch not found request
+  * Redirect to 404 page if 404 Not Found response is returned from api
+  */
+  if ([404].includes(error.response.status)) {
+    const { setServerError } = useErrorStore()
+    setServerError('This endpoint could not be found. Please refresh. Changes may be lost.')
+  }
   
   /**
   * Catch unauthorized request
@@ -61,14 +79,6 @@ httpClient.interceptors.response.use((response) => {
     // Todo: Send user to an "Unauthorized" page
     document.location.href = '/logout'
   }
-  
-  /**
-  * Catch not found request
-  * Redirect to 404 page if 404 Not Found response is returned from api
-  */
-  // if ([404].includes(error.response.status)) {
-  //   document.location.href = '/404'
-  // }
   
   // return error
   return Promise.reject(error)

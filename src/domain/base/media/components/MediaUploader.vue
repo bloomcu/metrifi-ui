@@ -93,7 +93,8 @@ const props = defineProps({
   },
   acceptedFileTypes: {
     type: Array,
-    default: []
+    // default: []
+    default: () => ([])
   }
 })
 </script>

@@ -1,36 +1,32 @@
 <template>
-    <div>
-        <li
-            v-for="(item, index) in items" :key="index"
-            :class="isToggled(item.slug) ? 'nested-menu__item--expanded' : ''"
-            class="nested-menu__item"
-        >
-            <a 
-              @click.prevent="emitSelected(item.slug)" 
-              :class="selected === item.slug ? 'nested-menu__link--current' : ''" 
-              class="nested-menu__link" 
-              href=""
-            >
-              <span class="nested-menu__text">{{ item.title }}</span>
-            </a>
+  <li v-for="option in options" :key="option.slug">
+    <!-- Parent -->
+    <Disclosure as="div" v-slot="{ open }">
+      <DisclosureButton 
+        @click.prevent="emitSelected(option.slug)" 
+        :class="[
+          active === option.slug ? 'bg-gray-100' : '', 
+          option.children && option.children.length ? 'font-semibold' : ''
+        ]"
+        class="flex items-center w-full text-left rounded-md mt-1 p-2 gap-x-3 text-sm leading-6  text-gray-700 hover:bg-gray-100"
+      >
+        {{ option.title }}
+        <ChevronRightIcon 
+          v-if="option.children && option.children.length"
+          :class="open ? 'rotate-90 text-gray-500' : ''"
+          class="ml-auto h-5 w-5 shrink-0 text-gray-400"
+          aria-hidden="true" 
+        />
+      </DisclosureButton>
 
-            <!-- Arrow -->
-            <button 
-              v-if="item.children && item.children.length" 
-              @click="toggle(item.slug)" 
-              class="reset nested-menu__sublist-control"
-            >
-                <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
-
-            <!-- Recursive children -->
-            <ul v-if="item.children && item.children.length" class="nested-menu__list">
-                <AppNestedMenuChildren :title="title" :items="item.children" :selected="selected" @selected="emitSelected"/>
-            </ul>
-        </li>
-    </div>
+      <!-- Children -->
+      <DisclosurePanel as="ul" class="mt-1 px-2">
+          <ul v-if="option.children && option.children.length" role="list" class="-mx-2 space-y-1 pl-2">
+            <AppNestedMenuChildren :options="option.children" :active="active" @selected="emitSelected"/>
+          </ul>
+      </DisclosurePanel>
+    </Disclosure>
+  </li>
 </template>
 
 <script>
@@ -40,25 +36,22 @@ export default {
 </script>
 
 <script setup>
-import useToggleMultiple from '@/app/composables/base/useToggleMultiple.js'
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import { ChevronRightIcon } from '@heroicons/vue/20/solid'
 
-const { toggle, isToggled } = useToggleMultiple()
+const props = defineProps({
+options: { 
+  type: Object,
+  required: true
+},
+active: {
+  type: String
+}
+})
+
+const emit = defineEmits(['selected'])
 
 function emitSelected(value) {
   emit('selected', value)
 }
-
-const emit = defineEmits(['selected'])
-
-const props = defineProps({
-  title: { 
-    type: String
-  },
-  items: { 
-    type: Object 
-  },
-  selected: {
-    type: String
-  }
-})
 </script>

@@ -1,22 +1,7 @@
 <template>
-  <div>
-    <AppNavigation/>
-    <main 
-      class="container"
-      :class="`max-width-${maxWidth}`"
-    >
+  <main class="py-10">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <slot/>
-    </main>
-  </div>
+    </div>
+  </main>
 </template>
-
-<script setup>
-import AppNavigation from '@/app/components/navigation/AppNavigation.vue'
-
-const props = defineProps({
-    maxWidth: { 
-      type: String,
-      default: 'lg',
-    },
-})
-</script>

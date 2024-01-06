@@ -1,45 +1,42 @@
 <template>
-  <LayoutWithoutNavigation>
-    <div class="container max-width-xxs padding-top-lg">
-      <form class="login-form" action="#" @submit.prevent="submit">
-        <!-- Success message -->
-        <div v-if="authStore.passwordReset" class="text-component radius-lg bg-success bg-opacity-10% border border-2 border-success padding-md margin-bottom-sm">
-          <h2 class="flex items-center">
-            <IconCheck size="md" class="color-success margin-right-xxxs"/>
-            Success!
-          </h2>
-          <p>Your password has been reset.</p>
-          <RouterLink :to="{ name: 'login' }" class="btn btn--primary width-100%">Login now</RouterLink>
+  <main class="py-10 mx-auto max-w-lg px-4 sm:px-6 lg:px-8">
+    <!-- Success message -->
+    <div v-if="authStore.passwordReset" class="rounded-md bg-green-50 p-6">
+      <div class="flex">
+        <div class="flex items-center">
+          <CheckCircleIcon class="h-10 w-10 text-green-400" aria-hidden="true" />
+          <p class="ml-3 sm:text-2xl text-xl font-medium leading-7 text-gray-900 tracking-tight">Success!</p>
         </div>
-        
-        <!-- Form -->
-        <div v-else>
-          <div class="text-component text-center margin-bottom-sm">
-            <h1>New password</h1>
-            <p>Enter your new password</p>
-          </div>
-          
-          <div v-if="errorStore.errors.password" class="bg-error bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-bottom-xs" role="alert">
-            <p>{{ errorStore.errors.password[0] }}</p>
-          </div>
-          
-          <AppInput v-model="inputs.password" type="password" label="Password" required />
-          <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
-          <AppPasswordChecker :password="inputs.password"/>
-
-          <div class="margin-bottom-md">
-            <AppSubmit :loading="authStore.passwordResetting">Reset password</AppSubmit>
-          </div>
-          
-          <div class="text-center text-component">
-            <p class="text-sm">
-              <RouterLink :to="{ name: 'login' }">Return to log in</RouterLink>
-            </p>
-          </div>
-        </div>
-      </form>
+      </div>
+      <p class="mt-3 text-lg leading-8 text-gray-900">Your password has been reset.</p>
+      <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Return to log in</RouterLink>
     </div>
-  </LayoutWithoutNavigation>
+
+    <!-- Form -->
+    <form v-else action="#" @submit.prevent="submit()">
+      <div class="text-center mb-4">
+        <h1 class="text-3xl font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-4xl">New password</h1>
+        <p class="mt-4 text-lg leading-8 text-gray-500">Enter your new password</p>
+      </div>
+
+      <div v-if="errorStore.errors.password" class="bg-red-100 text-red-600 p-2 rounded-md text-sm mb-2" role="alert">
+        <p>{{ errorStore.errors.password[0] }}</p>
+      </div>
+        
+      <div class="flex flex-col gap-3">
+        <AppInput v-model="inputs.password" type="password" label="Password" required />
+        <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
+        <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
+        <AppButton :loading="authStore.passwordResetting" class="w-full">Reset password</AppButton>
+      </div>
+    </form>
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-gray-500">
+        <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Return to log in</RouterLink>
+      </p>
+    </div>
+  </main>
 </template>
 
 <script setup>
@@ -47,10 +44,6 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
-import LayoutWithoutNavigation from '@/app/layouts/LayoutWithoutNavigation.vue'
-import IconCheck from '@/app/components/base/icons/IconCheck.vue'
-import AppInput from '@/app/components/base/forms/AppInput.vue'
-import AppSubmit from '@/app/components/base/forms/AppSubmit.vue'
 import AppPasswordChecker from '@/app/components/base/forms/AppPasswordChecker.vue'
 
 const route = useRoute()

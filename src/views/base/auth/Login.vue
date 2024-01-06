@@ -1,59 +1,75 @@
 <template>
-  <div class="container max-width-xxs padding-top-lg">
-    <form class="login-form" action="#" @submit.prevent="login()">
-      <div class="text-component text-center margin-bottom-sm">
-        <h2>Log in</h2>
+  <main class="flex min-h-screen flex-1">
+    <div class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-32">
+      <div class="mx-auto w-full max-w-sm lg:w-96">
+        <div>
+          <img class="h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+          <h2 class="mt-8 text-3xl font-medium leading-9 text-gray-900 tracking-tight sm:text-4xl sm:truncate">Sign in to your account</h2>
+          <p class="mt-3 leading-6 text-gray-500">
+            Don't have an account?
+            <RouterLink :to="{ name: 'register' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Register</RouterLink>
+          </p>
+        </div>
+
+        <div class="mt-10">
+          <form action="#" @submit.prevent="login()" class="w-full">
+            <div v-if="errorStore.errors.credentials" class="bg-red-100 text-red-600 p-2 rounded-md text-sm mb-2" role="alert">
+              <p>{{ errorStore.errors.credentials[0] }}</p>
+            </div>
+            
+            <div class="flex flex-col gap-4">
+              <AppInput v-model="inputs.email" label="Email" required autofocus :errors="errorStore.errors.email" />
+              <AppInput v-model="inputs.password" label="Password" type="password" :errors="errorStore.errors.password" required />
+              <AppButton :loading="authStore.loading" class="w-full">Login with email</AppButton>
+            </div>
+            
+            <p class="mt-6 leading-6 text-gray-500">
+              Forgot password?
+              <RouterLink :to="{ name: 'forgotPassword' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Reset password</RouterLink>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="relative hidden w-0 flex-1 lg:block">
+      <img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80" alt="" />
+    </div>
+  </main>
+
+  <!-- <main class="py-10 mx-auto max-w-lg px-4 sm:px-6 lg:px-8">
+    <form action="#" @submit.prevent="login()">
+      <div class="text-center mb-4">
+        <h1 class="sm:truncate sm:text-4xl text-3xl font-bold leading-7 text-gray-900 tracking-tight">Log in</h1>
       </div>
       
-      <div v-if="errorStore.errors.credentials" class="bg-error bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-bottom-xs" role="alert">
+      <div v-if="errorStore.errors.credentials" class="bg-red-100 text-red-600 p-2 rounded-md text-sm mb-2" role="alert">
         <p>{{ errorStore.errors.credentials[0] }}</p>
       </div>
       
-      <AppInput v-model="inputs.email" label="Email" required autofocus :errors="errorStore.errors.email" />
-      <AppInput v-model="inputs.password" label="Password" type="password" :errors="errorStore.errors.password" required />
-      
-      <div class="margin-bottom-sm">
-        <button class="btn btn--primary btn--md width-100%">Login with email</button>
+      <div class="flex flex-col gap-3">
+        <AppInput v-model="inputs.email" label="Email" required autofocus :errors="errorStore.errors.email" />
+        <AppInput v-model="inputs.password" label="Password" type="password" :errors="errorStore.errors.password" required />
+        <AppButton :loading="authStore.loading" class="w-full">Login with email</AppButton>
       </div>
       
-      <!-- <p class="text-center margin-y-sm">or</p>
-
-      <div class="grid gap-xs margin-bottom-md">
-        <div class="col-6@xs">
-          <a class="btn btn--subtle width-100%">
-            <svg class="icon margin-right-xxxs" viewBox="0 0 48 48"><g class="nc-icon-wrapper"><path d="M24,11a12.932,12.932,0,0,1,8.346,3.047l6.54-6.228A21.973,21.973,0,0,0,4.293,14.236l7.373,5.683A13.016,13.016,0,0,1,24,11Z" fill="#d94f3d"></path> <path d="M11,24a12.942,12.942,0,0,1,.666-4.081L4.293,14.236a21.935,21.935,0,0,0,0,19.528l7.373-5.683A12.942,12.942,0,0,1,11,24Z" fill="#f2c042"></path> <path d="M45.1,20h-21v9H36a10.727,10.727,0,0,1-4.555,6.162l7.316,5.64C43.436,36.606,46.183,29.783,45.1,20Z" fill="#5085ed"></path> <path d="M31.442,35.162A13.98,13.98,0,0,1,24,37a13.016,13.016,0,0,1-12.334-8.919L4.293,33.764A22.023,22.023,0,0,0,24,46a21.865,21.865,0,0,0,14.758-5.2Z" fill="#57a75c"></path></g></svg>
-            <span>Log in with Google</span>
-          </a>
-        </div>
-        
-        <div class="col-6@xs">
-          <a class="btn btn--subtle width-100%">
-            <svg class="icon margin-right-xxxs" viewBox="0 0 48 48"><g class="nc-icon-wrapper"><rect x="3" y="3" fill="#E86C60" width="20" height="20"></rect> <rect x="25" y="3" fill="#72C472" width="20" height="20"></rect> <rect x="3" y="25" fill="#43A6DD" width="20" height="20"></rect> <rect x="25" y="25" fill="#EFD358" width="20" height="20"></rect></g></svg>
-            <span>Log in with Microsoft</span>
-          </a>
-        </div>
-      </div> -->
-      
-      <div class="text-center text-component">
-        <p class="text-sm">
+      <div class="text-center mt-4">
+        <p class="text-sm text-gray-500">
           Forgot password?
-          <RouterLink :to="{ name: 'forgotPassword' }">Reset password</RouterLink>
+          <RouterLink :to="{ name: 'forgotPassword' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Reset password</RouterLink>
         </p>
-        <p class="text-sm">
+        <p class="text-sm text-gray-500">
           Don't have an account? 
-          <RouterLink :to="{ name: 'register' }">Get started</RouterLink>
+          <RouterLink :to="{ name: 'register' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Register</RouterLink>
         </p>
       </div>
-      
     </form>
-  </div>
+  </main> -->
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
-import AppInput from '@/app/components/base/forms/AppInput.vue'
 
 const errorStore = useErrorStore()
 const authStore = useAuthStore()

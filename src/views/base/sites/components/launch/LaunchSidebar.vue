@@ -8,14 +8,14 @@
     <div class="flex flex-column gap-xs">
       <p class="text-bold">BloomCU Contacts</p>
       <div v-for="contact in bloomcuContacts" :key="contact.id">
-        <UserCard :user="contact"/>
+        <AppUserCard :user="contact"/>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import UserCard from '@/domain/base/users/components/UserCard.vue'
+import AppUserCard from '@/app/components/base/cards/AppUserCard.vue'
 import { useSiteStore } from '@/domain/base/sites/store/useSiteStore'
 
 const siteStore = useSiteStore()
@@ -41,25 +41,5 @@ const bloomcuContacts = [
     mobile: '(385) 207-5487',
     office: '(844) 334-3837',
   },
-  // {
-  //   id: 2,
-  //   avatar: '',
-  //   name: 'Devin Cuevas',
-  //   role: 'Director',
-  //   organization: 'Raiz',
-  //   email: 'dcuevas@tfcu.coop',
-  //   mobile: '(915) 543-1705',
-  //   office: '(915) 926-3964',
-  // },
-  // {
-  //   id: 3,
-  //   avatar: '',
-  //   name: 'Jason Vasquez',
-  //   role: 'DNS',
-  //   organization: 'Raiz',
-  //   email: 'jvasquez@tfcu.coop',
-  //   mobile: '(915) 422-5355',
-  //   office: '(915) 926-2534',
-  // },
 ]
 </script>
