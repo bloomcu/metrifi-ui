@@ -1,14 +1,14 @@
 <template>
     <Listbox 
-        by="value" 
+        by="slug" 
         v-model="modelValue" 
         :multiple="multiple" 
-        @update:modelValue="value => emit('update:modelValue', value)" 
+        @update:modelValue="slug => emit('update:modelValue', slug)" 
     >
         <div class="relative mt-1">
             <ListboxButton class="flex items-center gap-x-2">
                 <slot name="before"></slot>
-                {{ modelValue ? modelValue.label : placeholder }}
+                {{ modelValue ? modelValue.title : placeholder }}
             </ListboxButton>
 
             <transition leave-active-class="transition duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -21,7 +21,7 @@
                         as="template"
                     >
                         <li :class="[active ? 'bg-amber-100 text-amber-900' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-10 pr-4']">
-                            <span :class="[selected ? 'font-medium' : 'font-normal', 'block truncate']">{{ option.label }}</span>
+                            <span :class="[selected ? 'font-medium' : 'font-normal', 'block truncate']">{{ option.title }}</span>
                             <span v-if="selected" class="flex absolute inset-y-0 left-0 items-center pl-3 text-amber-600">
                                 <CheckIcon aria-hidden="true" class="w-5 h-5"/>
                             </span>
@@ -37,7 +37,7 @@
 
 <script setup>
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/vue";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/vue/20/solid";
+import { CheckIcon } from "@heroicons/vue/20/solid";
  
 const props = defineProps({
     options: Array,
