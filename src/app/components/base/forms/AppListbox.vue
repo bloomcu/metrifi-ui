@@ -44,7 +44,7 @@ const props = defineProps({
     modelValue: [String, Number, Array, Object],
     placeholder: {
         type: String,
-        default: "Select option",
+        default: "Not set",
     },
     multiple: Boolean,
     error: String
