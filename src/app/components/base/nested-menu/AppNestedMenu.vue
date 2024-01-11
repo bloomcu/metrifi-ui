@@ -1,19 +1,9 @@
 <template>
     <nav>
-        <div v-if="showTitle" class="mb-3">{{ title }}</div>
+        <div v-if="showTitle" class="text-xs font-semibold leading-6 text-gray-400">{{ title }}</div>
         
         <ul role="list" class="-mx-2 space-y-1">
-            <!-- "All" option -->
-            <!-- <li v-if="showAllOption" class="nested-menu__item">
-                <a 
-                  @click.prevent="emitSelected(null)" 
-                  :class="!active ? 'nested-menu__link--current' : ''" 
-                  class="nested-menu__link" 
-                  href=""
-                >
-                  <span class="nested-menu__text">All</span>
-                </a>
-            </li> -->
+            <button v-if="showAllOption" @click.prevent="emitSelected(null)" :class="!active ? 'bg-gray-100 ' : ''" class="flex items-center w-full text-left rounded-md mt-1 p-2 gap-x-3 text-sm leading-6 text-gray-700 hover:bg-gray-100">All</button>
 
             <!-- Children -->
             <AppNestedMenuChildren :options="options" :active="active" @selected="emitSelected" />
