@@ -5,7 +5,7 @@
       <DisclosureButton 
         @click.prevent="emitSelected(option.slug)" 
         :class="[
-          active === option.slug ? 'bg-gray-100' : '', 
+          active === option.slug ? 'bg-gray-50' : '', 
           option.children && option.children.length ? 'font-semibold' : ''
         ]"
         class="flex items-center w-full text-left rounded-md mt-1 p-2 gap-x-3 text-sm leading-6  text-gray-700 hover:bg-gray-100"
