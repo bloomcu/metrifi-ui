@@ -12,7 +12,7 @@
             </div>
 
             <div class="flex items-center gap-x-4 z-10">
-              <AppButton @click="storeIntegration(property)" variant="tertiary">Connect</AppButton>
+              <AppButton @click="storeConnection(property)" variant="tertiary">Connect</AppButton>
             </div>
           </li>
         </template>
@@ -24,9 +24,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { googleApi } from '@/domain/integrations/google/api/googleApi.js'
-import { gaAdminApi } from '@/domain/integrations/ga-admin/api/gaAdminApi.js'
-import { integrationApi } from '@/domain/integrations/api/integrationApi.js'
+import { googleApi } from '@/domain/connections/google/api/googleApi.js'
+import { gaAdminApi } from '@/domain/connections/ga-admin/api/gaAdminApi.js'
+import { connectionApi } from '@/domain/connections/api/connectionApi.js'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 
 const route = useRoute()
@@ -57,14 +57,14 @@ function listAccounts() {
   })
 }
 
-function storeIntegration(property) {
-  integrationApi.store('bloomcu', {
+function storeConnection(property) {
+  connectionApi.store('bloomcu', {
     service: 'Google Analytics - Property',
     name: property.displayName,
     uid: property.property,
     token: token.value
   }).then(() => {
-    router.push({ name: 'integrations', params: { organization: 'bloomcu' } })
+    router.push({ name: 'connections', params: { organization: 'bloomcu' } })
   })
 }
 

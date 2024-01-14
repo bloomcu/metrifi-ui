@@ -189,7 +189,7 @@ import {
 const navigation = [
   { name: 'Dashboard', to: { name: 'dashboard' }, icon: HomeIcon},
   { name: 'Funnels', to: { name: 'analytics'}, icon: ChartBarIcon},
-  { name: 'Connections', to: { name: 'integrations'}, icon: CloudIcon},
+  { name: 'Connections', to: { name: 'connections'}, icon: CloudIcon},
   // { name: 'Sites', to: { name: 'sites'}, icon: FolderIcon},
   { name: 'Settings', to: { name: 'settings'}, icon: Cog6ToothIcon},
 ]
