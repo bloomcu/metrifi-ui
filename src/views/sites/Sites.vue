@@ -19,7 +19,6 @@
           </div>
 
           <div class="flex items-center gap-x-4 z-10">
-            <AppButton variant="tertiary" :to="{ name: 'sitesLaunch', params: { site: site.id } }">Launch</AppButton>
             <AppButton variant="link" :to="{ name: 'sitesEdit', params: { site: site.id } }">Edit</AppButton>
           </div>
         </li>
@@ -42,11 +41,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import { useSiteStore } from '@/domain/base/sites/store/useSiteStore'
+import { onMounted } from 'vue'
+import { useSiteStore } from '@/domain/sites/store/useSiteStore'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
-import CreateSiteModal from '@/views/base/sites/modals/CreateSiteModal.vue'
+import CreateSiteModal from '@/views/sites/modals/CreateSiteModal.vue'
 
 const siteStore = useSiteStore()
 

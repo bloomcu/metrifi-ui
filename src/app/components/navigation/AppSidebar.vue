@@ -179,22 +179,19 @@ import {
 } from '@headlessui/vue'
 
 import {
-  // CalendarIcon,
-  // ChartPieIcon,
+  ChartBarIcon,
   Cog6ToothIcon,
-  // DocumentDuplicateIcon,
-  FolderIcon,
+  CloudIcon,
   HomeIcon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
   { name: 'Dashboard', to: { name: 'dashboard' }, icon: HomeIcon},
-  { name: 'Sites', to: { name: 'sites'}, icon: FolderIcon},
-  // { name: 'Documents', to: {}, icon: DocumentDuplicateIcon},
+  { name: 'Funnels', to: { name: 'analytics'}, icon: ChartBarIcon},
+  { name: 'Connections', to: { name: 'integrations'}, icon: CloudIcon},
+  // { name: 'Sites', to: { name: 'sites'}, icon: FolderIcon},
   { name: 'Settings', to: { name: 'settings'}, icon: Cog6ToothIcon},
-  // { name: 'Calendar', to: {}, icon: CalendarIcon},
-  // { name: 'Reports', to: {}, icon: ChartPieIcon},
 ]
 
 const teams = [

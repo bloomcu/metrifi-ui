@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { siteApi as SiteApi } from '@/domain/base/sites/api/siteApi'
+import { siteApi as SiteApi } from '@/domain/sites/api/siteApi'
 
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 
@@ -16,12 +16,12 @@ export const useSiteStore = defineStore('siteStore', {
     },
     
     actions: {
-        index(params) {
+        async index(params) {
           const auth = useAuthStore()
           this.isLoading = true
           this.sites = []
           
-          SiteApi.index(auth.organization, params)
+          await SiteApi.index(auth.organization, params)
             .then(response => {
               this.sites = response.data.data
               this.isLoading = false
@@ -42,33 +42,33 @@ export const useSiteStore = defineStore('siteStore', {
             })
         },
         
-        show(id) {
+        async show(id) {
           const auth = useAuthStore()
           this.isLoading = true
           
-          SiteApi.show(auth.organization, id)
+          await SiteApi.show(auth.organization, id)
             .then(response => {
               this.site = response.data.data
               this.isLoading = false
             })
         },
         
-        update() {
+        async update() {
           const auth = useAuthStore()
           this.isLoading = true
           
-          SiteApi.update(auth.organization, this.site.id, this.site)
+          await SiteApi.update(auth.organization, this.site.id, this.site)
             .then(response => {
               console.log('Site successfully updated')
               this.isLoading = false
             })
         },
         
-        destroy(id) {
+        async destroy(id) {
           const auth = useAuthStore()
           this.isLoading = true
           
-          SiteApi.destroy(auth.organization, id)
+          await SiteApi.destroy(auth.organization, id)
             .then(response => {
               this.sites = this.sites.filter((site) => site.id !== id)
               this.isLoading = false

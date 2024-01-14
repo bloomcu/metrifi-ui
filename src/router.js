@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import baseRoutes from '@/routes/base/routes.js'
+import dashboard from '@/views/dashboard/routes/index.js'
+import analytics from '@/views/analytics/routes/index.js'
+import connections from '@/views/connections/routes/index.js'
+import sites from '@/views/sites/routes/index.js'
 
 import Sandbox from '@/views/Sandbox.vue';
 // import Survey from '@/views/Survey.vue';
@@ -9,6 +13,10 @@ import Sandbox from '@/views/Sandbox.vue';
 
 const routes = [
   ...baseRoutes,
+  ...dashboard,
+  ...analytics,
+  ...connections,
+  ...sites,
   {
     path: '/',
     redirect: 'organizations'
@@ -55,8 +63,6 @@ router.beforeEach(async (to) => {
     'register',
     'forgotPassword',
     'resetPassword',
-    'styleDesignBrief',
-    'sitesLaunch',
   ]
 
   const authRequired = !publicRouteNames.includes(to.name)
