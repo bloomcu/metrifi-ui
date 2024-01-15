@@ -1,6 +1,10 @@
 <template>
   <LayoutDefault width="full">
+    <!-- TODO: Add loading state -->
+
     <AppCard v-if="accounts" padding="none">
+      <!-- TODO: Add search -->
+      
       <ul role="list" class="divide-y divide-gray-100">
         <template v-for="account in accounts" :key="account.account">
           <li v-if="account.propertySummaries" v-for="property in account.propertySummaries" :key="property.property" class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6 cursor-pointer">
@@ -16,6 +20,9 @@
         </template>
       </ul>
     </AppCard>
+
+    <!-- TODO: Add empty state (no accounts associated with this Google account) -->
+    <!-- TODO: Handle error "http://localhost:3000/services/ga/accounts?error=access_denied" -->
   </LayoutDefault>
 </template>
   
