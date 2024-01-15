@@ -3,7 +3,7 @@ import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import baseRoutes from '@/routes/base/routes.js'
 import dashboard from '@/views/dashboard/routes/index.js'
-import analytics from '@/views/analytics/routes/index.js'
+import funnels from '@/views/funnels/routes/index.js'
 import connections from '@/views/connections/routes/index.js'
 import services from '@/views/services/routes/index.js'
 import sites from '@/views/sites/routes/index.js'
@@ -14,7 +14,7 @@ import Sandbox from '@/views/Sandbox.vue';
 const routes = [
   ...baseRoutes,
   ...dashboard,
-  ...analytics,
+  ...funnels,
   ...connections,
   ...services,
   ...sites,

@@ -2,7 +2,7 @@
   <LayoutWithSidebar>
     <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Connections</h1>
-      <AppButton @click="connectToGoogle()">New Connection</AppButton>
+      <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
     </template>
 
     <table v-if="connections" class="min-w-full table-fixed divide-y divide-gray-300">
