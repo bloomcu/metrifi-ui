@@ -2,7 +2,7 @@ import Dashboard from '@/views/dashboard/Dashboard.vue'
 
 export default [
   {
-    path: "/:organization",
+    path: "/:organization/:connection?",
     name: "dashboard",
     component: Dashboard,
   },

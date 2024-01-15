@@ -9,7 +9,6 @@ import services from '@/views/services/routes/index.js'
 import sites from '@/views/sites/routes/index.js'
 
 import Sandbox from '@/views/Sandbox.vue';
-// import Survey from '@/views/Survey.vue';
 // import Flowchart from '@/views/Flowchart.vue';
 
 const routes = [
@@ -27,10 +26,6 @@ const routes = [
     path: '/sandbox', 
     component: Sandbox 
   },
-  // { 
-  //   path: '/survey', 
-  //   component: Survey 
-  // },
   // { 
   //   path: '/flowchart', 
   //   component: Flowchart

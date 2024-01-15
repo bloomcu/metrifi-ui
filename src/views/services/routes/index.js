@@ -1,9 +1,9 @@
-import Google from '@/views/services/google/Google.vue'
+import GoogleAnalyticsAccounts from '@/views/services/google-analytics/GoogleAnalyticsAccounts.vue'
 
 export default [
   {
-    path: "/services/google",
-    name: "google",
-    component: Google,
+    path: "/services/ga/accounts",
+    name: "ga-accounts",
+    component: GoogleAnalyticsAccounts,
   },
 ]

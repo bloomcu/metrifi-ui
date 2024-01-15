@@ -2,7 +2,7 @@
   <LayoutWithSidebar>
     <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Connections</h1>
-      <AppButton @click="">New Connection</AppButton>
+      <AppButton @click="connectToGoogle()">New Connection</AppButton>
     </template>
 
     <table v-if="connections" class="min-w-full table-fixed divide-y divide-gray-300">
@@ -50,11 +50,19 @@
 import moment from 'moment'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()
 const connections = ref()
+
+function connectToGoogle() {
+  googleApi.connect('https://www.googleapis.com/auth/analytics.readonly')
+  .then(response => {
+    window.location.href = response.data.url
+  })
+}
 
 onMounted(() => {
   connectionApi.index(route.params.organization).then(response => {
