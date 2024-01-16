@@ -21,6 +21,7 @@
       </ul>
     </AppCard>
 
+    <!-- TODO: Add empty state when user refreshed and there is not code in url -->
     <!-- TODO: Add empty state (no accounts associated with this Google account) -->
     <!-- TODO: Handle error "http://localhost:3000/services/ga/accounts?error=access_denied" -->
   </LayoutDefault>
