@@ -21,19 +21,19 @@
           <td class="whitespace-nowrap py-4 pr-6 text-sm text-gray-500">
             <div class="flex-auto">
               <p class="mb-1 text-sm leading-5 text-gray-400">{{ connection.service }}</p>
-              <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ connection.name }}</p>
+              <p class="text-base font-medium leading-6 text-gray-900">{{ connection.name }}</p>
             </div>
           </td>
 
           <!-- Connected -->
-          <td class="whitespace-nowrap py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap py-4 text-sm text-gray-400">
             <p>{{ moment(connection.created_at).fromNow() }}</p>
-            <p>by Ryan Harmon</p>
+            <p>by [...]</p>
           </td>
 
           <!-- Updated -->
-          <td class="whitespace-nowrap py-4 text-sm text-gray-500">
-            {{ moment(connection.updated_at).fromNow() }}
+          <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+            <p>{{ moment(connection.updated_at).fromNow() }}</p>
           </td>
 
           <!-- Disconnect -->

@@ -2,38 +2,84 @@
   <LayoutWithSidebar>
     <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Funnels</h1>
-      <AppButton @click="">Create Funnel</AppButton>
+      <AppButton @click="storeNewFunnel">Create Funnel</AppButton>
     </template>
 
     <!-- Funnels -->
+    <table v-if="funnels" class="min-w-full table-fixed divide-y divide-gray-300">
+      <thead>
+        <tr>
+          <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900">Funnel</th>
+          <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Created</th>
+          <th scope="col" class="py-3.5 text-left text-sm font-semibold text-gray-900">Updated</th>
+          <th scope="col" class="py-3.5"></th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+        <tr v-for="funnel in funnels" :key="funnel.id" class="hover:bg-gray-50 cursor-pointer">
+          <!-- Funnel -->
+          <td class="whitespace-nowrap py-4 pl-4 pr-6 text-sm text-gray-500">
+            <div class="flex-auto">
+              <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
+              <p v-if="funnel.description" class="text-sm leading-5 text-gray-400">{{ funnel.description }}</p>
+            </div>
+          </td>
+
+          <!-- Created -->
+          <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+            <p>{{ moment(funnel.created_at).fromNow() }}</p>
+            <p>by {{ funnel.user.name }}</p>
+          </td>
+
+          <!-- Updated -->
+          <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+            <p>{{ moment(funnel.updated_at).fromNow() }}</p>
+          </td>
+
+          <!-- Options -->
+          <!-- <td scope="col" class="py-4 text-right">
+            <AppButton variant="tertiary">Options</AppButton>
+          </td> -->
+        </tr>
+      </tbody>
+    </table>
     
-    <!-- Empty state: No connections -->
-    <!-- <div class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-      </svg>
+    <!-- Empty state: No funnels -->
+    <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+      <ChartBarIcon class="mx-auto h-12 w-12 text-indigo-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels</h2>
       <p class="mt-1 text-gray-500">Get started by creating a funnel.</p>
       <AppButton @click="" class="mt-4">Create Funnel</AppButton>
-    </div> -->
-
-    <!-- Empty state: No connections -->
-    <!-- <div class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
-      </svg>
-      <h2 class="mt-2 text-lg font-medium text-gray-900">No connections</h2>
-      <p class="mt-1 text-gray-500">Get started by connecting Google Analytics.</p>
-      <AppButton @click="" class="mt-4">Connect Google Analytics</AppButton>
-    </div> -->
+    </div>
   </LayoutWithSidebar>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import moment from 'moment'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
+import { ChartBarIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
+const route = useRoute()
+const router = useRouter()
+const funnels = ref()
+
+function storeNewFunnel() {
+  funnelApi.store(route.params.organization, {
+    name: 'New funnel',
+    description: 'This is the funnel descriptions'
+  }).then(response => {
+    let funnel = response.data.data
+    router.push({ name: 'funnel', params: { funnel: funnel.id } })
+  })
+}
+
 onMounted(() => {
-  
+  funnelApi.index(route.params.organization).then(response => {
+    funnels.value = response.data.data
+  })
 })
 </script>
