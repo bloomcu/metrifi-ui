@@ -1,7 +1,21 @@
 <template>
-  <main class="py-10">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <slot/>
-    </div>
+  <main :class="widthClasses[width]">
+    <slot/>
   </main>
 </template>
+
+<script setup>
+const props = defineProps({
+  width: {
+    type: String,
+    default: 'base' // xs, sm, base, full
+  }
+})
+
+const widthClasses = {
+  xs: 'max-w-3xl',
+  sm: 'max-w-5xl',
+  base: 'max-w-7xl',
+  full: 'max-w-full'
+}
+</script>

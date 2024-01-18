@@ -51,6 +51,16 @@ const funnelApi = {
     async destroy(organization, id) {
         return await HttpClient.delete(`/${organization}/funnels/${id}`)
     },
+
+    /**
+     * Store a funnel step
+     *
+     * @param Object funnel [Properties to create funnel from]
+     * @return promise
+     */
+    async storeStep(organization, id, step) {
+        return await HttpClient.post(`/${organization}/funnels/${id}/steps`, step)
+    },
 }
 
 export { funnelApi }

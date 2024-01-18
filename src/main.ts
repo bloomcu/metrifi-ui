@@ -8,6 +8,7 @@ import router from '@/router.js'
 import AppButton from '@/app/components/base/buttons/AppButton.vue'
 import AppCard from '@/app/components/base/cards/AppCard.vue'
 import AppInput from '@/app/components/base/forms/AppInput.vue'
+import AppSelect from '@/app/components/base/forms/AppSelect.vue'
 import AppHeader from '@/app/components/base/header/AppHeader.vue'
 import AppModal from '@/app/components/base/modals/AppModal.vue'
 
@@ -17,6 +18,7 @@ const app = createApp(App)
   .component('AppButton', AppButton)
   .component('AppCard', AppCard)
   .component('AppInput', AppInput)
+  .component('AppSelect', AppSelect)
   .component('AppHeader', AppHeader)
   .component('AppModal', AppModal)
       

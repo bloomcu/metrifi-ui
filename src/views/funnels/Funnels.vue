@@ -17,7 +17,7 @@
       </thead>
 
       <tbody class="divide-y divide-gray-200">
-        <tr v-for="funnel in funnels" :key="funnel.id" class="hover:bg-gray-50 cursor-pointer">
+        <tr v-for="funnel in funnels" :key="funnel.id" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" class="hover:bg-gray-50 cursor-pointer">
           <!-- Funnel -->
           <td class="whitespace-nowrap py-4 pl-4 pr-6 text-sm text-gray-500">
             <div class="flex-auto">
