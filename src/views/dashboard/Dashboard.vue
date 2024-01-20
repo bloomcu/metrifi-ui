@@ -1,43 +1,186 @@
 <template>
   <LayoutWithSidebar>
     <template #topbar>
-      <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboard</h1>
+      <div class="flex items-center gap-3">
+        <!-- Connections -->
+        <Dropdown>
+          <template #title>
+            <div class="flex items-center">
+              <svg class="w-5 h-5 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+              {{ selectedConnection ? selectedConnection.name : 'Loading...' }}
+            </div>
+          </template>
+          <button v-for="connection in connections" @click="selectedConnection = connection" :class="selectedConnection == connection ? 'bg-gray-50 text-indigo-600' : ''" class="w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
+            {{ connection.name }}
+          </button>
+        </Dropdown>
+
+        <!-- Date range -->
+        <Dropdown>
+          <template #title>
+            <CalendarIcon  class="mr-2 h-5 w-5" />
+            {{ selectedDateRange.label }} 
+            <span class="text-gray-400 font-normal ml-1">({{ moment(selectedDateRange.startDate).format('MMM DD, YYYY') }} - {{ selectedDateRange.endDate }})</span>
+          </template>
+          <button v-for="dateRange in dateRangeOptions" @click="selectedDateRange = dateRange" :class="selectedDateRange == dateRange ? 'bg-gray-50 text-indigo-600' : ''" class="w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
+            {{ dateRange.label }}
+          </button>
+        </Dropdown>
+      </div>
     </template>
 
-    <div v-if="analytics && !analytics.rows" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+    <div v-if="report && report.rows">
+      <!-- Tabs -->
+      <div class="sm:hidden mb-6">
+        <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
+        <select id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+          <option v-for="tab in tabs" :key="tab.name" :selected="tab.current">{{ tab.name }}</option>
+        </select>
+      </div>
+      <div class="hidden sm:block mb-6">
+        <div class="flex border-b border-gray-200">
+          <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+            <button v-for="tab in tabs" :key="tab.name" @click="selectedTab = tab" :class="selectedTab == tab ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
+              <component :is="tab.icon" :class="selectedTab == tab ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
+              <span>{{ tab.name }}</span>
+            </button>
+          </nav>
+
+          <div class="text-gray-500 text-sm ml-auto">{{ report.rowCount }} results</div>
+        </div>
+      </div>
+      
+      <!-- Table -->
+      <table class="min-w-full table-fixed divide-y divide-gray-300">
+        <thead>
+          <tr class="divide-x divide-gray-200">
+            <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-0">{{ report.metricHeaders[0].name }}</th>
+            <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-900">{{ report.dimensionHeaders[0].name }}</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200">
+          <tr v-for="row in report.rows" class="divide-x divide-gray-200">
+            <td class="whitespace-nowrap py-3 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+              {{ row.metricValues[0].value }}
+            </td>
+            <td class="whitespace-nowrap p-3 text-sm text-gray-500">
+              {{ row.dimensionValues[0].value ? row.dimensionValues[0].value : 'Not defined' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty state -->
+    <div v-if="report && !report.rows" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
       <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
       </svg>
 
-      <h2 class="mt-2 text-lg font-medium text-gray-900">No data received from your website yet</h2>
+      <h2 class="mt-2 text-lg font-medium text-gray-900">No data found for this connection</h2>
       <p class="mt-1 text-gray-500">Make sure Google Analytics is installed.</p>
-      <AppButton @click="" class="mt-4">Check Connection</AppButton>
+      <AppButton @click="" class="mt-4">Check Connection (Todo)</AppButton>
     </div>
 
-    <pre v-if="analytics">{{ analytics }}</pre>
-    
+    <!-- <pre v-if="report">{{ report }}</pre> -->
   </LayoutWithSidebar>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
+import moment from 'moment'
+import { ref, toRaw, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
+import { connectionApi } from '@/domain/connections/api/connectionApi.js'
+import { CalendarIcon, EyeIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
+import Dropdown from '@/views/dashboard/components/Dropdown.vue'
 
 const route = useRoute()
-const analytics = ref()
+const connections = ref()
+const report = ref()
 
-function runReport(connectionId) {
-  gaDataApi.runReport(connectionId).then(response => {
-    analytics.value = response.data.data
-    console.log(response)
+const selectedConnection = ref()
+
+const dateRangeOptions = ref([
+  {label: 'Yesterday',    startDate: moment().subtract(1, 'days').format('YYYY-MM-DD'),  endDate: 'yesterday'},
+  {label: 'This week',    startDate: moment().startOf('week').format('YYYY-MM-DD'),      endDate: 'today'},
+  // {label: 'Last week',    startDate: moment().subtract(1, 'weeks').format('YYYY-MM-DD'), endDate: 'yesterday'},
+  {label: 'Last 7 days',  startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),  endDate: 'yesterday'},
+  {label: 'Last 28 days', startDate: moment().subtract(28, 'days').format('YYYY-MM-DD'), endDate: 'yesterday'},
+])
+
+// const selectedDateRange = ref(dateRangeOptions.value.find(dateRange => dateRange.label == 'Last 7 days'));
+const selectedDateRange = ref(dateRangeOptions.value[2]);
+
+const tabs = ref([
+  { 
+    name: 'Page views', 
+    icon: EyeIcon, 
+    params: {
+      dimensions: [
+        { name: 'pagePath' },
+      ],
+      metrics: [
+        { name: 'screenPageViews' }
+      ],
+    }
+  },  
+  { 
+    name: 'Outbound clicks', 
+    icon: ArrowRightOnRectangleIcon,
+    params: {
+      dimensions: [
+        { name: 'linkUrl' }
+      ],
+      metrics: [
+        { name: 'eventCount' }
+      ],
+    }
+  },
+])
+
+const selectedTab = ref(tabs.value[0])
+
+function runReport() {
+  gaDataApi.runReport(selectedConnection.value.id, {params: {
+    ...toRaw(selectedTab.value.params),
+    dateRanges: [
+      { startDate: selectedDateRange.value.startDate, endDate: selectedDateRange.value.endDate }
+    ],
+    limit: 250
+  }}).then(response => {
+    if (response.data.data.error) {
+      console.log(response.data.data.error)
+      return
+    }
+
+    report.value = response.data.data
   })
 }
 
+watch(selectedConnection, (connection) => {
+  console.log('Selected connection changed')
+  runReport()
+})
+
+watch(selectedDateRange, (dateRange) => {
+  console.log('Selected date range changed')
+  runReport()
+})
+
+watch(selectedTab, (tab) => {
+  console.log('Selected tab changed')
+  runReport()
+})
+
 onMounted(() => {
-  if (route.params.connection) {
-    runReport(route.params.connection)
-  }
+  // if (route.params.connection) {}
+
+  connectionApi.index(route.params.organization).then(response => {
+    connections.value = response.data.data
+    selectedConnection.value = response.data.data[0]
+  })
 })
 </script>

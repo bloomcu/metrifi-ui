@@ -7,7 +7,7 @@ const gaDataApi = {
    * @return promise
    */
   async runReport(connectionId, request) {
-    return await HttpClient.get(`/ga/report/${connectionId}`, request)
+    return await HttpClient.post(`/ga/report/${connectionId}`, request)
   },
 }
 

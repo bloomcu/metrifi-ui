@@ -8,6 +8,9 @@ import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 */
 const httpClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: {
+    'content-type': 'application/json'
+  }
 })
 
 /**
