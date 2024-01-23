@@ -27,12 +27,6 @@
           </button>
         </Dropdown>
       </div>
-
-      <!-- Export button -->
-      <button @click="" class="group inline-flex items-center text-sm text-gray-500 hover:text-indigo-700">
-        <DocumentArrowDownIcon class="mr-1 h-5 w-5"/>
-        Export
-      </button>
     </template>
 
     <div v-if="report && report.rows">
@@ -52,8 +46,16 @@
             </button>
           </nav>
 
-          <!-- Results count -->
-          <div class="text-gray-500 text-sm ml-auto">{{ report.rowCount }} results</div>
+          <div class="flex items-center gap-4 mb-3 ml-auto">
+            <!-- Results count -->
+            <div class="text-gray-500 text-sm">{{ report.rowCount }} results</div>
+
+            <!-- Export -->
+            <AppButton variant="secondary" size="base" @click="downloadCSV()" class="inline-flex items-center">
+              <DocumentArrowDownIcon class="mr-1 h-5 w-5"/>
+              Export
+            </AppButton>
+          </div>
         </div>
       </div>
       
@@ -95,11 +97,11 @@
           <tr class="divide-x divide-gray-200">
             <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left">
               <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName }}</div>
-              <div class="mt-1 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+              <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
             </th>
             <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left">
               <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName }}</div>
-              <div class="mt-1 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+              <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
             </th>
           </tr>
         </thead>
@@ -245,6 +247,45 @@ function runReport() {
 
 //   window.open(`${baseURL}/ga/export/${selectedConnection.value.id}?${params.toString()}`, '_blank')
 // }
+
+function makeCSV() {
+  let csv = 'data:text/csv;charset=utf-8,';
+
+  // Make headers
+  report.value.dimensionHeaders.forEach(function(header) {
+    csv += `${header.name},`;
+  });
+
+  report.value.metricHeaders.forEach(function(header) {
+    csv += `${header.name}\n`;
+  });
+
+  // Make rows
+  report.value.rows.forEach(function(row) {
+    row.dimensionValues.forEach(function(dimension) {
+      csv += `${dimension.value},`;
+    });
+    
+    row.metricValues.forEach(function(metric) {
+      csv += `${metric.value}`;
+    });
+
+    csv += '\n';
+  });
+
+  return csv;
+}
+
+function downloadCSV() {
+  const csv = makeCSV();
+  const encodedUri = encodeURI(csv);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', `${selectedRequest.value.name} - ${selectedConnection.value.name} - ${selectedDateRange.value.label}.csv`);
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
+}
 
 watch(selectedConnection, (connection) => {
   runReport()
