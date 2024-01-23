@@ -7,13 +7,13 @@ export default [
   {
     path: "/:organization/settings",
     name: "settings",
-    redirect: { name: 'settingsOrganization' },
+    redirect: { name: 'settingsUsers' },
     component: Settings,
     children: [
       {
-        path: "billing",
-        name: "settingsBilling",
-        component: SettingsBilling,
+        path: "users",
+        name: "settingsUsers",
+        component: SettingsUsers,
       },
       {
         path: "organization",
@@ -21,49 +21,10 @@ export default [
         component: SettingsOrganization,
       },
       {
-        path: "users",
-        name: "settingsUsers",
-        component: SettingsUsers,
+        path: "billing",
+        name: "settingsBilling",
+        component: SettingsBilling,
       },
     ]
   }
-
-  // {
-  //   path: "/:organization/settings",
-  //   // redirect: { name: 'settingsOrganization' },
-  //   component: { render: () => h(RouterView) },
-  //   children: [
-  //     {
-  //       path: "billing",
-  //       name: "settingsBilling",
-  //       component: SettingsBilling,
-  //     },
-  //     {
-  //       path: "organization",
-  //       name: "settingsOrganization",
-  //       component: SettingsOrganization,
-  //     },
-  //     {
-  //       path: "users",
-  //       name: "settingsUsers",
-  //       component: SettingsUsers,
-  //     },
-  //   ]
-  // }
-
-  // {
-  //   path: "/:organization/settings/billing",
-  //   name: "settingsBilling",
-  //   component: SettingsBilling,
-  // },
-  // {
-  //   path: "/:organization/settings/organization",
-  //   name: "settingsOrganization",
-  //   component: SettingsOrganization,
-  // },
-  // {
-  //   path: "/:organization/settings/users",
-  //   name: "settingsUsers",
-  //   component: SettingsUsers,
-  // },
 ]

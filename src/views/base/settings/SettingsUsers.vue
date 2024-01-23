@@ -13,7 +13,7 @@
   </div>
 
   <!-- Invitations -->
-  <AppCard class="mb-12">
+  <AppCard v-if="inviteStore.invitations.length" class="mb-12">
     <h2 class="text-base font-medium leading-6 text-gray-900">Invitations</h2>
     <p class="mt-2 text-sm text-gray-500">A list of invitations not yet accepted.</p>
 
