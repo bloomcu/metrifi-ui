@@ -27,6 +27,12 @@
           </button>
         </Dropdown>
       </div>
+
+      <!-- Export button -->
+      <button @click="" class="group inline-flex items-center text-sm text-gray-500 hover:text-indigo-700">
+        <DocumentArrowDownIcon class="mr-1 h-5 w-5"/>
+        Export
+      </button>
     </template>
 
     <div v-if="report && report.rows">
@@ -34,39 +40,73 @@
       <div class="sm:hidden mb-6">
         <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
         <select id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          <option v-for="tab in tabs" :key="tab.name" :selected="tab.current">{{ tab.name }}</option>
+          <option v-for="request in requests" :key="request.name" :selected="request.current">{{ request.name }}</option>
         </select>
       </div>
       <div class="hidden sm:block mb-6">
         <div class="flex border-b border-gray-200">
           <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-            <button v-for="tab in tabs" :key="tab.name" @click="selectedTab = tab" :class="selectedTab == tab ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
-              <component :is="tab.icon" :class="selectedTab == tab ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-              <span>{{ tab.name }}</span>
+            <button v-for="request in requests" :key="request.name" @click="selectedRequest = request" :class="selectedRequest == request ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
+              <component :is="request.icon" :class="selectedRequest == request ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
+              <span>{{ request.name }}</span>
             </button>
           </nav>
 
+          <!-- Results count -->
           <div class="text-gray-500 text-sm ml-auto">{{ report.rowCount }} results</div>
         </div>
       </div>
       
+      <!-- Table loading state -->
+      <div v-if="loading" class="animate-pulse space-y-4">
+        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+      </div>
+
       <!-- Table -->
-      <table class="min-w-full table-fixed divide-y divide-gray-300">
+      <table v-else class="min-w-full table-fixed divide-y divide-gray-300">
         <thead>
           <tr class="divide-x divide-gray-200">
-            <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-0">{{ report.metricHeaders[0].name }}</th>
-            <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-900">{{ report.dimensionHeaders[0].name }}</th>
+            <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left">
+              <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName }}</div>
+              <div class="mt-1 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+            </th>
+            <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left">
+              <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName }}</div>
+              <div class="mt-1 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+            </th>
           </tr>
         </thead>
-
         <tbody class="divide-y divide-gray-200">
           <tr v-for="row in report.rows" class="divide-x divide-gray-200">
-            <td class="whitespace-nowrap py-3 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
-              {{ row.metricValues[0].value }}
-            </td>
-            <td class="whitespace-nowrap p-3 text-sm text-gray-500">
-              {{ row.dimensionValues[0].value ? row.dimensionValues[0].value : 'Not defined' }}
-            </td>
+            <td v-for="value in row.dimensionValues" class="py-3 px-4 text-sm text-gray-500">{{ value.value }}</td>
+            <td v-for="value in row.metricValues" class="py-3 px-4 text-sm font-medium text-gray-900">{{ value.value }}</td>
           </tr>
         </tbody>
       </table>
@@ -93,11 +133,12 @@ import { ref, toRaw, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
-import { CalendarIcon, EyeIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
+import { CalendarIcon, EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import Dropdown from '@/views/dashboard/components/Dropdown.vue'
 
 const route = useRoute()
+const loading = ref(true)
 const connections = ref()
 const report = ref()
 
@@ -111,10 +152,9 @@ const dateRangeOptions = ref([
   {label: 'Last 28 days', startDate: moment().subtract(28, 'days').format('YYYY-MM-DD'), endDate: 'yesterday'},
 ])
 
-// const selectedDateRange = ref(dateRangeOptions.value.find(dateRange => dateRange.label == 'Last 7 days'));
 const selectedDateRange = ref(dateRangeOptions.value[2]);
 
-const tabs = ref([
+const requests = ref([
   { 
     name: 'Page views', 
     icon: EyeIcon, 
@@ -125,6 +165,14 @@ const tabs = ref([
       metrics: [
         { name: 'screenPageViews' }
       ],
+    },
+    dictionary: {
+      pagePath: {
+        displayName: 'Page',
+      },
+      screenPageViews: {
+        displayName: 'Views',
+      },
     }
   },  
   { 
@@ -132,46 +180,81 @@ const tabs = ref([
     icon: ArrowRightOnRectangleIcon,
     params: {
       dimensions: [
-        { name: 'linkUrl' }
+        { name: 'linkUrl' },
+        { name: 'pagePath' }
       ],
       metrics: [
         { name: 'eventCount' }
       ],
+      dimensionFilter: {
+        filter: {
+          fieldName: 'linkUrl',
+          stringFilter: {
+            matchType: 'FULL_REGEXP',
+            value: '.+'
+          }
+        }
+      }
+    },
+    dictionary: {
+      linkUrl: {
+        displayName: 'Outbound link',
+      },
+      pagePath: {
+        displayName: 'Page',
+      },
+      eventCount: {
+        displayName: 'Clicks',
+      },
     }
   },
 ])
 
-const selectedTab = ref(tabs.value[0])
+const selectedRequest = ref(requests.value[1])
 
 function runReport() {
-  gaDataApi.runReport(selectedConnection.value.id, {params: {
-    ...toRaw(selectedTab.value.params),
+  loading.value = true
+
+  gaDataApi.runReport(selectedConnection.value.id, {
+    ...toRaw(selectedRequest.value.params),
     dateRanges: [
       { startDate: selectedDateRange.value.startDate, endDate: selectedDateRange.value.endDate }
     ],
     limit: 250
-  }}).then(response => {
+  }).then(response => {
     if (response.data.data.error) {
       console.log(response.data.data.error)
       return
     }
 
+    loading.value = false
     report.value = response.data.data
   })
 }
 
+// function exportReport() {
+//   const baseURL = import.meta.env.VITE_API_BASE_URL
+  
+//   let params = new URLSearchParams({
+//     ...toRaw(selectedRequest.value.params),
+//     dateRanges: [
+//       { startDate: selectedDateRange.value.startDate, endDate: selectedDateRange.value.endDate }
+//     ],
+//     limit: 250
+//   });
+
+//   window.open(`${baseURL}/ga/export/${selectedConnection.value.id}?${params.toString()}`, '_blank')
+// }
+
 watch(selectedConnection, (connection) => {
-  console.log('Selected connection changed')
   runReport()
 })
 
 watch(selectedDateRange, (dateRange) => {
-  console.log('Selected date range changed')
   runReport()
 })
 
-watch(selectedTab, (tab) => {
-  console.log('Selected tab changed')
+watch(selectedRequest, (report) => {
   runReport()
 })
 
