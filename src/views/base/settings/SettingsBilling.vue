@@ -12,7 +12,7 @@
       <AppCard v-if="organizationStore.organization">
         <div class="flex justify-between">
           <p class="text-gray-900">{{ organizationStore.organization.plan.title }}</p>
-          <AppButton :to="{ name: 'subscription-swap' }">Change plan</AppButton>
+          <!-- <AppButton :to="{ name: 'subscription-swap' }">Change plan</AppButton> -->
         </div>
         <p class="text-sm text-gray-500">
           {{ organizationStore.organization.plan.price }}{{ organizationStore.organization.plan.interval ? ' / ' + organizationStore.organization.plan.interval : '/month' }}
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Billing -->
-    <div class="py-12">
+    <!-- <div class="py-12">
       <div class="flex justify-between mb-6">
         <div>
           <p class="text-gray-900 font-medium mb-2">Billing</p>
@@ -56,10 +56,10 @@
           <dd class="mt-1 text-sm leading-6 text-gray-500 sm:col-span-2 sm:mt-0">No tax information</dd>
         </div>
       </dl>
-    </div>
+    </div> -->
 
     <!-- Payments -->
-    <div class="py-12">
+    <!-- <div class="py-12">
       <div class="flex justify-between mb-6">
         <div>
           <p class="text-gray-900 font-medium mb-2">Payments</p>
@@ -87,9 +87,9 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
 
-    <AddressFieldGroup 
+    <!-- <AddressFieldGroup 
       v-model:address1="address.address1"
       v-model:address2="address.address2"
       v-model:city="address.city"
@@ -98,7 +98,7 @@
       v-model:country="address.country"
       v-model:lat="address.lat"
       v-model:lng="address.lng"
-    />
+    /> -->
   </div>
 </template>
 

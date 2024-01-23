@@ -7,7 +7,7 @@
           <p class="text-sm text-gray-500">Your organizations details.</p>
         </div>
         <div>
-          <AppButton :to="{}" variant="tertiary">Edit info</AppButton>
+          <!-- <AppButton :to="{}" variant="tertiary">Edit info</AppButton> -->
         </div>
       </div>
 
