@@ -1,7 +1,7 @@
 <template>
   <LayoutDefault>
     <!-- Header -->
-    <AppHeader>
+    <AppHeader class="pt-6">
       <h1 class="text-3xl font-medium leading-6 text-gray-900">Organizations</h1>
       <AppButton @click="organizationStore.toggleCreateModal">Create organization</AppButton>
     </AppHeader>

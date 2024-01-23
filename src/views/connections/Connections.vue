@@ -5,7 +5,7 @@
       <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
     </template>
 
-    <table v-if="connections" class="min-w-full table-fixed divide-y divide-gray-300">
+    <table v-if="connections && connections.length" class="min-w-full table-fixed divide-y divide-gray-300">
       <thead>
         <tr>
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-semibold text-gray-900">Id</th>
@@ -50,6 +50,13 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Empty state: No connections -->
+    <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+      <CloudIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-gray-900">No connections</h2>
+      <p class="mt-1 text-gray-500">Get started by connecting Google Analytics.</p>
+    </div>
   </LayoutWithSidebar>
 </template>
   
@@ -59,6 +66,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
+import { CloudIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()

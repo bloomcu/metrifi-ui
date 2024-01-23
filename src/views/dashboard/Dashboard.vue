@@ -1,7 +1,9 @@
 <template>
   <LayoutWithSidebar>
     <template #topbar>
-      <div class="flex items-center gap-3">
+      <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Explore</h1>
+
+      <div v-if="connections && connections.length" class="flex items-center gap-2">
         <!-- Connections -->
         <Dropdown>
           <template #title>
@@ -26,19 +28,27 @@
             {{ dateRange.label }}
           </button>
         </Dropdown>
+
+        <!-- Export -->
+        <AppButton variant="tertiary" size="base" @click="downloadCSV()" class="inline-flex items-center">
+          <DocumentArrowDownIcon class="mr-1 h-5 w-5"/>
+          Export
+        </AppButton>
       </div>
     </template>
 
     <div v-if="report && report.rows">
-      <!-- Tabs -->
+      <!-- Tabs: mobile -->
       <div class="sm:hidden mb-6">
         <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
         <select id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
           <option v-for="request in requests" :key="request.name" :selected="request.current">{{ request.name }}</option>
         </select>
       </div>
+
+      <!-- Tabs: desktop -->
       <div class="hidden sm:block mb-6">
-        <div class="flex border-b border-gray-200">
+        <div class="flex justify-between border-b border-gray-200">
           <nav class="-mb-px flex space-x-8" aria-label="Tabs">
             <button v-for="request in requests" :key="request.name" @click="selectedRequest = request" :class="selectedRequest == request ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
               <component :is="request.icon" :class="selectedRequest == request ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
@@ -46,16 +56,8 @@
             </button>
           </nav>
 
-          <div class="flex items-center gap-4 mb-3 ml-auto">
-            <!-- Results count -->
-            <div class="text-gray-500 text-sm">{{ report.rowCount }} results</div>
-
-            <!-- Export -->
-            <AppButton variant="secondary" size="base" @click="downloadCSV()" class="inline-flex items-center">
-              <DocumentArrowDownIcon class="mr-1 h-5 w-5"/>
-              Export
-            </AppButton>
-          </div>
+          <!-- Results count -->
+          <div class="text-gray-500 text-sm">{{ report.rowCount }} results</div>
         </div>
       </div>
       
@@ -92,7 +94,7 @@
       </div>
 
       <!-- Table -->
-      <table v-else class="min-w-full table-fixed divide-y divide-gray-300">
+      <table v-else class="min-w-full max-w-full divide-y divide-gray-300">
         <thead>
           <tr class="divide-x divide-gray-200">
             <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left">
@@ -106,9 +108,9 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr v-for="row in report.rows" class="divide-x divide-gray-200">
-            <td v-for="value in row.dimensionValues" class="py-3 px-4 text-sm text-gray-500">{{ value.value }}</td>
-            <td v-for="value in row.metricValues" class="py-3 px-4 text-sm font-medium text-gray-900">{{ value.value }}</td>
+          <tr v-for="row in report.rows" class="divide-x divide-gray-200 hover:bg-gray-50">
+            <td v-for="value in row.dimensionValues" class="py-3 px-4 text-sm text-gray-500 break-all">{{ value.value }}</td>
+            <td v-for="value in row.metricValues" class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ value.value }}</td>
           </tr>
         </tbody>
       </table>
@@ -125,6 +127,14 @@
       <AppButton @click="" class="mt-4">Check Connection (Todo)</AppButton>
     </div>
 
+    <!-- Empty state: No connections -->
+    <div v-if="connections && !connections.length" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+      <CloudIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-gray-900">No connections</h2>
+      <p class="mt-1 mb-5 text-gray-500">A connection is needed to explore analytics.</p>
+      <AppButton :to="{name: 'connections'}">Go to Connections</AppButton>
+    </div>
+
     <!-- <pre v-if="report">{{ report }}</pre> -->
   </LayoutWithSidebar>
 </template>
@@ -135,7 +145,7 @@ import { ref, toRaw, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
-import { CalendarIcon, EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon } from '@heroicons/vue/24/outline'
+import { CalendarIcon, EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon, CloudIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import Dropdown from '@/views/dashboard/components/Dropdown.vue'
 
@@ -212,7 +222,7 @@ const requests = ref([
   },
 ])
 
-const selectedRequest = ref(requests.value[1])
+const selectedRequest = ref(requests.value[0])
 
 function runReport() {
   loading.value = true

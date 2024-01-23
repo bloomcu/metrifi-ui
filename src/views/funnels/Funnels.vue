@@ -6,7 +6,7 @@
     </template>
 
     <!-- Funnels -->
-    <table v-if="funnels" class="min-w-full table-fixed divide-y divide-gray-300">
+    <table v-if="funnels && funnels.length" class="min-w-full table-fixed divide-y divide-gray-300">
       <thead>
         <tr>
           <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900">Funnel</th>
@@ -47,10 +47,9 @@
     
     <!-- Empty state: No funnels -->
     <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <ChartBarIcon class="mx-auto h-12 w-12 text-indigo-600" aria-hidden="true" />
+      <FunnelIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels</h2>
       <p class="mt-1 text-gray-500">Get started by creating a funnel.</p>
-      <AppButton @click="" class="mt-4">Create Funnel</AppButton>
     </div>
   </LayoutWithSidebar>
 </template>
@@ -60,7 +59,7 @@ import moment from 'moment'
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
-import { ChartBarIcon } from '@heroicons/vue/24/outline'
+import { FunnelIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()

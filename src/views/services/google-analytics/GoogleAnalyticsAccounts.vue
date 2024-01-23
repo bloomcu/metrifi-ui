@@ -1,5 +1,10 @@
 <template>
-  <LayoutDefault width="full">
+  <LayoutDefault>
+    <!-- Header -->
+    <AppHeader v-if="accounts" class="pt-6">
+      <h1 class="text-3xl font-medium leading-6 text-gray-900">Accounts</h1>
+    </AppHeader>
+
     <!-- TODO: Add loading state -->
 
     <AppCard v-if="accounts" padding="none">
@@ -24,6 +29,13 @@
     <!-- TODO: Add empty state when user refreshed and there is not code in url -->
     <!-- TODO: Add empty state (no accounts associated with this Google account) -->
     <!-- TODO: Handle error "http://localhost:3000/services/ga/accounts?error=access_denied" -->
+
+    <!-- Empty state: Catch all -->
+    <!-- <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2 mt-6">
+      <ExclamationTriangleIcon class="mx-auto h-10 w-10 text-red-600" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-gray-900">Problem connecting with Google</h2>
+      <p class="mt-1 text-gray-500">There was a problem connecting with Google. Please refresh.</p>
+    </div> -->
   </LayoutDefault>
 </template>
   
@@ -33,6 +45,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import { gaAdminApi } from '@/domain/services/google-analytics/api/gaAdminApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 
 const route = useRoute()
@@ -50,6 +63,7 @@ function listAccounts() {
 }
 
 function storeConnection(property) {
+  // TODO: Get organization from authStore
   connectionApi.store('bloomcu', {
     service: 'Google Analytics - Property',
     name: property.displayName,
