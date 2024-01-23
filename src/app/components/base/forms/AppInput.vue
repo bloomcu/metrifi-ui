@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <label v-if="label" class="block text-sm font-medium leading-6 text-gray-900 mb-2" :for="label">{{ label }}</label>
+  <div class="flex flex-col gap-1">
+    <label v-if="label" class="block text-sm font-medium text-gray-900" :for="label">{{ label }}</label>
+    <span v-if="hint" class="text-sm text-gray-400">{{ hint }}</span>
     <input 
         @input="updateValue($event.target.value)"
         :value="modelValue"
@@ -36,6 +37,9 @@ const props = defineProps({
     default: 'text'
   },
   label: {
+    type: String
+  },
+  hint: {
     type: String
   },
   placeholder: {
