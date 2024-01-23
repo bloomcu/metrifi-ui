@@ -5,6 +5,7 @@
                 <AppCard padding="sm" class="w-60">            
                     <AppNestedMenu 
                         title="Category"
+                        :show-title="true"
                         :options="categories"
                         :active="query.category"
                         @selected="setCategory"
