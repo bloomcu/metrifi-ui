@@ -37,16 +37,14 @@
       </div>
     </template>
 
-    <div v-if="report && report.rows">
-      <!-- Tabs: mobile -->
+    <div v-if="report">
+      <!-- Tabs -->
       <div class="sm:hidden mb-6">
         <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
         <select id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
           <option v-for="request in requests" :key="request.name" :selected="request.current">{{ request.name }}</option>
         </select>
       </div>
-
-      <!-- Tabs: desktop -->
       <div class="hidden sm:block mb-6">
         <div class="flex justify-between border-b border-gray-200">
           <nav class="-mb-px flex space-x-8" aria-label="Tabs">
@@ -55,54 +53,20 @@
               <span>{{ request.name }}</span>
             </button>
           </nav>
-
-          <!-- Results count -->
-          <div class="text-gray-500 text-sm">{{ report.rowCount }} results</div>
+          <div class="text-gray-400 text-sm">Showing {{ report.rows.length }} of {{ report.rowCount }} results</div>
         </div>
-      </div>
-      
-      <!-- Table loading state -->
-      <div v-if="loading" class="animate-pulse space-y-4">
-        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded"></div>
-        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
       </div>
 
       <!-- Table -->
-      <table v-else class="min-w-full max-w-full divide-y divide-gray-300">
+      <table v-if="!loading && report.rows" class="min-w-full max-w-full divide-y divide-gray-300">
         <thead>
           <tr class="divide-x divide-gray-200">
             <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left">
-              <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName }}</div>
+              <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName ?? header.name }}</div>
               <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
             </th>
             <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left">
-              <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName }}</div>
+              <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName ?? header.name }}</div>
               <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
             </th>
           </tr>
@@ -114,22 +78,50 @@
           </tr>
         </tbody>
       </table>
-    </div>
 
-    <!-- Empty state -->
-    <div v-if="report && !report.rows" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
-      </svg>
+      <!-- Empty state: No report rows -->
+      <div v-if="!loading && !report.rows" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+        <NoSymbolIcon class="mx-auto w-8 text-gray-400"/>
+        <h2 class="mt-2 text-lg font-medium text-gray-900">No results</h2>
+        <p class="mt-1 text-gray-500">Try extending the date range</p>
+      </div>
+    </div> <!-- End state: Report exists -->
 
-      <h2 class="mt-2 text-lg font-medium text-gray-900">No data found for this connection</h2>
-      <p class="mt-1 text-gray-500">Make sure Google Analytics is installed.</p>
-      <AppButton @click="" class="mt-4">Check Connection (Todo)</AppButton>
+    <!-- State: Loading -->
+    <div v-if="loading" class="animate-pulse space-y-4">
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
     </div>
 
     <!-- Empty state: No connections -->
     <div v-if="connections && !connections.length" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <CloudIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
+      <CloudIcon class="mx-auto w-8 text-indigo-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No connections</h2>
       <p class="mt-1 mb-5 text-gray-500">A connection is needed to explore analytics.</p>
       <AppButton :to="{name: 'connections'}">Go to Connections</AppButton>
@@ -145,7 +137,7 @@ import { ref, toRaw, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
-import { CalendarIcon, EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon, CloudIcon } from '@heroicons/vue/24/outline'
+import { CalendarIcon, EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import Dropdown from '@/views/dashboard/components/Dropdown.vue'
 
@@ -172,11 +164,21 @@ const requests = ref([
     icon: EyeIcon, 
     params: {
       dimensions: [
-        { name: 'pagePath' },
+        {name: 'pagePath'},
       ],
       metrics: [
-        { name: 'screenPageViews' }
+        {name: 'screenPageViews'}
       ],
+      dimensionFilter: {
+        filter: {
+          fieldName: 'pagePath',
+          stringFilter: {
+            matchType: 'BEGINS_WITH',
+            value: '/'
+          }
+        }
+      },
+      limit: 250
     },
     dictionary: {
       pagePath: {
@@ -192,11 +194,12 @@ const requests = ref([
     icon: ArrowRightOnRectangleIcon,
     params: {
       dimensions: [
-        { name: 'linkUrl' },
-        { name: 'pagePath' }
+        {name: 'linkUrl'},
+        {name: 'linkDomain'},
+        {name: 'pagePath'},
       ],
       metrics: [
-        { name: 'eventCount' }
+        {name: 'eventCount'}
       ],
       dimensionFilter: {
         filter: {
@@ -206,14 +209,18 @@ const requests = ref([
             value: '.+'
           }
         }
-      }
+      },
+      limit: 250
     },
     dictionary: {
       linkUrl: {
-        displayName: 'Outbound link',
+        displayName: 'Link',
+      },
+      linkDomain: {
+        displayName: 'Domain',
       },
       pagePath: {
-        displayName: 'Page',
+        displayName: 'Source page',
       },
       eventCount: {
         displayName: 'Clicks',
@@ -232,7 +239,6 @@ function runReport() {
     dateRanges: [
       { startDate: selectedDateRange.value.startDate, endDate: selectedDateRange.value.endDate }
     ],
-    limit: 250
   }).then(response => {
     if (response.data.data.error) {
       console.log(response.data.data.error)
@@ -315,6 +321,7 @@ onMounted(() => {
   connectionApi.index(route.params.organization).then(response => {
     connections.value = response.data.data
     selectedConnection.value = response.data.data[0]
+    loading.value = false
   })
 })
 </script>
