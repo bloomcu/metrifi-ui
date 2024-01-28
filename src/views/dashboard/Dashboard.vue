@@ -40,15 +40,14 @@
     <div v-if="report">
       <!-- Tabs -->
       <div class="sm:hidden mb-6">
-        <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
-        <select id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          <option v-for="request in requests" :key="request.name" :selected="request.current">{{ request.name }}</option>
+        <select @change="" id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+          <option v-for="request in requests" :key="request.name" :selected="selectedRequest.report == request.report">{{ request.name }}</option>
         </select>
       </div>
       <div class="hidden sm:block mb-6">
         <div class="flex justify-between border-b border-gray-200">
           <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-            <button v-for="request in requests" :key="request.name" @click="selectedRequest = request" :class="selectedRequest == request ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
+            <button v-for="request in requests" :key="request.name" @click="selectedRequest = request" :class="selectedRequest.report == request.report ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
               <component :is="request.icon" :class="selectedRequest == request ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
               <span>{{ request.name }}</span>
             </button>
@@ -62,11 +61,11 @@
         <thead>
           <tr class="divide-x divide-gray-200">
             <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left">
-              <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName ?? header.name }}</div>
+              <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
               <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
             </th>
             <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left">
-              <div class="text-sm font-semibold text-gray-900">{{ selectedRequest.dictionary[header.name].displayName ?? header.name }}</div>
+              <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
               <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
             </th>
           </tr>
@@ -156,76 +155,18 @@ const dateRangeOptions = ref([
   {label: 'Last 28 days', startDate: moment().subtract(28, 'days').format('YYYY-MM-DD'), endDate: 'yesterday'},
 ])
 
-const selectedDateRange = ref(dateRangeOptions.value[2]);
+const selectedDateRange = ref(dateRangeOptions.value[2])
 
 const requests = ref([
   { 
-    name: 'Page views', 
-    icon: EyeIcon, 
-    params: {
-      dimensions: [
-        {name: 'pagePath'},
-      ],
-      metrics: [
-        {name: 'screenPageViews'}
-      ],
-      dimensionFilter: {
-        filter: {
-          fieldName: 'pagePath',
-          stringFilter: {
-            matchType: 'BEGINS_WITH',
-            value: '/'
-          }
-        }
-      },
-      limit: 250
-    },
-    dictionary: {
-      pagePath: {
-        displayName: 'Page',
-      },
-      screenPageViews: {
-        displayName: 'Views',
-      },
-    }
+    name: 'Page views',
+    report: 'page-views',
+    icon: EyeIcon,
   },  
   { 
-    name: 'Outbound clicks', 
+    name: 'Outbound clicks',
+    report: 'outbound-clicks',
     icon: ArrowRightOnRectangleIcon,
-    params: {
-      dimensions: [
-        {name: 'linkUrl'},
-        {name: 'linkDomain'},
-        {name: 'pagePath'},
-      ],
-      metrics: [
-        {name: 'eventCount'}
-      ],
-      dimensionFilter: {
-        filter: {
-          fieldName: 'linkUrl',
-          stringFilter: {
-            matchType: 'FULL_REGEXP',
-            value: '.+'
-          }
-        }
-      },
-      limit: 250
-    },
-    dictionary: {
-      linkUrl: {
-        displayName: 'Link',
-      },
-      linkDomain: {
-        displayName: 'Domain',
-      },
-      pagePath: {
-        displayName: 'Source page',
-      },
-      eventCount: {
-        displayName: 'Clicks',
-      },
-    }
   },
 ])
 
@@ -234,35 +175,63 @@ const selectedRequest = ref(requests.value[0])
 function runReport() {
   loading.value = true
 
-  gaDataApi.runReport(selectedConnection.value.id, {
-    ...toRaw(selectedRequest.value.params),
-    dateRanges: [
-      { startDate: selectedDateRange.value.startDate, endDate: selectedDateRange.value.endDate }
-    ],
+  if (selectedRequest.value.report == 'page-views') {
+    fetchPageViews()
+  } else if (selectedRequest.value.report == 'outbound-clicks') {
+    fetchOutboundClicks()
+  }
+}
+
+watch(selectedConnection, (connection) => {
+  runReport()
+})
+
+watch(selectedDateRange, (dateRange) => {
+  runReport()
+})
+
+watch(selectedRequest, (report) => {
+  runReport()
+})
+
+onMounted(() => {
+  // if (route.params.connection) {}
+
+  connectionApi.index(route.params.organization).then(response => {
+    console.log(response.data.data)
+    connections.value = response.data.data
+    selectedConnection.value = response.data.data[0]
+    loading.value = false
+  })
+})
+
+function fetchPageViews() {
+  gaDataApi.fetchPageViews(selectedConnection.value.id, {
+    startDate: selectedDateRange.value.startDate, 
+    endDate: selectedDateRange.value.endDate 
   }).then(response => {
     if (response.data.data.error) {
       console.log(response.data.data.error)
       return
     }
-
     loading.value = false
     report.value = response.data.data
   })
 }
 
-// function exportReport() {
-//   const baseURL = import.meta.env.VITE_API_BASE_URL
-  
-//   let params = new URLSearchParams({
-//     ...toRaw(selectedRequest.value.params),
-//     dateRanges: [
-//       { startDate: selectedDateRange.value.startDate, endDate: selectedDateRange.value.endDate }
-//     ],
-//     limit: 250
-//   });
-
-//   window.open(`${baseURL}/ga/export/${selectedConnection.value.id}?${params.toString()}`, '_blank')
-// }
+function fetchOutboundClicks() {
+  gaDataApi.fetchOutboundClicks(selectedConnection.value.id, {
+    startDate: selectedDateRange.value.startDate, 
+    endDate: selectedDateRange.value.endDate 
+  }).then(response => {
+    if (response.data.data.error) {
+      console.log(response.data.data.error)
+      return
+    }
+    loading.value = false
+    report.value = response.data.data
+  })
+}
 
 function makeCSV() {
   let csv = 'data:text/csv;charset=utf-8,';
@@ -303,25 +272,24 @@ function downloadCSV() {
   link.click();
 }
 
-watch(selectedConnection, (connection) => {
-  runReport()
-})
-
-watch(selectedDateRange, (dateRange) => {
-  runReport()
-})
-
-watch(selectedRequest, (report) => {
-  runReport()
-})
-
-onMounted(() => {
-  // if (route.params.connection) {}
-
-  connectionApi.index(route.params.organization).then(response => {
-    connections.value = response.data.data
-    selectedConnection.value = response.data.data[0]
-    loading.value = false
-  })
-})
+const dictionary = {
+  pagePath: {
+    displayName: 'Page',
+  },
+  screenPageViews: {
+    displayName: 'Views',
+  },
+  linkUrl: {
+    displayName: 'Link',
+  },
+  linkDomain: {
+    displayName: 'Domain',
+  },
+  pagePath: {
+    displayName: 'Source page',
+  },
+  eventCount: {
+    displayName: 'Clicks',
+  }
+}
 </script>
