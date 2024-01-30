@@ -198,7 +198,6 @@ onMounted(() => {
   // if (route.params.connection) {}
 
   connectionApi.index(route.params.organization).then(response => {
-    console.log(response.data.data)
     connections.value = response.data.data
     selectedConnection.value = response.data.data[0]
     loading.value = false
