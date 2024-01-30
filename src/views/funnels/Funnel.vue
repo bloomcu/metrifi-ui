@@ -77,8 +77,10 @@
       </aside>
 
       <!-- Chart -->
-      <!-- <div> -->
-        <ApexChart v-if="chart" style="width: 1200px;" class="block" type="bar" :options="chart.options" :series="chart.series"></ApexChart>
+      <div class="mx-auto w-full max-w-6xl px-10">
+        <Chart/>
+
+        <!-- <ApexChart v-if="chart" style="width: 1200px;" class="block" type="bar" :options="chart.options" :series="chart.series"></ApexChart> -->
         <!-- Vanilla bar chart Source: https://codepen.io/robstinson/pen/ZEpKvjM?editors=1000 -->
         <!-- <div class="flex-1 p-2">
           <div class="flex items-end flex-grow w-full pt-6 space-x-2 sm:space-x-3">
@@ -98,7 +100,7 @@
         </div> -->
 
         <!-- <pre>{{ funnel }}</pre> -->
-      <!-- </div> -->
+      </div>
     </div>
 
     <!-- TODO: Add loading state -->
@@ -113,6 +115,7 @@ import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { Bars2Icon, QueueListIcon } from '@heroicons/vue/24/outline'
 import { PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
+import Chart from '@/views/funnels/components/chart/Chart.vue'
 import ApexChart from "vue3-apexcharts";
 
 const route = useRoute()
