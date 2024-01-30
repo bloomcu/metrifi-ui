@@ -71,34 +71,13 @@
             <AppInput v-model="activeStep.measurables[1]" class="mb-2" placeholder="Enter a page path..."/>
             <AppInput v-model="activeStep.measurables[3]" class="mb-2" placeholder="Enter a page path..."/>
           </div>
-
           <!-- <pre>{{ activeStep }}</pre> -->
         </div>
       </aside>
 
       <!-- Chart -->
-      <div class="mx-auto w-full max-w-6xl px-10">
+      <div class="mx-auto w-full max-w-6xl p-10">
         <Chart/>
-
-        <!-- <ApexChart v-if="chart" style="width: 1200px;" class="block" type="bar" :options="chart.options" :series="chart.series"></ApexChart> -->
-        <!-- Vanilla bar chart Source: https://codepen.io/robstinson/pen/ZEpKvjM?editors=1000 -->
-        <!-- <div class="flex-1 p-2">
-          <div class="flex items-end flex-grow w-full pt-6 space-x-2 sm:space-x-3">
-            <div v-for="step in funnel.steps" class="relative flex flex-col items-center flex-grow pb-5 group">
-              <span class="absolute top-0 hidden -mt-6 text-xs font-bold group-hover:block">{{ step.total ? step.total : 'Loading...' }}</span>
-              <div 
-                style="height: 100%;"
-              class="relative flex justify-center w-full bg-indigo-600 rounded"></div>
-              <span class="absolute bottom-0 text-xs font-bold">{{ step.name }}</span>
-            </div>
-            <div class="relative flex flex-col items-center flex-grow pb-5 group">
-              <span class="absolute top-0 hidden -mt-6 text-xs font-bold group-hover:block">$45,000</span>
-              <div style="height: 400px;" class="relative flex justify-center w-full h-20 bg-indigo-600 rounded"></div>
-              <span class="absolute bottom-0 text-xs font-bold">Feb</span>
-            </div>
-          </div>
-        </div> -->
-
         <!-- <pre>{{ funnel }}</pre> -->
       </div>
     </div>
@@ -116,7 +95,6 @@ import { Bars2Icon, QueueListIcon } from '@heroicons/vue/24/outline'
 import { PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
-import ApexChart from "vue3-apexcharts";
 
 const route = useRoute()
 // const funnel = ref()
@@ -139,51 +117,12 @@ function runReport() {
       // console.log(response.data.data)
       let report = response.data.data
       step.total = report.totals[0].metricValues[0].value
-
-      chart.value = {
-        options: {
-          colors: ['#4f46e5'],
-          plotOptions: {
-            bar: {
-              horizontal: false,
-              columnWidth: "70%",
-              borderRadiusApplication: "end",
-              borderRadius: 12,
-            },
-          },
-          chart: {
-            id: 'funnel',
-            animations: {
-              enabled: true,
-              easing: 'easein',
-              speed: 600,
-              animateGradually: {
-                  enabled: true,
-                  delay: 150
-              },
-              dynamicAnimation: {
-                  enabled: false,
-                  speed: 350
-              }
-            },
-          },
-          xaxis: {
-            categories: funnel.value.steps.map(step => step.name),  
-          }
-        },
-        series: [
-          {
-            name: 'Page views',
-            data: funnel.value.steps.map(step => step.total)
-          }
-        ]
-      }
     })
   })
 }
 
 onMounted(() => {
-  
+  // runReport()
 
   // funnelApi.show(route.params.organization, route.params.funnel).then(response => {
   //   funnel.value = response.data.data
@@ -264,9 +203,6 @@ function addStep() {
     ]
   })
 }
-
-const chart = ref()
-
 </script>
 
 <style lang="scss">
