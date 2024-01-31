@@ -4,13 +4,16 @@
     spellcheck="false" 
     @keydown.enter="handleKeydownEnter($event)"
     @blur="handleBlur($event)"
-    class="cursor-text"
+    class="group flex items-center gap-2 w-fit cursor-text rounded-md border-0 px-1.5 py-1.5 text-gray-900 hover:ring-2 focus:ring-2 placeholder:text-gray-400 hover:ring-indigo-600 focus:ring-indigo-600"
   >
     <slot/>
+    <PencilIcon class="h-3 w-3 shrink-0 text-indigo-600 invisible group-hover:visible"/>
   </div>
 </template>
 
 <script setup>
+import { PencilIcon } from '@heroicons/vue/24/solid'
+
 const emit = defineEmits(['updated'])
 
 const props = defineProps({
