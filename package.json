@@ -25,6 +25,7 @@
     "pinia": "^2.0.14",
     "pusher-js": "^7.5.0",
     "vue": "^3.2.25",
+    "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.0.15",
     "zxcvbn": "^4.4.2"
   },
