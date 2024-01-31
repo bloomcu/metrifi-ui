@@ -22,7 +22,7 @@
           <td class="whitespace-nowrap py-4 pl-4 pr-6 text-sm text-gray-500">
             <div class="flex-auto">
               <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
-              <p v-if="funnel.description" class="text-sm leading-5 text-gray-400">{{ funnel.description }}</p>
+              <p class="text-sm leading-5 text-gray-400">{{ funnel.steps.length }} steps</p>
             </div>
           </td>
 
