@@ -1,7 +1,15 @@
 <template>
   <LayoutDefault v-if="funnel"  width="full" class="min-h-screen flex flex-col">
     <header class="border-b p-3 flex items-center justify-between">
-      Header
+      <!-- Header -->
+      <div class="flex items-center gap-3">
+        <AppButton :to="{name: 'funnels'}" variant="tertiary" size="base">
+          <ArrowLeftIcon class="h-5 w-5 shrink-0" />
+        </AppButton>
+
+        <AppInput v-model="funnel.name"/>
+      </div>
+
       <div class="flex items-center gap-3">
         <AppSelect 
           v-model="zoom" 
@@ -12,7 +20,7 @@
             {label: 'Zoom: High', value: 120},
           ]"
         />
-        <AppButton @click="saveFunnel()" :loading="saving" variant="secondary">Save Funnel</AppButton>
+        <AppButton @click="updateFunnel()" :loading="saving" variant="secondary">Save Funnel</AppButton>
         <AppButton @click="runReport()">Run Report</AppButton>
       </div>
     </header>
@@ -23,7 +31,7 @@
       <nav class="w-[25rem] border-r">
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
-          <p>Funnel steps</p>  
+          <p>Steps</p>
           <button @click.stop="addStep()" type="button" class="group inline-flex items-center rounded-md p-1 text-white bg-indigo-600 hover:bg-indigo-500 active:translate-y-px">
             <PlusIcon class="h-5 w-5 shrink-0" />
           </button>
@@ -36,7 +44,7 @@
             :animation="150"
             class="flex flex-col gap-3"
           >
-            <div v-for="(step, index) in funnel.steps" @click="activeStepId = step.id" class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer text-gray-700 bg-white border hover:text-indigo-600 hover:bg-gray-50">
+            <div v-for="(step, index) in funnel.steps" @click="activeStepId = step.id" class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer border border-gray-200 text-gray-700 bg-white hover:text-indigo-600 hover:bg-gray-50">
               <div class="flex items-center gap-x-2">
                 <Bars2Icon class="h-4 w-4 shrink-0 cursor-grab text-gray-400 group-hover:text-indigo-600" />
                 <span class="inline-flex items-center rounded-md bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">{{ index + 1 }}</span>
@@ -51,10 +59,10 @@
         </div>
         
         <!-- Empty state -->
-        <div v-else @click="addStep()" class="text-center bg-slate-50 hover:bg-slate-100 rounded-2xl py-12 px-2 cursor-pointer">
-          <QueueListIcon class="mx-auto h-6 w-6 text-indigo-600" aria-hidden="true" />
-          <p class="mt-2 text-md font-medium text-gray-900">No steps</p>
-          <AppButton variant="link">Add step</AppButton>
+        <div v-else class="py-12 text-center">
+          <QueueListIcon class="mx-auto mb-2 h-6 w-6 text-indigo-600" aria-hidden="true" />
+          <p class="mb-3 text-md font-medium text-gray-900">No steps</p>
+          <AppButton @click="addStep()" :loading="saving" variant="secondary">Add step</AppButton>
         </div>
       </nav>
 
@@ -70,8 +78,6 @@
 
         <!-- Options -->
         <div class="flex flex-col gap-4 p-3">
-          <AppInput v-model="activeStep.name" label="Step name" placeholder="Enter a step name..." />
-
           <AppSelect 
             v-model="activeStep.metric" 
             label="Metric"
@@ -82,6 +88,8 @@
               {label: 'Form submissions', value: 'formSubmission'},
             ]"
           />
+
+          <AppInput v-model="activeStep.name" label="Step name" placeholder="Enter a step name..." />
 
           <div>
             <p class="block mb-1 text-sm font-medium text-gray-900">Measurables</p>
@@ -110,14 +118,15 @@
 </template>
   
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { Bars2Icon, QueueListIcon } from '@heroicons/vue/24/outline'
-import { PlusIcon, XMarkIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
+import { ArrowLeftIcon, PlusIcon, XMarkIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
+import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
 const route = useRoute()
@@ -143,7 +152,9 @@ function addStep() {
     name: 'New step',
     description: null,
   }).then(response => {
-    funnel.value.steps.push(response.data.data)
+    let step = response.data.data
+    funnel.value.steps.push(step)
+    activeStepId.value = step.id
   })
 }
 
@@ -158,11 +169,17 @@ function updateStep(step) {
   })
 }
 
-function saveFunnel() {
-  console.log('Saving funnel...')
-
+function updateFunnel() {
+  console.log('Updating funnel...')
   saving.value = true
 
+  // Update the funnel
+  funnelApi.update(route.params.organization, route.params.funnel, {
+    name: funnel.value.name,
+    description: funnel.value.description,
+  })
+
+  // Update funnel steps
   funnel.value.steps.forEach((step) => {
     updateStep(step)
   })
@@ -174,14 +191,14 @@ function destroyStep(index, id) {
   console.log('Destroying step...')
 
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
-    .then(response => {
+    .then(() => {
       funnel.value.steps.splice(index, 1)
     })
 }
 
 function runReport() {
   console.log('Running report...')
-  
+
   loading.value = true
 
   funnel.value.steps.forEach((step) => {
@@ -191,7 +208,7 @@ function runReport() {
       return
     }
 
-    gaDataApi.fetchPageViews(6, {
+    gaDataApi.fetchPageViews(1, {
       startDate: '2024-01-22',
       endDate: 'yesterday',
       pagePaths: step.measurables,
@@ -213,7 +230,6 @@ onMounted(() => {
 
   funnelApi.show(route.params.organization, route.params.funnel).then(response => {
     funnel.value = response.data.data
-
     runReport()
   })
 })
