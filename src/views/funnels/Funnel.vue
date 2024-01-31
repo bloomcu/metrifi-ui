@@ -12,6 +12,7 @@
             {label: 'Zoom: High', value: 120},
           ]"
         />
+        <AppButton @click="saveFunnel()" :loading="saving" variant="secondary">Save Funnel</AppButton>
         <AppButton @click="runReport()">Run Report</AppButton>
       </div>
     </header>
@@ -23,7 +24,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
           <p>Funnel steps</p>  
-          <button @click="addStep()" type="button" class="group inline-flex items-center rounded-md p-1 text-white bg-indigo-600 hover:bg-indigo-500 active:translate-y-px">
+          <button @click.stop="addStep()" type="button" class="group inline-flex items-center rounded-md p-1 text-white bg-indigo-600 hover:bg-indigo-500 active:translate-y-px">
             <PlusIcon class="h-5 w-5 shrink-0" />
           </button>
         </div>
@@ -35,14 +36,14 @@
             :animation="150"
             class="flex flex-col gap-3"
           >
-            <div v-for="(step, index) in funnel.steps" @click="activeStepIndex = index" class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer text-gray-700 bg-white border hover:text-indigo-600 hover:bg-gray-50">
+            <div v-for="(step, index) in funnel.steps" @click="activeStepId = step.id" class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer text-gray-700 bg-white border hover:text-indigo-600 hover:bg-gray-50">
               <div class="flex items-center gap-x-2">
                 <Bars2Icon class="h-4 w-4 shrink-0 cursor-grab text-gray-400 group-hover:text-indigo-600" />
                 <span class="inline-flex items-center rounded-md bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">{{ index + 1 }}</span>
                 <p>{{ step.name }}</p>
               </div>
               
-              <button @click="removeStep(index)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-red-500 hover:bg-red-100 group-hover:visible active:translate-y-px">
+              <button @click.stop="destroyStep(index, step.id)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-red-500 hover:bg-red-100 group-hover:visible active:translate-y-px">
                 <XMarkIcon class="h-5 w-5 shrink-0" />
               </button>
             </div>
@@ -62,7 +63,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
           <p>{{ activeStep.name }}</p>  
-          <button @click="activeStepIndex = null" type="button" class="group inline-flex items-center rounded-md p-1 bg-gray-100 hover:bg-gray-150 active:translate-y-px">
+          <button @click="activeStepId = null" type="button" class="group inline-flex items-center rounded-md p-1 bg-gray-100 hover:bg-gray-150 active:translate-y-px">
             <ChevronLeftIcon class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-indigo-600" />
           </button>
         </div>
@@ -109,7 +110,7 @@
 </template>
   
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
@@ -122,44 +123,74 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const route = useRoute()
 
 const loading = ref(true)
-// const funnel = ref()
-// const activeStepId = ref()
-// const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
+const saving = ref(false)
+const funnel = ref()
 
-const activeStepIndex = ref()
-const activeStep = computed(() => funnel.value.steps[activeStepIndex.value])
+const activeStepId = ref()
+const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
+
+// const activeStepIndex = ref()
+// const activeStep = computed(() => funnel.value.steps[activeStepIndex.value])
 
 const metric = 'Page views'
 const zoom = ref(0);
 
 function addStep() {
-  funnel.value.steps.push({
+  console.log('Adding step...')
+
+  funnelApi.storeStep(route.params.organization, route.params.funnel, {
     metric: 'pageViews',
     name: 'New step',
     description: null,
-    measurables: [
-      ''
-    ],
-    total: '0'
+  }).then(response => {
+    funnel.value.steps.push(response.data.data)
   })
-
-// funnelApi.storeStep(route.params.organization, route.params.funnel, {
-//   metric: 'pageViews',
-//   name: 'New step',
-//   description: null,
-// }).then(response => {
-//   funnel.value.steps.push(response.data.data)
-// })
 }
 
-function removeStep(index) {
-  funnel.value.steps.splice(index, 1)
+function updateStep(step) {
+  console.log('Updating step...')
+
+  funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
+    metric: step.metric,
+    name: step.name,
+    description: step.description,
+    measurables: step.measurables,
+  })
+}
+
+function saveFunnel() {
+  console.log('Saving funnel...')
+
+  saving.value = true
+
+  funnel.value.steps.forEach((step) => {
+    updateStep(step)
+  })
+
+  setTimeout(() => saving.value = false, 2000);
+}
+
+function destroyStep(index, id) {
+  console.log('Destroying step...')
+
+  funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
+    .then(response => {
+      funnel.value.steps.splice(index, 1)
+    })
 }
 
 function runReport() {
+  console.log('Running report...')
+  
   loading.value = true
 
   funnel.value.steps.forEach((step) => {
+     // TODO: This can be removed if we validate runReport to only run if there are measurables in each step
+    if (!step.measurables.length) { 
+      step.total = '0'
+      return
+    }
+
     gaDataApi.fetchPageViews(6, {
       startDate: '2024-01-22',
       endDate: 'yesterday',
@@ -169,8 +200,6 @@ function runReport() {
         console.log(response.data.data.error)
         return
       }
-      
-      // Update step total
       let report = response.data.data
       step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : '0'
     })
@@ -179,73 +208,75 @@ function runReport() {
   loading.value = false
 }
 
-const funnel = ref({
-  id: 1,
-  user: {
-    id: 1,
-    name: 'Ryan Harmon',
-    email: 'john@doe.com',
-    role: 'admin',
-    created_at: '2024-01-23T23:47:12.000000Z'
-  },
-  connection: null,
-  name: 'New funnel',
-  description: 'This is the funnel descriptions',
-  steps: [
-    // {
-    //   id: 1,
-    //   order: 1,
-    //   metric: 'pageViews',
-    //   name: 'Homepage',
-    //   description: null,
-    //   measurables: [
-    //     '/',
-    //   ],
-    //   total: '0'
-    // },
-    {
-      id: 2,
-      order: 2,
-      metric: 'pageViews',
-      name: 'Loans',
-      description: null,
-      measurables: [
-        '/personal/loans/',
-      ],
-      total: '0'
-    },
-    {
-      id: 3,
-      order: 3,
-      metric: 'pageViews',
-      name: 'Auto Loan',
-      description: null,
-      measurables: [
-        '/personal/loans/vehicle/auto-loans/',
-      ],
-      total: '0'
-    },
-    // {
-    //   id: 4,
-    //   order: 4,
-    //   metric: 'pageViews',
-    //   name: 'Application',
-    //   description: null,
-    //   measurables: [
-    //     '/personal/loans/vehicle/auto-loans/application/'
-    //   ],
-    //   total: '0'
-    // },
-  ]
-})
-
 onMounted(() => {
-  runReport()
+  // runReport()
 
-  // funnelApi.show(route.params.organization, route.params.funnel).then(response => {
-  //   funnel.value = response.data.data
-  // })
+  funnelApi.show(route.params.organization, route.params.funnel).then(response => {
+    funnel.value = response.data.data
+
+    runReport()
+  })
 })
+
+// const funnel = ref({
+//   id: 1,
+//   user: {
+//     id: 1,
+//     name: 'Ryan Harmon',
+//     email: 'john@doe.com',
+//     role: 'admin',
+//     created_at: '2024-01-23T23:47:12.000000Z'
+//   },
+//   connection: null,
+//   name: 'New funnel',
+//   description: 'This is the funnel descriptions',
+//   steps: [
+//     // {
+//     //   id: 1,
+//     //   order: 1,
+//     //   metric: 'pageViews',
+//     //   name: 'Homepage',
+//     //   description: null,
+//     //   measurables: [
+//     //     '/',
+//     //   ],
+//     //   total: '0'
+//     // },
+//     {
+//       id: 2,
+//       order: 2,
+//       metric: 'pageViews',
+//       name: 'Loans',
+//       description: null,
+//       measurables: [
+//         '/personal/loans/',
+//       ],
+//       total: '0'
+//     },
+//     {
+//       id: 3,
+//       order: 3,
+//       metric: 'pageViews',
+//       name: 'Auto Loan',
+//       description: null,
+//       measurables: [
+//         '/personal/loans/vehicle/auto-loans/',
+//       ],
+//       total: '0'
+//     },
+//     // {
+//     //   id: 4,
+//     //   order: 4,
+//     //   metric: 'pageViews',
+//     //   name: 'Application',
+//     //   description: null,
+//     //   measurables: [
+//     //     '/personal/loans/vehicle/auto-loans/application/'
+//     //   ],
+//     //   total: '0'
+//     // },
+//   ]
+// })
 </script>
 
 <style lang="scss">

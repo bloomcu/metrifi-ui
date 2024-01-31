@@ -14,11 +14,10 @@ const props = defineProps({
   //   type: Number,
   // },
   value: {
-    type: Number,
     default: 0,
   },
   max: {
-    type: Number,
+    default: 0,
   },
   zoom: '',
   // max: {
@@ -27,9 +26,17 @@ const props = defineProps({
 })
 
 const height = computed(() => {
-  if (props.value === props.max) return 1
-  if (props.zoom > 0) return props.value / props.max * props.zoom
-  return props.value / props.max
+  let h = props.value / props.max
+
+  if (props.zoom > 0) {
+    h = props.value / props.max * props.zoom
+  }
+
+  if (h > 1 || props.value === props.max) {
+    h = 1
+  }
+
+  return h
 })
 </script>
 

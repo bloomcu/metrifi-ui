@@ -61,6 +61,27 @@ const funnelApi = {
     async storeStep(organization, id, step) {
         return await HttpClient.post(`/${organization}/funnels/${id}/steps`, step)
     },
+
+    /**
+     * Update a step
+     *
+     * @param Integer id [Id of the funnel you want to update]
+     * @param Object  funnel [Properties to update funnel with]
+     * @return promise
+     */
+    async updateStep(organization, funnelId, stepId, step) {
+        return await HttpClient.put(`/${organization}/funnels/${funnelId}/steps/${stepId}`, step)
+    },
+
+    /**
+     * Destroy a funnel step
+     *
+     * @param Integer id [Id of the file you want to destroy]
+     * @return promise
+     */
+    async destroyStep(organization, funnelId, stepId) {
+        return await HttpClient.delete(`/${organization}/funnels/${funnelId}/steps/${stepId}`)
+    },
 }
 
 export { funnelApi }
