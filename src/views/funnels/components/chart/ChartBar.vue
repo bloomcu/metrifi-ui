@@ -13,19 +13,19 @@ const props = defineProps({
   // height: {
   //   type: Number,
   // },
-  value: {
-    default: 0,
-  },
-  max: {
-    default: 0,
-  },
-  zoom: '',
+  value: 0,
+  max: 0,
+  zoom: 0,
   // max: {
   //   type: Number,
   // },
 })
 
 const height = computed(() => {
+  if (props.value === 0) {
+    return 0
+  } 
+
   let h = props.value / props.max
 
   if (props.zoom > 0) {
