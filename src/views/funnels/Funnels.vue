@@ -2,7 +2,8 @@
   <LayoutWithSidebar>
     <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Funnels</h1>
-      <AppButton @click="storeNewFunnel">Create Funnel</AppButton>
+      <!-- <AppButton @click="storeNewFunnel">Create Funnel</AppButton> -->
+      <AppButton @click="toggleModal()">Generate Funnel</AppButton>
     </template>
 
     <!-- Funnels -->
@@ -51,6 +52,8 @@
       <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels</h2>
       <p class="mt-1 text-gray-500">Get started by creating a funnel.</p>
     </div>
+
+    <CreateFunnelModal :open="isModalOpen"/>
   </LayoutWithSidebar>
 </template>
 
@@ -61,19 +64,25 @@ import { useRoute, useRouter } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { FunnelIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
+import CreateFunnelModal from '@/views/funnels/modals/CreateFunnelModal.vue'
 
 const route = useRoute()
 const router = useRouter()
+const isModalOpen = ref(false)
 const funnels = ref()
 
-function storeNewFunnel() {
-  funnelApi.store(route.params.organization, {
-    name: 'New funnel',
-    description: 'This is the funnel descriptions'
-  }).then(response => {
-    let funnel = response.data.data
-    router.push({ name: 'funnel', params: { funnel: funnel.id } })
-  })
+// function storeNewFunnel() {
+//   funnelApi.store(route.params.organization, {
+//     name: 'New funnel',
+//     description: 'This is the funnel descriptions'
+//   }).then(response => {
+//     let funnel = response.data.data
+//     router.push({ name: 'funnel', params: { funnel: funnel.id } })
+//   })
+// }
+
+function toggleModal() { 
+  isModalOpen.value = !isModalOpen.value 
 }
 
 onMounted(() => {

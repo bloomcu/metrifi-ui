@@ -2,6 +2,16 @@ import { httpClient as HttpClient } from '@/app/api/base/httpClient'
 
 const funnelApi = {
     /**
+     * Generate a funnel
+     *
+     * @param Object params [Key/value params to query by]
+     * @return promise
+     */
+    async generate(organization, connection, params) {
+        return await HttpClient.get(`/${organization}/generate/${connection}`, { params: params })
+    },
+
+    /**
      * List funnels
      *
      * @param Object params [Key/value params to query by]
