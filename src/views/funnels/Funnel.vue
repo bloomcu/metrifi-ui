@@ -62,7 +62,7 @@
         <div v-else class="py-12 text-center">
           <QueueListIcon class="mx-auto mb-2 h-6 w-6 text-indigo-600" aria-hidden="true" />
           <p class="mb-3 text-md font-medium text-gray-900">No steps</p>
-          <AppButton @click="addStep()" :loading="saving" variant="secondary">Add step</AppButton>
+          <AppButton @click="addStep()" :loading="saving" variant="secondary">Add Step</AppButton>
         </div>
       </nav>
 
