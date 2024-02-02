@@ -118,6 +118,7 @@
 </template>
   
 <script setup>
+import moment from 'moment'
 import { ref, computed, onMounted } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useRoute } from 'vue-router'
@@ -209,7 +210,7 @@ function runReport() {
     }
 
     gaDataApi.fetchPageViews(1, {
-      startDate: '2024-01-22',
+      startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
       endDate: 'yesterday',
       pagePaths: step.measurables,
     }).then(response => {
