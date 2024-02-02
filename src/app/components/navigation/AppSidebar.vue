@@ -119,7 +119,7 @@
             <li class="mt-auto">
               <Menu as="div" class="-mx-2 space-y-1">
                 <MenuButton class="flex items-center gap-x-4 p-2 w-full text-sm font-medium leading-6 text-gray-900 rounded-md hover:bg-gray-50">
-                  <img class="h-8 w-8 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                  <Avatar :name="auth.user.name" size="sm"/>
                   <span>{{ auth.user.name }}</span>
                 </MenuButton>
                 <transition enter-active-class="transition ease-out duration-200" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
@@ -152,6 +152,7 @@
 
 <script setup>
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
+import Avatar from '@/app/components/base/avatars/Avatar.vue'
 
 const auth = useAuthStore()
 const emit = defineEmits(['close'])
