@@ -24,7 +24,7 @@ const props = defineProps({
 const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
-const input = ref('/personal/loans/home/home-equity-loans/')
+const input = ref('')
 
 function generate() {
   loading.value = true
