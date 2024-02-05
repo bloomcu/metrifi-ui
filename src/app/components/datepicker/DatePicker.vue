@@ -18,9 +18,9 @@
 
 <script setup>
 import moment from 'moment'
-import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
+import { useDateRange } from '@/app/composables/useDateRange'
 import { CalendarIcon } from '@heroicons/vue/24/outline'
 import Dropdown from '@/views/dashboard/components/Dropdown.vue'
 
-const { dateRangeOptions, selectedDateRange, selectDateRange } = useDatePicker()
+const { dateRangeOptions, selectedDateRange, selectDateRange } = useDateRange()
 </script>

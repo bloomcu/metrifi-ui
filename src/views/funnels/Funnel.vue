@@ -130,7 +130,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
-import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
+import { useDateRange } from '@/app/composables/useDateRange'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
@@ -141,7 +141,7 @@ import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
-const { selectedDateRange } = useDatePicker()
+const { selectedDateRange } = useDateRange()
 const route = useRoute()
 
 const loading = ref(true)

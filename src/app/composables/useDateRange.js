@@ -10,7 +10,7 @@ const dateRangeOptions = [
 
 const selectedDateRange = ref(dateRangeOptions[1])
 
-export const useDatePicker = () => {
+export const useDateRange = () => {
 
   const selectDateRange = (dateRange) => {
     selectedDateRange.value = dateRange
