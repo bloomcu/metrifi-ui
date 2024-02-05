@@ -4,34 +4,15 @@
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Explore</h1>
 
       <div v-if="connections && connections.length" class="flex items-center gap-2">
-        <!-- Connections -->
-        <Dropdown class="w-60">
-          <template #title>
-            <div class="flex items-center">
-              <svg class="w-5 h-5 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
-              {{ selectedConnection ? selectedConnection.name : 'Loading...' }}
-            </div>
-          </template>
-          <button v-for="connection in connections" @click="selectedConnection = connection" :class="selectedConnection == connection ? 'bg-gray-50 text-indigo-600' : ''" class="w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
-            {{ connection.name }}
-          </button>
-        </Dropdown>
+        <!-- Connection -->
+        <ConnectionPicker :connections="connections" :selected="selectedConnection" @selected="selectedConnection = $event"/>
 
-        <!-- Date range -->
-        <Dropdown>
-          <template #title>
-            <CalendarIcon  class="mr-2 h-5 w-5" />
-            {{ selectedDateRange.label }} 
-            <span class="text-gray-400 font-normal ml-1">({{ moment(selectedDateRange.startDate).format('MMM DD, YYYY') }} - {{ selectedDateRange.endDate }})</span>
-          </template>
-          <button v-for="dateRange in dateRangeOptions" @click="selectedDateRange = dateRange" :class="selectedDateRange == dateRange ? 'bg-gray-50 text-indigo-600' : ''" class="w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
-            {{ dateRange.label }}
-          </button>
-        </Dropdown>
+        <!-- Datepicker -->
+        <DatePicker />
 
         <!-- Export -->
         <AppButton variant="tertiary" size="base" @click="downloadCSV()" class="inline-flex items-center">
-          <DocumentArrowDownIcon class="mr-1 h-5 w-5"/>
+          <DocumentArrowDownIcon class="mr-1.5 h-5 w-5"/>
           Export
         </AppButton>
       </div>
@@ -131,14 +112,15 @@
 </template>
 
 <script setup>
-import moment from 'moment'
-import { ref, toRaw, watch, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
-import { CalendarIcon, EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
-import Dropdown from '@/views/dashboard/components/Dropdown.vue'
+import ConnectionPicker from '@/domain/connections/components/ConnectionPicker.vue'
+import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 
 const route = useRoute()
 const loading = ref(true)
@@ -146,16 +128,7 @@ const connections = ref()
 const report = ref()
 
 const selectedConnection = ref()
-
-const dateRangeOptions = ref([
-  {label: 'Yesterday',    startDate: moment().subtract(1, 'days').format('YYYY-MM-DD'),  endDate: 'yesterday'},
-  {label: 'This week',    startDate: moment().startOf('week').format('YYYY-MM-DD'),      endDate: 'today'},
-  // {label: 'Last week',    startDate: moment().subtract(1, 'weeks').format('YYYY-MM-DD'), endDate: 'yesterday'},
-  {label: 'Last 7 days',  startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),  endDate: 'yesterday'},
-  {label: 'Last 28 days', startDate: moment().subtract(28, 'days').format('YYYY-MM-DD'), endDate: 'yesterday'},
-])
-
-const selectedDateRange = ref(dateRangeOptions.value[2])
+const { selectedDateRange } = useDatePicker()
 
 const requests = ref([
   { 
@@ -182,21 +155,22 @@ function runReport() {
   }
 }
 
-watch(selectedConnection, (connection) => {
+watch(selectedConnection, () => {
+  console.log('Connection changed...')
   runReport()
 })
 
-watch(selectedDateRange, (dateRange) => {
+watch(selectedDateRange, () => {
+  console.log('Date range changed...')
   runReport()
 })
 
-watch(selectedRequest, (report) => {
+watch(selectedRequest, () => {
+  console.log('Request changed...')
   runReport()
 })
 
 onMounted(() => {
-  // if (route.params.connection) {}
-
   connectionApi.index(route.params.organization).then(response => {
     connections.value = response.data.data
     selectedConnection.value = response.data.data[0]
