@@ -1,14 +1,21 @@
 <template>
-    <div class="flex-1 flex text-sm font-bold">{{ name }}</div>
+    <div class="flex-1 flex text-sm font-bold text-ellipsis">{{ formattedName }}</div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
-  // index: {
-  //   type: Number,
-  // },
   name: {
     type: String,
   },
+})
+
+const formattedName = computed(() => {
+  let name = props.name
+
+  if (name.length > 18) name = '...' + name.slice(-18)
+
+  return name
 })
 </script>
