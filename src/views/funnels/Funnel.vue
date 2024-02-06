@@ -131,18 +131,29 @@
 
       <!-- Right: Chart -->
       <div v-if="!isLoading" class="mx-auto w-full max-w-6xl overflow-hidden p-10">
-        <Chart 
-          :metric="metric" 
-          :zoom="zoom"
-          :labels="funnel.steps.map(step => step.name)"
-          :data="funnel.steps.map(step => Number(step.total))"
-          :conversions="conversions"
-        />
+        <div class="flex gap-6">
+          <Chart 
+            :metric="metric" 
+            :zoom="zoom"
+            :labels="funnel.steps.map(step => step.name)"
+            :data="funnel.steps.map(step => Number(step.total))"
+            :conversions="conversions"
+          />
+
+          <!-- Overall -->
+          <div class="w-[20rem]">
+            <div class="flex flex-col gap-1 text-center rounded-md bg-indigo-50 p-4">
+              <p>Overall</p>
+              <span class="text-3xl font-medium">{{ overallConversionRate }}</span>
+              <p>conversion rate</p>
+            </div>
+          </div>
+        </div>
 
         <!-- <pre>{{ funnel }}</pre> -->
       </div>
     </div>
-    {{ conversions }}
+
     <!-- TODO: Add loading state -->
 
     <GenerateFunnelModal :open="isModalOpen" @done="runReport()"/>
@@ -176,6 +187,7 @@ const isSaving = ref(false)
 
 const funnel = ref()
 const conversions = ref([])
+const overallConversionRate = ref()
 
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
@@ -189,25 +201,28 @@ const metric = 'Page views'
 const zoom = ref(0);
 
 function calculateConversions() {
-
   let steps = funnel.value.steps
 
+  // Build array of conversion rates
   conversions.value = [] // Reset conversions
   conversions.value.push('') // Add 100% conversion rate for first step
-
   steps.forEach((step, index) => {
     let stepTotal = step.total
     let nextStepTotal = steps[index + 1]?.total
-    let conversionRate = (nextStepTotal / stepTotal) * 100
-
+    let conversionRate = (nextStepTotal / stepTotal)
     if (!conversionRate || conversionRate === Infinity) {
       conversionRate = 0
     }
-    
-    conversions.value.push(conversionRate.toFixed(1) + '%')
+    conversions.value.push(conversionRate.toFixed(4) * 100 + '%')
   })
-
   conversions.value.pop() // Remove last conversion rate
+
+  // Calculate overall conversion rate
+  console.log(`(${steps[steps.length - 1].total} / ${steps[0].total})`)
+
+  let ocr = (steps[steps.length - 1].total / steps[0].total)
+
+  overallConversionRate.value = ocr.toFixed(4) * 100 + '%'
 }
 
 function addStep() {
