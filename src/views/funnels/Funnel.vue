@@ -64,6 +64,7 @@
           <VueDraggableNext 
             :list="funnel.steps" 
             :animation="150"
+            @change="calculateConversions()"
             class="flex flex-col gap-3"
           >
             <div 
@@ -135,7 +136,9 @@
           :zoom="zoom"
           :labels="funnel.steps.map(step => step.name)"
           :data="funnel.steps.map(step => Number(step.total))"
+          :conversions="conversions"
         />
+
         <!-- <pre>{{ funnel }}</pre> -->
       </div>
     </div>
@@ -172,6 +175,7 @@ const isReporting = ref(false)
 const isSaving = ref(false)
 
 const funnel = ref()
+const conversions = ref([])
 
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
@@ -183,6 +187,25 @@ const automationStep = ref(null)
 
 const metric = 'Page views'
 const zoom = ref(0);
+
+function calculateConversions() {
+
+  let steps = funnel.value.steps
+
+  // Reset conversions
+  conversions.value = []
+  conversions.value.push('100%')
+
+  steps.forEach((step, index) => {
+    let stepTotal = step.total
+    let nextStepTotal = steps[index + 1]?.total
+    let conversionRate = (nextStepTotal / stepTotal) * 100
+
+    if (conversionRate) {
+      conversions.value.push(conversionRate.toFixed(1) + '%')
+    }
+  })
+}
 
 function addStep() {
   console.log('Adding step...')
@@ -269,6 +292,7 @@ function runReport() {
         if (stepsProcessed === funnel.value.steps.length) {
           isReporting.value = false
           stepsProcessed = 0
+          calculateConversions()
         }
       })
     })
