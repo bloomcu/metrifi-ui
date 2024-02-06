@@ -33,7 +33,7 @@
         <div class="flex">
             <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
-                <div v-for="conversion in conversions" class="flex-1 flex text-sm">{{ conversion }} Conversions</div>
+                <div v-for="conversion in conversions" class="flex-1 flex text-sm">{{ conversion ? conversion + 'Conversions' : '' }}</div>
             </div>
         </div>
     </div>

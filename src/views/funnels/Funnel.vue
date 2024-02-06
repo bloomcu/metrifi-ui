@@ -142,7 +142,7 @@
         <!-- <pre>{{ funnel }}</pre> -->
       </div>
     </div>
-
+    {{ conversions }}
     <!-- TODO: Add loading state -->
 
     <GenerateFunnelModal :open="isModalOpen" @done="runReport()"/>
@@ -192,8 +192,8 @@ function calculateConversions() {
 
   let steps = funnel.value.steps
 
-  // Reset conversions
-  conversions.value = []
+  conversions.value = [] // Reset conversions
+  conversions.value.push('') // Add 100% conversion rate for first step
 
   steps.forEach((step, index) => {
     let stepTotal = step.total
@@ -206,6 +206,8 @@ function calculateConversions() {
     
     conversions.value.push(conversionRate.toFixed(1) + '%')
   })
+
+  conversions.value.pop() // Remove last conversion rate
 }
 
 function addStep() {
