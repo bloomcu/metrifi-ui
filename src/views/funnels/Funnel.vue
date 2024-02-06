@@ -199,9 +199,12 @@ function calculateConversions() {
     let stepTotal = step.total
     let nextStepTotal = steps[index + 1]?.total
     let conversionRate = (nextStepTotal / stepTotal) * 100
-        conversionRate = conversionRate ? conversionRate.toFixed(1) + '%' : '0%'
+
+    if (!conversionRate || conversionRate === Infinity) {
+      conversionRate = 0
+    }
     
-    conversions.value.push(conversionRate)
+    conversions.value.push(conversionRate.toFixed(1) + '%')
   })
 }
 
