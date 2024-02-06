@@ -21,7 +21,7 @@
 
         <!-- Zoom -->
         <AppSelect 
-          v-model="zoom" 
+          v-model="funnel.zoom" 
           :options="[
             {label: 'No zoom', value: 0},
             {label: 'Zoom: Low', value: 40},
@@ -134,7 +134,7 @@
         <div class="flex gap-6">
           <Chart 
             :metric="metric" 
-            :zoom="zoom"
+            :zoom="funnel.zoom"
             :labels="funnel.steps.map(step => step.name)"
             :data="funnel.steps.map(step => Number(step.total))"
             :conversions="conversions"
@@ -260,6 +260,7 @@ function saveFunnel() {
   funnelApi.update(route.params.organization, route.params.funnel, {
     name: funnel.value.name,
     description: funnel.value.description,
+    zoom: funnel.value.zoom,
   })
 
   // Update funnel steps
