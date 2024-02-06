@@ -30,7 +30,7 @@
           ]"
         />
 
-        <AppButton @click="updateFunnel()" :loading="isSaving" variant="secondary">Save Funnel</AppButton>
+        <AppButton @click="saveFunnel()" :loading="isSaving" variant="secondary">Save Funnel</AppButton>
         <AppButton @click="runReport()" :loading="isReporting">Run Report</AppButton>
       </div>
     </header>
@@ -219,6 +219,8 @@ function addStep() {
     let step = response.data.data
     funnel.value.steps.push(step)
     activeStepId.value = step.id
+
+    calculateConversions()
   })
 }
 
@@ -233,7 +235,7 @@ function updateStep(step) {
   })
 }
 
-function updateFunnel() {
+function saveFunnel() {
   console.log('Updating funnel...')
   isSaving.value = true
 
@@ -257,6 +259,7 @@ function destroyStep(index, id) {
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
       funnel.value.steps.splice(index, 1)
+      calculateConversions()
     })
 }
 
