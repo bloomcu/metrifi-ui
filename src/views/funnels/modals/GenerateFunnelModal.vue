@@ -6,8 +6,15 @@
   >
     <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Generate funnel steps</h3>
 
-    <form v-if="!isAutomating" action="#" @submit.prevent="runAutomation()" class="flex flex-col gap-3">
-      <AppInput v-model="input" label="Terminal page path" placeholder="e.g., /personal/loans/home/mortgage/" required />
+    <form v-if="!isAutomating" action="#" @submit.prevent="runAutomation()" class="flex flex-col gap-4">
+      <AppInput v-model="input" label="Terminal page path" required />
+      
+      <div class="border border-gray-200 p-3 rounded-md">
+        <p class="mb-2 text-xs text-gray-900">Run an example</p>
+        <span @click="input = '/personal/loans/home/loans-for-home-buying/'" class="inline-flex items-center rounded-md cursor-pointer bg-purple-50 px-2 py-1 mb-1.5 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10 hover:bg-purple-100">/personal/loans/home/loans-for-home-buying/</span>
+        <span @click="input = '/personal/loans/vehicle/auto-loans/'" class="inline-flex items-center rounded-md cursor-pointer bg-purple-50 px-2 py-1 mb-1.5 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10 hover:bg-purple-100">/personal/loans/vehicle/auto-loans/</span>
+      </div>
+
       <AppButton :loading="loading" class="w-full">Generate</AppButton>
     </form>
 
@@ -106,7 +113,7 @@ const steps = [
 
 const route = useRoute()
 const loading = ref(false)
-const input = ref('/personal/loans/home/mortgage/')
+const input = ref('')
 
 const funnel = inject('funnel')
 const isModalOpen = inject('isModalOpen')
