@@ -14,29 +14,26 @@
         <div class="h-[10px]" />
 
         <!-- Label: E.g., "Homepage" -->
-        <div class="flex">
-            <div class="flex-[0.5]" />
+        <div class="flex mb-0.5">
+            <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
                 <ChartLabel v-for="(label, index) in labels" :name="label" />
             </div>
         </div>
 
         <!-- Metric: E.g., "1,000 Page views" -->
-        <div class="flex">
-            <div class="flex-[0.5]" />
+        <div class="flex mb-0.5">
+            <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
-                <span v-for="value in data" class="flex-1 flex justify-center text-sm">{{ value ? value.toLocaleString() : 0 }} Page views</span>
+                <div v-for="value in data" class="flex-1 flex text-sm">{{ value ? value.toLocaleString() : 0 }} Page views</div>
             </div>
         </div>
 
         <!-- Conversion rate: E.g., "100%" -->
         <div class="flex">
-            <div class="flex-[0.5]" />
+            <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
-                <template v-for="(conversion, index) in conversions">
-                    <span v-if="index == 0" class="flex-1 flex justify-center text-sm"></span>
-                    <span v-else class="flex-1 flex justify-center text-sm">Conversion rate: {{ conversion }}</span>
-                </template>
+                <div v-for="conversion in conversions" class="flex-1 flex text-sm">{{ conversion }} Conversions</div>
             </div>
         </div>
     </div>

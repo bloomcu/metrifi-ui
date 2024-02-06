@@ -1,5 +1,5 @@
 <template>
-    <div class="flex-1 flex justify-center text-sm">{{ name }}</div>
+    <div class="flex-1 flex text-sm font-bold">{{ name }}</div>
 </template>
 
 <script setup>

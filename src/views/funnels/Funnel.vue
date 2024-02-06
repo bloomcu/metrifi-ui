@@ -194,16 +194,14 @@ function calculateConversions() {
 
   // Reset conversions
   conversions.value = []
-  conversions.value.push('100%')
 
   steps.forEach((step, index) => {
     let stepTotal = step.total
     let nextStepTotal = steps[index + 1]?.total
     let conversionRate = (nextStepTotal / stepTotal) * 100
-
-    if (conversionRate) {
-      conversions.value.push(conversionRate.toFixed(1) + '%')
-    }
+        conversionRate = conversionRate ? conversionRate.toFixed(1) + '%' : '0%'
+    
+    conversions.value.push(conversionRate)
   })
 }
 
