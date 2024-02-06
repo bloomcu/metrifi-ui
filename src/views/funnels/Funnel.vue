@@ -201,6 +201,8 @@ const metric = 'Page views'
 const zoom = ref(0);
 
 function calculateConversions() {
+  if (!funnel.value.steps.length) return
+
   let steps = funnel.value.steps
 
   // Build array of conversion rates
@@ -210,18 +212,13 @@ function calculateConversions() {
     let stepTotal = step.total
     let nextStepTotal = steps[index + 1]?.total
     let conversionRate = (nextStepTotal / stepTotal)
-    if (!conversionRate || conversionRate === Infinity) {
-      conversionRate = 0
-    }
+    if (!conversionRate || conversionRate === Infinity) conversionRate = 0
     conversions.value.push(conversionRate.toFixed(4) * 100 + '%')
   })
   conversions.value.pop() // Remove last conversion rate
 
   // Calculate overall conversion rate
-  console.log(`(${steps[steps.length - 1].total} / ${steps[0].total})`)
-
   let ocr = (steps[steps.length - 1].total / steps[0].total)
-
   overallConversionRate.value = ocr.toFixed(4) * 100 + '%'
 }
 
