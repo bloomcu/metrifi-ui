@@ -189,8 +189,8 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
-  { name: 'Explore', to: { name: 'dashboard' }, icon: ChartBarIcon},
   { name: 'Funnels', to: { name: 'funnels'}, icon: FunnelIcon},
+  { name: 'Explore', to: { name: 'dashboard' }, icon: ChartBarIcon},
   { name: 'Connections', to: { name: 'connections'}, icon: CloudIcon},
   // { name: 'Sites', to: { name: 'sites'}, icon: FolderIcon},
   { name: 'Settings', to: { name: 'settings'}, icon: Cog6ToothIcon},

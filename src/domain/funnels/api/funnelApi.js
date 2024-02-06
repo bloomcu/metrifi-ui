@@ -2,16 +2,6 @@ import { httpClient as HttpClient } from '@/app/api/base/httpClient'
 
 const funnelApi = {
     /**
-     * Generate a funnel
-     *
-     * @param Object params [Key/value params to query by]
-     * @return promise
-     */
-    async generate(organization, connection, params) {
-        return await HttpClient.get(`/${organization}/generate/${connection}`, { params: params })
-    },
-
-    /**
      * List funnels
      *
      * @param Object params [Key/value params to query by]
@@ -91,6 +81,36 @@ const funnelApi = {
      */
     async destroyStep(organization, funnelId, stepId) {
         return await HttpClient.delete(`/${organization}/funnels/${funnelId}/steps/${stepId}`)
+    },
+
+    /**
+     * Generate a funnel
+     *
+     * @param Object params [Key/value params to query by]
+     * @return promise
+     */
+    async generate(organization, connection, params) {
+        return await HttpClient.get(`/${organization}/generate/${connection}`, { params: params })
+    },
+
+    /**
+     * Segment a terminal page path
+     *
+     * @param Object args
+     * @return promise
+     */
+    async segmentTerminalPagePath(organization, funnel, params) {
+        return await HttpClient.get(`/${organization}/funnels/${funnel}/automations/segment-terminal-page-path`, { params: params })
+    },
+
+    /**
+     * Validate page paths
+     *
+     * @param Object args
+     * @return promise
+     */
+    async validatePagePaths(organization, funnel, params) {
+        return await HttpClient.get(`/${organization}/funnels/${funnel}/automations/validate-page-paths`, { params: params })
     },
 }
 

@@ -1,7 +1,7 @@
 <template>
   <LayoutDefault v-if="funnel"  width="full" class="min-h-screen flex flex-col">
+    <!-- Header -->
     <header class="border-b p-3 flex items-center justify-between">
-      <!-- Header -->
       <div class="flex items-center gap-3">
         <AppButton :to="{name: 'funnels'}" variant="tertiary" size="base">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
@@ -30,8 +30,8 @@
           ]"
         />
 
-        <AppButton @click="updateFunnel()" :loading="saving" variant="secondary">Save Funnel</AppButton>
-        <AppButton @click="runReport()">Run Report</AppButton>
+        <AppButton @click="updateFunnel()" :loading="isSaving" variant="secondary">Save Funnel</AppButton>
+        <AppButton @click="runReport()" :loading="isReporting">Run Report</AppButton>
       </div>
     </header>
 
@@ -42,9 +42,21 @@
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
           <p>Steps</p>
-          <button @click.stop="addStep()" type="button" class="group inline-flex items-center rounded-md p-1 text-white bg-indigo-600 hover:bg-indigo-500 active:translate-y-px">
-            <PlusIcon class="h-5 w-5 shrink-0" />
-          </button>
+
+          <div class="flex gap-2">
+            <button @click.stop="toggleModal()" type="button" class="group inline-flex items-center gap-1 rounded-md py-1 px-2 text-sm text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:translate-y-px">
+              <svg v-if="isAutomating" aria-hidden="true" role="status" class="w-4 h-4 mr-1 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+              </svg>
+              <BoltIcon v-else class="h-5 w-5 shrink-0" />
+              {{ isAutomating ? `Step ${automationStep} of 2` : 'Ai Generate' }}
+            </button>
+            
+            <button @click.stop="addStep()" type="button" class="group inline-flex items-center rounded-md p-1 text-white bg-indigo-600 hover:bg-indigo-700 active:translate-y-px">
+              <PlusIcon class="h-5 w-5 shrink-0" />
+            </button>
+          </div>
         </div>
 
         <!-- Steps -->
@@ -54,7 +66,12 @@
             :animation="150"
             class="flex flex-col gap-3"
           >
-            <div v-for="(step, index) in funnel.steps" @click="activeStepId = step.id" class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer border border-gray-200 text-gray-700 bg-white hover:text-indigo-600 hover:bg-gray-50">
+            <div 
+              v-for="(step, index) in funnel.steps" 
+              @click="activeStepId = step.id" 
+              :class="activeStepId == step.id ? 'border-indigo-500 border-2 bg-indigo-50' : 'border-gray-200 bg-white hover:bg-gray-50'"
+              class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer border text-gray-700 hover:text-indigo-600"
+            >
               <div class="flex items-center gap-x-2">
                 <Bars2Icon class="h-4 w-4 shrink-0 cursor-grab text-gray-400 group-hover:text-indigo-600" />
                 <span class="inline-flex items-center rounded-md bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">{{ index + 1 }}</span>
@@ -62,7 +79,7 @@
               </div>
               
               <button @click.stop="destroyStep(index, step.id)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-red-500 hover:bg-red-100 group-hover:visible active:translate-y-px">
-                <XMarkIcon class="h-5 w-5 shrink-0" />
+                <TrashIcon class="h-5 w-5 shrink-0" />
               </button>
             </div>
           </VueDraggableNext>
@@ -72,7 +89,7 @@
         <div v-else class="py-12 text-center">
           <QueueListIcon class="mx-auto mb-2 h-6 w-6 text-indigo-600" aria-hidden="true" />
           <p class="mb-3 text-md font-medium text-gray-900">No steps</p>
-          <AppButton @click="addStep()" :loading="saving" variant="secondary">Add Step</AppButton>
+          <!-- <AppButton @click="addStep()" :loading="isSaving" variant="secondary">Add Step</AppButton> -->
         </div>
       </nav>
 
@@ -112,7 +129,7 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div v-if="!loading" class="mx-auto w-full max-w-6xl overflow-hidden p-10">
+      <div v-if="!isLoading" class="mx-auto w-full max-w-6xl overflow-hidden p-10">
         <Chart 
           :metric="metric" 
           :zoom="zoom"
@@ -124,19 +141,23 @@
     </div>
 
     <!-- TODO: Add loading state -->
+
+    <GenerateFunnelModal :open="isModalOpen" @done="runReport()"/>
   </LayoutDefault>
 </template>
   
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, provide } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useDateRange } from '@/app/composables/useDateRange'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { Bars2Icon, QueueListIcon } from '@heroicons/vue/24/outline'
-import { ArrowLeftIcon, PlusIcon, XMarkIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
+import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
+import { TrashIcon, BoltIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
+import GenerateFunnelModal from '@/views/funnels/modals/GenerateFunnelModal.vue'
 import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
@@ -144,13 +165,18 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const { selectedDateRange } = useDateRange()
 const route = useRoute()
 
-const loading = ref(true)
-const saving = ref(false)
+const isAutomating = ref(false)
+const isModalOpen = ref(false)
+const isLoading = ref(false)
+const isReporting = ref(false)
+const isSaving = ref(false)
 
 const funnel = ref()
 
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
+
+const automationStep = ref(null)
 
 // const activeStepIndex = ref()
 // const activeStep = computed(() => funnel.value.steps[activeStepIndex.value])
@@ -185,7 +211,7 @@ function updateStep(step) {
 
 function updateFunnel() {
   console.log('Updating funnel...')
-  saving.value = true
+  isSaving.value = true
 
   // Update the funnel
   funnelApi.update(route.params.organization, route.params.funnel, {
@@ -198,7 +224,7 @@ function updateFunnel() {
     updateStep(step)
   })
 
-  setTimeout(() => saving.value = false, 2000);
+  setTimeout(() => isSaving.value = false, 2000);
 }
 
 function destroyStep(index, id) {
@@ -210,33 +236,45 @@ function destroyStep(index, id) {
     })
 }
 
+function toggleModal() { 
+  isModalOpen.value = !isModalOpen.value 
+}
+
 function runReport() {
-  console.log('Running report...')
+  let stepsProcessed = 0
+  isReporting.value = true
 
-  loading.value = true
-
-  funnel.value.steps.forEach((step) => {
-     // TODO: This can be removed if we validate runReport to only run if there are measurables in each step
-    if (!step.measurables.length) { 
-      step.total = '0'
-      return
-    }
-
-    gaDataApi.fetchPageViews(1, {
-      startDate: selectedDateRange.value.startDate,
-      endDate: selectedDateRange.value.endDate,
-      pagePaths: step.measurables,
-    }).then(response => {
-      if (response.data.data.error) {
-        console.log(response.data.data.error)
+  if (funnel.value.steps.length) {
+    funnel.value.steps.forEach((step) => {
+      // TODO: This can be removed if we validate runReport to only run if there are measurables in each step
+      if (!step.measurables.length) { 
+        step.total = '0'
         return
       }
-      let report = response.data.data
-      step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : '0'
-    })
-  })
 
-  loading.value = false
+      gaDataApi.fetchPageViews(funnel.value.connection.id, {
+        startDate: selectedDateRange.value.startDate,
+        endDate: selectedDateRange.value.endDate,
+        pagePaths: step.measurables,
+      }).then(response => {
+        if (response.data.data.error) {
+          console.log(response.data.data.error)
+          return
+        }
+
+        let report = response.data.data
+        step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : '0'
+        stepsProcessed++;
+        
+        if (stepsProcessed === funnel.value.steps.length) {
+          isReporting.value = false
+          stepsProcessed = 0
+        }
+      })
+    })
+  } else {
+    isReporting.value = false
+  }
 }
 
 watch(selectedDateRange, () => {
@@ -250,6 +288,11 @@ onMounted(() => {
     runReport()
   })
 })
+
+provide('funnel', funnel)
+provide('isAutomating', isAutomating)
+provide('automationStep', automationStep)
+provide('isModalOpen', isModalOpen)
 
 // const funnel = ref({
 //   id: 1,

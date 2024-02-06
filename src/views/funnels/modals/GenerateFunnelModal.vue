@@ -1,0 +1,156 @@
+<template>
+  <AppModal 
+    size="md"
+    @closed="isModalOpen = false" 
+    :open="isModalOpen"
+  >
+    <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Generate funnel steps</h3>
+
+    <form v-if="!isAutomating" action="#" @submit.prevent="runAutomation()" class="flex flex-col gap-3">
+      <AppInput v-model="input" label="Terminal page path" placeholder="e.g., /personal/loans/home/mortgage/" required />
+      <AppButton :loading="loading" class="w-full">Generate</AppButton>
+    </form>
+
+    <div v-else>
+      <nav class="mb-6">
+        <ol role="list" class="overflow-hidden">
+          <li v-for="(step, stepIdx) in steps" :key="step.name" :class="[stepIdx !== steps.length - 1 ? 'pb-10' : '', 'relative']">
+
+            <template v-if="step.status === 'complete'">
+              <div v-if="stepIdx !== steps.length - 1" class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-indigo-600" aria-hidden="true" />
+              <div class="group relative flex items-start">
+                <span class="flex h-9 items-center">
+                  <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600">
+                    <CheckIcon class="h-5 w-5 text-white" aria-hidden="true" />
+                  </span>
+                </span>
+                <span class="ml-4 flex min-w-0 flex-col">
+                  <span class="text-sm font-medium">{{ step.name }}</span>
+                  <span class="text-sm text-gray-500">{{ step.description }}</span>
+                </span>
+              </div>
+            </template>
+
+            <template v-else-if="step.status === 'current'">
+              <div v-if="stepIdx !== steps.length - 1" class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300" aria-hidden="true" />
+              <div class="group relative flex items-start" aria-current="step">
+                <span class="flex h-9 items-center" aria-hidden="true">
+                  <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-indigo-600 bg-white">
+                    <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600">
+                      <svg aria-hidden="true" role="status" class="h-5 w-5 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
+                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+                      </svg>
+                    </span>
+                  </span>
+                </span>
+                <span class="ml-4 flex min-w-0 flex-col">
+                  <span class="text-sm font-medium text-indigo-600">{{ step.name }}</span>
+                  <span class="text-sm text-gray-500">{{ step.description }}</span>
+                </span>
+              </div>
+            </template>
+
+            <template v-else>
+              <div v-if="stepIdx !== steps.length - 1" class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300" aria-hidden="true" />
+              <div class="group relative flex items-start">
+                <span class="flex h-9 items-center" aria-hidden="true">
+                  <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-white">
+                    <span class="h-2.5 w-2.5 rounded-full bg-transparent" />
+                  </span>
+                </span>
+                <span class="ml-4 flex min-w-0 flex-col">
+                  <span class="text-sm font-medium text-gray-500">{{ step.name }}</span>
+                  <span class="text-sm text-gray-500">{{ step.description }}</span>
+                </span>
+              </div>
+            </template>
+
+          </li>
+        </ol>
+      </nav>
+
+      <AppButton @click="isModalOpen = false" variant="secondary" class="w-full">Close</AppButton>
+    </div>
+  </AppModal>
+</template>
+
+<script setup>
+import { ref, inject } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { CheckIcon } from '@heroicons/vue/20/solid'
+import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
+
+const steps = [
+{ 
+    name: 'Running automation', 
+    description: 'Ai is generating steps for this funnel.', 
+    status: 'current' 
+  },
+  // { 
+  //   name: 'Segmenting', 
+  //   description: 'Ai is segmenting the terminal page path.', 
+  //   status: 'current' 
+  // },
+  // {
+  //   name: 'Verifying',
+  //   description: 'Ai is verifying segmented page paths.',
+  //   status: 'upcoming',
+  // },
+  // { 
+  //   name: 'Complete', 
+  //   description: 'Funnel steps have been generated.', 
+  //   status: 'upcoming' 
+  // }
+]
+
+const route = useRoute()
+const loading = ref(false)
+const input = ref('/personal/loans/home/mortgage/')
+
+const funnel = inject('funnel')
+const isModalOpen = inject('isModalOpen')
+const isAutomating = inject('isAutomating')
+const automationStep = inject('automationStep')
+
+function runAutomation() {
+  isModalOpen.value = false
+  isAutomating.value = true
+  automationStep.value = 1
+
+  funnelApi.segmentTerminalPagePath(route.params.organization, route.params.funnel, {
+    terminalPagePath: input.value
+  }).then(response1 => {
+    automationStep.value = 2
+    console.log(response1.data.pagePaths)
+    
+    funnelApi.validatePagePaths(route.params.organization, route.params.funnel, {
+      pagePaths: response1.data.pagePaths
+    }).then(response2 => {
+      response2.data.pagePaths.forEach(pagePath => {
+        addStep(pagePath)
+      })
+
+      setTimeout(() => {
+        isAutomating.value = false
+        automationStep.value = null
+        emit('done')
+      }, 1000);
+    })
+  })
+}
+
+function addStep(measurable) {
+  console.log('Adding step with measurable: ', measurable)
+
+  funnelApi.storeStep(route.params.organization, route.params.funnel, {
+    metric: 'pageViews',
+    name: measurable,
+    measurables: [measurable],
+  }).then(response => {
+    funnel.value.steps.push(response.data.data)
+  })
+}
+
+const emit = defineEmits(['done'])
+</script>
