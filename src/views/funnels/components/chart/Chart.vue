@@ -25,7 +25,7 @@
         <div class="flex mb-0.5">
             <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
-                <div v-for="value in data" class="flex-1 flex text-sm">{{ value ? value.toLocaleString() : 0 }} Page views</div>
+                <div v-for="value in data" class="flex-1 flex text-sm">{{ value ? value.toLocaleString() : 0 }} page views</div>
             </div>
         </div>
 
@@ -33,7 +33,7 @@
         <div class="flex">
             <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
-                <div v-for="conversion in conversions" class="flex-1 flex text-sm">{{ conversion ? conversion + ' Conversions' : '' }}</div>
+                <div v-for="conversion in conversions" class="flex-1 flex text-sm">{{ conversion ? conversion + ' conversion' : '' }}</div>
             </div>
         </div>
     </div>
