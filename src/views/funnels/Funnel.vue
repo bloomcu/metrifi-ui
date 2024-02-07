@@ -156,7 +156,7 @@
 
     <!-- TODO: Add loading state -->
 
-    <GenerateFunnelModal :open="isModalOpen" @done="runReport()"/>
+    <GenerateFunnelModal :open="isModalOpen" @done="loadFunnel()"/>
   </LayoutDefault>
 </template>
   
@@ -314,15 +314,19 @@ function runReport() {
   isReporting.value = false
 }
 
-watch(selectedDateRange, () => {
-  runReport()
-})
-
-onMounted(() => {
+function loadFunnel() {
   funnelApi.show(route.params.organization, route.params.funnel).then(response => {
     funnel.value = response.data.data
     runReport()
   })
+}
+
+onMounted(() => {
+  loadFunnel()
+})
+
+watch(selectedDateRange, () => {
+  runReport()
 })
 
 provide('funnel', funnel)

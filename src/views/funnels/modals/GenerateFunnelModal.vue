@@ -135,9 +135,11 @@ function runAutomation() {
             addStep(pagePath, index + 1)
           })
 
-          isAutomating.value = false
-          automationStep.value = null
-          emit('done')
+          setTimeout(() => {
+            isAutomating.value = false
+            automationStep.value = null
+            emit('done')
+          }, 2000)
         })
   })
 }
@@ -148,8 +150,6 @@ function addStep(measurable, order) {
     order: order,
     name: measurable,
     measurables: [measurable],
-  }).then(response => {
-    funnel.value.steps.push(response.data.data)
   })
 }
 
