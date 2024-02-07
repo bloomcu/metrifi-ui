@@ -84,7 +84,7 @@
 
 <script setup>
 import { ref, inject } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { CheckIcon } from '@heroicons/vue/20/solid'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 
@@ -128,30 +128,24 @@ function runAutomation() {
   funnelApi.segmentTerminalPagePath(route.params.organization, route.params.funnel, {terminalPagePath: input.value})
     .then(response1 => {
       automationStep.value = 2
-      // console.log('Segmentor pagePaths:', response1.data.pagePaths)
       
       funnelApi.validatePagePaths(route.params.organization, route.params.funnel, {pagePaths: response1.data.pagePaths})
         .then(response2 => {
-          // console.log('Validator pagePaths:', response2.data.pagePaths)
-
-          response2.data.pagePaths.forEach(pagePath => {
-            addStep(pagePath)
+          response2.data.pagePaths.forEach((pagePath, index) => {
+            addStep(pagePath, index + 1)
           })
 
-          setTimeout(() => {
-            isAutomating.value = false
-            automationStep.value = null
-            emit('done')
-          }, 1000);
+          isAutomating.value = false
+          automationStep.value = null
+          emit('done')
         })
   })
 }
 
-function addStep(measurable) {
-  console.log('Adding step with measurable: ', measurable)
-
+function addStep(measurable, order) {
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     metric: 'pageViews',
+    order: order,
     name: measurable,
     measurables: [measurable],
   }).then(response => {

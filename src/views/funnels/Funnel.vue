@@ -64,7 +64,7 @@
           <VueDraggableNext 
             :list="funnel.steps" 
             :animation="150"
-            @change="calculateConversions()"
+            @change="handleDragEvent($event)"
             class="flex flex-col gap-3"
           >
             <div 
@@ -194,11 +194,20 @@ const activeStep = computed(() => funnel.value.steps.find(step => step.id === ac
 
 const automationStep = ref(null)
 
-// const activeStepIndex = ref()
-// const activeStep = computed(() => funnel.value.steps[activeStepIndex.value])
-
 const metric = 'Page views'
-const zoom = ref(0);
+
+function handleDragEvent(e) {
+  isSaving.value = true
+  let event = e.moved || e.added
+
+  funnelApi.updateStep(route.params.organization, route.params.funnel, event.element.id, {
+    order: event.newIndex + 1
+  }).then(() => {
+    setTimeout(() => isSaving.value = false, 500)
+  })
+
+  calculateConversions()
+}
 
 function calculateConversions() {
   if (!funnel.value.steps.length) return
@@ -223,34 +232,17 @@ function calculateConversions() {
 }
 
 function addStep() {
-  console.log('Adding step...')
-
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     metric: 'pageViews',
     name: 'New step',
     description: null,
   }).then(response => {
-    let step = response.data.data
-    funnel.value.steps.push(step)
-    activeStepId.value = step.id
-
+    funnel.value.steps.push(response.data.data)
     calculateConversions()
   })
 }
 
-function updateStep(step) {
-  console.log('Updating step...')
-
-  funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
-    metric: step.metric,
-    name: step.name,
-    description: step.description,
-    measurables: step.measurables,
-  })
-}
-
 function saveFunnel() {
-  console.log('Updating funnel...')
   isSaving.value = true
 
   // Update the funnel
@@ -262,15 +254,18 @@ function saveFunnel() {
 
   // Update funnel steps
   funnel.value.steps.forEach((step) => {
-    updateStep(step)
+    funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
+      metric: step.metric,
+      name: step.name,
+      description: step.description,
+      measurables: step.measurables,
+    })
   })
 
-  setTimeout(() => isSaving.value = false, 2000);
+  setTimeout(() => isSaving.value = false, 800);
 }
 
 function destroyStep(index, id) {
-  console.log('Destroying step...')
-
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
       funnel.value.steps.splice(index, 1)
@@ -283,45 +278,43 @@ function toggleModal() {
 }
 
 function runReport() {
-  let stepsProcessed = 0
-  isReporting.value = true
+  if (!funnel.value.steps.length) return
 
-  if (funnel.value.steps.length) {
-    funnel.value.steps.forEach((step) => {
-      // TODO: This can be removed if we validate runReport to only run if there are measurables in each step
-      if (!step.measurables.length) { 
-        step.total = '0'
+  isReporting.value = true
+  let stepsProcessed = 0
+
+  funnel.value.steps.forEach((step) => {
+    if (!step.measurables.length) { 
+      step.total = '0'
+      return
+    }
+
+    gaDataApi.fetchPageViews(funnel.value.connection.id, {
+      startDate: selectedDateRange.value.startDate,
+      endDate: selectedDateRange.value.endDate,
+      pagePaths: step.measurables,
+    }).then(response => {
+      if (response.data.data.error) {
+        console.log(response.data.data.error)
         return
       }
 
-      gaDataApi.fetchPageViews(funnel.value.connection.id, {
-        startDate: selectedDateRange.value.startDate,
-        endDate: selectedDateRange.value.endDate,
-        pagePaths: step.measurables,
-      }).then(response => {
-        if (response.data.data.error) {
-          console.log(response.data.data.error)
-          return
-        }
-
-        let report = response.data.data
-        step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : '0'
-        stepsProcessed++;
-        
-        if (stepsProcessed === funnel.value.steps.length) {
-          isReporting.value = false
-          stepsProcessed = 0
-          calculateConversions()
-        }
-      })
+      let report = response.data.data
+      step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : '0'
+      stepsProcessed++;
+      
+      if (stepsProcessed === funnel.value.steps.length) {
+        isReporting.value = false
+        stepsProcessed = 0
+        calculateConversions()
+      }
     })
-  } else {
-    isReporting.value = false
-  }
+  })
+
+  isReporting.value = false
 }
 
 watch(selectedDateRange, () => {
-  console.log('Date range changed...')
   runReport()
 })
 
@@ -397,18 +390,3 @@ provide('isModalOpen', isModalOpen)
 //   ]
 // })
 </script>
-
-<style lang="scss">
-.draggable-ghost {
-  border-radius: 10px;
-  // height: 52px;
-  
-  * { 
-    visibility: hidden; 
-  }
-}
-
-.draggable-drag { 
-  opacity: 0.5;
-}
-</style>
