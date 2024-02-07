@@ -125,25 +125,25 @@ function runAutomation() {
   isAutomating.value = true
   automationStep.value = 1
 
-  funnelApi.segmentTerminalPagePath(route.params.organization, route.params.funnel, {
-    terminalPagePath: input.value
-  }).then(response1 => {
-    automationStep.value = 2
-    console.log(response1.data.pagePaths)
-    
-    funnelApi.validatePagePaths(route.params.organization, route.params.funnel, {
-      pagePaths: response1.data.pagePaths
-    }).then(response2 => {
-      response2.data.pagePaths.forEach(pagePath => {
-        addStep(pagePath)
-      })
+  funnelApi.segmentTerminalPagePath(route.params.organization, route.params.funnel, {terminalPagePath: input.value})
+    .then(response1 => {
+      automationStep.value = 2
+      // console.log('Segmentor pagePaths:', response1.data.pagePaths)
+      
+      funnelApi.validatePagePaths(route.params.organization, route.params.funnel, {pagePaths: response1.data.pagePaths})
+        .then(response2 => {
+          // console.log('Validator pagePaths:', response2.data.pagePaths)
 
-      setTimeout(() => {
-        isAutomating.value = false
-        automationStep.value = null
-        emit('done')
-      }, 1000);
-    })
+          response2.data.pagePaths.forEach(pagePath => {
+            addStep(pagePath)
+          })
+
+          setTimeout(() => {
+            isAutomating.value = false
+            automationStep.value = null
+            emit('done')
+          }, 1000);
+        })
   })
 }
 

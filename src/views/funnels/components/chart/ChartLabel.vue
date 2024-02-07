@@ -1,5 +1,5 @@
 <template>
-    <div class="flex-1 flex text-sm font-bold text-ellipsis">{{ formattedName }}</div>
+    <div class="flex-1 flex text-sm font-bold">{{ formattedName }}</div>
 </template>
 
 <script setup>
