@@ -54,9 +54,10 @@
               {{ isAutomating ? `Step ${automationStep} of 2` : 'Generate with AI' }}
             </button>
             
-            <button @click.stop="addStep()" type="button" class="group inline-flex items-center rounded-md p-1 text-white bg-indigo-600 hover:bg-indigo-700 active:translate-y-px">
+            <button @click.stop="addStep()" type="button" class="inline-flex items-center rounded-md p-1 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
             </button>
+
           </div>
         </div>
 
@@ -99,9 +100,8 @@
       <aside v-if="activeStep" class="min-w-[24rem] border-r">
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
-          <p>{{ activeStep.name }}</p>  
-          <button @click="activeStepId = null" type="button" class="group inline-flex items-center rounded-md p-1 bg-gray-50 hover:bg-gray-100 active:translate-y-px">
-            <ChevronLeftIcon class="h-5 w-5 shrink-0 text-gray-500 group-hover:text-indigo-600" />
+          <button @click="activeStepId = null" type="button" class="inline-flex items-center rounded-md p-1 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
+            <ChevronLeftIcon class="h-5 w-5 shrink-0" />
           </button>
         </div>
 
@@ -124,8 +124,8 @@
             </div>
 
             <!-- Add measurable -->
-            <button @click="addMeasurable(activeStep)" type="button" class="group inline-flex items-center rounded-md p-1 bg-gray-50 hover:bg-gray-100 active:translate-y-px">
-              <PlusIcon class="h-5 w-5 shrink-0 text-gray-500 group-hover:text-indigo-600" />
+            <button @click="addMeasurable(activeStep)" type="button" class="inline-flex items-center rounded-md p-1 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
+              <PlusIcon class="h-5 w-5 shrink-0" />
             </button>
 
             <!-- <pre>{{ activeStep }}</pre> -->
