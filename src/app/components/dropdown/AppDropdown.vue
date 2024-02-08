@@ -2,7 +2,7 @@
     <div class="relative" @click="toggle">
         <button 
             :class="`${baseClasses} ${variantClasses} ${sizeClasses}`"
-            class="flex items-center justify-between w-full cursor-pointer font-medium rounded-md px-3 py-2 text-sm active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none focus-visible:outline-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 text-gray-900 bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 shadow-sm"
+            class="flex items-center justify-between w-full cursor-pointer rounded-md px-3 py-2 text-sm active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none focus-visible:outline-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 text-gray-900 bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 shadow-sm"
         >
             <slot name="title">{{ title }}</slot>
         </button>
@@ -32,7 +32,6 @@ provide("isOpen", isOpen);
 
 const baseClasses = `
   cursor-pointer
-  font-medium 
   rounded-md
   active:translate-y-px
   disabled:pointer-events-none
