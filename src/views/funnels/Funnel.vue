@@ -113,7 +113,7 @@
             <p class="block mb-1 text-sm font-medium text-gray-900">Measurables</p>
 
             <!-- Measurable -->
-            <div v-for="(m, index) in activeStep.measurables" class="group bg-gray-50 rounded-md p-2 mb-3">
+            <div v-for="(m, index) in activeStep.measurables" class="group bg-gray-50 rounded-md p-2 mb-2">
               <div class="flex flex-row items-center justify-between mb-2">
                 <MetricPicker v-model="m.metric" @update:modelValue="updateStep(activeStep)"/>
                 <button @click="deleteMeasurable(index)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-red-500 hover:bg-red-100 group-hover:visible active:translate-y-px">
@@ -127,6 +127,8 @@
             <button @click="addMeasurable(activeStep)" type="button" class="group inline-flex items-center rounded-md p-1 bg-gray-50 hover:bg-gray-100 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0 text-gray-500 group-hover:text-indigo-600" />
             </button>
+
+            <!-- <pre>{{ activeStep }}</pre> -->
           </div>
         </div>
       </aside>
@@ -331,22 +333,25 @@ function runReport() {
   isReporting.value = true
   let stepsProcessed = 0
 
+  // Iterate each step
   funnel.value.steps.forEach((step) => {
     if (!step.measurables.length) { 
       step.total = '0'
       return
     }
 
+    // Hit GA
     gaDataApi.fetchPageViews(funnel.value.connection.id, {
       startDate: selectedDateRange.value.startDate,
       endDate: selectedDateRange.value.endDate,
-      pagePaths: step.measurables,
+      pagePaths: step.measurables.map(measurable => measurable.measurable),
     }).then(response => {
       if (response.data.data.error) {
         console.log(response.data.data.error)
         return
       }
 
+      // Set total for this step
       let report = response.data.data
       step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : '0'
       stepsProcessed++;
@@ -356,8 +361,8 @@ function runReport() {
         stepsProcessed = 0
         calculateConversions()
       }
-    })
-  })
+    }) // End GA request
+  }) // End foreach on funnel steps
 
   isReporting.value = false
 }
