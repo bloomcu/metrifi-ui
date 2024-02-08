@@ -1,5 +1,5 @@
 <template>
-    <Dropdown>
+    <AppDropdown>
       <template #title>
         <CalendarIcon  class="mr-1.5 h-5 w-5" />
         {{ selectedDateRange.label }} 
@@ -13,14 +13,14 @@
       >
         {{ option.label }}
       </button>
-    </Dropdown>
+    </AppDropdown>
 </template>
 
 <script setup>
 import moment from 'moment'
-import { useDateRange } from '@/app/composables/useDateRange'
+import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { CalendarIcon } from '@heroicons/vue/24/outline'
-import Dropdown from '@/views/dashboard/components/Dropdown.vue'
+import AppDropdown from '@/app/components/dropdown/AppDropdown.vue'
 
-const { dateRangeOptions, selectedDateRange, selectDateRange } = useDateRange()
+const { dateRangeOptions, selectedDateRange, selectDateRange } = useDatePicker()
 </script>

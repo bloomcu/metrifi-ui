@@ -113,7 +113,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import { useDateRange } from '@/app/composables/useDateRange'
+import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
@@ -128,7 +128,7 @@ const connections = ref()
 const report = ref()
 
 const selectedConnection = ref()
-const { selectedDateRange } = useDateRange()
+const { selectedDateRange } = useDatePicker()
 
 const requests = ref([
   { 
