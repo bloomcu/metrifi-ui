@@ -39,7 +39,7 @@
     <div class="flex-1 flex flex-col sm:flex-row">
 
       <!-- Left: Funnel steps -->
-      <nav class="w-[25rem] border-r">
+      <nav class="min-w-[20rem] border-r">
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
           <p>Steps</p>
@@ -96,37 +96,38 @@
       </nav>
 
       <!-- Center: Active Step -->
-      <aside v-if="activeStep" class="w-[25rem] border-r">
+      <aside v-if="activeStep" class="min-w-[24rem] border-r">
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
           <p>{{ activeStep.name }}</p>  
-          <button @click="activeStepId = null" type="button" class="group inline-flex items-center rounded-md p-1 bg-gray-100 hover:bg-gray-150 active:translate-y-px">
-            <ChevronLeftIcon class="h-5 w-5 shrink-0 text-gray-400 group-hover:text-indigo-600" />
+          <button @click="activeStepId = null" type="button" class="group inline-flex items-center rounded-md p-1 bg-gray-50 hover:bg-gray-100 active:translate-y-px">
+            <ChevronLeftIcon class="h-5 w-5 shrink-0 text-gray-500 group-hover:text-indigo-600" />
           </button>
         </div>
 
         <!-- Options -->
         <div class="flex flex-col gap-4 p-3">
-          <AppSelect 
-            v-model="activeStep.metric" 
-            label="Metric"
-            :options="[
-              {label: 'Page views', value: 'pageViews'},
-              {label: 'Outbound link clicks', value: 'outboundLinkClick'},
-              {label: 'Element clicks', value: 'elementClick'},
-              {label: 'Form submissions', value: 'formSubmission'},
-            ]"
-          />
-
-          <AppInput v-model="activeStep.name" label="Step name" placeholder="Enter a step name..." />
+          <AppInput v-model="activeStep.name" @update:modelValue="updateStep(activeStep)" label="Step name" placeholder="Enter a step name..." />
 
           <div>
             <p class="block mb-1 text-sm font-medium text-gray-900">Measurables</p>
-            <AppInput v-model="activeStep.measurables[0]" placeholder="Enter a page path..." class="mb-2"/>
-            <AppInput v-model="activeStep.measurables[1]" placeholder="Enter a page path..." class="mb-2"/>
-            <AppInput v-model="activeStep.measurables[3]" placeholder="Enter a page path..." class="mb-2"/>
+
+            <!-- Measurable -->
+            <div v-for="(m, index) in activeStep.measurables" class="group bg-gray-50 rounded-md p-2 mb-3">
+              <div class="flex flex-row items-center justify-between mb-2">
+                <MetricPicker v-model="m.metric" @update:modelValue="updateStep(activeStep)"/>
+                <button @click="deleteMeasurable(index)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-red-500 hover:bg-red-100 group-hover:visible active:translate-y-px">
+                  <TrashIcon class="h-5 w-5 shrink-0" />
+                </button>
+              </div>
+              <AppInput v-model="m.measurable" @update:modelValue="updateStep(activeStep)" placeholder="Enter a page path..."/>
+            </div>
+
+            <!-- Add measurable -->
+            <button @click="addMeasurable(activeStep)" type="button" class="group inline-flex items-center rounded-md p-1 bg-gray-50 hover:bg-gray-100 active:translate-y-px">
+              <PlusIcon class="h-5 w-5 shrink-0 text-gray-500 group-hover:text-indigo-600" />
+            </button>
           </div>
-          <!-- <pre>{{ activeStep }}</pre> -->
         </div>
       </aside>
 
@@ -177,6 +178,7 @@ import GenerateFunnelModal from '@/views/funnels/modals/GenerateFunnelModal.vue'
 import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
+import MetricPicker from '@/views/funnels/components/metrics/MetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
 const { selectedDateRange } = useDatePicker()
@@ -236,13 +238,30 @@ function calculateConversions() {
 
 function addStep() {
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
-    metric: 'pageViews',
     name: 'New step',
     description: null,
+    measurables: [{
+      metric: 'pageViews', 
+      measurable: ''
+    }],
   }).then(response => {
     funnel.value.steps.push(response.data.data)
     calculateConversions()
   })
+}
+
+function addMeasurable(step) {
+  step.measurables.push({
+    metric: 'pageViews', 
+    measurable: ''
+  })
+
+  updateStep(activeStep.value)
+}
+
+function deleteMeasurable(index) {
+  activeStep.value.measurables.splice(index, 1)
+  updateStep(activeStep.value)
 }
 
 const updateFunnel = debounce(() => {
@@ -254,20 +273,20 @@ const updateFunnel = debounce(() => {
     description: funnel.value.description,
     zoom: funnel.value.zoom,
   }).then(() => {
-    setTimeout(() => isSaving.value = false, 1000);
+    setTimeout(() => isSaving.value = false, 800);
   })
 }, 800)
 
-const updateSteps = debounce(() => {
-  console.log('Updating steps...')
+const updateStep = debounce((step) => {
+  console.log('Updating step...')
   isSaving.value = true
 
-  funnelApi.update(route.params.organization, route.params.funnel, {
-    name: funnel.value.name,
-    description: funnel.value.description,
-    zoom: funnel.value.zoom,
+  funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
+    name: step.name,
+    description: step.description,
+    measurables: step.measurables,
   }).then(() => {
-    setTimeout(() => isSaving.value = false, 1000);
+    setTimeout(() => isSaving.value = false, 800);
   })
 }, 800)
 
@@ -282,14 +301,14 @@ function saveFunnel() {
   })
 
   // Update funnel steps
-  funnel.value.steps.forEach((step) => {
-    funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
-      metric: step.metric,
-      name: step.name,
-      description: step.description,
-      measurables: step.measurables,
-    })
-  })
+  // funnel.value.steps.forEach((step) => {
+  //   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
+  //     metric: step.metric,
+  //     name: step.name,
+  //     description: step.description,
+  //     measurables: step.measurables,
+  //   })
+  // })
 
   setTimeout(() => isSaving.value = false, 800);
 }
