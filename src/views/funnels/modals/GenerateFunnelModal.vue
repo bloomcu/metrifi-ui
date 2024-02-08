@@ -146,10 +146,12 @@ function runAutomation() {
 
 function addStep(measurable, order) {
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
-    metric: 'pageViews',
     order: order,
     name: measurable,
-    measurables: [measurable],
+    measurables: [{
+      metric: 'pageViews',
+      measurable: measurable,
+    }],
   })
 }
 
