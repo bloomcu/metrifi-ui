@@ -7,7 +7,7 @@
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
-        <AppInput v-model="funnel.name"/>
+        <AppInput v-model="funnel.name" @update:modelValue="updateFunnel"/>
 
         <div class="flex items-center text-sm">
           <svg class="w-4 h-4 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
@@ -16,12 +16,19 @@
       </div>
 
       <div class="flex items-center gap-3">
+        <!-- Saving indicator -->
+        <!-- <svg v-if="isSaving" class="inline w-5 h-5 mr-2 text-indigo-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
+          <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+        </svg> -->
+
         <!-- Datepicker -->
         <DatePicker @changed="runReport()"/>
 
         <!-- Zoom -->
         <AppSelect 
           v-model="funnel.zoom" 
+          @update:modelValue="updateFunnel"
           :options="[
             {label: 'No zoom', value: 0},
             {label: 'Zoom: Low', value: 40},
@@ -30,7 +37,7 @@
           ]"
         />
 
-        <AppButton @click="saveFunnel()" :loading="isSaving" variant="secondary">Save Funnel</AppButton>
+        <AppButton @click="updateFunnel" :loading="isSaving" variant="secondary">Save Funnel</AppButton>
         <AppButton @click="runReport()" :loading="isReporting">Run Report</AppButton>
       </div>
     </header>
@@ -161,6 +168,7 @@
 </template>
   
 <script setup>
+import debounce from 'lodash.debounce'
 import { ref, computed, onMounted, watch, provide } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useDateRange } from '@/app/composables/useDateRange'
@@ -241,6 +249,32 @@ function addStep() {
     calculateConversions()
   })
 }
+
+const updateFunnel = debounce(() => {
+  console.log('Updating funnel...')
+  isSaving.value = true
+
+  funnelApi.update(route.params.organization, route.params.funnel, {
+    name: funnel.value.name,
+    description: funnel.value.description,
+    zoom: funnel.value.zoom,
+  }).then(() => {
+    setTimeout(() => isSaving.value = false, 1000);
+  })
+}, 800)
+
+const updateSteps = debounce(() => {
+  console.log('Updating steps...')
+  isSaving.value = true
+
+  funnelApi.update(route.params.organization, route.params.funnel, {
+    name: funnel.value.name,
+    description: funnel.value.description,
+    zoom: funnel.value.zoom,
+  }).then(() => {
+    setTimeout(() => isSaving.value = false, 1000);
+  })
+}, 800)
 
 function saveFunnel() {
   isSaving.value = true
@@ -324,6 +358,11 @@ function loadFunnel() {
 onMounted(() => {
   loadFunnel()
 })
+
+// watch(funnel, async (after, before) => {
+//   console.log('before', before)
+//   console.log('after', after)
+// }, {deep: true})
 
 watch(selectedDateRange, () => {
   runReport()
