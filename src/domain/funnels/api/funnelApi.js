@@ -84,14 +84,24 @@ const funnelApi = {
     },
 
     /**
-     * Generate a funnel
+     * Generate all funnels
      *
      * @param Object params [Key/value params to query by]
      * @return promise
      */
-    async generate(organization, connection, params) {
-        return await HttpClient.get(`/${organization}/generate/${connection}`, { params: params })
+    async generateAll(organization, connection, params) {
+        return await HttpClient.get(`/${organization}/generate/${connection}/all`, { params: params })
     },
+
+    // /**
+    //  * Generate a funnel
+    //  *
+    //  * @param Object params [Key/value params to query by]
+    //  * @return promise
+    //  */
+    // async generate(organization, connection, params) {
+    //     return await HttpClient.get(`/${organization}/generate/${connection}`, { params: params })
+    // },
 
     /**
      * Segment a terminal page path
