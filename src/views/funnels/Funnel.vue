@@ -81,7 +81,7 @@
                 <p>{{ step.name }}</p>
               </div>
               
-              <button @click.stop="deleteStep(index, step.id)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-red-500 hover:bg-red-100 group-hover:visible active:translate-y-px">
+              <button @click.stop="deleteStep(index, step.id)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-pink-500 hover:bg-pink-100 group-hover:visible active:translate-y-px">
                 <TrashIcon class="h-5 w-5 shrink-0" />
               </button>
             </div>
@@ -116,7 +116,7 @@
               <div class="flex flex-row items-center justify-between mb-2">
                 <MetricPicker v-model="m.metric" @update:modelValue="updateStepMeasurables(activeStep)"/>
 
-                <button @click="deleteMeasurable(index)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-red-500 hover:bg-red-100 group-hover:visible active:translate-y-px">
+                <button @click="deleteMeasurable(index)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-pink-500 hover:bg-pink-100 group-hover:visible active:translate-y-px">
                   <TrashIcon class="h-5 w-5 shrink-0" />
                 </button>
               </div>
