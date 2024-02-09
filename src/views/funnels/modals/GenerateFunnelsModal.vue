@@ -74,7 +74,7 @@ function fetchPagesFromGA() {
     setTimeout(() => {
       pages.value = response.data.data
       isLoadingGA.value = false
-    }, 1000)
+    }, 400)
   })
 }
 
