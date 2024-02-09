@@ -106,10 +106,12 @@ function storeNewFunnel() {
 }
 
 function destroyFunnel(funnelId) {
+  funnels.value = funnels.value.filter(funnel => funnel.id !== funnelId)
+
   funnelApi.destroy(route.params.organization, funnelId)
-    .then(response => {
-      indexFunnels()
-    })
+    // .then(response => {
+    //   indexFunnels()
+    // })
 }
 
 function indexFunnels() {
