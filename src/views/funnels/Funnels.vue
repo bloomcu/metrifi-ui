@@ -25,6 +25,18 @@
       </div>
     </div>
 
+    <!-- Automation error -->
+    <div v-if="automationError" class="rounded-md bg-pink-50 p-4 mb-4">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 text-pink-600">
+          <svg class="w-6 h-6 mr-1" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
+        </div>
+        <div class="ml-3">
+          <p v-html="automationError" class="text-sm font-medium text-pink-600"></p>
+        </div>
+      </div>
+    </div>
+
     <!-- Funnels -->
     <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
       <thead>
@@ -90,9 +102,11 @@ const router = useRouter()
 const funnels = ref()
 const isModalOpen = ref(false)
 const isAutomating = ref(false)
+const automationError = ref()
 
 provide('isModalOpen', isModalOpen)
 provide('isAutomating', isAutomating)
+provide('automationError', automationError)
 
 function storeNewFunnel() {
   funnelApi.store(route.params.organization, {
