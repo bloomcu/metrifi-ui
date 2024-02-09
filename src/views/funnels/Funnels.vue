@@ -65,7 +65,6 @@
       </tbody>
     </table>
     
-    
     <!-- Empty state: No funnels -->
     <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
       <FunnelIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
@@ -107,11 +106,7 @@ function storeNewFunnel() {
 
 function destroyFunnel(funnelId) {
   funnels.value = funnels.value.filter(funnel => funnel.id !== funnelId)
-
   funnelApi.destroy(route.params.organization, funnelId)
-    // .then(response => {
-    //   indexFunnels()
-    // })
 }
 
 function indexFunnels() {

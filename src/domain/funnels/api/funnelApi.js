@@ -84,43 +84,25 @@ const funnelApi = {
     },
 
     /**
-     * Generate all funnels
+     * Generate funnels
      *
      * @param Object params [Key/value params to query by]
      * @return promise
      */
-    async generateAll(organization, connection, params) {
-        return await HttpClient.get(`/${organization}/generate/${connection}/all`, { params: params })
-    },
-
-    // /**
-    //  * Generate a funnel
-    //  *
-    //  * @param Object params [Key/value params to query by]
-    //  * @return promise
-    //  */
-    // async generate(organization, connection, params) {
-    //     return await HttpClient.get(`/${organization}/generate/${connection}`, { params: params })
-    // },
-
-    /**
-     * Segment a terminal page path
-     *
-     * @param Object args
-     * @return promise
-     */
-    async segmentTerminalPagePath(organization, funnel, params) {
-        return await HttpClient.get(`/${organization}/funnels/${funnel}/automations/segment-terminal-page-path`, { params: params })
+    async generateFunnels(organization, connection, params) {
+        // TODO: Instead of params object, let's use the param variable directly
+        return await HttpClient.get(`/${organization}/generate/funnels/${connection}`, { params: params })
     },
 
     /**
-     * Validate page paths
+     * Generate funnel steps
      *
-     * @param Object args
+     * @param Object params [Key/value params to query by]
      * @return promise
      */
-    async validatePagePaths(organization, funnel, params) {
-        return await HttpClient.get(`/${organization}/funnels/${funnel}/automations/validate-page-paths`, { params: params })
+    async generateSteps(organization, funnel, params) {
+        // TODO: Instead of params object, let's use the param variable directly
+        return await HttpClient.get(`/${organization}/generate/steps/${funnel}`, { params: params })
     },
 }
 

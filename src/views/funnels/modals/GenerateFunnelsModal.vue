@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watchEffect, inject } from 'vue'
+import { ref, computed, watchEffect, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
@@ -46,7 +46,7 @@ import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 const route = useRoute()
 const isLoading = ref(false)
 const isLoadingGA = ref(false)
-const input = ref('/')
+const input = ref('/personal/loans/vehicle/auto-loans/')
 const searchInput = ref('')
 const pages = ref()
 
@@ -84,7 +84,7 @@ function generateFunnelsWithAI() {
   isModalOpen.value = false
   isAutomating.value = true
 
-  funnelApi.generateAll(route.params.organization, 1, {startingPagePath: input.value})
+  funnelApi.generateFunnels(route.params.organization, 1, {startingPagePath: input.value})
     .then(() => {
       isAutomating.value = false
       emit('done')
@@ -96,17 +96,6 @@ watchEffect(async () => {
     fetchPagesFromGA()
   }
 })
-
-// function addStep(measurable, order) {
-//   funnelApi.storeStep(route.params.organization, route.params.funnel, {
-//     order: order,
-//     name: measurable,
-//     measurables: [{
-//       metric: 'pageViews',
-//       measurable: measurable,
-//     }],
-//   })
-// }
 
 const emit = defineEmits(['done'])
 </script>
