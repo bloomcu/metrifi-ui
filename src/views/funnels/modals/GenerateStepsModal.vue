@@ -6,7 +6,7 @@
   >
     <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Generate funnel steps</h3>
 
-    <form v-if="!isAutomating" action="#" @submit.prevent="runAutomation()" class="flex flex-col gap-4">
+    <form v-if="!isAutomating" action="#" @submit.prevent="generateStepsWithAI()" class="flex flex-col gap-4">
       <AppInput v-model="input" label="Terminal page path" required />
       
       <div class="border border-gray-200 p-3 rounded-md">
@@ -52,10 +52,14 @@ const input = ref('')
 
 const isModalOpen = inject('isModalOpen')
 const isAutomating = inject('isAutomating')
+const automationError = inject('automationError')
 
-function runAutomation() {
+function generateStepsWithAI() {
+  console.log('Generating steps with AI...')
+
   isModalOpen.value = false
   isAutomating.value = true
+  automationError.value = null
 
   funnelApi.generateSteps(route.params.organization, route.params.funnel, {
     terminalPagePath: input.value
@@ -64,6 +68,10 @@ function runAutomation() {
       isAutomating.value = false
       emit('done')
     }, 800)
+  }).catch((error) => {
+    console.log(error)
+    isAutomating.value = false
+    automationError.value = 'Error generating steps with AI. Please try again or check the <a class="underline font-bold" href="https://platform.openai.com/threads" target="_blank">threads</a>.'
   })
 }
 

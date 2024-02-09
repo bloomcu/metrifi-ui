@@ -67,15 +67,16 @@ function generateFunnelsWithAI() {
   isAutomating.value = true
   automationError.value = null
 
-  funnelApi.generateFunnels(route.params.organization, 1, {startingPagePath: input.value})
-    .then(() => {
-      isAutomating.value = false
-      emit('done')
-    }).catch((error) => {
-      console.log(error)
-      isAutomating.value = false
-      automationError.value = 'Error generating funnels with AI. Please try again or check the <a class="underline font-bold" href="https://platform.openai.com/threads" target="_blank">threads</a>.'
-    })
+  funnelApi.generateFunnels(route.params.organization, 1, {
+    startingPagePath: input.value
+  }).then(() => {
+    isAutomating.value = false
+    emit('done')
+  }).catch((error) => {
+    console.log(error)
+    isAutomating.value = false
+    automationError.value = 'Error generating funnels with AI. Please try again or check the <a class="underline font-bold" href="https://platform.openai.com/threads" target="_blank">threads</a>.'
+  })
 }
 
 function fetchPagesFromGA() {

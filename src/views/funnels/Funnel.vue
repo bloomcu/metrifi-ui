@@ -134,8 +134,20 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div v-if="!isLoading" class="mx-auto w-full max-w-6xl overflow-hidden p-10">
-        <div class="flex gap-6">
+      <div v-if="!isLoading" class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
+        <!-- Automation error -->
+        <div v-if="automationError" class="rounded-md bg-pink-50 p-4 mb-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 text-pink-600">
+              <svg class="w-6 h-6 mr-1" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
+            </div>
+            <div class="ml-3">
+              <p v-html="automationError" class="text-sm font-medium text-pink-600"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-6 mt-6">
           <Chart 
             :metric="metric" 
             :zoom="funnel.zoom"
@@ -186,20 +198,24 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const { selectedDateRange } = useDatePicker()
 const route = useRoute()
 
-const isAutomating = ref(false)
+const funnel = ref()
 const isModalOpen = ref(false)
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
+const isAutomating = ref(false)
+const automationError = ref()
 
-const funnel = ref()
+provide('funnel', funnel)
+provide('isModalOpen', isModalOpen)
+provide('isAutomating', isAutomating)
+provide('automationError', automationError)
+
 const conversions = ref([])
 const overallConversionRate = ref()
 
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
-
-// const automationStep = ref(null)
 
 const metric = 'Page views'
 
@@ -382,74 +398,4 @@ watch(selectedDateRange, () => {
 onMounted(() => {
   loadFunnel()
 })
-
-provide('funnel', funnel)
-provide('isAutomating', isAutomating)
-// provide('automationStep', automationStep)
-provide('isModalOpen', isModalOpen)
-
-// const funnel = ref({
-//   id: 1,
-//   user: {
-//     id: 1,
-//     name: 'Ryan Harmon',
-//     email: 'john@doe.com',
-//     role: 'admin',
-//     created_at: '2024-01-23T23:47:12.000000Z'
-//   },
-//   connection: null,
-//   name: 'New funnel',
-//   description: 'This is the funnel descriptions',
-//   steps: [
-//     // {
-//     //   id: 1,
-//     //   order: 1,
-//     //   metric: 'pageViews',
-//     //   name: 'Homepage',
-//     //   description: null,
-//     //   measurables: [
-//     //     '/',
-//     //   ],
-//     //   total: '0'
-//     // },
-//     {
-//       id: 2,
-//       order: 2,
-//       metric: 'pageViews',
-//       name: 'Loans',
-//       description: null,
-//       measurables: [
-//         '/personal/loans/',
-//       ],
-//       total: '0'
-//     },
-//     {
-//       id: 3,
-//       order: 3,
-//       metric: 'pageViews',
-//       name: 'Auto Loan',
-//       description: null,
-//       measurables: [
-//         '/personal/loans/vehicle/auto-loans/',
-//       ],
-//       total: '0'
-//     },
-//     // {
-//     //   id: 4,
-//     //   order: 4,
-//     //   metric: 'pageViews',
-//     //   name: 'Application',
-//     //   description: null,
-//     //   measurables: [
-//     //     '/personal/loans/vehicle/auto-loans/application/'
-//     //   ],
-//     //   total: '0'
-//     // },
-//   ]
-// })
-
-// watch(funnel, async (after, before) => {
-//   console.log('before', before)
-//   console.log('after', after)
-// }, {deep: true})
 </script>
