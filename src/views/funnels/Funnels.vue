@@ -59,6 +59,10 @@
                 <p>Generating steps</p>
               </div>
               <p v-else class="text-sm leading-5 text-gray-400">{{ funnel.steps.length }} steps</p>
+
+              <div v-if="funnel.automation_msg" class="flex items-center text-sm leading-5 text-pink-600">
+                <p>{{ funnel.automation_msg }}</p>
+              </div>
             </div>
           </td>
 
