@@ -65,12 +65,10 @@ function generateStepsWithAI() {
     terminalPagePath: input.value
   }).then(() => {
     setTimeout(() => {
-      isAutomating.value = false
       emit('done')
     }, 800)
   }).catch((error) => {
     console.log(error)
-    isAutomating.value = false
     automationError.value = 'Error generating steps with AI. Please try again or check the <a class="underline font-bold" href="https://platform.openai.com/threads" target="_blank">threads</a>.'
   })
 }
