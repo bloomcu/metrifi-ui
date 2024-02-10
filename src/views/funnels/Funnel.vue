@@ -392,14 +392,32 @@ function toggleModal() {
   isModalOpen.value = !isModalOpen.value 
 }
 
+let interval = 0
+
+function poll() {
+  interval = setTimeout(async() => {
+    console.log('Polling...')
+    await loadFunnel()
+  }, 6000)
+}
+
+function clear() {
+  clearInterval(interval)
+}
+
 function loadFunnel() {
   console.log('Loading funnel...')
-
+  
   funnelApi.show(route.params.organization, route.params.funnel).then(response => {
     funnel.value = response.data.data
 
     if (funnel.value.automating) {
       isAutomating.value = true
+      poll()
+      return
+    } else {
+      isAutomating.value = false
+      clear()
     }
 
     runReport()
@@ -408,7 +426,6 @@ function loadFunnel() {
 
 watch(selectedDateRange, () => {
   console.log('Selecting data range...')
-
   runReport()
 })
 
