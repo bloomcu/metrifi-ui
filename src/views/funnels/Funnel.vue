@@ -41,7 +41,7 @@
     <div class="flex-1 flex flex-col sm:flex-row">
 
       <!-- Left: Funnel steps -->
-      <nav class="min-w-[20rem] border-r">
+      <nav class="min-w-[24rem] max-w-[24rem] border-r">
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
           <p>Steps</p>
@@ -51,7 +51,7 @@
             <button @click.stop="toggleModal()" type="button" class="group inline-flex items-center gap-1 rounded-md py-1 px-2 text-sm text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:translate-y-px">
               <svg v-if="isAutomating" class="w-4 h-4 mr-1 animate-spin" fill="none" viewBox="0 0 100 101"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/></svg>
               <svg v-else class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></svg>
-              {{ isAutomating ? 'Generating' : 'Generate with AI' }}
+              {{ isAutomating ? 'Generating' : 'Generate steps with AI' }}
             </button>
             
             <!-- Add new -->
@@ -73,7 +73,7 @@
               v-for="(step, index) in funnel.steps" 
               @click="activeStepId = step.id" 
               :class="activeStepId == step.id ? 'border-indigo-500 border-2 bg-indigo-50' : 'border-gray-200 bg-white hover:bg-gray-50'"
-              class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer border text-gray-700 hover:text-indigo-600"
+              class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer border shadow text-gray-700 hover:text-indigo-600"
             >
               <div class="flex items-center gap-x-2">
                 <Bars2Icon class="h-4 w-4 shrink-0 cursor-grab text-gray-400 group-hover:text-indigo-600" />
@@ -96,7 +96,7 @@
       </nav>
 
       <!-- Center: Active Step -->
-      <aside v-if="activeStep" class="min-w-[24rem] border-r">
+      <aside v-if="activeStep" class="min-w-[24rem] max-w-[24rem] border-r">
         <!-- Header -->
         <div class="flex items-center justify-between border-b p-3">
           <button @click="activeStepId = null" type="button" class="inline-flex items-center rounded-md p-1 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
@@ -160,19 +160,49 @@
         </div>
 
         <div class="flex gap-6 mt-6">
-          <Chart 
-            :metric="metric" 
-            :zoom="funnel.zoom"
-            :labels="funnel.steps.map(step => step.name)"
-            :data="funnel.steps.map(step => Number(step.total))"
-            :conversions="conversions"
-          />
+          <div class="flex-1">
+            <Chart 
+              :metric="metric" 
+              :zoom="funnel.zoom"
+              :labels="funnel.steps.map(step => step.name)"
+              :data="funnel.steps.map(step => Number(step.total))"
+              :conversions="conversions"
+            />
+
+            <!-- Messages -->
+            <div v-if="funnel.messages && funnel.messages.length" class="pt-10 flex flex-col gap-2">
+              <div v-for="message in funnel.messages" class="rounded-md bg-white border shadow overflow-hidden">
+                <div @click="message.show = !message.show" class="flex items-center cursor-pointer p-4 hover:bg-emerald-50">
+                  <div class="flex-shrink-0">
+                    <CursorArrowRippleIcon class="h-6 w-6 text-emerald-500" aria-hidden="true" />
+                  </div>
+                  <div class="ml-3 flex-1 md:flex md:justify-between">
+                    <p class="text-sm">{{ message.title }} {{ moment(message.updated_at).fromNow() }}</p>
+                    <p class="mt-3 text-sm md:ml-6 md:mt-0">
+                      <button class="flex items-center gap-1 font-medium text-emerald-600 hover:text-emerald-500">
+                        Details
+                        <PlusIcon :class="message.show ? 'rotate-45 h-5 w-5' : 'h-4 w-4'"/>
+                      </button>
+                    </p>
+                  </div>
+                </div>
+                <div v-if="message.show" class="border-t text-sm p-4">
+                  <ol class="list-decimal list-inside space-y-2">
+                    <li v-for="link in message.json">
+                      <a :href="link" class="hover:text-indigo-500 underline" target="_blank">{{ link }}</a>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+          </div>
 
           <!-- Overall -->
-          <div class="w-[20rem]">
-            <div class="flex flex-col gap-1 text-center rounded-md bg-indigo-50 p-4">
+          <div class="w-[14rem]">
+            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
               <p>Overall</p>
-              <span class="text-3xl font-medium">{{ overallConversionRate }}</span>
+              <span class="text-3xl font-medium">{{ overallConversionRate ? overallConversionRate.substring(0, 4) + '%' : '0%' }}</span>
               <p>conversion rate</p>
             </div>
           </div>
@@ -189,6 +219,7 @@
 </template>
   
 <script setup>
+import moment from 'moment'
 import debounce from 'lodash.debounce'
 import { ref, computed, onMounted, watch, provide } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
@@ -198,7 +229,7 @@ import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { Bars2Icon, QueueListIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
-import { TrashIcon } from '@heroicons/vue/24/outline'
+import { TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
 import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
