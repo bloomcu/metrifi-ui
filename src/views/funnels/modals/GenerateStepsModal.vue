@@ -6,7 +6,7 @@
   >
     <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Generate funnel steps</h3>
 
-    <form v-if="!isAutomating" action="#" @submit.prevent="generateStepsWithAI()" class="flex flex-col gap-4">
+    <form v-if="!isAutomating" action="#" @submit.prevent="generateSteps()" class="flex flex-col gap-4">
       <AppInput v-model="input" label="Terminal page path" required />
       
       <div class="border border-gray-200 p-3 rounded-md">
@@ -54,7 +54,7 @@ const isModalOpen = inject('isModalOpen')
 const isAutomating = inject('isAutomating')
 const automationError = inject('automationError')
 
-function generateStepsWithAI() {
+function generateSteps() {
   console.log('Generating steps with AI...')
 
   isModalOpen.value = false
@@ -64,25 +64,23 @@ function generateStepsWithAI() {
   funnelApi.generateSteps(route.params.organization, route.params.funnel, {
     terminalPagePath: input.value
   }).then(() => {
-    setTimeout(() => {
-      emit('done')
-    }, 800)
+    emit('done')
   }).catch((error) => {
     console.log(error)
-    automationError.value = 'Error generating steps with AI. Please try again or check the <a class="underline font-bold" href="https://platform.openai.com/threads" target="_blank">threads</a>.'
+    automationError.value = 'Error generating steps.'
   })
 }
 
-function addStep(measurable, order) {
-  funnelApi.storeStep(route.params.organization, route.params.funnel, {
-    order: order,
-    name: measurable,
-    measurables: [{
-      metric: 'pageViews',
-      measurable: measurable,
-    }],
-  })
-}
+// function addStep(measurable, order) {
+//   funnelApi.storeStep(route.params.organization, route.params.funnel, {
+//     order: order,
+//     name: measurable,
+//     measurables: [{
+//       metric: 'pageViews',
+//       measurable: measurable,
+//     }],
+//   })
+// }
 
 const emit = defineEmits(['done'])
 </script>

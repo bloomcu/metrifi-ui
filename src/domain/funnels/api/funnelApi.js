@@ -104,6 +104,17 @@ const funnelApi = {
         // TODO: Instead of params object, let's use the param variable directly
         return await HttpClient.get(`/${organization}/generate/steps/${funnel}`, { params: params })
     },
+
+    /**
+     * Generate funnel outbound links message
+     *
+     * @param Object params [Key/value params to query by]
+     * @return promise
+     */
+    async generateOutboundLinksMessage(organization, funnel) {
+        // TODO: Instead of params object, let's use the param variable directly
+        return await HttpClient.get(`/${organization}/generate/outbound-links/${funnel}`)
+    },
 }
 
 export { funnelApi }
