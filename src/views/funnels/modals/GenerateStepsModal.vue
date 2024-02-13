@@ -6,7 +6,7 @@
   >
     <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Generate funnel steps</h3>
 
-    <form v-if="!isAutomating" action="#" @submit.prevent="generateSteps()" class="flex flex-col gap-4">
+    <form v-if="!isGeneratingSteps" action="#" @submit.prevent="generateSteps()" class="flex flex-col gap-4">
       <AppInput v-model="input" label="Terminal page path" required />
       
       <div class="border border-gray-200 p-3 rounded-md">
@@ -51,36 +51,27 @@ const loading = ref(false)
 const input = ref('')
 
 const isModalOpen = inject('isModalOpen')
-const isAutomating = inject('isAutomating')
-const automationError = inject('automationError')
+const isGeneratingSteps = inject('isGeneratingSteps')
+const errorGeneratingSteps = inject('errorGeneratingSteps')
 
 function generateSteps() {
   console.log('Generating steps with AI...')
 
   isModalOpen.value = false
-  isAutomating.value = true
-  automationError.value = null
+  isGeneratingSteps.value = true
+  errorGeneratingSteps.value = null
 
   funnelApi.generateSteps(route.params.organization, route.params.funnel, {
     terminalPagePath: input.value
   }).then(() => {
+    isGeneratingSteps.value = false
     emit('done')
   }).catch((error) => {
     console.log(error)
-    automationError.value = 'Error generating steps.'
+    isGeneratingSteps.value = false
+    errorGeneratingSteps.value = 'Error generating steps.'
   })
 }
-
-// function addStep(measurable, order) {
-//   funnelApi.storeStep(route.params.organization, route.params.funnel, {
-//     order: order,
-//     name: measurable,
-//     measurables: [{
-//       metric: 'pageViews',
-//       measurable: measurable,
-//     }],
-//   })
-// }
 
 const emit = defineEmits(['done'])
 </script>

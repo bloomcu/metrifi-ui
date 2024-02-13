@@ -6,10 +6,10 @@
         <AppButton @click="storeNewFunnel" variant="secondary">
           Create blank funnel
         </AppButton>
-        <!-- <AppButton @click="toggleModal()">
+        <AppButton @click="toggleModal()">
           <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></svg>
           Generate funnels with AI
-        </AppButton> -->
+        </AppButton>
       </div>
     </template>
 
@@ -91,6 +91,8 @@
       <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels</h2>
       <p class="mt-1 text-gray-400">Get started by creating a funnel.</p>
     </div>
+    
+    <!-- <pre>Organization: {{ organization }}</pre> -->
 
     <GenerateFunnelsModal :open="isModalOpen" @done="indexFunnels()"/>
   </LayoutWithSidebar>
@@ -100,6 +102,7 @@
 import moment from 'moment'
 import { ref, onMounted, provide } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { FunnelIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
@@ -107,6 +110,8 @@ import GenerateFunnelsModal from '@/views/funnels/modals/GenerateFunnelsModal.vu
 
 const route = useRoute()
 const router = useRouter()
+const { organization, showOrganization } = useOrganizations()
+
 const funnels = ref()
 const isModalOpen = ref(false)
 const isAutomating = ref(false)
@@ -115,6 +120,39 @@ const automationError = ref()
 provide('isModalOpen', isModalOpen)
 provide('isAutomating', isAutomating)
 provide('automationError', automationError)
+
+let pollInterval = 0
+
+function poll() {
+  pollInterval = setTimeout(async() => {
+    console.log('Polling...')
+    await indexFunnels()
+  }, 2000)
+}
+
+function stopPoll() {
+  clearInterval(pollInterval)
+}
+
+function checkOrganization() {
+  showOrganization().then(() => {
+    if (organization.value.automating) {
+      isAutomating.value = true
+      poll()
+      return
+    } else {
+      isAutomating.value = false
+      stopPoll()
+    }
+  })
+}
+
+function indexFunnels() {
+  funnelApi.index(route.params.organization).then(response => {
+    funnels.value = response.data.data
+    checkOrganization()
+  })
+}
 
 function storeNewFunnel() {
   funnelApi.store(route.params.organization, {
@@ -129,12 +167,6 @@ function storeNewFunnel() {
 function destroyFunnel(funnelId) {
   funnels.value = funnels.value.filter(funnel => funnel.id !== funnelId)
   funnelApi.destroy(route.params.organization, funnelId)
-}
-
-function indexFunnels() {
-  funnelApi.index(route.params.organization).then(response => {
-    funnels.value = response.data.data
-  })
 }
 
 function toggleModal() { 

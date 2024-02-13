@@ -64,13 +64,11 @@ function generateFunnelsWithAI() {
   console.log('Generating funnels with AI...')
   
   isModalOpen.value = false
-  isAutomating.value = true
   automationError.value = null
 
   funnelApi.generateFunnels(route.params.organization, 1, {
     startingPagePath: input.value
   }).then(() => {
-    isAutomating.value = false
     emit('done')
   }).catch((error) => {
     console.log(error)
