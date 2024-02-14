@@ -5,7 +5,7 @@
 
       <div v-if="connections && connections.length" class="flex items-center gap-2">
         <!-- Connection -->
-        <ConnectionPicker :connections="connections" :selected="selectedConnection" @selected="selectedConnection = $event"/>
+        <ConnectionPicker :connections="connections" :selected="selectedConnection" @selected="selectedConnection = $event" class="w-72"/>
 
         <!-- Datepicker -->
         <DatePicker />
@@ -33,7 +33,7 @@
               <span>{{ request.name }}</span>
             </button>
           </nav>
-          <div class="text-gray-400 text-sm">Showing {{ report.rows.length }} of {{ report.rowCount }} results</div>
+          <div v-if="report & report.rows" class="text-gray-400 text-sm">Showing {{ report.rows.length }} of {{ report.rowCount }} results</div>
         </div>
       </div>
 
@@ -106,8 +106,6 @@
       <p class="mt-1 mb-5 text-gray-500">A connection is needed to explore analytics.</p>
       <AppButton :to="{name: 'connections'}">Go to Connections</AppButton>
     </div>
-
-    <!-- <pre v-if="report">{{ report }}</pre> -->
   </LayoutWithSidebar>
 </template>
 
