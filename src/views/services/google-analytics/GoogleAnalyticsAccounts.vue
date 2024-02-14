@@ -55,8 +55,9 @@ import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 const route = useRoute()
 const router = useRouter()
 
-const token = ref()
-// const accounts = ref( [{"name":"accountSummaries/110826939","account":"accounts/110826939","displayName":"Online Loans - Lending 360","propertySummaries":[{"property":"properties/343527009","displayName":"Online Loans - Lending 360 - GA4","propertyType":"PROPERTY_TYPE_ORDINARY","parent":"accounts/110826939"}]},{"name":"accountSummaries/1136934","account":"accounts/1136934","displayName":"LBS Financial","propertySummaries":[{"property":"properties/309388882","displayName":"http://lbsfcu.org - GA4","propertyType":"PROPERTY_TYPE_ORDINARY","parent":"accounts/1136934"}]},{"name":"accountSummaries/116209960","account":"accounts/116209960","displayName":"CDFCU"},{"name":"accountSummaries/118141953","account":"accounts/118141953","displayName":"Arsenal CU","propertySummaries":[{"property":"properties/367120247","displayName":"arsenalcu.com - GA4","propertyType":"PROPERTY_TYPE_ORDINARY","parent":"accounts/118141953"}]},{"name":"accountSummaries/121528864","account":"accounts/121528864","displayName":"AFFCU"}])
+const code = ref()
+const state = ref()
+
 const accounts = ref()
 const searchInput = ref('')
 
@@ -67,31 +68,33 @@ const filteredAccounts = computed(() => {
 })
 
 function listAccounts() {
-  gaAdminApi.listAccounts(token.value).then(response => {
+  gaAdminApi.listAccounts(code.value).then(response => {
     accounts.value = response.data.data
-    router.replace({ query: {} })
   })
 }
 
 function storeConnection(accountName, property) {
-  // TODO: Get organization from authStore
-  connectionApi.store('bloomcu', {
+  connectionApi.store(state.value, {
     service: 'Google Analytics - Property',
     account_name: accountName,
     name: property.displayName,
     uid: property.property,
-    token: token.value
+    token: code.value
   }).then(() => {
-    router.push({ name: 'connections', params: { organization: 'bloomcu' } })
+    router.push({ name: 'connections', params: { organization: state.value } })
   })
 }
 
 onMounted(() => {
-  if (route.query.code) {
-    googleApi.callback(route.query.code).then(response => {
-      token.value = response.data.data
-      listAccounts()
-    })
-  }
+  if (!route.query.code && !route.query.state) return // TODO: Show error message
+    
+  googleApi.callback(route.query.code).then(response => {
+    code.value = response.data.data
+    listAccounts()
+  })
+
+  state.value = route.query.state
+
+  router.replace({ query: {} })
 })
 </script>
