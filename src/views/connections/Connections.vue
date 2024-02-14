@@ -70,10 +70,14 @@ import { CloudIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()
+
 const connections = ref()
 
 function connectToGoogle() {
-  googleApi.connect('https://www.googleapis.com/auth/analytics.readonly')
+  googleApi.connect({
+    scope: 'https://www.googleapis.com/auth/analytics.readonly',
+    state: route.params.organization,
+  })
   .then(response => {
     window.location.href = response.data.url
   })
