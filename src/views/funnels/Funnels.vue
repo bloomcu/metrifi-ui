@@ -64,7 +64,7 @@
 
                 <p v-if="funnel.messages.length" class="text-sm leading-5">
                   <span class="mr-1.5 text-gray-400">•</span>
-                  <span class="text-green-500">{{ funnel.messages.length }} message</span>
+                  <span class="text-green-500">{{ funnel.messages.length }} notification</span>
                 </p>
               </div>
             </div>

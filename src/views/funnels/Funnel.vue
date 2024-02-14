@@ -170,28 +170,39 @@
             />
 
             <!-- Messages -->
-            <div v-if="funnel.messages && funnel.messages.length" class="pt-10 flex flex-col gap-2">
-              <div v-for="message in funnel.messages" class="rounded-md bg-white border shadow overflow-hidden">
-                <div @click="message.show = !message.show" class="flex items-center cursor-pointer p-4 hover:bg-emerald-50">
-                  <div class="flex-shrink-0">
-                    <CursorArrowRippleIcon class="h-6 w-6 text-emerald-500" aria-hidden="true" />
+            <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
+              <p class="text-lg font-medium mb-3">Notifications</p>
+
+              <div class="flex flex-col gap-2">
+                <div v-for="message in funnel.messages" class="rounded-md bg-white border shadow overflow-hidden">
+                  <div @click="message.show = !message.show" class="flex items-center cursor-pointer p-4 hover:bg-emerald-50">
+                    <div class="flex-shrink-0">
+                      <CursorArrowRippleIcon class="h-6 w-6 text-emerald-500" aria-hidden="true" />
+                    </div>
+                    <div class="ml-3 flex-1 text-sm md:flex md:justify-between">
+                      <p>{{ message.json['links'].length }} outbound link(s) found for the final step of the funnel</p>
+                      <div class="flex items-center gap-3">
+                        <p class="text-gray-500">{{ moment(message.updated_at).fromNow() }}</p>
+                        <button class="flex items-center gap-1 font-medium text-emerald-600 hover:text-emerald-500">
+                          Details
+                          <PlusIcon :class="message.show ? 'rotate-45 h-5 w-5' : 'h-4 w-4'"/>
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="ml-3 flex-1 md:flex md:justify-between">
-                    <p class="text-sm">{{ message.title }} {{ moment(message.updated_at).fromNow() }}</p>
-                    <p class="mt-3 text-sm md:ml-6 md:mt-0">
-                      <button class="flex items-center gap-1 font-medium text-emerald-600 hover:text-emerald-500">
-                        Details
-                        <PlusIcon :class="message.show ? 'rotate-45 h-5 w-5' : 'h-4 w-4'"/>
-                      </button>
-                    </p>
+                  <div v-if="message.show" class="border-t text-sm p-4">
+                    <div class="mb-5">
+                      <p class="mb-1 font-bold">Page path of the final step of the funnel:</p>
+                      <p>{{ message.json['pagePath'] }}</p>
+                    </div>
+                    <p class="mb-1 font-bold">Outbound links:</p>
+                    <ol class="list-decimal list-inside space-y-2 mb-5">
+                      <li v-for="link in message.json['links']">
+                        <a :href="link" class="hover:text-indigo-500 underline" target="_blank">{{ link }}</a>
+                      </li>
+                    </ol>
+                    <p><span class="font-bold">Suggested action:</span> Consider adding a step to the end of the funnel to track clicks on outbound links.</p>
                   </div>
-                </div>
-                <div v-if="message.show" class="border-t text-sm p-4">
-                  <ol class="list-decimal list-inside space-y-2">
-                    <li v-for="link in message.json">
-                      <a :href="link" class="hover:text-indigo-500 underline" target="_blank">{{ link }}</a>
-                    </li>
-                  </ol>
                 </div>
               </div>
             </div>
