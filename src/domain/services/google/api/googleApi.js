@@ -6,8 +6,8 @@ const googleApi = {
    *
    * @return promise
    */
-  async connect(scope) {
-    return await HttpClient.post(`/google/connect`, {scope: scope})
+  async connect(params) {
+    return await HttpClient.post(`/google/connect`, params)
   },
 
   /**
