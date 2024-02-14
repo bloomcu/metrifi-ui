@@ -368,13 +368,18 @@ function calculateConversions() {
     let nextStepTotal = steps[index + 1]?.total
     let conversionRate = (nextStepTotal / stepTotal)
     if (!conversionRate || conversionRate === Infinity) conversionRate = 0
-    conversions.value.push(conversionRate.toFixed(4) * 100 + '%')
+
+    conversionRate = conversionRate * 100
+    conversionRate = conversionRate.toFixed(2)
+    conversions.value.push(conversionRate + '%')
   })
   conversions.value.pop() // Remove last conversion rate
 
   // Calculate overall conversion rate
   let ocr = (steps[steps.length - 1].total / steps[0].total)
-  overallConversionRate.value = ocr.toFixed(4) * 100 + '%'
+      ocr = ocr * 100
+      ocr = ocr.toFixed(2)
+  overallConversionRate.value = ocr + '%'
 }
 
 function addStep() {
