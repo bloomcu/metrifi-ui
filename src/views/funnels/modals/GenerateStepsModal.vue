@@ -61,9 +61,13 @@ function generateSteps() {
   isGeneratingSteps.value = true
   errorGeneratingSteps.value = null
 
-  funnelApi.generateSteps(route.params.organization, route.params.funnel, {
-    terminalPagePath: input.value
-  }).then(() => {
+  funnelApi.generateSteps(
+    route.params.organization, 
+    route.params.funnel, 
+    { 
+      terminalPagePath: input.value 
+    }
+  ).then(() => {
     isGeneratingSteps.value = false
     emit('done')
   }).catch((error) => {
