@@ -24,7 +24,7 @@ import { BuildingOfficeIcon, CreditCardIcon, UsersIcon } from '@heroicons/vue/24
 
 const tabs = [
   { name: 'Users', to: { name:'settingsUsers' }, icon: UsersIcon },  
-  { name: 'Organization', to: { name:'settingsOrganization' }, icon: BuildingOfficeIcon },  
+  // { name: 'Organization', to: { name:'settingsOrganization' }, icon: BuildingOfficeIcon },  
   { name: 'Billing', to: { name:'settingsBilling' }, icon: CreditCardIcon },
 ]
 </script>
