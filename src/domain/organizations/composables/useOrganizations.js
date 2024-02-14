@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { organizationApi } from '@/domain/base/organizations/api/organizationApi.js'
 
@@ -13,20 +13,8 @@ export const useOrganizations = () => {
     })
   }
 
-  // function hydrate() {
-  //   organizationApi.show(route.params.organization).then(response => {
-  //     organization.value = response.data.data
-  //   })
-  // }
-
-  // onMounted(() => {
-  //   if (!organization.value || organization.value.slug !== route.params.organization) {
-  //     hydrate()
-  //   }
-  // })
-
   return {
-    organization,
+    organization: computed(() => organization.value),
     showOrganization
   }
 }
