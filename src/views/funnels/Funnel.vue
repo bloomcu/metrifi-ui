@@ -112,14 +112,14 @@
             <p class="block mb-1 text-sm font-medium text-gray-900">Measurables</p>
 
             <!-- Measurable -->
-            <div v-for="(m, index) in activeStep.measurables" class="group bg-gray-50 rounded-md p-2 mb-2">
-              <div class="flex flex-row items-center justify-between mb-2">
-                <MetricPicker v-model="m.metric" @update:modelValue="updateStepMeasurables(activeStep)"/>
-
-                <button @click="deleteMeasurable(index)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-pink-500 hover:bg-pink-100 group-hover:visible active:translate-y-px">
+            <div v-for="(m, index) in activeStep.measurables" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+              <div class="flex flex-row items-center justify-between">
+                <ConnectionIdPicker v-model="m.connection_id" :connections="connections" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
+                <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
                   <TrashIcon class="h-5 w-5 shrink-0" />
                 </button>
               </div>
+              <MetricPicker v-model="m.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
               <AppInput v-model="m.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Enter a page path..."/>
             </div>
 
@@ -128,7 +128,7 @@
               <PlusIcon class="h-5 w-5 shrink-0" />
             </button>
 
-            <!-- <pre>{{ activeStep }}</pre> -->
+            <pre>{{ activeStep.measurables }}</pre>
           </div>
         </div>
       </aside>
@@ -235,6 +235,7 @@ import debounce from 'lodash.debounce'
 import { ref, computed, onMounted, watch, provide } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
+import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
@@ -245,14 +246,15 @@ import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
 import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
+import ConnectionIdPicker from '@/domain/connections/components/ConnectionIdPicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import MetricPicker from '@/views/funnels/components/metrics/MetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
-const { selectedDateRange } = useDatePicker()
 const route = useRoute()
+const { selectedDateRange } = useDatePicker()
+const { connections, selectedConnection, listConnections } = useConnections()
 
-const funnel = ref()
 const isModalOpen = ref(false)
 const isLoading = ref(false)
 const isUpdating = ref(false)
@@ -260,10 +262,7 @@ const isReporting = ref(false)
 const isGeneratingSteps = ref(false)
 const errorGeneratingSteps = ref()
 
-provide('funnel', funnel)
-provide('isModalOpen', isModalOpen)
-provide('isGeneratingSteps', isGeneratingSteps)
-provide('errorGeneratingSteps', errorGeneratingSteps)
+const funnel = ref()
 
 const conversions = ref([])
 const overallConversionRate = ref()
@@ -272,6 +271,11 @@ const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
 
 const metric = 'Page views'
+
+provide('funnel', funnel)
+provide('isModalOpen', isModalOpen)
+provide('isGeneratingSteps', isGeneratingSteps)
+provide('errorGeneratingSteps', errorGeneratingSteps)
 
 const updateFunnel = debounce(() => {
   console.log('Updating funnel...')
@@ -413,6 +417,7 @@ function addMeasurable(step) {
   console.log('Adding measurable...')
 
   step.measurables.push({
+    connection_id: selectedConnection.value.id,
     metric: 'pageViews', 
     measurable: ''
   })
@@ -478,5 +483,6 @@ watch(selectedDateRange, () => {
 
 onMounted(() => {
   loadFunnel()
+  listConnections()
 })
 </script>
