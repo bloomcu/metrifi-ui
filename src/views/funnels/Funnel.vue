@@ -160,13 +160,15 @@
 
         <div class="flex gap-6 mt-6">
           <div class="flex-1">
-            <Chart 
+            <!-- <Chart 
               :metric="metric" 
               :zoom="funnel.zoom"
               :labels="funnel.steps.map(step => step.name)"
               :data="funnel.steps.map(step => Number(step.total))"
               :conversions="conversions"
-            />
+            /> -->
+
+            <Chart :funnel="funnel" />
           </div>
 
           <!-- Overall -->
@@ -262,12 +264,8 @@ const errorGeneratingSteps = ref()
 
 const funnel = ref()
 
-const conversions = ref([])
-
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
-
-const metric = 'Page views'
 
 provide('funnel', funnel)
 provide('isModalOpen', isModalOpen)
@@ -320,7 +318,7 @@ const updateStepName = debounce((step) => {
 }, 800)
 
 const updateStepMeasurables = debounce((step) => {
-  console.log('Updating step...')
+  console.log('Updating step measurables...')
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
@@ -337,6 +335,7 @@ function runReport() {
   if (!funnel.value.steps.length) return
 
   isReporting.value = true
+
   let stepsProcessed = 0
 
   // Iterate each step
@@ -365,7 +364,6 @@ function runReport() {
       if (stepsProcessed === funnel.value.steps.length) {
         isLoading.value = false
         stepsProcessed = 0
-        calculateConversions()
       }
     }) // End GA request
   }) // End foreach on funnel steps
@@ -384,29 +382,6 @@ function handleDragEvent(e) {
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 500)
   })
-
-  calculateConversions()
-}
-
-function calculateConversions() {
-  if (!funnel.value.steps.length) return
-
-  let steps = funnel.value.steps
-
-  // Build array of conversion rates
-  conversions.value = [] // Reset conversions
-  conversions.value.push('') // Add 100% conversion rate for first step
-  steps.forEach((step, index) => {
-    let stepTotal = step.total
-    let nextStepTotal = steps[index + 1]?.total
-    let conversionRate = (nextStepTotal / stepTotal)
-    if (!conversionRate || conversionRate === Infinity) conversionRate = 0
-
-    conversionRate = conversionRate * 100
-    conversionRate = conversionRate.toFixed(2)
-    conversions.value.push(conversionRate + '%')
-  })
-  conversions.value.pop() // Remove last conversion rate
 }
 
 function addStep() {
@@ -421,7 +396,6 @@ function addStep() {
     }],
   }).then(response => {
     funnel.value.steps.push(response.data.data)
-    calculateConversions()
   })
 }
 
@@ -448,7 +422,6 @@ function deleteStep(index, id) {
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
       funnel.value.steps.splice(index, 1)
-      calculateConversions()
     })
 }
 
@@ -456,33 +429,11 @@ function toggleModal() {
   isModalOpen.value = !isModalOpen.value 
 }
 
-let interval = 0
-
-function poll() {
-  interval = setTimeout(async() => {
-    console.log('Polling...')
-    await loadFunnel()
-  }, 6000)
-}
-
-function clear() {
-  clearInterval(interval)
-}
-
 function loadFunnel() {
   console.log('Loading funnel...')
   
   funnelApi.show(route.params.organization, route.params.funnel).then(response => {
     funnel.value = response.data.data
-
-    // if (funnel.value.automating) {
-    //   isGeneratingSteps.value = true
-    //   poll()
-    //   return
-    // } else {
-    //   isGeneratingSteps.value = false
-    //   clear()
-    // }
 
     runReport()
   })
