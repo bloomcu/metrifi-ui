@@ -167,53 +167,52 @@
               :data="funnel.steps.map(step => Number(step.total))"
               :conversions="conversions"
             />
-
-            <!-- Messages -->
-            <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
-              <p class="text-lg font-medium mb-3">Notifications</p>
-
-              <div class="flex flex-col gap-2">
-                <div v-for="message in funnel.messages" class="rounded-md bg-white border shadow overflow-hidden">
-                  <div @click="message.show = !message.show" class="flex items-center cursor-pointer p-4 hover:bg-emerald-50">
-                    <div class="flex-shrink-0">
-                      <CursorArrowRippleIcon class="h-6 w-6 text-emerald-500" aria-hidden="true" />
-                    </div>
-                    <div class="ml-3 flex-1 text-sm md:flex md:justify-between">
-                      <p>{{ message.json['links'].length }} outbound link(s) found for the final step of the funnel</p>
-                      <div class="flex items-center gap-3">
-                        <p class="text-gray-500">{{ moment(message.updated_at).fromNow() }}</p>
-                        <button class="flex items-center gap-1 font-medium text-emerald-600 hover:text-emerald-500">
-                          Details
-                          <PlusIcon :class="message.show ? 'rotate-45 h-5 w-5' : 'h-4 w-4'"/>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div v-if="message.show" class="border-t text-sm p-4">
-                    <div class="mb-5">
-                      <p class="mb-1 font-bold">Page path of the final step of the funnel:</p>
-                      <p>{{ message.json['pagePath'] }}</p>
-                    </div>
-                    <p class="mb-1 font-bold">Outbound links:</p>
-                    <ol class="list-decimal list-inside space-y-2 mb-5">
-                      <li v-for="link in message.json['links']">
-                        <a :href="link" class="hover:text-indigo-500 underline" target="_blank">{{ link }}</a>
-                      </li>
-                    </ol>
-                    <p><span class="font-bold">Suggested action:</span> Consider adding a step to the end of the funnel to track clicks on outbound links.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
 
           <!-- Overall -->
           <div class="w-[14rem]">
             <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
               <p>Overall</p>
-              <span class="text-3xl font-medium">{{ overallConversionRate ? overallConversionRate.substring(0, 4) + '%' : '0%' }}</span>
+              <span class="text-3xl font-medium">{{ overallConversionRateComputed }}%</span>
               <p>conversion rate</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
+          <p class="text-lg font-medium mb-3">Notifications</p>
+
+          <div class="flex flex-col gap-2">
+            <div v-for="message in funnel.messages" class="rounded-md bg-white border shadow overflow-hidden">
+              <div @click="message.show = !message.show" class="flex items-center cursor-pointer p-4 hover:bg-emerald-50">
+                <div class="flex-shrink-0">
+                  <CursorArrowRippleIcon class="h-6 w-6 text-emerald-500" aria-hidden="true" />
+                </div>
+                <div class="ml-3 flex-1 text-sm md:flex md:justify-between">
+                  <p>{{ message.json['links'].length }} outbound link(s) found for the final step of the funnel</p>
+                  <div class="flex items-center gap-3">
+                    <p class="text-gray-500">{{ moment(message.updated_at).fromNow() }}</p>
+                    <button class="flex items-center gap-1 font-medium text-emerald-600 hover:text-emerald-500">
+                      Details
+                      <PlusIcon :class="message.show ? 'rotate-45 h-5 w-5' : 'h-4 w-4'"/>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div v-if="message.show" class="border-t text-sm p-4">
+                <div class="mb-5">
+                  <p class="mb-1 font-bold">Page path of the final step of the funnel:</p>
+                  <p>{{ message.json['pagePath'] }}</p>
+                </div>
+                <p class="mb-1 font-bold">Outbound links:</p>
+                <ol class="list-decimal list-inside space-y-2 mb-5">
+                  <li v-for="link in message.json['links']">
+                    <a :href="link" class="hover:text-indigo-500 underline" target="_blank">{{ link }}</a>
+                  </li>
+                </ol>
+                <p><span class="font-bold">Suggested action:</span> Consider adding a step to the end of the funnel to track clicks on outbound links.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -264,7 +263,6 @@ const errorGeneratingSteps = ref()
 const funnel = ref()
 
 const conversions = ref([])
-const overallConversionRate = ref()
 
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
@@ -275,6 +273,19 @@ provide('funnel', funnel)
 provide('isModalOpen', isModalOpen)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
+
+const overallConversionRateComputed = computed(() => {
+  let steps = funnel.value.steps
+
+  let ocr = (steps[steps.length - 1].total / steps[0].total)
+  if (!ocr || ocr === Infinity) return 0
+
+  let formatted = ocr * 100 // Get a percentage
+      formatted = formatted.toFixed(2) // Round to 2 decimal places
+      formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+  
+  return formatted
+})
 
 const updateFunnelConnection = (() => {
   console.log('Updating funnel connection...')
@@ -396,12 +407,6 @@ function calculateConversions() {
     conversions.value.push(conversionRate + '%')
   })
   conversions.value.pop() // Remove last conversion rate
-
-  // Calculate overall conversion rate
-  let ocr = (steps[steps.length - 1].total / steps[0].total)
-      ocr = ocr * 100
-      ocr = ocr.toFixed(2)
-  overallConversionRate.value = ocr + '%'
 }
 
 function addStep() {
