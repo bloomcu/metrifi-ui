@@ -17,7 +17,7 @@
       </thead>
 
       <tbody class="divide-y divide-gray-200">
-        <tr v-for="connection in connections" :key="connection.id" >
+        <tr v-for="(connection, index) in connections" :key="connection.id">
           <!-- Id -->
           <td class="whitespace-nowrap py-4 pl-4 pr-6 text-gray-400 sm:pl-6">
             <p>{{ connection.id }}</p>
@@ -45,7 +45,7 @@
 
           <!-- Disconnect -->
           <td scope="col" class="py-4 pr-4 text-right sm:pr-6">
-            <AppButton variant="tertiary" disabled>Disconnect</AppButton>
+            <AppButton @click="disconnect(index, connection.id)" variant="tertiary">Disconnect</AppButton>
           </td>
         </tr>
       </tbody>
@@ -81,6 +81,15 @@ function connectToGoogle() {
   .then(response => {
     window.location.href = response.data.url
   })
+}
+
+function disconnect(index, connectionId) {
+  console.log('Deleting step...')
+
+  connectionApi.destroy(route.params.organization, connectionId)
+    .then(() => {
+      connections.value.splice(index, 1)
+    })
 }
 
 onMounted(() => {
