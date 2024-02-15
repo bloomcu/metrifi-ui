@@ -42,15 +42,15 @@ const connectionApi = {
     //   return HttpClient.put(`/${organization}/connections/${id}`, connection)
     // },
     
-    // /**
-    //  * Destroy a connection
-    //  *
-    //  * @param Integer id [Id of the file you want to destroy]
-    //  * @return promise
-    //  */
-    // destroy(organization, id) {
-    //     return HttpClient.delete(`/${organization}/connections/${id}`)
-    // },
+    /**
+     * Destroy a connection
+     *
+     * @param Integer connectionId [Id of the connection you want to destroy]
+     * @return promise
+     */
+    destroy(organization, connectionId) {
+        return HttpClient.delete(`/${organization}/connections/${connectionId}`)
+    },
 }
 
 export { connectionApi }
