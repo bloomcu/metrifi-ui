@@ -42,7 +42,8 @@
       <thead>
         <tr>
           <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900 sm:pl-6">Funnel</th>
-          <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Created</th>
+          <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Connection</th>
+          <!-- <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Created</th> -->
           <th scope="col" class="py-3.5 text-left text-sm font-semibold text-gray-900">Updated</th>
           <th scope="col" class="py-3.5"></th>
         </tr>
@@ -70,15 +71,24 @@
             </div>
           </td>
 
-          <!-- Created -->
+          <!-- Connection -->
           <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+            <div class="flex items-center text-sm mr-2">
+              <svg class="w-4 h-4 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+              {{ funnel.connection.name }}
+            </div>
+          </td>
+
+          <!-- Created -->
+          <!-- <td class="whitespace-nowrap py-4 text-sm text-gray-400">
             <p>{{ moment(funnel.created_at).fromNow() }}</p>
             <p>by {{ funnel.user.name }}</p>
-          </td>
+          </td> -->
 
           <!-- Updated -->
           <td class="whitespace-nowrap py-4 text-sm text-gray-400">
-            <p>{{ moment(funnel.updated_at).fromNow() }}</p>
+            <p class="mb-0.5">{{ moment(funnel.updated_at).fromNow() }}</p>
+            <p class="text-xs">by {{ funnel.user.name }}</p>
           </td>
 
           <!-- Options -->

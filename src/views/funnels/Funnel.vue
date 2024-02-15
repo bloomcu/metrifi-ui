@@ -19,10 +19,7 @@
 
       <div class="flex items-center gap-3">
         <!-- Connection -->
-        <div class="flex items-center text-sm mr-2">
-          <svg class="w-4 h-4 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
-          {{ funnel.connection.name }}
-        </div>
+        <ConnectionIdPicker v-model="funnel.connection_id" :connections="connections" @update:modelValue="updateFunnelConnection" class="w-56"/>
 
         <!-- Datepicker -->
         <DatePicker />
@@ -109,26 +106,28 @@
           <AppInput v-model="activeStep.name" @update:modelValue="updateStepName(activeStep)" label="Step name" placeholder="Enter a step name..." />
 
           <div>
-            <p class="block mb-1 text-sm font-medium text-gray-900">Measurables</p>
+            <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
-            <!-- Measurable -->
+            <!-- Measurables -->
             <div v-for="(m, index) in activeStep.measurables" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
               <div class="flex flex-row items-center justify-between">
-                <ConnectionIdPicker v-model="m.connection_id" :connections="connections" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
+                <!-- <ConnectionIdPicker v-model="m.connection_id" :connections="connections" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/> -->
+                <MetricPicker v-model="m.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
                 <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
                   <TrashIcon class="h-5 w-5 shrink-0" />
                 </button>
               </div>
-              <MetricPicker v-model="m.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
+              
               <AppInput v-model="m.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Enter a page path..."/>
             </div>
 
             <!-- Add measurable -->
-            <button @click="addMeasurable(activeStep)" type="button" class="inline-flex items-center rounded-md p-1 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
+            <button @click="addMeasurable(activeStep)" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
+              Add metric
             </button>
 
-            <pre>{{ activeStep.measurables }}</pre>
+            <!-- <pre>{{ activeStep.measurables }}</pre> -->
           </div>
         </div>
       </aside>
@@ -277,11 +276,19 @@ provide('isModalOpen', isModalOpen)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 
+const updateFunnelConnection = (() => {
+  console.log('Updating funnel connection...')
+  
+  updateFunnel()
+  runReport()
+})
+
 const updateFunnel = debounce(() => {
   console.log('Updating funnel...')
   isUpdating.value = true
 
   funnelApi.update(route.params.organization, route.params.funnel, {
+    connection_id: funnel.value.connection_id,
     name: funnel.value.name,
     description: funnel.value.description,
     zoom: funnel.value.zoom,
@@ -329,7 +336,7 @@ function runReport() {
     }
 
     // Hit GA
-    gaDataApi.fetchPageViews(funnel.value.connection.id, {
+    gaDataApi.fetchPageViews(funnel.value.connection_id, {
       startDate: selectedDateRange.value.startDate,
       endDate: selectedDateRange.value.endDate,
       pagePaths: step.measurables.map(measurable => measurable.measurable),

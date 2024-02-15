@@ -1,7 +1,7 @@
 <template>
     <AppDropdown class="w-56">
       <template #title>
-        Metric: {{ selected ? selected : 'Loading...' }} 
+        Dimension: {{ selected ? selected : 'Loading...' }} 
         <ChevronDownIcon class="ml-auto h-4 w-4 text-gray-400"/>
       </template>
       <button 
