@@ -26,12 +26,6 @@
 
         <!-- Zoom -->
         <Zoom v-model="funnel.zoom" @update:modelValue="updateFunnel"/>
-
-        <!-- Save -->
-        <!-- <AppButton @click="updateFunnel" variant="secondary">Save Funnel</AppButton> -->
-
-        <!-- Run report -->
-        <!-- <AppButton @click="runReport()">Run Report</AppButton> -->
       </div>
     </header>
 
@@ -160,15 +154,7 @@
 
         <div class="flex gap-6 mt-6">
           <div class="flex-1">
-            <!-- <Chart 
-              :metric="metric" 
-              :zoom="funnel.zoom"
-              :labels="funnel.steps.map(step => step.name)"
-              :data="funnel.steps.map(step => Number(step.total))"
-              :conversions="conversions"
-            /> -->
-
-            <Chart :funnel="funnel" />
+            <Chart :steps="funnel.steps" :zoom="funnel.zoom" />
           </div>
 
           <!-- Overall -->
@@ -274,7 +260,8 @@ provide('errorGeneratingSteps', errorGeneratingSteps)
 
 const overallConversionRateComputed = computed(() => {
   let steps = funnel.value.steps
-
+  if (!steps.length) return 0
+  
   let ocr = (steps[steps.length - 1].total / steps[0].total)
   if (!ocr || ocr === Infinity) return 0
 

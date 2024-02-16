@@ -6,7 +6,7 @@
             </div>
             <div class="flex-[0.5]" />
             <div class="flex flex-[8] gap-3 z-0">
-                <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="funnel.zoom"/>
+                <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="zoom"/>
             </div>
         </div>
         <div class="h-[10px]" />
@@ -44,17 +44,18 @@ import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
 import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
 
 const props = defineProps({
-    funnel: Object,
+    steps: Array,
+    zoom: Number,
 })
 
-const labels = computed(() => props.funnel.steps.map(step => step.name))
+const labels = computed(() => props.steps.map(step => step.name))
 
-const data = computed(() => props.funnel.steps.map(step => Number(step.total).toLocaleString()))
+const data = computed(() => props.steps.map(step => Number(step.total).toLocaleString()))
 
-const maxValue = computed(() => Math.max(...props.funnel.steps.map((step) => step.total)))
+const maxValue = computed(() => Math.max(...props.steps.map((step) => step.total)))
 
 const conversions = computed(() => {
-    let steps = props.funnel.steps
+    let steps = props.steps
 
     let array = []
         array.push(100) // First conversion rate is always 100%
