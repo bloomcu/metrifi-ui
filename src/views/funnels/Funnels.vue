@@ -101,7 +101,7 @@
     
     <!-- Empty state: No funnels -->
     <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <FunnelIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
+      <ChartBarIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels</h2>
       <p class="mt-1 text-gray-400">Get started by creating a funnel.</p>
     </div>
@@ -118,7 +118,7 @@ import { ref, onMounted, provide } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
-import { FunnelIcon } from '@heroicons/vue/24/outline'
+import { ChartBarIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import GenerateFunnelsModal from '@/views/funnels/modals/GenerateFunnelsModal.vue'
 
@@ -148,7 +148,7 @@ function stopPoll() {
   clearInterval(pollInterval)
 }
 
-function checkOrganization() {
+function pollOrganization() {
   showOrganization().then(() => {
     if (organization.value.automating) {
       isAutomating.value = true
@@ -164,7 +164,7 @@ function checkOrganization() {
 function indexFunnels() {
   funnelApi.index(route.params.organization).then(response => {
     funnels.value = response.data.data
-    checkOrganization()
+    pollOrganization()
   })
 }
 

@@ -14,6 +14,7 @@ const props = defineProps({
 const formattedName = computed(() => {
   let name = props.name
 
+  // If the name is longer than 18 characters, slice it and add "..."
   if (name.length > 18) name = '...' + name.slice(-18)
 
   return name

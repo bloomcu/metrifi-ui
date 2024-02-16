@@ -183,16 +183,16 @@ import {
   ChartBarIcon,
   Cog6ToothIcon,
   CloudIcon,
-  HomeIcon,
+  Squares2X2Icon,
   XMarkIcon,
-  FunnelIcon,
+  MagnifyingGlassIcon
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
-  { name: 'Funnels', to: { name: 'funnels'}, icon: FunnelIcon},
-  { name: 'Explore', to: { name: 'dashboard' }, icon: ChartBarIcon},
+  { name: 'Dashboards', to: { name: 'dashboards'}, icon: Squares2X2Icon},
+  { name: 'Funnels', to: { name: 'funnels'}, icon: ChartBarIcon},
+  { name: 'Reports', to: { name: 'explore' }, icon: MagnifyingGlassIcon},
   { name: 'Connections', to: { name: 'connections'}, icon: CloudIcon},
-  // { name: 'Sites', to: { name: 'sites'}, icon: FolderIcon},
   { name: 'Settings', to: { name: 'settings'}, icon: Cog6ToothIcon},
 ]
 

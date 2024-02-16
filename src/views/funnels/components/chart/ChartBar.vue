@@ -7,18 +7,9 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  // index: {
-  //   type: Number,
-  // },
-  // height: {
-  //   type: Number,
-  // },
   value: 0,
   max: 0,
   zoom: 0,
-  // max: {
-  //   type: Number,
-  // },
 })
 
 const height = computed(() => {
@@ -26,12 +17,15 @@ const height = computed(() => {
     return 0
   } 
 
+  // Set the height to the value divided by the max
   let h = props.value / props.max
 
+  // If the zoom is greater than 0, set the height to the value divided by the max, then multiply by the zoom
   if (props.zoom > 0) {
     h = props.value / props.max * props.zoom
   }
 
+  // If the value is greater than 1, set it to 1
   if (h > 1 || props.value === props.max) {
     h = 1
   }
