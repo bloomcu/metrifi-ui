@@ -1,12 +1,9 @@
 <template>
-  <LayoutWithSidebar v-if="dashboard && connections">
+  <LayoutWithSidebar v-if="dashboard">
     <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">{{ dashboard.name }}</h1>
 
       <div class="flex items-center gap-3">
-        <!-- Connection -->
-        <ConnectionIdPicker v-model="dashboard.connection_id" :connections="connections" @update:modelValue="" class="w-56"/>
-
         <!-- Datepicker -->
         <DatePicker />
 
@@ -35,8 +32,8 @@
               <p>conversion rate</p>
             </div>
 
-            <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton>
-            <AppButton @click="removeFunnel(index)" variant="tertiary" class="mt-4 mr-2 text-xs">Remove</AppButton>
+            <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
+            <AppButton @click="removeFunnel(index)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
             <AppButton v-if="funnel.organization.title == 'BloomCU'" @click="router.push({name: 'funnel', params: {funnel: 1}})" variant="secondary" class="mt-2 text-xs">Edit</AppButton>
           </div>
         </div>
@@ -56,19 +53,15 @@
 import { ref, onMounted, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
-import { useConnections } from '@/domain/connections/composables/useConnections'
-import { ChartBarIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import AddFunnelModal from '@/views/dashboard/modals/AddFunnelModal.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
-import ConnectionIdPicker from '@/domain/connections/components/ConnectionIdPicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
 const router = useRouter()
 const route = useRoute()
 const { selectedDateRange } = useDatePicker()
-const { connections, selectedConnection, listConnections } = useConnections()
 
 const dashboard = ref()
 const loading = ref(true)
@@ -97,7 +90,6 @@ function toggleModal() {
 
 onMounted(() => {
   dashboard.value = dashboards[route.params.dashboard - 1]
-  listConnections()
 })
 
 const dashboards = [
