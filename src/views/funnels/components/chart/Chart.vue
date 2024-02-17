@@ -23,17 +23,17 @@
         <div class="flex mb-0.5">
             <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
-                <div v-for="value in data" class="flex-1 flex text-sm">{{ value ? value : 0 }} page views</div>
+                <div v-for="(value, index) in data" class="flex-1 flex text-sm">{{ value ? value : 0 }} conversions ({{ conversions[index] }}%)</div>
             </div>
         </div>
 
         <!-- Conversion rate: E.g., "100%" -->
-        <div class="flex">
+        <!-- <div class="flex">
             <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
-                <div v-for="conversion in conversions" class="flex-1 flex text-sm first:opacity-0">{{ conversion }}% conversion</div>
+                <div v-for="conversion in conversions" class="flex-1 flex text-sm first:opacity-0">{{ conversion }}% CR</div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
