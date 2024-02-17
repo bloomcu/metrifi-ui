@@ -387,7 +387,7 @@ function runReport() {
 
         // Set total for this step
         let report = response.data.data
-        console.log(report)
+        // console.log(report)
         step.total = report.total
         stepsProcessed++;
         

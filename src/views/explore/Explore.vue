@@ -186,6 +186,7 @@ function fetchPageViews() {
       return
     }
     loading.value = false
+    // console.log(response.data.data)
     report.value = response.data.data
   })
 }
@@ -200,6 +201,7 @@ function fetchOutboundClicks() {
       return
     }
     loading.value = false
+    // console.log(response.data.data)
     report.value = response.data.data
   })
 }
@@ -245,7 +247,10 @@ function downloadCSV() {
 
 const dictionary = {
   pagePath: {
-    displayName: 'Page',
+    displayName: 'Page path',
+  },
+  pagePathPlusQueryString: {
+    displayName: 'Page path + query string',
   },
   screenPageViews: {
     displayName: 'Views',
@@ -255,9 +260,6 @@ const dictionary = {
   },
   linkDomain: {
     displayName: 'Domain',
-  },
-  pagePath: {
-    displayName: 'Source page',
   },
   eventCount: {
     displayName: 'Clicks',
