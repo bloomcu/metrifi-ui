@@ -22,7 +22,7 @@
         <ConnectionIdPicker v-model="funnel.connection_id" :connections="connections" @update:modelValue="updateFunnelConnection" class="w-56"/>
 
         <!-- Datepicker -->
-        <DatePicker />
+        <DatePicker/>
 
         <!-- Zoom -->
         <Zoom v-model="funnel.zoom" @update:modelValue="updateFunnel"/>
