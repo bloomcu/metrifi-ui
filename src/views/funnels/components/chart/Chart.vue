@@ -2,9 +2,9 @@
     <div class="flex flex-col w-full">
         <div class="relative flex h-[400px]">
             <div class="absolute w-full h-full flex flex-col justify-between">
-                <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" :percentage="percentage" />
+                <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
             </div>
-            <div class="flex-[0.5]" />
+            <!-- <div class="flex-[0.5]" /> -->
             <div class="flex flex-[8] gap-3 z-0">
                 <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="zoom"/>
             </div>
@@ -13,7 +13,7 @@
 
         <!-- Label: E.g., "Homepage" -->
         <div class="flex mb-0.5">
-            <div class="flex-[0.5]"/>
+            <!-- <div class="flex-[0.5]"/> -->
             <div class="flex flex-[8] gap-3">
                 <ChartLabel v-for="(label, index) in labels" :name="label" />
             </div>
@@ -21,7 +21,7 @@
 
         <!-- Metric: E.g., "1,000 Page views" -->
         <div class="flex mb-0.5">
-            <div class="flex-[0.5]"/>
+            <!-- <div class="flex-[0.5]"/> -->
             <div class="flex flex-[8] gap-3">
                 <div v-for="(value, index) in data" class="flex-1 flex text-sm">{{ value ? value : 0 }} conversions ({{ conversions[index] }}%)</div>
             </div>
