@@ -375,8 +375,8 @@ function runReport() {
     // Report outbound clicks
     if (step.measurables[0].metric === 'outboundClicks') {
       gaDataApi.fetchOutboundClicksByPagePath(funnel.value.connection_id, {
-        startDate: '28daysAgo',
-        endDate: 'yesterday',
+        startDate: selectedDateRange.value.startDate,
+        endDate: selectedDateRange.value.endDate,
         pagePath: step.measurables[0].pagePath,
         outboundLinkUrls: step.measurables.map(measurable => measurable.measurable),
       }).then(response => {
