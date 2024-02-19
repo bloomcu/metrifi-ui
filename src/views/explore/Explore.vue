@@ -37,6 +37,9 @@
         </div>
       </div>
 
+      <!-- Search -->
+      <AppInput v-model="searchInput" placeholder="Search..." class="mb-4"></AppInput>
+
       <!-- Table -->
       <table v-if="!loading && report.rows" class="min-w-full max-w-full divide-y divide-gray-300">
         <thead>
@@ -52,7 +55,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr v-for="row in report.rows" class="divide-x divide-gray-200 hover:bg-gray-50">
+          <tr v-for="row in filteredReportRows" class="divide-x divide-gray-200 hover:bg-gray-50">
             <td v-for="value in row.dimensionValues" class="py-3 px-4 text-sm text-gray-500 break-all">{{ value.value }}</td>
             <td v-for="value in row.metricValues" class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ value.value }}</td>
           </tr>
@@ -110,7 +113,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
@@ -142,6 +145,16 @@ const requests = ref([
 ])
 
 const selectedRequest = ref(requests.value[0])
+
+const searchInput = ref('')
+
+const filteredReportRows = computed(() => {
+  return report.value.rows.filter(row => {
+    if (JSON.stringify(row.dimensionValues).includes(searchInput.value)) {
+      return row
+    }
+  })
+})
 
 function runReport() {
   loading.value = true
