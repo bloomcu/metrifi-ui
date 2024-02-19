@@ -16,7 +16,7 @@
             v-for="option in dateRangeOptions" 
             @click="selectDateRange(option)"
             :class="selectedDateRange.label == option.label ? 'bg-gray-50 text-indigo-600' : ''" 
-            class="w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+            class="w-[10em] mb-1 text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
           >
             {{ option.label }}
           </button>
