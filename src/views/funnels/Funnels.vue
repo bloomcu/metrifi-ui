@@ -98,6 +98,38 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- State: Loading -->
+    <div v-else-if="isLoading" class="animate-pulse space-y-4">
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+    </div>
     
     <!-- Empty state: No funnels -->
     <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
@@ -127,6 +159,7 @@ const router = useRouter()
 const { organization, showOrganization } = useOrganizations()
 
 const funnels = ref()
+const isLoading = ref(false)
 const isModalOpen = ref(false)
 const isAutomating = ref(false)
 const automationError = ref()
@@ -162,7 +195,10 @@ function pollOrganization() {
 }
 
 function indexFunnels() {
+  isLoading.value = true
+
   funnelApi.index(route.params.organization).then(response => {
+    isLoading.value = false
     funnels.value = response.data.data
     pollOrganization()
   })
