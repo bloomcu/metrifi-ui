@@ -20,7 +20,7 @@
               <!-- Sidebar component, swap this element with another sidebar if you like -->
               <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <div class="flex h-16 shrink-0 items-center">
-                  <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+                  <img width="100" src="/logo.svg" alt="MetriFi" />
                 </div>
                 <nav class="flex flex-1 flex-col">
                   <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -65,7 +65,7 @@
       <!-- Sidebar -->
       <div class="flex grow flex-col gap-y-3 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
         <div class="flex h-16 shrink-0 items-center">
-          <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+          <img width="120" src="/logo.svg" alt="MetriFi" />
         </div>
         <nav class="flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-5">
