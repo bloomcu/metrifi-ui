@@ -31,7 +31,7 @@
                 </template> -->
                 <template v-for="(value, index) in data">
                     <div class="flex-1 flex text-sm">
-                        {{ value }} {{ index == 0 ? '' : 'conversions' }} 
+                        {{ value }} {{ index == 0 ? 'pageviews' : 'conversions' }} 
                         <span :class="index == 0 ? 'invisible' : ''"  class="ml-1">({{ conversions[index] }}%)</span>
                     </div>
                 </template>
@@ -77,13 +77,18 @@ const conversions = computed(() => {
 
     steps.forEach((step, index) => {
         let cr = (steps[index + 1]?.total / step.total)
-
-        if (isNaN(cr)) return
         
-        if (cr === Infinity) {
-            array.push(0)
+        if (cr === Infinity || isNaN(cr)) {
+            array.push('0.00')
             return
         }
+
+        // if (isNaN(cr)) return
+        
+        // if (cr === Infinity) {
+        //     array.push(0)
+        //     return
+        // }
 
         let formatted = cr * 100 // Get a percentage
             formatted = formatted.toFixed(2) // Round to 2 decimal places
