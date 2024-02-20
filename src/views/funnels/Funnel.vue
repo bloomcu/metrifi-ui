@@ -343,6 +343,7 @@ function runReport() {
   // Iterate each step
   let stepsProcessed = 0
   funnel.value.steps.forEach((step) => {
+    
     if (!step.measurables.length) { 
       step.total = '0'
       return
@@ -362,7 +363,7 @@ function runReport() {
 
         // Set total for this step
         let report = response.data.data
-        step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : '0'
+        step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
         stepsProcessed++;
         
         if (stepsProcessed === funnel.value.steps.length) {
