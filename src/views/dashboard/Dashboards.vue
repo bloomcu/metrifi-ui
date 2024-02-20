@@ -13,27 +13,8 @@
       </div> -->
     </template>
 
-    <div v-if="true">
-      <!-- Tabs -->
-      <!-- <div class="sm:hidden mb-6">
-        <select @change="" id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          <option v-for="request in requests" :key="request.name" :selected="selectedRequest.report == request.report">{{ request.name }}</option>
-        </select>
-      </div>
-      <div class="hidden sm:block mb-6">
-        <div class="flex justify-between border-b border-gray-200">
-          <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-            <button v-for="request in requests" :key="request.name" @click="selectedRequest = request" :class="selectedRequest.report == request.report ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
-              <component :is="request.icon" :class="selectedRequest == request ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-              <span>{{ request.name }}</span>
-            </button>
-          </nav>
-          <div v-if="report & report.rows" class="text-gray-400 text-sm">Showing {{ report.rows.length }} of {{ report.rowCount }} results</div>
-        </div>
-      </div> -->
-
-      <!-- Grid -->
-      <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-6">
+    <!-- Grid -->
+    <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-6">
         <div 
           v-for="dashboard in dashboards" 
           @click="router.push({name: 'dashboard', params: {dashboard: dashboard.id}})" 
@@ -82,7 +63,6 @@
         <h2 class="mt-2 text-lg font-medium text-gray-900">No results</h2>
         <p class="mt-1 text-gray-500">Try extending the date range</p>
       </div>
-    </div> <!-- End state: Report exists -->
 
     <!-- State: Loading -->
     <div v-if="false" class="animate-pulse space-y-4">
