@@ -22,7 +22,7 @@
         <ConnectionIdPicker v-model="funnel.connection_id" :connections="connections" @update:modelValue="updateFunnelConnection" class="w-56"/>
 
         <!-- Datepicker -->
-        <DatePicker />
+        <DatePicker/>
 
         <!-- Zoom -->
         <Zoom v-model="funnel.zoom" @update:modelValue="updateFunnel"/>
@@ -103,25 +103,40 @@
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
             <!-- Measurables -->
-            <div v-for="(m, index) in activeStep.measurables" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
-              <div class="flex flex-row items-center justify-between">
-                <!-- <ConnectionIdPicker v-model="m.connection_id" :connections="connections" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/> -->
-                <MetricPicker v-model="m.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
-                <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
-                  <TrashIcon class="h-5 w-5 shrink-0" />
-                </button>
+            <template v-for="(measurable, index) in activeStep.measurables">
+              <!-- Pageviews metrics -->
+              <div v-if="measurable.metric === 'pageViews'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+                <div class="flex flex-row items-center justify-between">
+                  <!-- <ConnectionIdPicker v-model="m.connection_id" :connections="connections" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/> -->
+                  <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
+                  <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                    <TrashIcon class="h-5 w-5 shrink-0" />
+                  </button>
+                </div>
+                <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path..."/>
               </div>
-              
-              <AppInput v-model="m.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Enter a page path..."/>
-            </div>
 
+              <!-- Outbound clicks metrics -->
+              <div v-if="measurable.metric === 'outboundClicks'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+                <div class="flex flex-row items-center justify-between">
+                  <!-- <ConnectionIdPicker v-model="m.connection_id" :connections="connections" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/> -->
+                  <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
+                  <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                    <TrashIcon class="h-5 w-5 shrink-0" />
+                  </button>
+                </div>
+                <AppInput v-model="measurable.pagePath" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Source page path"/>
+                <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Outbound url"/>
+              </div>
+            </template>
+            
             <!-- Add measurable -->
             <button @click="addMeasurable(activeStep)" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
               Add metric
             </button>
 
-            <!-- <pre>{{ activeStep.measurables }}</pre> -->
+            <!-- <pre>{{ activeStep }}</pre> -->
           </div>
         </div>
       </aside>
@@ -260,10 +275,12 @@ provide('errorGeneratingSteps', errorGeneratingSteps)
 
 const overallConversionRateComputed = computed(() => {
   let steps = funnel.value.steps
-  if (!steps.length) return 0
+  if (!steps.length) return '0.00'
   
-  let ocr = (steps[steps.length - 1].total / steps[0].total)
-  if (!ocr || ocr === Infinity) return 0
+  let lastStep = steps[steps.length - 1]
+  let firstStep = steps[0]
+  let ocr = (lastStep.total / firstStep.total)
+  if (!ocr || ocr === Infinity) return '0.00'
 
   let formatted = ocr * 100 // Get a percentage
       formatted = formatted.toFixed(2) // Round to 2 decimal places
@@ -323,36 +340,65 @@ function runReport() {
 
   isReporting.value = true
 
-  let stepsProcessed = 0
-
   // Iterate each step
+  let stepsProcessed = 0
   funnel.value.steps.forEach((step) => {
+
     if (!step.measurables.length) { 
       step.total = '0'
       return
     }
 
-    // Hit GA
-    gaDataApi.fetchPageViews(funnel.value.connection_id, {
-      startDate: selectedDateRange.value.startDate,
-      endDate: selectedDateRange.value.endDate,
-      pagePaths: step.measurables.map(measurable => measurable.measurable),
-    }).then(response => {
-      if (response.data.data.error) {
-        console.log(response.data.data.error)
-        return
-      }
+    // Report: Page views
+    if (step.measurables[0].metric === 'pageViews') {
+      gaDataApi.fetchPageViews(funnel.value.connection_id, {
+        startDate: selectedDateRange.value.startDate,
+        endDate: selectedDateRange.value.endDate,
+        pagePaths: step.measurables.map(measurable => measurable.measurable),
+      }).then(response => {
+        if (response.data.data.error) {
+          console.log(response.data.data.error)
+          return
+        }
 
-      // Set total for this step
-      let report = response.data.data
-      step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : '0'
-      stepsProcessed++;
-      
-      if (stepsProcessed === funnel.value.steps.length) {
-        isLoading.value = false
-        stepsProcessed = 0
-      }
-    }) // End GA request
+        // Set total for this step
+        let report = response.data.data
+        step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
+        stepsProcessed++;
+        
+        if (stepsProcessed === funnel.value.steps.length) {
+          isLoading.value = false
+          stepsProcessed = 0
+        }
+      }) // End GA page views report
+    }
+
+    // Report outbound clicks
+    if (step.measurables[0].metric === 'outboundClicks') {
+      gaDataApi.fetchOutboundClicksByPagePath(funnel.value.connection_id, {
+        startDate: selectedDateRange.value.startDate,
+        endDate: selectedDateRange.value.endDate,
+        pagePath: step.measurables[0].pagePath,
+        outboundLinkUrls: step.measurables.map(measurable => measurable.measurable),
+      }).then(response => {
+        if (response.data.data.error) {
+          console.log(response.data.data.error)
+          return
+        }
+
+        // Set total for this step
+        let report = response.data.data
+        // console.log(report)
+        step.total = report.total
+        stepsProcessed++;
+        
+        if (stepsProcessed === funnel.value.steps.length) {
+          isLoading.value = false
+          stepsProcessed = 0
+        }
+      }) // End GA outbound clicks report
+    }
+    
   }) // End foreach on funnel steps
 
   setTimeout(() => isReporting.value = false, 800)
@@ -392,7 +438,8 @@ function addMeasurable(step) {
   step.measurables.push({
     connection_id: selectedConnection.value.id,
     metric: 'pageViews', 
-    measurable: ''
+    pagePath:'',
+    measurable: '',
   })
 }
 

@@ -19,23 +19,14 @@ const gaDataApi = {
     return await HttpClient.post(`/ga/outbound-clicks/${connectionId}`, request)
   },
 
-  // /**
-  //  * Run a Google Analytics report.
-  //  *
-  //  * @return promise
-  //  */
-  // async runReport(connectionId, request) {
-  //   return await HttpClient.post(`/ga/report/${connectionId}`, request)
-  // },
-
-  // /**
-  //  * Export a Google Analytics report.
-  //  *
-  //  * @return promise
-  //  */
-  // async exportReport(connectionId, request) {
-  //   return await HttpClient.post(`/ga/export/${connectionId}`, request)
-  // },
+  /**
+   * Fetch outbound clicks by page path
+   *
+   * @return promise
+   */
+  async fetchOutboundClicksByPagePath(connectionId, request) {
+    return await HttpClient.post(`/ga/outbound-clicks-by-page-path/${connectionId}`, request)
+  },
 }
 
 export { gaDataApi }

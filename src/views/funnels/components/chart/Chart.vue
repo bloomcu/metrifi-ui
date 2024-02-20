@@ -2,9 +2,9 @@
     <div class="flex flex-col w-full">
         <div class="relative flex h-[400px]">
             <div class="absolute w-full h-full flex flex-col justify-between">
-                <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" :percentage="percentage" />
+                <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
             </div>
-            <div class="flex-[0.5]" />
+            <!-- <div class="flex-[0.5]" /> -->
             <div class="flex flex-[8] gap-3 z-0">
                 <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="zoom"/>
             </div>
@@ -13,7 +13,7 @@
 
         <!-- Label: E.g., "Homepage" -->
         <div class="flex mb-0.5">
-            <div class="flex-[0.5]"/>
+            <!-- <div class="flex-[0.5]"/> -->
             <div class="flex flex-[8] gap-3">
                 <ChartLabel v-for="(label, index) in labels" :name="label" />
             </div>
@@ -21,19 +21,34 @@
 
         <!-- Metric: E.g., "1,000 Page views" -->
         <div class="flex mb-0.5">
-            <div class="flex-[0.5]"/>
+            <!-- <div class="flex-[0.5]"/> -->
             <div class="flex flex-[8] gap-3">
-                <div v-for="value in data" class="flex-1 flex text-sm">{{ value ? value : 0 }} page views</div>
+                <!-- <template v-for="(value, index) in data">
+                    <div :class="index == 0 ? 'invisible' : ''" class="flex-1 flex text-sm">
+                        {{ value }} conversions 
+                        <span class="ml-1">({{ conversions[index] }}%)</span>
+                    </div>
+                </template> -->
+                <template v-for="(value, index) in data">
+                    <div class="flex-1 flex text-sm">
+                        {{ value }} {{ index == 0 ? 'pageviews' : 'conversions' }} 
+                        <span :class="index == 0 ? 'invisible' : ''"  class="ml-1">({{ conversions[index] }}%)</span>
+                    </div>
+                </template>
+                <!-- <div v-for="(value, index) in data" class="flex-1 flex text-sm">
+                    {{ value }} conversions 
+                    <span v-if="conversions[index]" class="ml-1">({{ conversions[index] }}%)</span>
+                </div> -->
             </div>
         </div>
 
         <!-- Conversion rate: E.g., "100%" -->
-        <div class="flex">
+        <!-- <div class="flex">
             <div class="flex-[0.5]"/>
             <div class="flex flex-[8] gap-3">
-                <div v-for="conversion in conversions" class="flex-1 flex text-sm first:opacity-0">{{ conversion }}% conversion</div>
+                <div v-for="conversion in conversions" class="flex-1 flex text-sm first:opacity-0">{{ conversion }}% CR</div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -62,13 +77,18 @@ const conversions = computed(() => {
 
     steps.forEach((step, index) => {
         let cr = (steps[index + 1]?.total / step.total)
-
-        if (isNaN(cr)) return
         
-        if (cr === Infinity) {
-            array.push(0)
+        if (cr === Infinity || isNaN(cr)) {
+            array.push('0.00')
             return
         }
+
+        // if (isNaN(cr)) return
+        
+        // if (cr === Infinity) {
+        //     array.push(0)
+        //     return
+        // }
 
         let formatted = cr * 100 // Get a percentage
             formatted = formatted.toFixed(2) // Round to 2 decimal places
