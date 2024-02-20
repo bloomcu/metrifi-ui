@@ -23,7 +23,22 @@
         <div class="flex mb-0.5">
             <!-- <div class="flex-[0.5]"/> -->
             <div class="flex flex-[8] gap-3">
-                <div v-for="(value, index) in data" class="flex-1 flex text-sm">{{ value ? value : 0 }} conversions ({{ conversions[index] }}%)</div>
+                <!-- <template v-for="(value, index) in data">
+                    <div :class="index == 0 ? 'invisible' : ''" class="flex-1 flex text-sm">
+                        {{ value }} conversions 
+                        <span class="ml-1">({{ conversions[index] }}%)</span>
+                    </div>
+                </template> -->
+                <template v-for="(value, index) in data">
+                    <div class="flex-1 flex text-sm">
+                        {{ value }} {{ index == 0 ? '' : 'conversions' }} 
+                        <span :class="index == 0 ? 'invisible' : ''"  class="ml-1">({{ conversions[index] }}%)</span>
+                    </div>
+                </template>
+                <!-- <div v-for="(value, index) in data" class="flex-1 flex text-sm">
+                    {{ value }} conversions 
+                    <span v-if="conversions[index]" class="ml-1">({{ conversions[index] }}%)</span>
+                </div> -->
             </div>
         </div>
 
