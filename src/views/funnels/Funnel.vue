@@ -275,12 +275,12 @@ provide('errorGeneratingSteps', errorGeneratingSteps)
 
 const overallConversionRateComputed = computed(() => {
   let steps = funnel.value.steps
-  if (!steps.length) return 0
+  if (!steps.length) return '0.00'
   
   let lastStep = steps[steps.length - 1]
   let firstStep = steps[0]
   let ocr = (lastStep.total / firstStep.total)
-  if (!ocr || ocr === Infinity) return 0
+  if (!ocr || ocr === Infinity) return '0.00'
 
   let formatted = ocr * 100 // Get a percentage
       formatted = formatted.toFixed(2) // Round to 2 decimal places
@@ -343,7 +343,7 @@ function runReport() {
   // Iterate each step
   let stepsProcessed = 0
   funnel.value.steps.forEach((step) => {
-    
+
     if (!step.measurables.length) { 
       step.total = '0'
       return
