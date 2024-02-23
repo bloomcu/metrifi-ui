@@ -140,7 +140,7 @@
     
     <!-- <pre>Organization: {{ organization }}</pre> -->
 
-    <GenerateFunnelsModal :open="isModalOpen" @done="indexFunnels()"/>
+    <GenerateFunnelsModal :open="isModalOpen" @done="loadFunnels()"/>
   </LayoutWithSidebar>
 </template>
 
@@ -173,7 +173,7 @@ let pollInterval = 0
 function poll() {
   pollInterval = setTimeout(async() => {
     console.log('Polling...')
-    await indexFunnels()
+    await loadFunnels()
   }, 2000)
 }
 
@@ -194,7 +194,7 @@ function pollOrganization() {
   })
 }
 
-function indexFunnels() {
+function loadFunnels() {
   isLoading.value = true
 
   funnelApi.index(route.params.organization).then(response => {
@@ -207,7 +207,7 @@ function indexFunnels() {
 function storeNewFunnel() {
   funnelApi.store(route.params.organization, {
     name: 'New funnel',
-    description: 'This is the funnel descriptions'
+    description: 'This is the funnel description',
   }).then(response => {
     let funnel = response.data.data
     router.push({ name: 'funnel', params: { funnel: funnel.id } })
@@ -224,6 +224,6 @@ function toggleModal() {
 }
 
 onMounted(() => {
-  indexFunnels()
+  loadFunnels()
 })
 </script>

@@ -1,19 +1,34 @@
 <template>
-  <LayoutWithSidebar v-if="dashboard">
-    <template #topbar>
-      <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">{{ dashboard.name }}</h1>
+  <LayoutDefault v-if="dashboard" width="full" class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="border-b p-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <AppButton :to="{name: 'dashboards'}" variant="tertiary" size="base">
+          <ArrowLeftIcon class="h-5 w-5 shrink-0" />
+        </AppButton>
+
+        <!-- Dashboard name -->
+        <AppInput v-model="dashboard.name" @update:modelValue="updateDashboard"/>
+
+        <!-- Loading/Updating/Reporting indicator -->
+        <svg v-if="isLoading || isReporting || isUpdating" class="inline w-6 h-6 ml-2 text-indigo-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
+          <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+        </svg>
+      </div>
 
       <div class="flex items-center gap-3">
         <!-- Datepicker -->
-        <DatePicker />
+        <DatePicker/>
 
         <!-- Zoom -->
-        <Zoom v-model="dashboard.zoom" @update:modelValue=""/>
+        <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
       </div>
-    </template>
+    </header>
 
-    <div>
-      <div v-for="(funnel, index) in dashboard.funnels" class="mb-6 px-10 pt-6 pb-5 border border-gray-300 rounded-xl shadow-lg bg-white">
+    <!-- Funnels -->
+    <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-6 p-4">
+      <div v-for="(funnel, index) in dashboard.funnels" class="px-10 pt-6 pb-5 border border-gray-200 rounded-xl shadow-lg bg-white">
         <div class="flex items-center justify-between mb-6">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
           <p>Organization: {{ funnel.organization.title }}</p>
@@ -33,28 +48,31 @@
             </div>
 
             <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
-            <AppButton @click="removeFunnel(index)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
+            <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
             <AppButton v-if="funnel.organization.title == 'BloomCU'" @click="router.push({name: 'funnel', params: {funnel: 1}})" variant="secondary" class="mt-2 text-xs">Edit</AppButton>
           </div>
         </div>
       </div>
+
+      <!-- Add a funnel -->
+      <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-2xl py-12 px-2 cursor-pointer hover:bg-indigo-50">
+        <h2 class="mt-2 text-lg font-medium text-indigo-600">Add a funnel</h2>
+      </div>
     </div>
 
-    <!-- Add a funnel -->
-    <div @click="toggleModal()" class="text-center border border-indigo-400 border-dashed rounded-2xl py-12 px-2 cursor-pointer hover:bg-indigo-50">
-      <h2 class="mt-2 text-lg font-medium text-indigo-600">Add a funnel</h2>
-    </div>
-
-    <AddFunnelModal :open="isModalOpen" @done="addFunnel()"/>
-  </LayoutWithSidebar>
+    <AddFunnelModal :open="isModalOpen" @selectFunnel="attachFunnel"/>
+  </LayoutDefault>
 </template>
 
 <script setup>
-import { ref, onMounted, provide } from 'vue'
+import debounce from 'lodash.debounce'
+import { ref, onMounted, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
-import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
-import AddFunnelModal from '@/views/dashboard/modals/AddFunnelModal.vue'
+import { ArrowLeftIcon } from '@heroicons/vue/24/solid'
+import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
+import AddFunnelModal from '@/views/dashboards/modals/AddFunnelModal.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
@@ -64,32 +82,83 @@ const route = useRoute()
 const { selectedDateRange } = useDatePicker()
 
 const dashboard = ref()
-const loading = ref(true)
+const isLoading = ref(false)
+const isUpdating = ref(false)
+const isReporting = ref(false)
 const isModalOpen = ref(false)
 
 provide('isModalOpen', isModalOpen)
 
-function addFunnel() {
-  let id = Math.floor(100000 + Math.random() * 900000)
-  dashboard.value.funnels.push({"winning":false,"overall_conversion_rate":"1.41","organization":{"title":"MetriFi"},"id":id,"user":{"id":1,"name":"Ryan Harmon","email":"john@doe.com","role":"admin","created_at":"2024-01-23T23:47:12.000000Z"},"connection_id":2,"connection":{"id":2,"user":{"id":1,"name":"Ryan Harmon","email":"john@doe.com","role":"admin","created_at":"2024-01-23T23:47:12.000000Z"},"service":"Google Analytics - Property","account_name":"LBSFCU - BloomCU","name":"www.lbsfcu.org - GA4","uid":"properties/358311950","created_at":"2024-01-25T23:54:47.000000Z","updated_at":"2024-02-15T21:27:46.000000Z"},"name":"Checking accounts funnel","description":"This is the funnel descriptions","automating":null,"automation_msg":null,"zoom":50,"steps":[{"id":1443,"order":1,"metric":null,"name":"/","description":null,"measurables":[{"connection_id":null,"metric":"pageViews","measurable":"/"}],"total":"0"},{"id":1444,"order":2,"metric":null,"name":"/accounts/","description":null,"measurables":[{"connection_id":null,"metric":"pageViews","measurable":"/accounts/"}],"total":"0"},{"id":1445,"order":3,"metric":null,"name":"/accounts/checking/","description":null,"measurables":[{"connection_id":null,"metric":"pageViews","measurable":"/accounts/checking/"}],"total":"0"},{"id":1446,"order":4,"metric":null,"name":"/accounts/checking/checking-account/","description":null,"measurables":[{"connection_id":null,"metric":"pageViews","measurable":"/accounts/checking/checking-account/"}],"total":"0"}],"messages":[{"id":146,"funnel_id":578,"type":"info","title":"4 outbound link(s) found for the final step of the funnel.","content":null,"json":{"links":["https://app.loanspq.com/apply.aspx?enc=Kw21Wblm1yxpjJabdoZaD1xi9Nwjs-PrMYcqUlYsJ9P8K02H888Y_xGupLlHU","https://lbsfcu.financialhost.org/registration","https://lbsfcu.financialhost.org/Retrieval/UserName/Consumer/IdentityEstablishment/False","https://app.loanspq.com/apply.aspx?lenderref=LBSFCU&list=xa1sst"],"pagePath":"/accounts/checking/checking-account/"},"created_at":"2024-02-15T18:01:42.000000Z","updated_at":"2024-02-15T18:01:42.000000Z","deleted_at":null}],"created_at":"2024-02-15T17:53:51.000000Z","updated_at":"2024-02-15T18:05:37.000000Z"})
+const updateDashboard = debounce(() => {
+  console.log('Updating dashboard...')
+  isUpdating.value = true
+
+  dashboardApi.update(route.params.organization, route.params.dashboard, {
+    name: dashboard.value.name,
+    description: dashboard.value.description,
+  }).then(() => {
+    setTimeout(() => isUpdating.value = false, 800);
+  })
+}, 800)
+
+function attachFunnel(funnelId) {
+  console.log('Attaching funnel...')
+  isUpdating.value = true
+
+  dashboardApi.attachFunnel(
+    route.params.organization, 
+    route.params.dashboard, 
+    funnelId,
+  ).then(response => {
+    dashboard.value.funnels.push(response.data.data)
+    isUpdating.value = false
+  })
 }
 
-function duplicateFunnel(duplicatedFunnel) {
-  let id = Math.floor(100000 + Math.random() * 900000)
-  duplicatedFunnel.id = id
-  dashboard.value.funnels.push(duplicatedFunnel)
+function detachFunnel(index, funnelId) {
+  console.log('Detaching funnel...')
+  isUpdating.value = true
+
+  dashboardApi.detachFunnel(
+    route.params.organization, 
+    route.params.dashboard, 
+    funnelId,
+  ).then(() => {
+    dashboard.value.funnels.splice(index, 1)
+    isUpdating.value = false
+  })
 }
 
-function removeFunnel(index) {
-  dashboard.value.funnels.splice(index, 1)
-}
+// function duplicateFunnel(duplicatedFunnel) {
+//   let id = Math.floor(100000 + Math.random() * 900000)
+//   duplicatedFunnel.id = id
+//   dashboard.value.funnels.push(duplicatedFunnel)
+// }
 
 function toggleModal() { 
   isModalOpen.value = !isModalOpen.value 
 }
 
+function runReport() {
+  console.log('Running report...')
+}
+
+function loadDashboard() {
+  console.log('Loading dashboard...')
+  
+  dashboardApi.show(route.params.organization, route.params.dashboard).then(response => {
+    dashboard.value = response.data.data
+    runReport()
+  })
+}
+
+watch(selectedDateRange, () => {
+  console.log('Selecting data range...')
+  runReport()
+})
+
 onMounted(() => {
-  dashboard.value = dashboards[route.params.dashboard - 1]
+  loadDashboard()
 })
 
 const dashboards = [

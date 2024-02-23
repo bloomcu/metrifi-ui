@@ -18,7 +18,12 @@
         </thead>
 
         <tbody class="divide-y divide-gray-200">
-          <tr v-for="funnel in filteredFunnels" :key="funnel.id" @click="close()" class="hover:bg-gray-50 cursor-pointer">
+          <tr 
+            v-for="funnel in filteredFunnels" 
+            :key="funnel.id" 
+            @click="selectFunnel(funnel.id)" 
+            class="hover:bg-gray-50 cursor-pointer"
+          >
             <!-- Funnel -->
             <td class="whitespace-nowrap py-4 pl-4 pr-6 text-sm sm:pl-6">
               <div class="flex-auto">
@@ -80,9 +85,9 @@ const filteredFunnels = computed(() => {
   })
 })
 
-function close() {
+function selectFunnel(funnelId) {
   isModalOpen.value = false
-  emit('done')
+  emit('selectFunnel', funnelId)
 }
 
 onMounted(() => {
@@ -93,5 +98,5 @@ onMounted(() => {
   })
 })
 
-const emit = defineEmits(['done'])
+const emit = defineEmits(['selectFunnel'])
 </script>

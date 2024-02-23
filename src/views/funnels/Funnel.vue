@@ -470,11 +470,11 @@ function toggleModal() {
 function loadFunnel() {
   console.log('Loading funnel...')
   
-  funnelApi.show(route.params.organization, route.params.funnel).then(response => {
-    funnel.value = response.data.data
-
-    runReport()
-  })
+  funnelApi.show(route.params.organization, route.params.funnel)
+    .then(response => {
+      funnel.value = response.data.data
+      runReport()
+    })
 }
 
 watch(selectedDateRange, () => {

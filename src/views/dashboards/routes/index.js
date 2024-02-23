@@ -1,5 +1,5 @@
-import Dashboards from '@/views/dashboard/Dashboards.vue'
-import Dashboard from '@/views/dashboard/Dashboard.vue'
+import Dashboards from '@/views/dashboards/Dashboards.vue'
+import Dashboard from '@/views/dashboards/Dashboard.vue'
 
 export default [
   {
