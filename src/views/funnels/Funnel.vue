@@ -171,20 +171,20 @@
           </div>
         </div>
 
-        <div class="flex gap-6 mt-6">
-          <div class="flex-1">
+        <!-- <div class="flex gap-6 mt-6"> -->
+          <!-- <div class="flex-1"> -->
             <Chart :steps="funnel.steps" :zoom="funnel.zoom" />
-          </div>
+          <!-- </div> -->
 
           <!-- Overall -->
-          <div class="w-[14rem]">
-            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
-              <p>Overall</p>
-              <span class="text-3xl font-medium">{{ overallConversionRateComputed }}%</span>
-              <p>conversion rate</p>
-            </div>
-          </div>
-        </div>
+          <!-- <div class="w-[14rem]"> -->
+            <!-- <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4"> -->
+              <!-- <p>Overall</p> -->
+              <!-- <span class="text-3xl font-medium">{{ overallConversionRateComputed }}%</span> -->
+              <!-- <p>conversion rate</p> -->
+            <!-- </div> -->
+          <!-- </div> -->
+        <!-- </div> -->
 
         <!-- Messages -->
         <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
@@ -277,25 +277,8 @@ provide('isModalOpen', isModalOpen)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 
-const overallConversionRateComputed = computed(() => {
-  let steps = funnel.value.steps
-  if (!steps.length) return '0.00'
-  
-  let lastStep = steps[steps.length - 1]
-  let firstStep = steps[0]
-  let ocr = (lastStep.total / firstStep.total)
-  if (!ocr || ocr === Infinity) return '0.00'
-
-  let formatted = ocr * 100 // Get a percentage
-      formatted = formatted.toFixed(2) // Round to 2 decimal places
-      formatted = formatted.substring(0, 4) // Trim to 2 decimal places
-  
-  return formatted
-})
-
 const updateFunnelConnection = (() => {
   console.log('Updating funnel connection...')
-  
   updateFunnel()
   runReport()
 })

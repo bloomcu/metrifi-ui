@@ -1,46 +1,63 @@
 <template>
-    <div class="flex flex-col w-full">
-        <div class="relative flex h-[400px]">
-            <div class="absolute w-full h-full flex flex-col justify-between">
-                <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
-            </div>
-            <!-- <div class="flex-[0.5]" /> -->
-            <div class="flex flex-[8] gap-3 z-0">
-                <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="zoom"/>
-            </div>
-        </div>
-        <div class="h-[10px]" />
-
-        <!-- Label: E.g., "Homepage" -->
-        <div class="flex mb-0.5">
-            <!-- <div class="flex-[0.5]"/> -->
-            <div class="flex flex-[8] gap-3">
-                <ChartLabel v-for="(label, index) in labels" :name="label" />
-            </div>
-        </div>
-
-        <!-- Metric: E.g., "1,000 Page views" -->
-        <div class="flex mb-0.5">
-            <!-- <div class="flex-[0.5]"/> -->
-            <div class="flex flex-[8] gap-3">
-                <template v-for="(value, index) in data">
-                    <div class="flex-1 flex text-sm">
-                        {{ value }} events
+    <div class="flex gap-6 mt-6">
+        <!-- Left -->
+        <div class="flex-1">
+            <!-- Bars -->
+            <div class="flex flex-col w-full">
+                <div class="relative flex h-[400px]">
+                    <div class="absolute w-full h-full flex flex-col justify-between">
+                        <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
                     </div>
-                </template>
+                    <!-- <div class="flex-[0.5]" /> -->
+                    <div class="flex flex-[8] gap-3 z-0">
+                        <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="zoom"/>
+                    </div>
+                </div>
+                <div class="h-[10px]" />
+
+                <!-- Label: E.g., "Homepage" -->
+                <div class="flex mb-0.5">
+                    <!-- <div class="flex-[0.5]"/> -->
+                    <div class="flex flex-[8] gap-3">
+                        <ChartLabel v-for="(label, index) in labels" :name="label" />
+                    </div>
+                </div>
+
+                <!-- Metric: E.g., "1,000 Page views" -->
+                <div class="flex mb-0.5">
+                    <!-- <div class="flex-[0.5]"/> -->
+                    <div class="flex flex-[8] gap-3">
+                        <template v-for="(value, index) in data">
+                            <div class="flex-1 flex text-sm">
+                                {{ value }} events
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Conversion rate: E.g., "100%" -->
+                <div class="flex flex-[8] gap-3">
+                    <!-- <div class="flex-[0.5]"/> -->
+                    <template v-for="(value, index) in data">
+                        <div class="flex-1 flex text-sm first:opacity-0">
+                            {{ conversions[index] }}%
+                        </div>
+                    </template>
+                </div>
             </div>
         </div>
 
-        <!-- Conversion rate: E.g., "100%" -->
-        <div class="flex flex-[8] gap-3">
-            <!-- <div class="flex-[0.5]"/> -->
-            <template v-for="(value, index) in data">
-                <div class="flex-1 flex text-sm first:opacity-0">
-                    {{ conversions[index] }}%
-                </div>
-            </template>
+        <!-- Right -->
+        <div class="w-[14rem]">
+            <!-- Overall conversion rate -->
+            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
+                <p>Overall</p>
+                <span class="text-3xl font-medium">{{ overallConversionRate }}%</span>
+                <p>conversion rate</p>
+            </div>
         </div>
     </div>
+
 </template>
 
 <script setup>
@@ -82,5 +99,21 @@ const conversions = computed(() => {
     })
 
     return array
+})
+
+const overallConversionRate = computed(() => {
+  let steps = props.steps
+  if (!steps.length) return '0.00'
+  
+  let lastStep = steps[steps.length - 1]
+  let firstStep = steps[0]
+  let ocr = (lastStep.total / firstStep.total)
+  if (!ocr || ocr === Infinity) return '0.00'
+
+  let formatted = ocr * 100 // Get a percentage
+      formatted = formatted.toFixed(2) // Round to 2 decimal places
+      formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+  
+  return formatted
 })
 </script>
