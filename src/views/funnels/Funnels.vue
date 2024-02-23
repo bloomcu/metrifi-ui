@@ -41,8 +41,8 @@
     <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
       <thead>
         <tr>
-          <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900 sm:pl-6">Funnel</th>
-          <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Connection</th>
+          <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Funnel</th>
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-semibold text-gray-900">Connection</th>
           <!-- <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Created</th> -->
           <th scope="col" class="py-3.5 text-left text-sm font-semibold text-gray-900">Updated</th>
           <th scope="col" class="py-3.5"></th>
@@ -52,7 +52,7 @@
       <tbody class="divide-y divide-gray-200">
         <tr v-for="funnel in funnels" :key="funnel.id" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" class="hover:bg-gray-50 cursor-pointer">
           <!-- Funnel -->
-          <td class="whitespace-nowrap py-4 pl-4 pr-6 text-sm sm:pl-6">
+          <td class="py-4 pr-4 text-sm sm:pl-6">
             <div class="flex-auto">
               <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
 
@@ -72,7 +72,7 @@
           </td>
 
           <!-- Connection -->
-          <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+          <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
             <div class="flex items-center text-sm mr-2">
               <svg class="w-4 h-4 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
               {{ funnel.connection.name }}
@@ -86,14 +86,17 @@
           </td> -->
 
           <!-- Updated -->
-          <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+          <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
             <p class="mb-0.5">{{ moment(funnel.updated_at).fromNow() }}</p>
             <p class="text-xs">by {{ funnel.user.name }}</p>
           </td>
 
           <!-- Options -->
-          <td scope="col" class="py-4 pr-4 text-right sm:pr-6">
-            <AppButton @click.stop="destroyFunnel(funnel.id)" variant="tertiary">Delete</AppButton>
+          <td scope="col" class="py-4 text-right">
+            <div class="flex gap-2">
+              <AppButton @click.stop="duplicateFunnel(funnel)" variant="secondary">Duplicate</AppButton>
+              <AppButton @click.stop="destroyFunnel(funnel.id)" variant="tertiary">Delete</AppButton>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -217,6 +220,21 @@ function storeNewFunnel() {
 function destroyFunnel(funnelId) {
   funnels.value = funnels.value.filter(funnel => funnel.id !== funnelId)
   funnelApi.destroy(route.params.organization, funnelId)
+}
+
+function duplicateFunnel(funnel) {
+  // TODO: Make a replicate method in the API for this.
+  funnelApi.store(route.params.organization, {
+    name: funnel.name + ' (copy)',
+  }).then(response => {
+
+    let newFunnel = response.data.data
+    funnel.steps.forEach(step => {
+      funnelApi.storeStep(route.params.organization, newFunnel.id, step)
+    })
+
+    router.push({ name: 'funnel', params: { funnel: newFunnel.id } })
+  })
 }
 
 function toggleModal() { 
