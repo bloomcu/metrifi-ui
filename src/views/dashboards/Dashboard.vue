@@ -22,7 +22,7 @@
         <DatePicker/>
 
         <!-- Zoom -->
-        <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
+        <Zoom v-model="zoom"/>
       </div>
     </header>
 
@@ -36,10 +36,13 @@
       <div v-for="(funnel, index) in funnels" class="p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
         <div class="flex items-center justify-between mb-6">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
-          <p>Organization: {{ funnel.organization.title }}</p>
+          <div class="flex gap-4">
+            <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
+            <p class="text-gray-400">Zoom: {{ zoom ? zoom : funnel.zoom }}</p>
+          </div>
         </div>
 
-        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="funnel.zoom" />
+        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="zoom ? zoom : funnel.zoom" />
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
         <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
@@ -76,6 +79,7 @@ const { funnels, pending, completed, active, addFunnel, addJob } = useFunnels()
 const { selectedDateRange } = useDatePicker()
 
 const dashboard = ref()
+const zoom = ref(0)
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
