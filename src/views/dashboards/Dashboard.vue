@@ -28,30 +28,17 @@
 
     <!-- Funnels -->
     <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-6 p-4">
-      <div v-for="(funnel, index) in dashboard.funnels" class="px-10 pt-6 pb-5 border border-gray-200 rounded-xl shadow-lg bg-white">
+      <div v-for="(funnel, index) in dashboard.funnels" class="p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
         <div class="flex items-center justify-between mb-6">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
           <p>Organization: {{ funnel.organization.title }}</p>
         </div>
 
-        <div class="flex gap-6">
-          <div class="flex-1">
-            <Chart :steps="funnel.steps" :zoom="funnel.zoom" />
-          </div>
+        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="funnel.zoom" />
 
-          <!-- Overall -->
-          <div class="w-[14rem]">
-            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
-              <p>Overall</p>
-              <span class="text-3xl font-medium">{{ funnel.overall_conversion_rate }}%</span>
-              <p>conversion rate</p>
-            </div>
-
-            <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
-            <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
-            <AppButton v-if="funnel.organization.title == 'BloomCU'" @click="router.push({name: 'funnel', params: {funnel: 1}})" variant="secondary" class="mt-2 text-xs">Edit</AppButton>
-          </div>
-        </div>
+        <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
+        <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
+        <AppButton v-if="funnel.organization.title == 'BloomCU'" @click="router.push({name: 'funnel', params: {funnel: 1}})" variant="secondary" class="mt-2 text-xs">Edit</AppButton>
       </div>
 
       <!-- Add a funnel -->
