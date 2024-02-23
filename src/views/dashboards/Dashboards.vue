@@ -35,10 +35,10 @@
               <div class="flex items-center gap-2 divide-x">
                 <p class="text-sm text-gray-500">{{ funnel.organization.title }}</p>
 
-                <div class="flex items-center gap-1 pl-2">
+                <!-- <div class="flex items-center gap-1 pl-2">
                   <p :class="funnel.winning ? 'text-emerald-400' : 'text-gray-500'" class="text-base font-medium">{{ funnel.overall_conversion_rate }}%</p>
                   <p class="text-sm text-gray-500">CR</p>
-                </div>
+                </div> -->
               </div>
             </div>
             
