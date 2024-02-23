@@ -33,6 +33,11 @@
       </div>
     </header>
 
+    <!-- <pre>
+      Pending: {{ pending.length }}
+      Completed: {{ completed.length }}
+    </pre> -->
+
     <div class="flex-1 flex flex-col sm:flex-row">
 
       <!-- Left: Funnel steps -->
@@ -241,6 +246,7 @@ import { ref, computed, onMounted, watch, provide } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
+import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useRoute } from 'vue-router'
 // import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
@@ -259,6 +265,7 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const route = useRoute()
 const { selectedDateRange } = useDatePicker()
 const { connections, selectedConnection, listConnections } = useConnections()
+const { funnels, funnel, pending, completed, active, addFunnel, addJob } = useFunnels()
 
 const isModalOpen = ref(false)
 const isLoading = ref(false)
@@ -267,7 +274,7 @@ const isUpdating = ref(false)
 const isGeneratingSteps = ref(false)
 const errorGeneratingSteps = ref()
 
-const funnel = ref()
+// const funnel = ref()
 
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
@@ -316,6 +323,7 @@ const updateStepMeasurables = debounce((step) => {
     measurables: step.measurables,
   }).then(() => {
     // runReport()
+    addJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
@@ -455,13 +463,15 @@ function loadFunnel() {
   
   funnelApi.show(route.params.organization, route.params.funnel)
     .then(response => {
-      funnel.value = response.data.data
+      addFunnel(response.data.data)
+      // funnel.value = response.data.data
       // runReport()
     })
 }
 
 watch(selectedDateRange, () => {
   console.log('Selecting data range...')
+  addJob(funnel.value)
   // runReport()
 })
 

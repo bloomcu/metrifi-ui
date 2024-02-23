@@ -26,10 +26,10 @@
       </div>
     </header>
 
-    <pre>
+    <!-- <pre>
       Pending: {{ pending.length }}
       Completed: {{ completed.length }}
-    </pre>
+    </pre> -->
 
     <!-- Funnels -->
     <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-6 p-4">
@@ -43,10 +43,9 @@
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
         <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
-        <AppButton v-if="funnel.organization.title == 'BloomCU'" @click="router.push({name: 'funnel', params: {funnel: 1}})" variant="secondary" class="mt-2 text-xs">Edit</AppButton>
+        <!-- <AppButton v-if="funnel.organization.title == 'BloomCU'" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" variant="secondary" class="mt-2 text-xs">Edit</AppButton> -->
       </div>
 
-      <!-- Add a funnel -->
       <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-2xl py-12 px-2 cursor-pointer hover:bg-indigo-50">
         <h2 class="mt-2 text-lg font-medium text-indigo-600">Add a funnel</h2>
       </div>
@@ -105,7 +104,7 @@ function attachFunnel(funnelId) {
     route.params.dashboard, 
     funnelId,
   ).then(response => {
-    dashboard.value.funnels.push(response.data.data)
+    addFunnel(response.data.data)
     isUpdating.value = false
   })
 }
@@ -119,7 +118,7 @@ function detachFunnel(index, funnelId) {
     route.params.dashboard, 
     funnelId,
   ).then(() => {
-    dashboard.value.funnels.splice(index, 1)
+    funnels.value.splice(index, 1)
     isUpdating.value = false
   })
 }

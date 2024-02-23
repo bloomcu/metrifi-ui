@@ -1,13 +1,17 @@
 import debounce from 'lodash.debounce'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
+
+const { selectedDateRange } = useDatePicker()
+// console.log(selectedDateRange)
 
 export function useFunnels() {
   // const reports = ref([])
   const funnels = ref([])
   const pending = ref([])
   const completed = ref([])
-  const active = ref({})
+  const active = ref()
 
   const addFunnel = (funnel) => {
     funnels.value.push(funnel)
@@ -19,13 +23,13 @@ export function useFunnels() {
   const addJob = (job) => {
     pending.value.push(job)
     
-    if (Object.keys(active.value).length === 0) {
+    if (!active.value) {
       startNextJob()
     }
   };
 
   const startNextJob = () => {
-    if (Object.keys(active.value).length > 0) {
+    if (active.value) {
       completed.value.push(active.value)
     }
 
@@ -33,12 +37,15 @@ export function useFunnels() {
       active.value = pending.value[0]
       pending.value.shift()
     } else {
-      active.value = {}
+      active.value = null
     }
   };
 
-  const runReport = debounce((funnel) => {
+  const runReport = debounce((job) => {
     console.log('Running report...')
+
+    let funnel = job
+    // console.log(funnel.steps[0].total)
   
     // Iterate each step
     let stepsProcessed = 0
@@ -53,8 +60,8 @@ export function useFunnels() {
       // Report: Page views
       if (step.measurables[0].metric === 'pageViews') {
         gaDataApi.fetchPageViews(funnel.connection_id, {
-          startDate: '7daysAgo',
-          endDate: 'yesterday',
+          startDate: selectedDateRange.value.startDate,
+          endDate: selectedDateRange.value.endDate,
           pagePaths: step.measurables.map(measurable => measurable.measurable),
         }).then(response => {
           if (response.data.data.error) {
@@ -76,8 +83,8 @@ export function useFunnels() {
       // Report outbound clicks
       if (step.measurables[0].metric === 'outboundClicks') {
         gaDataApi.fetchOutboundClicksByPagePath(funnel.connection_id, {
-          startDate: '7daysAgo',
-          endDate: 'yesterday',
+          startDate: selectedDateRange.value.startDate,
+          endDate: selectedDateRange.value.endDate,
           pagePath: step.measurables[0].pagePath,
           outboundLinkUrls: step.measurables.map(measurable => measurable.measurable),
         }).then(response => {
@@ -99,24 +106,29 @@ export function useFunnels() {
       }
     }) // End foreach on funnel steps
     
-    const i = funnels.value.findIndex(f => f.id === funnel.id)
-    funnels.value[i] = funnel
+    // console.log(funnel.steps[0].total)
 
-    startNextJob()  
-  }, 1000)
+    // const i = funnels.value.findIndex(f => f.id === funnel.id)
+    // console.log('i', i)
+    // Object.assign(funnels.value[i], funnel)
+    // funnels.value[i].steps = funnel.steps
+    // console.log('funnels i', funnels.value[i])
+
+    startNextJob()
+  }, 500)
 
   watch(active, (funnel) => {
     // if (job.handler && typeof job.handler === 'function') {
     //   job.handler(() => startNextJob());
     // }
+    // console.log(funnel)
 
-    if (Object.keys(funnel).length === 0) {
+    if (!funnel) {
       startNextJob()
       return
     }
 
     runReport(funnel)
-    
   });
 
   // const getFunnels = () => funnels.value
@@ -125,7 +137,8 @@ export function useFunnels() {
   // const getCompleted = () => completed.value
 
   return { 
-    funnels,
+    funnels: computed(() => funnels.value),
+    funnel: computed(() => funnels.value[0]),
     pending,
     active,
     completed,
