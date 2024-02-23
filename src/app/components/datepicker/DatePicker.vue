@@ -1,12 +1,14 @@
 <template>
-    <AppDropdown>
+    <AppDropdown class="w-[420px]">
       <template #title>
-        <CalendarIcon  class="mr-1.5 h-5 w-5" />
-        {{ selectedDateRange.label }} 
-        <span class="text-gray-400 font-normal ml-1">
-          ({{ moment(selectedDateRange.startDate).format('MMM DD, YYYY') }} - 
-          {{ moment(selectedDateRange.endDate).format('MMM DD, YYYY') }})
-        </span>
+        <div class="flex">
+          <CalendarIcon  class="mr-1.5 h-5 w-5" />
+          {{ selectedDateRange.label }} 
+          <span class="text-gray-400 font-normal ml-1">
+            ({{ moment(selectedDateRange.startDate).format('MMM DD, YYYY') }} - 
+            {{ moment(selectedDateRange.endDate).format('MMM DD, YYYY') }})
+          </span>
+        </div>
         <ChevronDownIcon class="ml-1 h-4 w-4 text-gray-400"/>
       </template>
 
