@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="flex flex-col items-start gap-2 p-3">
+      <div class="flex flex-col items-start overflow-hidden gap-2 p-3">
         <span v-if="pages" v-for="page in filteredPages" @click="input = page.dimensionValues[0].value" class="inline-flex items-center rounded-md cursor-pointer bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10 hover:bg-purple-100">{{ page.dimensionValues[0].value }}</span>
       </div>        
     </div>
