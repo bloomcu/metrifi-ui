@@ -7,12 +7,24 @@
     <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Add funnel</h3>
 
     <div v-if="funnels && funnels.length" >
-      <AppInput v-model="input" placeholder="Search funnels..." class="mb-4"/>
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <AppInput v-model="input" placeholder="Search funnels..." class="w-full"/>
+        <AppButton @click="attachFunnels()" class="w-56" :disabled="!selected.length">
+          Add {{ selected.length ? selected.length : '' }} {{ selected.length > 1 ? 'funnels' : 'funnel' }}
+        </AppButton>
+      </div>
 
       <table class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
         <thead>
           <tr>
-            <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900 sm:pl-6">Funnel</th>
+            <th scope="col" class="py-3.5 pl-4 sm:pl-6">
+              <input 
+                @click="selectAllFunnels()" 
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" 
+                type="checkbox" 
+              />
+            </th>
+            <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Funnel</th>
             <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Connection</th>
           </tr>
         </thead>
@@ -22,10 +34,21 @@
             v-for="funnel in filteredFunnels" 
             :key="funnel.id" 
             @click="selectFunnel(funnel.id)" 
+            :class="selected.includes(funnel.id) ? 'bg-gray-100' : ''"
             class="hover:bg-gray-50 cursor-pointer"
           >
+            <!-- Checkbox -->
+            <td class="py-4 pl-4 sm:pl-6">
+              <input 
+                @select="selectFunnel(funnel.id)" 
+                :checked="selected.includes(funnel.id)" 
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" 
+                type="checkbox" 
+              />
+            </td>
+          
             <!-- Funnel -->
-            <td class="whitespace-nowrap py-4 pl-4 pr-6 text-sm sm:pl-6">
+            <td class="whitespace-nowrap py-4 text-sm">
               <div class="flex-auto">
                 <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
 
@@ -51,6 +74,11 @@
                 {{ funnel.connection.name }}
               </div>
             </td>
+
+            <!-- Attach funnel button -->
+            <!-- <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+              <AppButton @click="attachFunnel(funnel.id)">Add funnel</AppButton>
+            </td> -->
           </tr>
         </tbody>
       </table>
@@ -62,6 +90,7 @@
       <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels</h2>
       <p class="mt-1 text-gray-400">Get started by creating a funnel.</p>
     </div>
+
   </AppModal>
 </template>
 
@@ -75,9 +104,10 @@ const route = useRoute()
 const input = ref('')
 const funnels = ref([])
 const isModalOpen = inject('isModalOpen')
+const selected = ref([])
 
 const filteredFunnels = computed(() => {
-  let term = input.value.toLowerCase()
+  const term = input.value.toLowerCase()
 
   return funnels.value.filter(funnel => {
     return funnel.name.toLowerCase().indexOf(input.value) > -1 ||
@@ -85,9 +115,26 @@ const filteredFunnels = computed(() => {
   })
 })
 
-function selectFunnel(funnelId) {
+function attachFunnels() {
+  emit('attachFunnels', selected.value)
+  selected.value = []
   isModalOpen.value = false
-  emit('selectFunnel', funnelId)
+}
+
+function selectFunnel(funnelId) {
+  const index = selected.value.indexOf(funnelId);
+
+  if (index === -1) {
+    selected.value.push(funnelId);
+  } else {
+    selected.value.splice(index, 1);
+  }
+}
+
+function selectAllFunnels() {
+  selected.value.length == filteredFunnels.value.length ? 
+    selected.value = [] : 
+    selected.value = filteredFunnels.value.map((funnel) => funnel.id)
 }
 
 onMounted(() => {
@@ -98,5 +145,5 @@ onMounted(() => {
   })
 })
 
-const emit = defineEmits(['selectFunnel'])
+const emit = defineEmits(['attachFunnels'])
 </script>

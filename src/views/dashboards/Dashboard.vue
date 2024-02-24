@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <AddFunnelModal :open="isModalOpen" @selectFunnel="attachFunnel"/>
+    <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
   </LayoutDefault>
 </template>
 
@@ -99,16 +99,17 @@ const updateDashboard = debounce(() => {
   })
 }, 800)
 
-function attachFunnel(funnelId) {
+function attachFunnels(funnelIds) {
   console.log('Attaching funnel...')
   isUpdating.value = true
 
-  dashboardApi.attachFunnel(
+  dashboardApi.attachFunnels(
     route.params.organization, 
     route.params.dashboard, 
-    funnelId,
-  ).then(response => {
-    addFunnel(response.data.data)
+    funnelIds,
+  ).then(() => {
+    // loadDashboard()
+    location.reload()
     isUpdating.value = false
   })
 }
@@ -144,13 +145,13 @@ function toggleModal() {
 function loadDashboard() {
   console.log('Loading dashboard...')
   
-  dashboardApi.show(route.params.organization, route.params.dashboard).then(response => {
-    dashboard.value = response.data.data
-    
-    dashboard.value.funnels.forEach(funnel => {
-      addFunnel(funnel)
+  dashboardApi.show(route.params.organization, route.params.dashboard)
+    .then(response => {
+      dashboard.value = response.data.data
+      dashboard.value.funnels.forEach(funnel => {
+        addFunnel(funnel)
+      })
     })
-  })
 }
 
 watch(selectedDateRange, () => {

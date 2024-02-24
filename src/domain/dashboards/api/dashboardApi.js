@@ -62,12 +62,12 @@ const dashboardApi = {
      *
      * @param Integer organization [Id of the dashboard's organization]
      * @param Integer dashboardId [Id of the dashboard to attach to]
-     * @param Integer funnelId [Id of the funnel to attach]
+     * @param Array funnelId [Id of the funnel to attach]
      * @return promise
      */
-    async attachFunnel(organization, dashboardId, funnelId) {
+    async attachFunnels(organization, dashboardId, funnelIds) {
         return await HttpClient.post(`/${organization}/dashboards/${dashboardId}/funnels/attach`, {
-            funnel_id: funnelId
+            funnel_ids: funnelIds
         })
     },
 
@@ -76,7 +76,7 @@ const dashboardApi = {
      *
      * @param Integer organization [Id of the dashboard's organization]
      * @param Integer dashboardId [Id of the dashboard to detach from]
-     * @param Integer funnelId [Id of the funnel to detach]
+     * @param Array funnelId [Id of the funnel to detach]
      * @return promise
      */
     async detachFunnel(organization, dashboardId, funnelId) {
