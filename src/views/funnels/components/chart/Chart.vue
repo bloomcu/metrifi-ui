@@ -40,7 +40,7 @@
                     <!-- <div class="flex-[0.5]"/> -->
                     <template v-for="(value, index) in data">
                         <div class="flex-1 flex text-sm first:opacity-0">
-                            {{ conversions[index] }}%
+                            {{ conversions[index] }}% conversion rate
                         </div>
                     </template>
                 </div>
