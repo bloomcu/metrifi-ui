@@ -13,20 +13,24 @@ const props = defineProps({
 })
 
 const height = computed(() => {
-  if (props.value == 0) {
+  let value = parseFloat(props.value.replace(/,/g, ''))
+  let max = Number(props.max)
+  let zoom = Number(props.zoom)
+  
+  if (value == 0) {
     return 0
   } 
 
   // Set the height to the value divided by the max
-  let h = props.value / props.max
+  let h = value / max
   
   // If the zoom is greater than 0, set the height to the value divided by the max, then multiply by the zoom
-  if (props.zoom > 0) {
-    h = props.value / props.max * props.zoom
+  if (zoom > 0) {
+    h = value / max * zoom
   }
 
   // If the value is greater than 1, set it to 1
-  if (h > 1 || props.value === props.max) {
+  if (h > 1 || value === max) {
     h = 1
   }
 
