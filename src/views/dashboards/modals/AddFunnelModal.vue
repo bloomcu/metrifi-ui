@@ -105,6 +105,11 @@ const selected = ref([])
 // })
 
 const search = debounce(() => {
+  if (!input.value) {
+    listOwnFunnels()
+    return
+  }
+
   console.log('Searching all funnels...')
   isUpdating.value = true
 
@@ -143,15 +148,19 @@ function attachFunnels() {
   isModalOpen.value = false
 }
 
+function listOwnFunnels() {
+  console.log('Listing own funnels...')
+
+  funnelApi.index(route.params.organization).then(response => {
+    funnels.value = response.data.data
+  })
+}
+
 // Watch input and search funnels
 watch(input, search)
 
 onMounted(() => {
-  console.log('Listing funnels...')
-    
-  funnelApi.index(route.params.organization).then(response => {
-    funnels.value = response.data.data
-  })
+  listOwnFunnels()
 })
 
 const emit = defineEmits(['attachFunnels'])
