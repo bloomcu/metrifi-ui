@@ -115,6 +115,17 @@ const funnelApi = {
         // TODO: Instead of params object, let's use the param variable directly
         return await HttpClient.get(`/${organization}/generate/outbound-links/${funnel}`)
     },
+
+    /**
+     * Search all funnels (including public)
+     *
+     * @param Object params [Key/value params to query by]
+     * @param String params.term [Search term to find funnels by]
+     * @return promise
+     */
+    async search(organization, params) {
+        return await HttpClient.get(`/${organization}/funnels-search`, { params: params })
+    },
 }
 
 export { funnelApi }

@@ -189,10 +189,10 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
-  // { name: 'Dashboards', to: { name: 'dashboards'}, icon: Squares2X2Icon},
+  { name: 'Dashboards', to: { name: 'dashboards'}, icon: Squares2X2Icon},
   { name: 'Funnels', to: { name: 'funnels'}, icon: ChartBarIcon},
   { name: 'Reports', to: { name: 'explore' }, icon: MagnifyingGlassIcon},
-  { name: 'Connections', to: { name: 'connections'}, icon: CloudIcon},
+  { name: 'Connection', to: { name: 'connections'}, icon: CloudIcon},
   { name: 'Settings', to: { name: 'settings'}, icon: Cog6ToothIcon},
 ]
 

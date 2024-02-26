@@ -1,76 +1,87 @@
 <template>
-    <div class="flex flex-col w-full">
-        <div class="relative flex h-[400px]">
-            <div class="absolute w-full h-full flex flex-col justify-between">
-                <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
-            </div>
-            <!-- <div class="flex-[0.5]" /> -->
-            <div class="flex flex-[8] gap-3 z-0">
-                <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="zoom"/>
-            </div>
-        </div>
-        <div class="h-[10px]" />
-
-        <!-- Label: E.g., "Homepage" -->
-        <div class="flex mb-0.5">
-            <!-- <div class="flex-[0.5]"/> -->
-            <div class="flex flex-[8] gap-3">
-                <ChartLabel v-for="(label, index) in labels" :name="label" />
-            </div>
-        </div>
-
-        <!-- Metric: E.g., "1,000 Page views" -->
-        <div class="flex mb-0.5">
-            <!-- <div class="flex-[0.5]"/> -->
-            <div class="flex flex-[8] gap-3">
-                <!-- <template v-for="(value, index) in data">
-                    <div :class="index == 0 ? 'invisible' : ''" class="flex-1 flex text-sm">
-                        {{ value }} conversions 
-                        <span class="ml-1">({{ conversions[index] }}%)</span>
+    <div class="flex gap-6 mt-6">
+        <!-- Left -->
+        <div class="flex-1">
+            <!-- Bars -->
+            <div class="flex flex-col w-full">
+                <div class="relative flex h-[400px]">
+                    <div class="absolute w-full h-full flex flex-col justify-between">
+                        <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
                     </div>
-                </template> -->
-                <template v-for="(value, index) in data">
-                    <div class="flex-1 flex text-sm">
-                        {{ value }} {{ index == 0 ? 'pageviews' : 'conversions' }} 
-                        <span :class="index == 0 ? 'invisible' : ''"  class="ml-1">({{ conversions[index] }}%)</span>
+                    <!-- <div class="flex-[0.5]" /> -->
+                    <div class="flex flex-[8] gap-3 z-0">
+                        <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="zoom"/>
                     </div>
-                </template>
-                <!-- <div v-for="(value, index) in data" class="flex-1 flex text-sm">
-                    {{ value }} conversions 
-                    <span v-if="conversions[index]" class="ml-1">({{ conversions[index] }}%)</span>
-                </div> -->
+                </div>
+                <div class="h-[10px]" />
+
+                <!-- Label: E.g., "Homepage" -->
+                <div class="flex mb-0.5">
+                    <!-- <div class="flex-[0.5]"/> -->
+                    <div class="flex flex-[8] gap-3">
+                        <ChartLabel v-for="(label, index) in labels" :name="label" />
+                    </div>
+                </div>
+
+                <!-- Metric: E.g., "1,000 Page views" -->
+                <div class="flex mb-0.5">
+                    <!-- <div class="flex-[0.5]"/> -->
+                    <div class="flex flex-[8] gap-3">
+                        <template v-for="(value, index) in data">
+                            <div class="flex-1 flex text-sm">
+                                {{ value }} events
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Conversion rate: E.g., "100%" -->
+                <div class="flex flex-[8] gap-3">
+                    <!-- <div class="flex-[0.5]"/> -->
+                    <template v-for="(value, index) in data">
+                        <div class="flex-1 flex text-sm first:opacity-0">
+                            {{ conversions[index] }}% conversion rate
+                        </div>
+                    </template>
+                </div>
             </div>
         </div>
 
-        <!-- Conversion rate: E.g., "100%" -->
-        <!-- <div class="flex">
-            <div class="flex-[0.5]"/>
-            <div class="flex flex-[8] gap-3">
-                <div v-for="conversion in conversions" class="flex-1 flex text-sm first:opacity-0">{{ conversion }}% CR</div>
+        <!-- Right -->
+        <div class="w-[14rem]">
+            <!-- Overall conversion rate -->
+            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
+                <p>Overall</p>
+                <span class="text-3xl font-medium">{{ overallConversionRate }}%</span>
+                <p>conversion rate</p>
             </div>
-        </div> -->
+        </div>
     </div>
+
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+// import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
 import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
 import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
 
 const props = defineProps({
-    steps: Array,
+    funnel: Object,
+    startDate: String,
+    endDate: String,
     zoom: Number,
 })
 
-const labels = computed(() => props.steps.map(step => step.name))
+const isReporting = ref(false)
 
-const data = computed(() => props.steps.map(step => Number(step.total).toLocaleString()))
-
-const maxValue = computed(() => Math.max(...props.steps.map((step) => step.total)))
+const labels = computed(() => props.funnel.steps.map(step => step.name))
+const data = computed(() => props.funnel.steps.map(step => Number(step.total).toLocaleString()))
+const maxValue = computed(() => Math.max(...props.funnel.steps.map((step) => step.total)))
 
 const conversions = computed(() => {
-    let steps = props.steps
+    let steps = props.funnel.steps
 
     let array = []
         array.push(100) // First conversion rate is always 100%
@@ -83,13 +94,6 @@ const conversions = computed(() => {
             return
         }
 
-        // if (isNaN(cr)) return
-        
-        // if (cr === Infinity) {
-        //     array.push(0)
-        //     return
-        // }
-
         let formatted = cr * 100 // Get a percentage
             formatted = formatted.toFixed(2) // Round to 2 decimal places
             formatted = formatted.substring(0, 4) // Trim to 2 decimal places
@@ -99,4 +103,112 @@ const conversions = computed(() => {
 
     return array
 })
+
+const overallConversionRate = computed(() => {
+  let steps = props.funnel.steps
+  if (!steps.length) return '0.00'
+  
+  let lastStep = steps[steps.length - 1]
+  let firstStep = steps[0]
+  let ocr = (lastStep.total / firstStep.total)
+  if (!ocr || ocr === Infinity) return '0.00'
+
+  let formatted = ocr * 100 // Get a percentage
+      formatted = formatted.toFixed(2) // Round to 2 decimal places
+      formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+  
+  return formatted
+})
+
+// watch(props.funnel.steps, (old, newValue) => {
+//     console.log(
+//         "Watch props.selected function called with args:",
+//         old,
+//         newValue
+//     );
+// }, { deep: true });
+
+// watch(() => props.funnel, 
+//   (funnel) => {
+//     funnel.steps.forEach((step) => {
+//       console.log(step)
+//     })
+//   },
+//   {deep: true}
+// );
+
+// function runReport() {
+//   console.log('Running report...')
+//   let funnel = props.funnel
+
+//   if (!funnel.steps.length) return
+
+//   isReporting.value = true
+
+//   // Iterate each step
+//   let stepsProcessed = 0
+//   funnel.steps.forEach((step) => {
+
+//     if (!step.measurables.length) { 
+//       step.total = '0'
+//       return
+//     }
+
+//     // Report: Page views
+//     if (step.measurables[0].metric === 'pageViews') {
+//       gaDataApi.fetchPageViews(funnel.connection_id, {
+//         startDate: props.startDate,
+//         endDate: props.endDate,
+//         pagePaths: step.measurables.map(measurable => measurable.measurable),
+//       }).then(response => {
+//         if (response.data.data.error) {
+//           console.log(response.data.data.error)
+//           return
+//         }
+
+//         // Set total for this step
+//         let report = response.data.data
+//         step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
+//         stepsProcessed++;
+        
+//         if (stepsProcessed === funnel.steps.length) {
+//             // isReporting.value = false
+//             stepsProcessed = 0
+//         }
+//       }) // End GA page views report
+//     }
+
+//     // Report outbound clicks
+//     if (step.measurables[0].metric === 'outboundClicks') {
+//       gaDataApi.fetchOutboundClicksByPagePath(funnel.connection_id, {
+//         startDate: props.startDate,
+//         endDate: props.endDate,
+//         pagePath: step.measurables[0].pagePath,
+//         outboundLinkUrls: step.measurables.map(measurable => measurable.measurable),
+//       }).then(response => {
+//         if (response.data.data.error) {
+//           console.log(response.data.data.error)
+//           return
+//         }
+
+//         // Set total for this step
+//         let report = response.data.data
+//         // console.log(report)
+//         step.total = report.total
+//         stepsProcessed++;
+        
+//         if (stepsProcessed === funnel.steps.length) {
+//         //   isReporting.value = false
+//           stepsProcessed = 0
+//         }
+//       }) // End GA outbound clicks report
+//     }
+//   }) // End foreach on funnel steps
+
+//   setTimeout(() => isReporting.value = false, 800)
+// }
+
+// onMounted(() => {
+//   runReport()
+// })
 </script>

@@ -31,6 +31,8 @@ const zoomOptions = [
     {label: 'No zoom', value: 0},
     {label: 'Zoom: 5', value: 5},
     {label: 'Zoom: 10', value: 10},
+    {label: 'Zoom: 15', value: 15},
+    {label: 'Zoom: 20', value: 20},
     {label: 'Zoom: 25', value: 25},
     {label: 'Zoom: 50', value: 50},
     {label: 'Zoom: 75', value: 75},

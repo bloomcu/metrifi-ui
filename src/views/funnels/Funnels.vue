@@ -6,7 +6,7 @@
         <AppButton @click="storeNewFunnel" variant="secondary">
           Create blank funnel
         </AppButton>
-        <AppButton @click="toggleModal()">
+        <AppButton @click="toggleModal()" :disabled="isAutomating">
           <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></svg>
           Generate funnels with AI
         </AppButton>
@@ -41,8 +41,8 @@
     <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
       <thead>
         <tr>
-          <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900 sm:pl-6">Funnel</th>
-          <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Connection</th>
+          <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Funnel</th>
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-semibold text-gray-900">Connection</th>
           <!-- <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Created</th> -->
           <th scope="col" class="py-3.5 text-left text-sm font-semibold text-gray-900">Updated</th>
           <th scope="col" class="py-3.5"></th>
@@ -52,7 +52,7 @@
       <tbody class="divide-y divide-gray-200">
         <tr v-for="funnel in funnels" :key="funnel.id" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" class="hover:bg-gray-50 cursor-pointer">
           <!-- Funnel -->
-          <td class="whitespace-nowrap py-4 pl-4 pr-6 text-sm sm:pl-6">
+          <td class="py-4 pr-4 text-sm sm:pl-6">
             <div class="flex-auto">
               <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
 
@@ -72,7 +72,7 @@
           </td>
 
           <!-- Connection -->
-          <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+          <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
             <div class="flex items-center text-sm mr-2">
               <svg class="w-4 h-4 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
               {{ funnel.connection.name }}
@@ -86,14 +86,17 @@
           </td> -->
 
           <!-- Updated -->
-          <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+          <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
             <p class="mb-0.5">{{ moment(funnel.updated_at).fromNow() }}</p>
             <p class="text-xs">by {{ funnel.user.name }}</p>
           </td>
 
           <!-- Options -->
-          <td scope="col" class="py-4 pr-4 text-right sm:pr-6">
-            <AppButton @click.stop="destroyFunnel(funnel.id)" variant="tertiary">Delete</AppButton>
+          <td scope="col" class="py-4 text-right">
+            <div class="flex gap-2">
+              <AppButton @click.stop="duplicateFunnel(funnel)" variant="secondary">Duplicate</AppButton>
+              <AppButton @click.stop="destroyFunnel(funnel.id)" variant="tertiary">Delete</AppButton>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -140,7 +143,7 @@
     
     <!-- <pre>Organization: {{ organization }}</pre> -->
 
-    <GenerateFunnelsModal :open="isModalOpen" @done="indexFunnels()"/>
+    <GenerateFunnelsModal :open="isModalOpen" @done="loadFunnels()"/>
   </LayoutWithSidebar>
 </template>
 
@@ -173,7 +176,7 @@ let pollInterval = 0
 function poll() {
   pollInterval = setTimeout(async() => {
     console.log('Polling...')
-    await indexFunnels()
+    await loadFunnels()
   }, 2000)
 }
 
@@ -194,7 +197,7 @@ function pollOrganization() {
   })
 }
 
-function indexFunnels() {
+function loadFunnels() {
   isLoading.value = true
 
   funnelApi.index(route.params.organization).then(response => {
@@ -207,7 +210,7 @@ function indexFunnels() {
 function storeNewFunnel() {
   funnelApi.store(route.params.organization, {
     name: 'New funnel',
-    description: 'This is the funnel descriptions'
+    description: 'This is the funnel description',
   }).then(response => {
     let funnel = response.data.data
     router.push({ name: 'funnel', params: { funnel: funnel.id } })
@@ -219,11 +222,26 @@ function destroyFunnel(funnelId) {
   funnelApi.destroy(route.params.organization, funnelId)
 }
 
+function duplicateFunnel(funnel) {
+  // TODO: Make a replicate method in the API for this.
+  funnelApi.store(route.params.organization, {
+    name: funnel.name + ' (copy)',
+  }).then(response => {
+
+    let newFunnel = response.data.data
+    funnel.steps.forEach(step => {
+      funnelApi.storeStep(route.params.organization, newFunnel.id, step)
+    })
+
+    router.push({ name: 'funnel', params: { funnel: newFunnel.id } })
+  })
+}
+
 function toggleModal() { 
   isModalOpen.value = !isModalOpen.value 
 }
 
 onMounted(() => {
-  indexFunnels()
+  loadFunnels()
 })
 </script>

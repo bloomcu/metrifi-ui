@@ -1,11 +1,12 @@
 <template>
   <LayoutWithSidebar>
     <template #topbar>
-      <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Connections</h1>
-      <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
+      <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Connection</h1>
+      <AppButton v-if="!connection" @click="connectToGoogle()">Connect Google Analytics</AppButton>
     </template>
 
-    <table v-if="connections && connections.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
+    <!-- <table v-if="connections && connections.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg"> -->
+    <table v-if="connection" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg"> 
       <thead>
         <tr>
           <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900 sm:pl-6">Id</th>
@@ -17,7 +18,8 @@
       </thead>
 
       <tbody class="divide-y divide-gray-200">
-        <tr v-for="(connection, index) in connections" :key="connection.id">
+        <!-- <tr v-for="(connection, index) in connections" :key="connection.id"> -->
+        <tr>
           <!-- Id -->
           <td class="whitespace-nowrap py-4 pl-4 pr-6 text-gray-400 sm:pl-6">
             <p>{{ connection.id }}</p>
@@ -54,7 +56,7 @@
     <!-- Empty state: No connections -->
     <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
       <CloudIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-gray-900">No connections</h2>
+      <h2 class="mt-2 text-lg font-medium text-gray-900">No connection</h2>
       <p class="mt-1 text-gray-400">Get started by connecting Google Analytics.</p>
     </div>
   </LayoutWithSidebar>
@@ -71,6 +73,7 @@ import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()
 
+const connection = ref()
 const connections = ref()
 
 function connectToGoogle() {
@@ -88,13 +91,15 @@ function disconnect(index, connectionId) {
 
   connectionApi.destroy(route.params.organization, connectionId)
     .then(() => {
-      connections.value.splice(index, 1)
+      connection.value = null
+      // connections.value.splice(index, 1)
     })
 }
 
 onMounted(() => {
   connectionApi.index(route.params.organization).then(response => {
-    connections.value = response.data.data
+    connection.value = response.data.data[0]
+    // connections.value = response.data.data
   })
 })
 </script>
