@@ -70,8 +70,10 @@ httpClient.interceptors.response.use((response) => {
   * Redirect to 404 page if 404 Not Found response is returned from api
   */
   if ([404].includes(error.response.status)) {
-    const { setServerError } = useErrorStore()
-    setServerError('This endpoint could not be found. Please refresh. Changes may be lost.')
+    // const { setServerError } = useErrorStore()
+    // setServerError('This endpoint could not be found. Please refresh. Changes may be lost.')
+
+    document.location.href = '/not-found'
   }
   
   /**
