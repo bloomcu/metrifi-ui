@@ -53,6 +53,16 @@ const funnelApi = {
     },
 
     /**
+     * Replicate a funnel
+     *
+     * @param Object funnel [Properties to create funnel from]
+     * @return promise
+     */
+    async replicate(organization, funnelId) {
+        return await HttpClient.post(`/${organization}/funnels-replicate/${funnelId}`)
+    },
+
+    /**
      * Store a funnel step
      *
      * @param Object funnel [Properties to create funnel from]
