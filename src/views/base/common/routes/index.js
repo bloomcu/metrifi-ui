@@ -8,6 +8,11 @@ export default [
     component: NotFound,
   },
   {
+    path: '/not-found',
+    name: 'notFound',
+    component: NotFound,
+  },
+  {
     path: "/not-authorized",
     name: "NotAuthorized",
     component: NotAuthorized,
