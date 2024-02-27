@@ -73,8 +73,8 @@
       <!-- Empty state: No funnels -->
       <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
         <ChartBarIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
-        <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels</h2>
-        <p class="mt-1 text-gray-400">Get started by creating a funnel.</p>
+        <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels found</h2>
+        <p class="mt-1 text-gray-400">Try another search term.</p>
       </div>
     </div>
 
