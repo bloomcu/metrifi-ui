@@ -8,41 +8,31 @@
                     <div class="absolute w-full h-full flex flex-col justify-between">
                         <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
                     </div>
-                    <!-- <div class="flex-[0.5]" /> -->
+
                     <div class="flex flex-[8] gap-3 z-0">
-                        <ChartBar v-for="value in data" :value="value" :max="maxValue" :zoom="zoom"/>
+                        <ChartBar 
+                            v-for="step in funnel.steps" 
+                            :value="Number(step.total).toLocaleString()" 
+                            :max="maxValue" 
+                            :zoom="zoom"
+                            @click="emit('stepSelected', step)"
+                        />
                     </div>
                 </div>
+
                 <div class="h-[10px]" />
 
-                <!-- Label: E.g., "Homepage" -->
-                <div class="flex mb-0.5">
-                    <!-- <div class="flex-[0.5]"/> -->
-                    <div class="flex flex-[8] gap-3">
-                        <ChartLabel v-for="(label, index) in labels" :name="label" />
-                    </div>
-                </div>
-
-                <!-- Metric: E.g., "1,000 Page views" -->
-                <div class="flex mb-0.5">
-                    <!-- <div class="flex-[0.5]"/> -->
-                    <div class="flex flex-[8] gap-3">
-                        <template v-for="(value, index) in data">
-                            <div class="flex-1 flex text-sm">
-                                {{ value }} events
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <!-- Conversion rate: E.g., "100%" -->
                 <div class="flex flex-[8] gap-3">
-                    <!-- <div class="flex-[0.5]"/> -->
-                    <template v-for="(value, index) in data">
-                        <div class="flex-1 flex text-sm first:opacity-0">
-                            {{ conversions[index] }}% conversion rate
-                        </div>
-                    </template>
+                    <div v-for="(step, index) in funnel.steps" @click="emit('stepSelected', step)" class="flex-1 text-sm cursor-pointer hover:text-indigo-600">
+                        <!-- Label: E.g., "Homepage" -->
+                        <ChartLabel :name="step.name" />
+
+                        <!-- Metric: E.g., "1,000 Page views" -->
+                        <p>{{ step.total }} events</p>
+
+                        <!-- Conversion rate: E.g., "100%" -->
+                        <p v-if="index != 0">{{ conversions[index] }}% conversion rate</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,6 +63,8 @@ const props = defineProps({
     endDate: String,
     zoom: Number,
 })
+
+const emit = defineEmits(['stepSelected'])
 
 const isReporting = ref(false)
 

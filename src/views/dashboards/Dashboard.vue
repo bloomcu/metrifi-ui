@@ -39,7 +39,13 @@
           <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
         </div>
 
-        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="dashboard.zoom" />
+        <Chart 
+          :funnel="funnel" 
+          :startDate="selectedDateRange.startDate" 
+          :endDate="selectedDateRange.endDate" 
+          :zoom="dashboard.zoom"
+          @stepSelected="handleStepSelected"
+        />
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
         <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
@@ -52,6 +58,8 @@
     </div>
 
     <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
+
+    <StepDetailsTray/>
   </LayoutDefault>
 </template>
 
@@ -60,11 +68,13 @@ import debounce from 'lodash.debounce'
 import { ref, onMounted, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+import { useStepDetailsTray } from '@/domain/funnels/components/step-details/useStepDetailsTray'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import AddFunnelModal from '@/views/dashboards/modals/AddFunnelModal.vue'
+import StepDetailsTray from '@/domain/funnels/components/step-details/StepDetailsTray.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
@@ -73,6 +83,7 @@ const router = useRouter()
 const route = useRoute()
 
 const { funnels, pending, completed, active, addFunnel, addJob } = useFunnels()
+const { selectStep, openTray } = useStepDetailsTray()
 const { selectedDateRange } = useDatePicker()
 
 const dashboard = ref()
@@ -81,8 +92,14 @@ const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
 const isModalOpen = ref(false)
+const isStepDetailsTrayOpen = ref(false)
 
 provide('isModalOpen', isModalOpen)
+
+function handleStepSelected(step) {
+  selectStep(step)
+  openTray()
+}
 
 const updateDashboard = debounce(() => {
   console.log('Updating dashboard...')

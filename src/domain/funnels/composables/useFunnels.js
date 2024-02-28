@@ -16,8 +16,8 @@ export function useFunnels() {
   const addFunnel = (funnel) => {
     funnels.value.push(funnel)
     
-    // addJob({ funnelId: funnel.id })
-    addJob(funnel)
+    // addJob({ funnelId: funnel.id }) // Add funnel job by id
+    addJob(funnel) // Add funnel job by funnel object
   }
 
   const addJob = (job) => {
