@@ -4,13 +4,13 @@
     @closed="isModalOpen = false" 
     :open="isModalOpen"
   >
-    <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Archive connection</h3>
+    <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Disconnect</h3>
 
-    <p class="mb-6">This action will cause all funnels using this connection to also be archived. Are you sure you want to archive this connection? </p>
+    <p class="mb-6">Disconnecting will also delete all your funnels using this connection. This action cannot be undone. Are you sure you want to disconnect?</p>
 
     <div class="flex gap-2 justify-end">
       <AppButton @click="isModalOpen = false" variant="tertiary">Nevermind</AppButton>
-      <AppButton @click="disconnect()" variant="primary">Confirm</AppButton>
+      <AppButton @click="disconnect()" variant="primary">Disconnect</AppButton>
     </div>
   </AppModal>
 </template>
