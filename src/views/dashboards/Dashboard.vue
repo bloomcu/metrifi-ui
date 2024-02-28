@@ -22,7 +22,7 @@
         <DatePicker/>
 
         <!-- Zoom -->
-        <Zoom v-model="zoom"/>
+        <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/>
       </div>
     </header>
 
@@ -36,13 +36,10 @@
       <div v-for="(funnel, index) in funnels" class="p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
         <div class="flex items-center justify-between mb-6">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
-          <div class="flex gap-4">
-            <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
-            <p class="text-gray-400">Zoom: {{ zoom ? zoom : funnel.zoom }}</p>
-          </div>
+          <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
         </div>
 
-        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="zoom ? zoom : funnel.zoom" />
+        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="dashboard.zoom" />
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
         <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
@@ -94,6 +91,7 @@ const updateDashboard = debounce(() => {
   dashboardApi.update(route.params.organization, route.params.dashboard, {
     name: dashboard.value.name,
     description: dashboard.value.description,
+    zoom: dashboard.value.zoom,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
