@@ -30,43 +30,46 @@
         </thead>
 
         <tbody class="divide-y divide-gray-200">
-          <tr 
+          <template
             v-for="funnel in funnels" 
             :key="funnel.id" 
-            @click="selectFunnel(funnel.id)" 
-            :class="selected.includes(funnel.id) ? 'bg-gray-100' : ''"
-            class="hover:bg-gray-50 cursor-pointer"
           >
-            <!-- Checkbox -->
-            <td class="py-4 pl-4 sm:pl-6">
-              <input 
-                @select="selectFunnel(funnel.id)" 
-                :checked="selected.includes(funnel.id)" 
-                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" 
-                type="checkbox" 
-              />
-            </td>
-          
-            <!-- Funnel -->
-            <td class="whitespace-nowrap py-4 text-sm">
-              <div class="flex-auto">
-                <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
-              </div>
-            </td>
+            <tr v-if="funnelsAlreadyAttachedIds.includes(funnel.id)" class="bg-gray-100">
+              <td class="py-4 pl-4 sm:pl-6"></td>
+              <td class="whitespace-nowrap py-4 text-sm">
+                <div class="flex items-center gap-2">
+                  <p class="mb-1 text-base font-medium text-gray-500">{{ funnel.name }}</p>
+                  <span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">Already in use</span>
+                </div>
+              </td>
+              <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+                <div class="flex items-center text-sm mr-2">
+                  {{ funnel.organization.title }}
+                </div>
+              </td>
+            </tr>
 
-            <!-- Organization -->
-            <td class="whitespace-nowrap py-4 text-sm text-gray-400">
-              <div class="flex items-center text-sm mr-2">
-                <!-- <svg class="w-4 h-4 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg> -->
-                {{ funnel.organization.title }}
-              </div>
-            </td>
-
-            <!-- Attach funnel button -->
-            <!-- <td class="whitespace-nowrap py-4 text-sm text-gray-400">
-              <AppButton @click="attachFunnel(funnel.id)">Add funnel</AppButton>
-            </td> -->
-          </tr>
+            <tr v-else @click="selectFunnel(funnel.id)" :class="selected.includes(funnel.id) ? 'bg-gray-100' : ''" class="hover:bg-gray-50 cursor-pointer">
+              <td class="py-4 pl-4 sm:pl-6">
+                <input 
+                  @select="selectFunnel(funnel.id)" 
+                  :checked="selected.includes(funnel.id)" 
+                  class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" 
+                  type="checkbox" 
+                />
+              </td>
+              <td class="whitespace-nowrap py-4 text-sm">
+                <div class="flex-auto">
+                  <p class="text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
+                </div>
+              </td>
+              <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+                <div class="flex items-center text-sm mr-2">
+                  {{ funnel.organization.title }}
+                </div>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
 
@@ -91,6 +94,7 @@ import { ChartBarIcon } from '@heroicons/vue/24/outline'
 const route = useRoute()
 const input = ref('')
 const funnels = ref([])
+const funnelsAlreadyAttachedIds = inject('funnelsAlreadyAttachedIds')
 const isModalOpen = inject('isModalOpen')
 const isUpdating = ref(false)
 const selected = ref([])

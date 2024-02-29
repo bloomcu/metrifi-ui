@@ -65,7 +65,7 @@
 
 <script setup>
 import debounce from 'lodash.debounce'
-import { ref, onMounted, watch, provide } from 'vue'
+import { ref, onMounted, computed, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useStepDetailsTray } from '@/domain/funnels/components/step-details/useStepDetailsTray'
@@ -94,7 +94,12 @@ const isReporting = ref(false)
 const isModalOpen = ref(false)
 const isStepDetailsTrayOpen = ref(false)
 
+const funnelsAlreadyAttachedIds = computed(() => {
+  return funnels.value.map(funnel => funnel.id)
+})
+
 provide('isModalOpen', isModalOpen)
+provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
 function handleStepSelected(step) {
   selectStep(step)
