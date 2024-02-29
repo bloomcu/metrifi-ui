@@ -69,6 +69,7 @@ const variantClasses = {
 const sizeClasses = {
   sm: 'px-2.5 py-1.5 text-sm',
   base: 'px-3 py-2 text-sm',
-  lg: 'px-8 py-4 text-md',
+  md: 'px-4 py-2 text-base',
+  lg: 'px-8 py-3 text-md',
 }
 </script>

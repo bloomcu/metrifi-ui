@@ -1,6 +1,9 @@
 <template>
   <!-- <div :style="`height: ${height}%;`" class="bg-indigo-600 flex-1 rounded-lg" /> -->
-  <div :style="`transform: scaleY(${height});`" class="bg-indigo-600 flex-1 h-full origin-bottom transition duration-300"/>
+  <div 
+    :style="`transform: scaleY(${height});`" 
+    class="bg-indigo-600 flex-1 h-full cursor-pointer origin-bottom transition duration-300 hover:bg-indigo-700"
+  />
 </template>
 
 <script setup>
@@ -13,9 +16,9 @@ const props = defineProps({
 })
 
 const height = computed(() => {
-  let value = parseFloat(props.value.replace(/,/g, ''))
-  let max = Number(props.max)
-  let zoom = Number(props.zoom)
+  let value = props.value
+  let max = props.max
+  let zoom = props.zoom
   
   if (value == 0) {
     return 0

@@ -86,7 +86,10 @@ function storeConnection(accountName, property) {
 }
 
 onMounted(() => {
-  if (!route.query.code && !route.query.state) return // TODO: Show error message
+  if (route.query.error) {
+    router.push({ name: 'connections', params: { organization: route.query.state } })
+    return
+  }
     
   googleApi.callback(route.query.code).then(response => {
     code.value = response.data.data
@@ -94,7 +97,5 @@ onMounted(() => {
   })
 
   state.value = route.query.state
-
-  router.replace({ query: {} })
 })
 </script>

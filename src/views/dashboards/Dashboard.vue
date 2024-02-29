@@ -22,7 +22,7 @@
         <DatePicker/>
 
         <!-- Zoom -->
-        <Zoom v-model="zoom"/>
+        <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/>
       </div>
     </header>
 
@@ -36,13 +36,16 @@
       <div v-for="(funnel, index) in funnels" class="p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
         <div class="flex items-center justify-between mb-6">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
-          <div class="flex gap-4">
-            <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
-            <p class="text-gray-400">Zoom: {{ zoom ? zoom : funnel.zoom }}</p>
-          </div>
+          <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
         </div>
 
-        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="zoom ? zoom : funnel.zoom" />
+        <Chart 
+          :funnel="funnel" 
+          :startDate="selectedDateRange.startDate" 
+          :endDate="selectedDateRange.endDate" 
+          :zoom="dashboard.zoom"
+          @stepSelected="handleStepSelected"
+        />
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
         <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
@@ -55,19 +58,23 @@
     </div>
 
     <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
+
+    <StepDetailsTray/>
   </LayoutDefault>
 </template>
 
 <script setup>
 import debounce from 'lodash.debounce'
-import { ref, onMounted, watch, provide } from 'vue'
+import { ref, onMounted, computed, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+import { useStepDetailsTray } from '@/domain/funnels/components/step-details/useStepDetailsTray'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import AddFunnelModal from '@/views/dashboards/modals/AddFunnelModal.vue'
+import StepDetailsTray from '@/domain/funnels/components/step-details/StepDetailsTray.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
@@ -76,6 +83,7 @@ const router = useRouter()
 const route = useRoute()
 
 const { funnels, pending, completed, active, addFunnel, addJob } = useFunnels()
+const { selectStep, openTray } = useStepDetailsTray()
 const { selectedDateRange } = useDatePicker()
 
 const dashboard = ref()
@@ -84,8 +92,19 @@ const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
 const isModalOpen = ref(false)
+const isStepDetailsTrayOpen = ref(false)
+
+const funnelsAlreadyAttachedIds = computed(() => {
+  return funnels.value.map(funnel => funnel.id)
+})
 
 provide('isModalOpen', isModalOpen)
+provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
+
+function handleStepSelected(step) {
+  selectStep(step)
+  openTray()
+}
 
 const updateDashboard = debounce(() => {
   console.log('Updating dashboard...')
@@ -94,6 +113,7 @@ const updateDashboard = debounce(() => {
   dashboardApi.update(route.params.organization, route.params.dashboard, {
     name: dashboard.value.name,
     description: dashboard.value.description,
+    zoom: dashboard.value.zoom,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })

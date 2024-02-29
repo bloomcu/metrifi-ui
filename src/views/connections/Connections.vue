@@ -47,7 +47,7 @@
 
           <!-- Disconnect -->
           <td scope="col" class="py-4 pr-4 text-right sm:pr-6">
-            <AppButton @click="disconnect(index, connection.id)" variant="tertiary">Disconnect</AppButton>
+            <AppButton @click="toggleModal(connection)" variant="tertiary">Disconnect</AppButton>
           </td>
         </tr>
       </tbody>
@@ -59,22 +59,30 @@
       <h2 class="mt-2 text-lg font-medium text-gray-900">No connection</h2>
       <p class="mt-1 text-gray-400">Get started by connecting Google Analytics.</p>
     </div>
+
+    <DisconnectConnectionModal/>
   </LayoutWithSidebar>
 </template>
   
 <script setup>
 import moment from 'moment'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
 import { CloudIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
+import DisconnectConnectionModal from '@/views/connections/modals/DisconnectConnectionModal.vue'
 
 const route = useRoute()
 
-const connection = ref()
-const connections = ref()
+const connection = ref() // Enable only a single connection
+// const connections = ref() // Enable multiple connections
+const isModalOpen = ref(false)
+const connectionToBeDisconnected = ref()
+
+provide('isModalOpen', isModalOpen)
+provide('connectionToBeDisconnected', connectionToBeDisconnected)
 
 function connectToGoogle() {
   googleApi.connect({
@@ -86,20 +94,15 @@ function connectToGoogle() {
   })
 }
 
-function disconnect(index, connectionId) {
-  console.log('Deleting step...')
-
-  connectionApi.destroy(route.params.organization, connectionId)
-    .then(() => {
-      connection.value = null
-      // connections.value.splice(index, 1)
-    })
+function toggleModal(connection) { 
+  isModalOpen.value = !isModalOpen.value 
+  connectionToBeDisconnected.value = connection
 }
 
 onMounted(() => {
   connectionApi.index(route.params.organization).then(response => {
-    connection.value = response.data.data[0]
-    // connections.value = response.data.data
+    connection.value = response.data.data[0] // Show first connection
+    // connections.value = response.data.data // Show all connections
   })
 })
 </script>
