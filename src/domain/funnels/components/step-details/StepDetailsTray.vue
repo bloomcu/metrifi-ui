@@ -16,7 +16,7 @@
         <div class="flex flex-col gap-6">
           <div>
             <p class="font-medium text-gray-900">Step name</p>
-            <p>{{ selectedStep.name }}</p>
+            <p class="text-gray-500">{{ selectedStep.name }}</p>
           </div>
 
           <div>
@@ -28,12 +28,12 @@
               <div v-if="measurable.metric === 'pageViews'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
                 <div class="border-b pb-4">
                   <p class="font-medium text-gray-900">Metric</p>
-                  <p>{{ measurable.metric }}</p>
+                  <p class="text-gray-500">{{ measurable.metric }}</p>
                 </div>
 
                 <div>
-                  <p class="font-medium text-gray-900">Measurable</p>
-                  <p>{{ measurable.measurable }}</p>
+                  <p class="font-medium text-gray-900">Dimension</p>
+                  <p class="text-gray-500">{{ measurable.measurable }}</p>
                 </div>
               </div>
 
