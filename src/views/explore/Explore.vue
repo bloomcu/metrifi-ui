@@ -272,6 +272,9 @@ const dictionary = {
   screenPageViews: {
     displayName: 'Views',
   },
+  totalUsers: {
+    displayName: 'Users',
+  },
   linkUrl: {
     displayName: 'Link',
   },

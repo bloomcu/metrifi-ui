@@ -28,7 +28,7 @@
                         <ChartLabel :name="step.name" />
 
                         <!-- Metric: E.g., "1,000 Page views" -->
-                        <p>{{ Number(step.total).toLocaleString() }} events</p>
+                        <p>{{ Number(step.total).toLocaleString() }} users</p>
 
                         <!-- Conversion rate: E.g., "100%" -->
                         <p v-if="index != 0">{{ conversions[index] }}% conversion rate</p>
