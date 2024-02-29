@@ -16,9 +16,9 @@ const props = defineProps({
 })
 
 const height = computed(() => {
-  let value = parseFloat(props.value.replace(/,/g, ''))
-  let max = Number(props.max)
-  let zoom = Number(props.zoom)
+  let value = props.value
+  let max = props.max
+  let zoom = props.zoom
   
   if (value == 0) {
     return 0

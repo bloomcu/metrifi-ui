@@ -3,7 +3,7 @@
     <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
       <div class="flex gap-2">
-        <AppButton @click="storeNewDashboard" variant="secondary">
+        <AppButton @click="storeNewDashboard">
           Create dashboard
         </AppButton>
       </div>

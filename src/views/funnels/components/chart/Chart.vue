@@ -12,7 +12,7 @@
                     <div class="flex flex-[8] gap-3 z-0">
                         <ChartBar 
                             v-for="step in funnel.steps" 
-                            :value="Number(step.total).toLocaleString()" 
+                            :value="step.total" 
                             :max="maxValue" 
                             :zoom="zoom"
                             @click="emit('stepSelected', step)"
@@ -28,7 +28,7 @@
                         <ChartLabel :name="step.name" />
 
                         <!-- Metric: E.g., "1,000 Page views" -->
-                        <p>{{ step.total }} events</p>
+                        <p>{{ Number(step.total).toLocaleString() }} events</p>
 
                         <!-- Conversion rate: E.g., "100%" -->
                         <p v-if="index != 0">{{ conversions[index] }}% conversion rate</p>

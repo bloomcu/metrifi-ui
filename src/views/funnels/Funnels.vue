@@ -101,7 +101,7 @@
           <!-- Options -->
           <td scope="col" class="py-4 pr-4">
             <div class="flex justify-end gap-2">
-              <AppButton @click.stop="replicateFunnel(funnel.id)" variant="secondary">Make a copy</AppButton>
+              <AppButton @click.stop="replicateFunnel(funnel.id)" variant="tertiary">Make a copy</AppButton>
               <AppButton @click.stop="destroyFunnel(funnel.id)" variant="tertiary">Delete</AppButton>
             </div>
           </td>
