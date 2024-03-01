@@ -106,7 +106,7 @@
 
         <!-- Options -->
         <div class="flex flex-col gap-4 p-3">
-          <AppInput v-model="activeStep.name" @update:modelValue="updateStepName(activeStep)" label="Step name" placeholder="Enter a step name..." />
+          <AppInput v-model="activeStep.name" @update:modelValue="updateStepName(activeStep)" label="Step name" placeholder="Step name" />
 
           <div>
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
@@ -122,7 +122,7 @@
                     <TrashIcon class="h-5 w-5 shrink-0" />
                   </button>
                 </div>
-                <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path..."/>
+                <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path"/>
               </div>
 
               <!-- Metric: Page + query strings  -->
@@ -133,7 +133,7 @@
                     <TrashIcon class="h-5 w-5 shrink-0" />
                   </button>
                 </div>
-                <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path + query strings..."/>
+                <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path + query strings"/>
               </div>
 
               <!-- Metric: Outbound link users -->
@@ -295,13 +295,13 @@ provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 
 // const updateFunnelConnection = (() => {
-//   console.log('Updating funnel connection...')
+//   console.log('Updating funnel connection')
 //   updateFunnel()
 //   runReport()
 // })
 
 const updateFunnel = debounce(() => {
-  console.log('Updating funnel...')
+  console.log('Updating funnel')
   isUpdating.value = true
 
   funnelApi.update(route.params.organization, route.params.funnel, {
@@ -315,7 +315,7 @@ const updateFunnel = debounce(() => {
 }, 800)
 
 const updateStepName = debounce((step) => {
-  console.log('Updating step name...')
+  console.log('Updating step name')
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
@@ -326,7 +326,7 @@ const updateStepName = debounce((step) => {
 }, 800)
 
 const updateStepMeasurables = debounce((step) => {
-  console.log('Updating step measurables...')
+  console.log('Updating step measurables')
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
@@ -339,7 +339,7 @@ const updateStepMeasurables = debounce((step) => {
 }, 800)
 
 function handleDragEvent(e) {
-  console.log('Handling drag event...')
+  console.log('Handling drag event')
 
   isUpdating.value = true
   let event = e.moved || e.added
@@ -352,7 +352,7 @@ function handleDragEvent(e) {
 }
 
 function addStep() {
-  console.log('Adding step...')
+  console.log('Adding step')
 
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: 'New step',
@@ -367,7 +367,7 @@ function addStep() {
 }
 
 function addMeasurable(step) {
-  console.log('Adding measurable...')
+  console.log('Adding measurable')
 
   step.measurables.push({
     connection_id: selectedConnection.value.id,
@@ -378,14 +378,14 @@ function addMeasurable(step) {
 }
 
 function deleteMeasurable(index) {
-  console.log('Deleting measurable...')
+  console.log('Deleting measurable')
   
   activeStep.value.measurables.splice(index, 1)
   updateStepMeasurables(activeStep.value)
 }
 
 function deleteStep(index, id) {
-  console.log('Deleting step...')
+  console.log('Deleting step')
 
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
@@ -398,7 +398,7 @@ function toggleModal() {
 }
 
 function loadFunnel() {
-  console.log('Loading funnel...')
+  console.log('Loading funnel')
   
   funnelApi.show(route.params.organization, route.params.funnel)
     .then(response => {
@@ -409,7 +409,7 @@ function loadFunnel() {
 }
 
 watch(selectedDateRange, () => {
-  console.log('Selecting data range...')
+  console.log('Selecting data range')
   addJob(funnel.value)
   // runReport()
 })
