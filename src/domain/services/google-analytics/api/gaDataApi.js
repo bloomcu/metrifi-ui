@@ -6,8 +6,8 @@ const gaDataApi = {
    *
    * @return promise
    */
-  async fetchPageViews(connectionId, request) {
-    return await HttpClient.post(`/ga/page-views/${connectionId}`, request)
+  async fetchUsersByPagePath(connectionId, request) {
+    return await HttpClient.post(`/ga/users-by-pagepath/${connectionId}`, request)
   },
 
   /**

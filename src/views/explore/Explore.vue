@@ -137,8 +137,8 @@ const { selectedDateRange } = useDatePicker()
 
 const requests = ref([
   { 
-    name: 'Page views',
-    report: 'page-views',
+    name: 'Users by page path',
+    report: 'users-by-pagepath',
     icon: EyeIcon,
   },  
   { 
@@ -163,8 +163,8 @@ const filteredReportRows = computed(() => {
 function runReport() {
   loading.value = true
 
-  if (selectedRequest.value.report == 'page-views') {
-    fetchPageViews()
+  if (selectedRequest.value.report == 'users-by-pagepath') {
+    fetchUsersByPagePath()
   } else if (selectedRequest.value.report == 'outbound-clicks') {
     fetchOutboundClicks()
   }
@@ -193,8 +193,8 @@ onMounted(() => {
   })
 })
 
-function fetchPageViews() {
-  gaDataApi.fetchPageViews(selectedConnection.value.id, {
+function fetchUsersByPagePath() {
+  gaDataApi.fetchUsersByPagePath(selectedConnection.value.id, {
     startDate: selectedDateRange.value.startDate, 
     endDate: selectedDateRange.value.endDate 
   }).then(response => {

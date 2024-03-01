@@ -346,7 +346,7 @@ const updateStepMeasurables = debounce((step) => {
 
 //     // Report: Page views
 //     if (step.measurables[0].metric === 'pageViews') {
-//       gaDataApi.fetchPageViews(funnel.value.connection_id, {
+//       gaDataApi.fetchUsersByPagePath(funnel.value.connection_id, {
 //         startDate: selectedDateRange.value.startDate,
 //         endDate: selectedDateRange.value.endDate,
 //         pagePaths: step.measurables.map(measurable => measurable.measurable),
