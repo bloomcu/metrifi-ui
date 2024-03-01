@@ -113,6 +113,7 @@
 
             <!-- Measurables -->
             <template v-for="(measurable, index) in activeStep.measurables">
+
               <!-- Pageviews metrics -->
               <div v-if="measurable.metric === 'pageViews'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
                 <div class="flex flex-row items-center justify-between">
@@ -123,6 +124,21 @@
                   </button>
                 </div>
                 <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path..."/>
+              </div>
+
+              <!-- Page users with query strings metrics -->
+              <div v-if="measurable.metric === 'pageUsersWithQueryStrings'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+                <div class="flex flex-row items-center justify-between">
+                  <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
+                  <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                    <TrashIcon class="h-5 w-5 shrink-0" />
+                  </button>
+                </div>
+                <div v-if="measurable.contains" class="flex flex-col gap-2 border-t mt-2 pt-4">
+                  <AppInput v-model="measurable.contains[0]" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Contains..."/>
+                  <AppInput v-model="measurable.contains[1]" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Contains..."/>
+                  <AppInput v-model="measurable.contains[2]" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Contains..."/>
+                </div>
               </div>
 
               <!-- Outbound clicks metrics -->
