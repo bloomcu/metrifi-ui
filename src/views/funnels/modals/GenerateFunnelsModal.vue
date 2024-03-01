@@ -106,7 +106,7 @@ function generateFunnelsWithAI() {
 function fetchPagesFromGA() {
   isLoadingGA.value = true
 
-  gaDataApi.fetchUsersByPagePath(
+  gaDataApi.pageUsers(
     selectedConnection.value.id,
     {
       startDate: '28daysAgo', 
