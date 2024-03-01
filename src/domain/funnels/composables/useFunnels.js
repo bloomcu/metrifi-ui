@@ -58,7 +58,7 @@ export function useFunnels() {
       }
   
       // Report: Page users
-      if (step.measurables[0].metric === 'pageViews') {
+      if (step.measurables[0].metric === 'pageUsers') {
         gaDataApi.pageUsers(funnel.connection_id, {
           startDate: selectedDateRange.value.startDate,
           endDate: selectedDateRange.value.endDate,
@@ -82,14 +82,13 @@ export function useFunnels() {
       }
 
       // Report: Virtual page users
-      if (step.measurables[0].metric === 'pageUsersWithQueryStrings') {
+      if (step.measurables[0].metric === 'pagePlusQueryStringUsers') {
         // console.log(step.measurables[0].contains)
 
-        gaDataApi.pageUsersWithQueryString(funnel.connection_id, {
+        gaDataApi.pagePlusQueryStringUsers(funnel.connection_id, {
           startDate: selectedDateRange.value.startDate,
           endDate: selectedDateRange.value.endDate,
-          // contains: step.measurables.map(measurable => measurable.contains),
-          contains: step.measurables[0].contains,
+          measurables: step.measurables.map(measurable => measurable.measurable),
         }).then(response => {
           if (response.data.data.error) {
             console.log(response.data.data.error)
@@ -107,33 +106,10 @@ export function useFunnels() {
           }
         }) // End GA page views report
       }
-
-      // Report: Page views
-      // if (step.measurables[0].metric === 'pageViews') {
-      //   gaDataApi.fetchUsersByPagePath(funnel.connection_id, {
-      //     startDate: selectedDateRange.value.startDate,
-      //     endDate: selectedDateRange.value.endDate,
-      //     pagePaths: step.measurables.map(measurable => measurable.measurable),
-      //   }).then(response => {
-      //     if (response.data.data.error) {
-      //       console.log(response.data.data.error)
-      //       return
-      //     }
-  
-      //     // Set total for this step
-      //     let report = response.data.data
-      //     step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
-      //     stepsProcessed++;
-          
-      //     if (stepsProcessed === funnel.steps.length) {
-      //         stepsProcessed = 0
-      //     }
-      //   }) // End GA page views report
-      // }
   
       // Report outbound clicks
-      if (step.measurables[0].metric === 'outboundClicks') {
-        gaDataApi.fetchOutboundClicksByPagePath(funnel.connection_id, {
+      if (step.measurables[0].metric === 'outboundLinkUsers') {
+        gaDataApi.outboundLinkByPagePathUsers(funnel.connection_id, {
           startDate: selectedDateRange.value.startDate,
           endDate: selectedDateRange.value.endDate,
           pagePath: step.measurables[0].pagePath,

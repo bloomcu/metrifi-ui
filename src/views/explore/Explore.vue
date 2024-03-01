@@ -47,7 +47,7 @@
         <AppInput v-model="searchInput" placeholder="Search..." class="flex-1"></AppInput>
       </div>
 
-      <div v-if="selectedRequest.report == 'page-users-with-query-strings'" class="flex items-center gap-2 mb-4">
+      <div v-if="selectedRequest.report == 'page-plus-query-string-users'" class="flex items-center gap-2 mb-4">
         <span class="text-sm text-gray-400 w-14">Filters</span>
         <AppInput v-model="containsFilters[0]" placeholder="Contains..." class="flex-1"></AppInput>
         <AppInput v-model="containsFilters[1]" placeholder="Contains..." class="flex-1"></AppInput>
@@ -153,18 +153,18 @@ const requests = ref([
     icon: EyeIcon,
   },
   { 
-    name: 'Page users with query strings',
-    report: 'page-users-with-query-strings',
+    name: 'Page + query string users',
+    report: 'page-plus-query-string-users',
     icon: EyeIcon,
   },  
   { 
-    name: 'Users by outbound link',
-    report: 'users-by-outbound-link',
+    name: 'Outbound link users',
+    report: 'outbound-link-users',
     icon: ArrowRightOnRectangleIcon,
   },
 ])
 
-const selectedRequest = ref(requests.value[1])
+const selectedRequest = ref(requests.value[0])
 
 const searchInput = ref('')
 const containsFilters = ref([])
@@ -182,10 +182,10 @@ function runReport() {
 
   if (selectedRequest.value.report == 'page-users') {
     fetchPageUsers()
-  } else if (selectedRequest.value.report == 'page-users-with-query-strings') {
-    fetchPageUsersWithQueryString()
-  } else if (selectedRequest.value.report == 'users-by-outbound-link') {
-    fetchUsersByOutboundLink()
+  } else if (selectedRequest.value.report == 'page-plus-query-string-users') {
+    fetchPagePlusQueryStringUsers()
+  } else if (selectedRequest.value.report == 'outbound-link-users') {
+    outboundLinkUsers()
   }
 }
 
@@ -227,11 +227,11 @@ function fetchPageUsers() {
   })
 }
 
-function fetchPageUsersWithQueryString() {
+function fetchPagePlusQueryStringUsers() {
   console.log(containsFilters.value.map(filter => filter))
   console.log(containsFilters.value)
 
-  gaDataApi.pageUsersWithQueryString(selectedConnection.value.id, {
+  gaDataApi.pagePlusQueryStringUsers(selectedConnection.value.id, {
     startDate: selectedDateRange.value.startDate,
     endDate: selectedDateRange.value.endDate,
     // contains: containsFilters.value.map(filter => filter)
@@ -247,8 +247,8 @@ function fetchPageUsersWithQueryString() {
   })
 }
 
-function fetchUsersByOutboundLink() {
-  gaDataApi.fetchUsersByOutboundLink(selectedConnection.value.id, {
+function outboundLinkUsers() {
+  gaDataApi.outboundLinkUsers(selectedConnection.value.id, {
     startDate: selectedDateRange.value.startDate, 
     endDate: selectedDateRange.value.endDate 
   }).then(response => {
