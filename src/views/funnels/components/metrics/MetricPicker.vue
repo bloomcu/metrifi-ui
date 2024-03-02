@@ -27,8 +27,9 @@ const props = defineProps({
 })
 
 const options = [
-  {label: 'Page views', value: 'pageViews'},
-  {label: 'Outbound clicks', value: 'outboundClicks'},
+  {label: 'Page users', value: 'pageUsers'},
+  {label: 'Page + query string users', value: 'pagePlusQueryStringUsers'},
+  {label: 'Outbound link users', value: 'outboundLinkUsers'},
   // {label: 'Element clicks', value: 'elementClick'},
   // {label: 'Form submissions', value: 'formSubmission'},
 ]
