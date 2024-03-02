@@ -228,9 +228,6 @@ function fetchPageUsers() {
 }
 
 function fetchPagePlusQueryStringUsers() {
-  console.log(containsFilters.value.map(filter => filter))
-  console.log(containsFilters.value)
-
   gaDataApi.pagePlusQueryStringUsers(selectedConnection.value.id, {
     startDate: selectedDateRange.value.startDate,
     endDate: selectedDateRange.value.endDate,
