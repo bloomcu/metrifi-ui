@@ -42,7 +42,18 @@
       </div>
 
       <!-- Search -->
-      <AppInput v-model="searchInput" placeholder="Search..." class="mb-4"></AppInput>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-sm text-gray-400 w-14">Search</span>
+        <AppInput v-model="searchInput" placeholder="Search..." class="flex-1"></AppInput>
+      </div>
+
+      <div v-if="selectedRequest.report == 'page-plus-query-string-users'" class="flex items-center gap-2 mb-4">
+        <span class="text-sm text-gray-400 w-14">Filters</span>
+        <AppInput v-model="containsFilters[0]" placeholder="Contains..." class="flex-1"></AppInput>
+        <AppInput v-model="containsFilters[1]" placeholder="Contains..." class="flex-1"></AppInput>
+        <AppInput v-model="containsFilters[2]" placeholder="Contains..." class="flex-1"></AppInput>
+        <AppButton @click="runReport()">Apply filters</AppButton>
+      </div>
 
       <!-- Table -->
       <table v-if="!loading && report.rows" class="min-w-full max-w-full divide-y divide-gray-300">
@@ -137,13 +148,18 @@ const { selectedDateRange } = useDatePicker()
 
 const requests = ref([
   { 
-    name: 'Page views',
-    report: 'page-views',
+    name: 'Page users',
+    report: 'page-users',
+    icon: EyeIcon,
+  },
+  { 
+    name: 'Page + query string users',
+    report: 'page-plus-query-string-users',
     icon: EyeIcon,
   },  
   { 
-    name: 'Outbound clicks',
-    report: 'outbound-clicks',
+    name: 'Outbound link users',
+    report: 'outbound-link-users',
     icon: ArrowRightOnRectangleIcon,
   },
 ])
@@ -151,6 +167,7 @@ const requests = ref([
 const selectedRequest = ref(requests.value[0])
 
 const searchInput = ref('')
+const containsFilters = ref([])
 
 const filteredReportRows = computed(() => {
   return report.value.rows.filter(row => {
@@ -163,10 +180,12 @@ const filteredReportRows = computed(() => {
 function runReport() {
   loading.value = true
 
-  if (selectedRequest.value.report == 'page-views') {
-    fetchPageViews()
-  } else if (selectedRequest.value.report == 'outbound-clicks') {
-    fetchOutboundClicks()
+  if (selectedRequest.value.report == 'page-users') {
+    fetchPageUsers()
+  } else if (selectedRequest.value.report == 'page-plus-query-string-users') {
+    fetchPagePlusQueryStringUsers()
+  } else if (selectedRequest.value.report == 'outbound-link-users') {
+    outboundLinkUsers()
   }
 }
 
@@ -193,8 +212,8 @@ onMounted(() => {
   })
 })
 
-function fetchPageViews() {
-  gaDataApi.fetchPageViews(selectedConnection.value.id, {
+function fetchPageUsers() {
+  gaDataApi.pageUsers(selectedConnection.value.id, {
     startDate: selectedDateRange.value.startDate, 
     endDate: selectedDateRange.value.endDate 
   }).then(response => {
@@ -208,8 +227,28 @@ function fetchPageViews() {
   })
 }
 
-function fetchOutboundClicks() {
-  gaDataApi.fetchOutboundClicks(selectedConnection.value.id, {
+function fetchPagePlusQueryStringUsers() {
+  console.log(containsFilters.value.map(filter => filter))
+  console.log(containsFilters.value)
+
+  gaDataApi.pagePlusQueryStringUsers(selectedConnection.value.id, {
+    startDate: selectedDateRange.value.startDate,
+    endDate: selectedDateRange.value.endDate,
+    // contains: containsFilters.value.map(filter => filter)
+    contains: containsFilters.value
+  }).then(response => {
+    if (response.data.data.error) {
+      console.log(response.data.data.error)
+      return
+    }
+    loading.value = false
+    // console.log(response.data.data)
+    report.value = response.data.data
+  })
+}
+
+function outboundLinkUsers() {
+  gaDataApi.outboundLinkUsers(selectedConnection.value.id, {
     startDate: selectedDateRange.value.startDate, 
     endDate: selectedDateRange.value.endDate 
   }).then(response => {
@@ -271,6 +310,9 @@ const dictionary = {
   },
   screenPageViews: {
     displayName: 'Views',
+  },
+  totalUsers: {
+    displayName: 'Users',
   },
   linkUrl: {
     displayName: 'Link',

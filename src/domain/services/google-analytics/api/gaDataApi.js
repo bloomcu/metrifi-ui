@@ -2,30 +2,41 @@ import { httpClient as HttpClient } from '@/app/api/base/httpClient'
 
 const gaDataApi = {
   /**
-   * Fetch page views
+   * Fetch users by page (pagePath)
    *
    * @return promise
    */
-  async fetchPageViews(connectionId, request) {
-    return await HttpClient.post(`/ga/page-views/${connectionId}`, request)
+  async pageUsers(connectionId, request) {
+    // TODO: Breakup 'request' so we know what can be sent
+    return await HttpClient.post(`/ga/page-users/${connectionId}`, request)
   },
 
   /**
-   * Fetch outbound clicks
+   * Fetch users by virtual page (page path plus query string)
    *
    * @return promise
    */
-  async fetchOutboundClicks(connectionId, request) {
-    return await HttpClient.post(`/ga/outbound-clicks/${connectionId}`, request)
+  async pagePlusQueryStringUsers(connectionId, request) {
+    // TODO: Breakup 'request' so we know what can be sent
+    return await HttpClient.post(`/ga/page-plus-query-string-users/${connectionId}`, request)
   },
 
   /**
-   * Fetch outbound clicks by page path
+   * Fetch users by outbound click
    *
    * @return promise
    */
-  async fetchOutboundClicksByPagePath(connectionId, request) {
-    return await HttpClient.post(`/ga/outbound-clicks-by-page-path/${connectionId}`, request)
+  async outboundLinkUsers(connectionId, request) {
+    return await HttpClient.post(`/ga/outbound-link-users/${connectionId}`, request)
+  },
+
+  /**
+   * Fetch users by outbound click from a given page path
+   *
+   * @return promise
+   */
+  async outboundLinkByPagePathUsers(connectionId, request) {
+    return await HttpClient.post(`/ga/outbound-link-by-page-path-users/${connectionId}`, request)
   },
 }
 
