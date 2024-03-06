@@ -1,8 +1,8 @@
 <template>
   <AppModal 
     size="md"
-    @closed="isModalOpen = false" 
-    :open="isModalOpen"
+    @closed="isGenerateStepsModalOpen = false" 
+    :open="isGenerateStepsModalOpen"
   >
     <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Generate funnel steps</h3>
 
@@ -36,7 +36,7 @@
         </span>
       </div>
 
-      <AppButton @click="isModalOpen = false" variant="secondary" class="w-full">Close</AppButton>
+      <AppButton @click="isGenerateStepsModalOpen = false" variant="secondary" class="w-full">Close</AppButton>
     </div>
   </AppModal>
 </template>
@@ -50,14 +50,14 @@ const route = useRoute()
 const loading = ref(false)
 const input = ref('')
 
-const isModalOpen = inject('isModalOpen')
+const isGenerateStepsModalOpen = inject('isGenerateStepsModalOpen')
 const isGeneratingSteps = inject('isGeneratingSteps')
 const errorGeneratingSteps = inject('errorGeneratingSteps')
 
 function generateSteps() {
   console.log('Generating steps with AI...')
 
-  isModalOpen.value = false
+  isGenerateStepsModalOpen.value = false
   isGeneratingSteps.value = true
   errorGeneratingSteps.value = null
 

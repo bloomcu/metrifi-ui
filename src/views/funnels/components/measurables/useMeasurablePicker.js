@@ -1,33 +1,31 @@
 import { ref, computed } from 'vue'
 
-const isTeleporting = ref(false)
-const teleportTarget = ref(null)
+const isMeasurablePickerOpen = ref(false)
+const measurablePickerTarget = ref(null)
 
 export const useMeasurablePicker = () => {
 
-  const teleport = (target) => {
-    if (teleportTarget.value === target) {
-      stopTeleporting()
+  const toggle = (target) => {
+    if (measurablePickerTarget.value === target) {
+      hide()
         return
     }
-    startTeleporting(target)
+    show(target)
   }
 
-  const startTeleporting = (target) => {
-    isTeleporting.value = true
-    teleportTarget.value = target
+  const show = (target) => {
+    isMeasurablePickerOpen.value = true
+    measurablePickerTarget.value = target
   }
 
-  const stopTeleporting = () => {
-    isTeleporting.value = false
-    teleportTarget.value = null
+  const hide = () => {
+    isMeasurablePickerOpen.value = false
+    measurablePickerTarget.value = null
   }
 
   return {
-    isTeleporting: computed(() => isTeleporting.value),
-    teleportTarget: computed(() => teleportTarget.value),
-    teleport,
-    startTeleporting,
-    stopTeleporting,
+    isMeasurablePickerOpen: computed(() => isMeasurablePickerOpen.value),
+    measurablePickerTarget: computed(() => measurablePickerTarget.value),
+    toggleMeasurablePicker: toggle
   }
 }

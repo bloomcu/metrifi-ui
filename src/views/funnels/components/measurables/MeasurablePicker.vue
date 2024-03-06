@@ -1,5 +1,5 @@
 <template>
-    <Teleport :to="teleportTarget" :disabled="false">
+    <teleport :to="measurablePickerTarget" :disabled="false">
         <div class="absolute left-[102%] top-[-50px] translate-x-2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg">
 
             <div class="divide-y divide-gray-200">
@@ -68,7 +68,7 @@
             </div>       
                    
         </div>
-    </Teleport>
+    </teleport>
 </template>
 
 <script setup>
@@ -82,7 +82,7 @@ import { EyeIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 
 const { selectedDateRange } = useDatePicker()
 const { selectedConnection } = useConnections()
-const { teleportTarget } = useMeasurablePicker()
+const { measurablePickerTarget } = useMeasurablePicker()
 
 const props = defineProps({
     metric: Object,

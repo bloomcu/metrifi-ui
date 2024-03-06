@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="relative inline-block">
-                    <AppInput @focus="teleport('#target2')" v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path"/>
+                    <AppInput @focus="toggleMeasurablePicker('#target2')" v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path"/>
                     <div id="target2"></div>
                 </div>
               </div>
@@ -223,14 +223,14 @@
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
 
     <!-- TODO: Add loading state -->
 
-    <MeasurablePicker v-if="isTeleporting" :metric="activeStep.measurables[0]"/>
-    <GenerateStepsModal :open="isModalOpen" @done="loadFunnel()"/>
+    <MeasurablePicker v-if="isMeasurablePickerOpen" :metric="activeStep.measurables[0]"/>
+    <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
   </LayoutDefault>
 </template>
   
@@ -261,9 +261,9 @@ const route = useRoute()
 const { selectedDateRange } = useDatePicker()
 const { connections, selectedConnection, listConnections } = useConnections()
 const { funnels, funnel, pending, completed, active, addFunnel, addJob } = useFunnels()
-const { isTeleporting, teleport, stopTeleporting } = useMeasurablePicker()
+const { isMeasurablePickerOpen, toggleMeasurablePicker, stopTeleporting } = useMeasurablePicker()
 
-const isModalOpen = ref(false)
+const isGenerateStepsModalOpen = ref(false)
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isGeneratingSteps = ref(false)
@@ -273,7 +273,7 @@ const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
 
 provide('funnel', funnel)
-provide('isModalOpen', isModalOpen)
+provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 
@@ -356,7 +356,7 @@ function deleteStep(index, id) {
 }
 
 function toggleModal() { 
-  isModalOpen.value = !isModalOpen.value 
+  isGenerateStepsModalOpen.value = !isGenerateStepsModalOpen.value 
 }
 
 function loadFunnel() {
