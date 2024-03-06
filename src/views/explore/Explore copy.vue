@@ -141,17 +141,17 @@ const { selectedDateRange } = useDatePicker()
 const tabs = ref([
   { 
     name: 'Page users',
-    report: 'pageUsers',
+    report: 'page-users',
     icon: EyeIcon,
   },
   { 
     name: 'Page + query string users',
-    report: 'pagePlusQueryStringUsers',
+    report: 'page-plus-query-string-users',
     icon: EyeIcon,
   },  
   { 
     name: 'Outbound link users',
-    report: 'outboundLinkUsers',
+    report: 'outbound-link-users',
     icon: ArrowRightOnRectangleIcon,
   },
 ])
@@ -171,19 +171,13 @@ const filteredReportRows = computed(() => {
 function runReport() {
   loading.value = true
 
-  gaDataApi[selectedTab.value.report](selectedConnection.value.id, {
-    startDate: selectedDateRange.value.startDate,
-    endDate: selectedDateRange.value.endDate,
-    // contains: containsFilters.value.map(filter => filter)
-    // contains: containsFilters.value
-  }).then(response => {
-    if (response.data.data.error) {
-      console.log(response.data.data.error)
-      return
-    }
-    loading.value = false
-    report.value = response.data.data
-  })
+  if (selectedTab.value.report == 'page-users') {
+    fetchPageUsers()
+  } else if (selectedTab.value.report == 'page-plus-query-string-users') {
+    fetchPagePlusQueryStringUsers()
+  } else if (selectedTab.value.report == 'outbound-link-users') {
+    outboundLinkUsers()
+  }
 }
 
 watch(selectedConnection, () => {
@@ -209,28 +203,48 @@ onMounted(() => {
   })
 })
 
-const dictionary = {
-  pagePath: {
-    displayName: 'Page path',
-  },
-  pagePathPlusQueryString: {
-    displayName: 'Page path + query string',
-  },
-  screenPageViews: {
-    displayName: 'Views',
-  },
-  totalUsers: {
-    displayName: 'Users',
-  },
-  linkUrl: {
-    displayName: 'Link',
-  },
-  linkDomain: {
-    displayName: 'Domain',
-  },
-  eventCount: {
-    displayName: 'Clicks',
-  }
+function fetchPageUsers() {
+  gaDataApi.pageUsers(selectedConnection.value.id, {
+    startDate: selectedDateRange.value.startDate, 
+    endDate: selectedDateRange.value.endDate 
+  }).then(response => {
+    if (response.data.data.error) {
+      console.log(response.data.data.error)
+      return
+    }
+    loading.value = false
+    report.value = response.data.data
+  })
+}
+
+function fetchPagePlusQueryStringUsers() {
+  gaDataApi.pagePlusQueryStringUsers(selectedConnection.value.id, {
+    startDate: selectedDateRange.value.startDate,
+    endDate: selectedDateRange.value.endDate,
+    // contains: containsFilters.value.map(filter => filter)
+    // contains: containsFilters.value
+  }).then(response => {
+    if (response.data.data.error) {
+      console.log(response.data.data.error)
+      return
+    }
+    loading.value = false
+    report.value = response.data.data
+  })
+}
+
+function outboundLinkUsers() {
+  gaDataApi.outboundLinkUsers(selectedConnection.value.id, {
+    startDate: selectedDateRange.value.startDate, 
+    endDate: selectedDateRange.value.endDate 
+  }).then(response => {
+    if (response.data.data.error) {
+      console.log(response.data.data.error)
+      return
+    }
+    loading.value = false
+    report.value = response.data.data
+  })
 }
 
 function makeCSV() {
@@ -270,5 +284,29 @@ function downloadCSV() {
   document.body.appendChild(link); // Required for FF
 
   link.click();
+}
+
+const dictionary = {
+  pagePath: {
+    displayName: 'Page path',
+  },
+  pagePathPlusQueryString: {
+    displayName: 'Page path + query string',
+  },
+  screenPageViews: {
+    displayName: 'Views',
+  },
+  totalUsers: {
+    displayName: 'Users',
+  },
+  linkUrl: {
+    displayName: 'Link',
+  },
+  linkDomain: {
+    displayName: 'Domain',
+  },
+  eventCount: {
+    displayName: 'Clicks',
+  }
 }
 </script>

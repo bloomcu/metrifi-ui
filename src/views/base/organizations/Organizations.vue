@@ -18,7 +18,7 @@
                   {{ organization.title }}
                 </RouterLink>
               </p>
-              <p class="mt-1 text-sm leading-5 text-gray-500">{{ organization.plan.title }}</p>
+              <!-- <p class="mt-1 text-sm leading-5 text-gray-500">{{ organization.plan.title }}</p> -->
             </div>
           </div>
           
