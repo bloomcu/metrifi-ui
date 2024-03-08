@@ -122,7 +122,7 @@
                     <MeasurablePicker 
                       v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
                       v-model="measurable.measurable"
-                      :activeTab="0"
+                      activeReport="pageUsers"
                       @update:modelValue="updateStepMeasurables(activeStep)"
                     />
                 </div>
@@ -142,7 +142,7 @@
                     <MeasurablePicker 
                       v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
                       v-model="measurable.measurable"
-                      :activeTab="1"
+                      activeReport="pagePlusQueryStringUsers"
                       @update:modelValue="updateStepMeasurables(activeStep)"
                     />
                 </div>
@@ -162,7 +162,7 @@
                   <MeasurablePicker 
                     v-if="measurablePickerTarget === index + '-pagePath-' + measurable.pagePath"
                     v-model="measurable.pagePath"
-                    :activeTab="2"
+                    activeReport="outboundLinkUsers"
                     @update:modelValue="updateStepMeasurables(activeStep)"
                   />
                 </div>
@@ -172,7 +172,7 @@
                   <MeasurablePicker 
                     v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
                     v-model="measurable.measurable"
-                    :activeTab="2"
+                    activeReport="outboundLinkUsers"
                     @update:modelValue="updateStepMeasurables(activeStep)"
                   />
                 </div>
