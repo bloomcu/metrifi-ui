@@ -5,7 +5,7 @@ import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 
 const { selectedDateRange } = useDatePicker()
 
-export function useFunnels() {
+export function useGoogleAnalyticsReports() {
   const funnels = ref([])
   const pendingFunnels = ref([])
   const completedFunnels = ref([])

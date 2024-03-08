@@ -106,7 +106,7 @@
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
             <!-- Measurables -->
-            <template v-for="(measurable, index) in activeStep.measurables">
+            <template v-for="(measurable, index) in activeStep.measurables" :key="index">
 
               <!-- Metric: Page users -->
               <div v-if="measurable.metric === 'pageUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
@@ -118,8 +118,13 @@
                 </div>
 
                 <div class="relative inline-block">
-                    <AppInput @focus="toggleMeasurablePicker('#target2')" v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path"/>
-                    <div id="target2"></div>
+                    <AppInput v-model="measurable.measurable" @click.stop="setMeasurablePickerTarget(index + '-measurable-' + measurable.measurable)" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path"/>
+                    <MeasurablePicker 
+                      v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
+                      v-model="measurable.measurable"
+                      :activeTab="0"
+                      @update:modelValue="updateStepMeasurables(activeStep)"
+                    />
                 </div>
               </div>
 
@@ -131,7 +136,16 @@
                     <TrashIcon class="h-5 w-5 shrink-0" />
                   </button>
                 </div>
-                <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path + query strings"/>
+
+                <div class="relative inline-block">
+                    <AppInput v-model="measurable.measurable" @click.stop="setMeasurablePickerTarget(index + '-measurable-' + measurable.measurable)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path + query strings"/>
+                    <MeasurablePicker 
+                      v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
+                      v-model="measurable.measurable"
+                      :activeTab="1"
+                      @update:modelValue="updateStepMeasurables(activeStep)"
+                    />
+                </div>
               </div>
 
               <!-- Metric: Outbound link users -->
@@ -142,8 +156,26 @@
                     <TrashIcon class="h-5 w-5 shrink-0" />
                   </button>
                 </div>
-                <AppInput v-model="measurable.pagePath" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Source page path"/>
-                <AppInput v-model="measurable.measurable" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Outbound url"/>
+
+                <div class="relative inline-block">
+                  <AppInput v-model="measurable.pagePath" @click.stop="setMeasurablePickerTarget(index + '-pagePath-' + measurable.pagePath)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Source page path"/>
+                  <MeasurablePicker 
+                    v-if="measurablePickerTarget === index + '-pagePath-' + measurable.pagePath"
+                    v-model="measurable.pagePath"
+                    :activeTab="2"
+                    @update:modelValue="updateStepMeasurables(activeStep)"
+                  />
+                </div>
+
+                <div class="relative inline-block">
+                  <AppInput v-model="measurable.measurable" @click.stop="setMeasurablePickerTarget(index + '-measurable-' + measurable.measurable)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Outbound url"/>
+                  <MeasurablePicker 
+                    v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
+                    v-model="measurable.measurable"
+                    :activeTab="2"
+                    @update:modelValue="updateStepMeasurables(activeStep)"
+                  />
+                </div>
               </div>
             </template>
             
@@ -229,7 +261,7 @@
 
     <!-- TODO: Add loading state -->
 
-    <MeasurablePicker v-if="isMeasurablePickerOpen" :metric="activeStep.measurables[0]"/>
+    <!-- <MeasurablePicker v-if="isMeasurablePickerOpen" :metric="activeStep.measurables[0]"/> -->
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
   </LayoutDefault>
 </template>
@@ -259,9 +291,9 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 
 const route = useRoute()
 const { selectedDateRange } = useDatePicker()
-const { connections, selectedConnection, listConnections } = useConnections()
-const { funnels, funnel, pending, completed, active, addFunnel, addJob } = useFunnels()
-const { isMeasurablePickerOpen, toggleMeasurablePicker, stopTeleporting } = useMeasurablePicker()
+const { listConnections } = useConnections()
+const { funnel, addFunnel, addFunnelJob } = useFunnels()
+const { measurablePickerTarget, setMeasurablePickerTarget } = useMeasurablePicker()
 
 const isGenerateStepsModalOpen = ref(false)
 const isLoading = ref(false)
@@ -306,7 +338,7 @@ const updateStepMeasurables = debounce((step) => {
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     measurables: step.measurables,
   }).then(() => {
-    addJob(funnel.value)
+    addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
@@ -368,7 +400,7 @@ function loadFunnel() {
 
 watch(selectedDateRange, () => {
   console.log('Selecting data range')
-  addJob(funnel.value)
+  addFunnelJob(funnel.value)
 })
 
 onMounted(() => {

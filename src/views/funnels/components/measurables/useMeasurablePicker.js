@@ -1,31 +1,45 @@
 import { ref, computed } from 'vue'
 
-const isMeasurablePickerOpen = ref(false)
+// const isMeasurablePickerOpen = ref(false)
 const measurablePickerTarget = ref(null)
 
 export const useMeasurablePicker = () => {
 
-  const toggle = (target) => {
+  const setMeasurablePickerTarget = (target) => {
     if (measurablePickerTarget.value === target) {
-      hide()
-        return
+      measurablePickerTarget.value = null
     }
-    show(target)
-  }
-
-  const show = (target) => {
-    isMeasurablePickerOpen.value = true
     measurablePickerTarget.value = target
   }
 
-  const hide = () => {
-    isMeasurablePickerOpen.value = false
+  const closeMeasurablePicker = () => {
     measurablePickerTarget.value = null
   }
 
+  // const toggle = (target) => {
+  //   if (measurablePickerTarget.value === target) {
+  //     hide()
+  //       return
+  //   }
+  //   show(target)
+  // }
+
+  // const show = (target) => {
+  //   isMeasurablePickerOpen.value = true
+  //   measurablePickerTarget.value = target
+  // }
+
+  // const hide = () => {
+  //   isMeasurablePickerOpen.value = false
+  //   measurablePickerTarget.value = null
+  // }
+
   return {
-    isMeasurablePickerOpen: computed(() => isMeasurablePickerOpen.value),
+    // pickerId: computed(() => pickerId.value),
+    // isMeasurablePickerOpen: computed(() => isMeasurablePickerOpen.value),
     measurablePickerTarget: computed(() => measurablePickerTarget.value),
-    toggleMeasurablePicker: toggle
+    setMeasurablePickerTarget,
+    closeMeasurablePicker,
+    // toggleMeasurablePicker: toggle
   }
 }
