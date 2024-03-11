@@ -57,7 +57,7 @@ export function useFunnels() {
         gaDataApi.pageUsers(funnel.connection_id, {
           startDate: selectedDateRange.value.startDate,
           endDate: selectedDateRange.value.endDate,
-          measurables: step.measurables.map(measurable => measurable.measurable),
+          pagePaths: step.measurables.map(measurable => measurable.pagePath),
         }).then(response => {
           if (response.data.data.error) {
             console.log(response.data.data.error)
@@ -80,7 +80,7 @@ export function useFunnels() {
         gaDataApi.pagePlusQueryStringUsers(funnel.connection_id, {
           startDate: selectedDateRange.value.startDate,
           endDate: selectedDateRange.value.endDate,
-          measurables: step.measurables.map(measurable => measurable.measurable),
+          pagePathPlusQueryStrings: step.measurables.map(measurable => measurable.pagePathPlusQueryString),
         }).then(response => {
           if (response.data.data.error) {
             console.log(response.data.data.error)
@@ -103,8 +103,8 @@ export function useFunnels() {
         gaDataApi.outboundLinkByPagePathUsers(funnel.connection_id, {
           startDate: selectedDateRange.value.startDate,
           endDate: selectedDateRange.value.endDate,
-          pagePath: step.measurables[0].pagePath,
-          outboundLinkUrls: step.measurables.map(measurable => measurable.measurable),
+          sourcePagePath: step.measurables[0].sourcePagePath,
+          linkUrls: step.measurables.map(measurable => measurable.linkUrl),
         }).then(response => {
           if (response.data.data.error) {
             console.log(response.data.data.error)

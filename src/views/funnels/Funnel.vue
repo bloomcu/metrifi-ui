@@ -103,33 +103,50 @@
           <AppInput v-model="activeStep.name" @update:modelValue="updateStepName(activeStep)" label="Step name" placeholder="Step name" />
 
           <div>
+            <!-- <pre>{{ activeStep }}</pre> -->
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
             <!-- Measurables -->
             <template v-for="(measurable, index) in activeStep.measurables" :key="index">
+              <div class="relative">
+                <div @click="measurable.showPicker = !measurable.showPicker" class="flex flex-col gap-2 cursor-pointer bg-gray-50 border border-gray-300 rounded-md p-2 mb-2 hover:bg-gray-100">
+                  <div class="flex flex-row items-center justify-between">
+                    <div>
+                      <p class="text-xs uppercase">Metric:</p>
+                      <p class="text-gray-500">{{ measurable.metric }}</p>
+                    </div>
+                    <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                      <TrashIcon class="h-5 w-5 shrink-0" />
+                    </button>
+                  </div>
 
-              <!-- Metric: Page users -->
-              <div v-if="measurable.metric === 'pageUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
-                <div class="flex flex-row items-center justify-between">
-                  <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
-                  <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
-                    <TrashIcon class="h-5 w-5 shrink-0" />
-                  </button>
+                  <div v-if="measurable.pagePath" class="overflow-hidden">
+                    <p class="text-xs uppercase">Page path:</p>
+                    <p class="text-gray-500">{{ measurable.pagePath }}</p>
+                  </div>
+
+                  <div v-if="measurable.pagePathPlusQueryString" class="overflow-hidden">
+                    <p class="text-xs uppercase">Page path + query string:</p>
+                    <p class="text-gray-500">{{ measurable.pagePathPlusQueryString }}</p>
+                  </div>
+                  
+                  <div v-if="measurable.linkUrl" class="overflow-hidden">
+                    <p class="text-xs uppercase">Link url:</p>
+                    <p class="text-gray-500">{{ measurable.linkUrl }}</p>
+                  </div>
+
+                  <!-- <pre>{{ measurable }}</pre> -->
                 </div>
 
-                <div class="relative inline-block">
-                    <AppInput v-model="measurable.measurable" @click.stop="setMeasurablePickerTarget(index + '-measurable-' + measurable.measurable)" @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path"/>
-                    <MeasurablePicker 
-                      v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
-                      v-model="measurable.measurable"
-                      activeReport="pageUsers"
-                      @update:modelValue="updateStepMeasurables(activeStep)"
-                    />
-                </div>
+                <NewMetricPicker 
+                  v-if="measurable.showPicker"
+                  v-model="activeStep.measurables[index]"
+                  @update:modelValue="updateStepMeasurables(activeStep)"
+                />
               </div>
 
               <!-- Metric: Page + query strings  -->
-              <div v-if="measurable.metric === 'pagePlusQueryStringUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+              <!-- <div v-if="measurable.metric === 'pagePlusQueryStringUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
                 <div class="flex flex-row items-center justify-between">
                   <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
                   <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
@@ -146,10 +163,10 @@
                       @update:modelValue="updateStepMeasurables(activeStep)"
                     />
                 </div>
-              </div>
+              </div> -->
 
               <!-- Metric: Outbound link users -->
-              <div v-if="measurable.metric === 'outboundLinkUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+              <!-- <div v-if="measurable.metric === 'outboundLinkUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
                 <div class="flex flex-row items-center justify-between">
                   <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
                   <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
@@ -176,11 +193,11 @@
                     @update:modelValue="updateStepMeasurables(activeStep)"
                   />
                 </div>
-              </div>
+              </div> -->
             </template>
             
             <!-- Add measurable -->
-            <button @click="addMeasurable(activeStep)" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
+            <button @click="addNewMeasurable()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
               Add metric
             </button>
@@ -285,8 +302,9 @@ import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
 // import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
-import MetricPicker from '@/views/funnels/components/metrics/MetricPicker.vue'
-import MeasurablePicker from '@/views/funnels/components/measurables/MeasurablePicker.vue'
+// import MetricPicker from '@/views/funnels/components/metrics/MetricPicker.vue'
+// import MeasurablePicker from '@/views/funnels/components/measurables/MeasurablePicker.vue'
+import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
 const route = useRoute()
@@ -358,20 +376,20 @@ function addStep() {
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: 'New step',
     description: null,
-    measurables: [{
-      metric: 'pageUsers', 
-      measurable: ''
-    }],
+    // measurables: [{
+    //   metric: 'pageUsers', 
+    //   measurable: ''
+    // }],
   }).then(response => {
     funnel.value.steps.push(response.data.data)
   })
 }
 
-function addMeasurable(step) {
-  step.measurables.push({
+function addNewMeasurable() {
+  activeStep.value.measurables.push({
     connection_id: funnel.value.connection.id,
     metric: 'pageUsers', 
-    measurable: '',
+    showPicker: true
   })
 }
 
