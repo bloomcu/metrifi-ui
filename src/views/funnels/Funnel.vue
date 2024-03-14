@@ -106,97 +106,47 @@
             <!-- <pre>{{ activeStep }}</pre> -->
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
-            <!-- Measurables -->
-            <template v-for="(measurable, index) in activeStep.measurables" :key="index">
+            <!-- Metrics -->
+            <template v-for="(metric, index) in activeStep.metrics" :key="index">
               <div class="relative">
-                <div @click="measurable.showPicker = !measurable.showPicker" class="flex flex-col gap-2 cursor-pointer bg-gray-50 border border-gray-300 rounded-md p-2 mb-2 hover:bg-gray-100">
+                <div @click="metric.showPicker = !metric.showPicker" class="flex flex-col gap-2 cursor-pointer bg-gray-50 border border-gray-300 rounded-md p-2 mb-2 hover:bg-gray-100">
                   <div class="flex flex-row items-center justify-between">
                     <div>
                       <p class="text-xs uppercase">Metric:</p>
-                      <p class="text-gray-500">{{ measurable.metric }}</p>
+                      <p class="text-gray-500">{{ metric.metric }}</p>
                     </div>
-                    <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                    <button @click="deleteMetric(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
                       <TrashIcon class="h-5 w-5 shrink-0" />
                     </button>
                   </div>
 
-                  <div v-if="measurable.pagePath" class="overflow-hidden">
+                  <div v-if="metric.pagePath" class="overflow-hidden">
                     <p class="text-xs uppercase">Page path:</p>
-                    <p class="text-gray-500">{{ measurable.pagePath }}</p>
+                    <p class="text-gray-500">{{ metric.pagePath }}</p>
                   </div>
 
-                  <div v-if="measurable.pagePathPlusQueryString" class="overflow-hidden">
+                  <div v-if="metric.pagePathPlusQueryString" class="overflow-hidden">
                     <p class="text-xs uppercase">Page path + query string:</p>
-                    <p class="text-gray-500">{{ measurable.pagePathPlusQueryString }}</p>
+                    <p class="text-gray-500">{{ metric.pagePathPlusQueryString }}</p>
                   </div>
                   
-                  <div v-if="measurable.linkUrl" class="overflow-hidden">
+                  <div v-if="metric.linkUrl" class="overflow-hidden">
                     <p class="text-xs uppercase">Link url:</p>
-                    <p class="text-gray-500">{{ measurable.linkUrl }}</p>
+                    <p class="text-gray-500">{{ metric.linkUrl }}</p>
                   </div>
 
-                  <!-- <pre>{{ measurable }}</pre> -->
+                  <!-- <pre>{{ metric }}</pre> -->
                 </div>
 
                 <NewMetricPicker 
-                  v-if="measurable.showPicker"
-                  v-model="activeStep.measurables[index]"
+                  v-if="metric.showPicker"
+                  v-model="activeStep.metrics[index]"
                   @update:modelValue="updateStepMeasurables(activeStep)"
                 />
               </div>
-
-              <!-- Metric: Page + query strings  -->
-              <!-- <div v-if="measurable.metric === 'pagePlusQueryStringUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
-                <div class="flex flex-row items-center justify-between">
-                  <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
-                  <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
-                    <TrashIcon class="h-5 w-5 shrink-0" />
-                  </button>
-                </div>
-
-                <div class="relative inline-block">
-                    <AppInput v-model="measurable.measurable" @click.stop="setMeasurablePickerTarget(index + '-measurable-' + measurable.measurable)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path + query strings"/>
-                    <MeasurablePicker 
-                      v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
-                      v-model="measurable.measurable"
-                      activeReport="pagePlusQueryStringUsers"
-                      @update:modelValue="updateStepMeasurables(activeStep)"
-                    />
-                </div>
-              </div> -->
-
-              <!-- Metric: Outbound link users -->
-              <!-- <div v-if="measurable.metric === 'outboundLinkUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
-                <div class="flex flex-row items-center justify-between">
-                  <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
-                  <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
-                    <TrashIcon class="h-5 w-5 shrink-0" />
-                  </button>
-                </div>
-
-                <div class="relative inline-block">
-                  <AppInput v-model="measurable.pagePath" @click.stop="setMeasurablePickerTarget(index + '-pagePath-' + measurable.pagePath)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Source page path"/>
-                  <MeasurablePicker 
-                    v-if="measurablePickerTarget === index + '-pagePath-' + measurable.pagePath"
-                    v-model="measurable.pagePath"
-                    activeReport="outboundLinkUsers"
-                    @update:modelValue="updateStepMeasurables(activeStep)"
-                  />
-                </div>
-
-                <div class="relative inline-block">
-                  <AppInput v-model="measurable.measurable" @click.stop="setMeasurablePickerTarget(index + '-measurable-' + measurable.measurable)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Outbound url"/>
-                  <MeasurablePicker 
-                    v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
-                    v-model="measurable.measurable"
-                    activeReport="outboundLinkUsers"
-                    @update:modelValue="updateStepMeasurables(activeStep)"
-                  />
-                </div>
-              </div> -->
             </template>
             
-            <!-- Add measurable -->
+            <!-- Add metric -->
             <button @click="addNewMeasurable()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
               Add metric
@@ -233,7 +183,7 @@
         </div>
 
         <!-- Chart -->
-        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="funnel.zoom" />
+        <Chart v-if="funnel && funnel.report" :report="funnel.report" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="funnel.zoom" />
 
         <!-- Messages -->
         <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
@@ -277,8 +227,6 @@
     </div>
 
     <!-- TODO: Add loading state -->
-
-    <!-- <MeasurablePicker v-if="isMeasurablePickerOpen" :metric="activeStep.measurables[0]"/> -->
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
   </LayoutDefault>
 </template>
@@ -291,7 +239,6 @@ import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
-import { useMeasurablePicker } from '@/views/funnels/components/measurables/useMeasurablePicker';
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { Bars2Icon, QueueListIcon } from '@heroicons/vue/24/outline'
@@ -299,11 +246,8 @@ import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/soli
 import { TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
-// import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
-// import MetricPicker from '@/views/funnels/components/metrics/MetricPicker.vue'
-// import MeasurablePicker from '@/views/funnels/components/measurables/MeasurablePicker.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
@@ -311,7 +255,6 @@ const route = useRoute()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
 const { funnel, addFunnel, addFunnelJob } = useFunnels()
-const { measurablePickerTarget, setMeasurablePickerTarget } = useMeasurablePicker()
 
 const isGenerateStepsModalOpen = ref(false)
 const isLoading = ref(false)
@@ -354,7 +297,7 @@ const updateStepMeasurables = debounce((step) => {
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
-    measurables: step.measurables,
+    metrics: step.metrics,
   }).then(() => {
     addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
@@ -376,25 +319,21 @@ function addStep() {
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: 'New step',
     description: null,
-    // measurables: [{
-    //   metric: 'pageUsers', 
-    //   measurable: ''
-    // }],
   }).then(response => {
     funnel.value.steps.push(response.data.data)
   })
 }
 
 function addNewMeasurable() {
-  activeStep.value.measurables.push({
+  activeStep.value.metrics.push({
     connection_id: funnel.value.connection.id,
     metric: 'pageUsers', 
     showPicker: true
   })
 }
 
-function deleteMeasurable(index) {
-  activeStep.value.measurables.splice(index, 1)
+function deleteMetric(index) {
+  activeStep.value.metrics.splice(index, 1)
   updateStepMeasurables(activeStep.value)
 }
 

@@ -14,17 +14,6 @@
               <span>{{ tab.name }}</span>
             </button>
           </nav>
-
-        <!-- <div class="flex justify-between items-center">
-          <nav>
-            <button v-for="tab in tabs" :key="tab.name" @click.stop="selectTab(tab)" :class="selectedTab.metric == tab.metric ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 py-4 px-4 text-sm font-medium">
-              <component :is="tab.icon" :class="selectedTab == tab ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-              <span>{{ tab.name }}</span>
-            </button>
-          </nav> -->
-
-          <!-- <div v-if="reports[activeReport] && reports[activeReport].rows" class="text-gray-400 text-sm mr-4">{{ reports[activeReport].rows.length }} of {{ reports[activeReport].rowCount }}</div> -->
-        <!-- </div> -->
       </div>
 
       <div class="flex transform-gpu divide-x divide-gray-100" as="div">
@@ -70,7 +59,7 @@
                       <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
                       <td class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ row.metricValues[0].value }}</td>
                   </tr>
-
+                  
                   <tr 
                     v-if="selectedTab.metric === 'pagePlusQueryStringUsers'" 
                     v-for="row in filteredReportRows" 
@@ -90,7 +79,7 @@
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       linkUrl: row.dimensionValues[0].value,
-                      sourcePagePath: row.dimensionValues[1].value,
+                      pagePath: row.dimensionValues[1].value,
                     })"
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
@@ -133,12 +122,9 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-// import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
-import { useMeasurablePicker } from '@/views/funnels/components/measurables/useMeasurablePicker'
-// import useClickOutside from '@/app/composables/base/useClickOutside'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import { EyeIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
@@ -159,17 +145,9 @@ function updateMetric(updatedMetric) {
   emit('update:modelValue', updatedMetric)
 }
 
-// function updateMetric(measurable) {
-//   emit('update:modelValue', {
-//     metric: selectedTab.value.metric,
-//     measurable: measurable,
-//   })
-// }
-
 const { selectedDateRange } = useDatePicker()
 const { selectedConnection } = useConnections()
 const { reports, isReportLoading, runReport } = useGoogleAnalyticsReports()
-// const { closeMeasurablePicker, measurablePickerTab, setMeasurablePickerTab } = useMeasurablePicker()
 
 const tabs = ref([
   { 

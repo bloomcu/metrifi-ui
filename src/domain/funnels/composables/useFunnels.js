@@ -11,6 +11,7 @@ export function useFunnels() {
   const completedFunnels = ref([])
   const activeFunnels = ref()
 
+  // TODO: Do we need this?
   const addFunnel = (funnel) => {
     funnels.value.push(funnel)
     addFunnelJob(funnel) // Add funnel job by funnel object
@@ -37,91 +38,26 @@ export function useFunnels() {
     }
   };
 
-  const runReport = debounce((job) => {
+  const runReport = debounce((funnel) => {
     console.log('Running report...')
 
-    let funnel = job
+    // If no steps have metrics, skip
+    // if (!step.metrics.length) {
+    //   step.total = '0' // TODO: This won't be updated in the funnel
+    //   startNextFunnelJob()
+    //   return
+    // }
   
-    // Iterate each step
-    let stepsProcessed = 0
-    funnel.steps.forEach((step) => {
-  
-      if (!step.measurables.length) {
-        step.total = '0' // TODO: This won't be updated in the funnel
-        startNextFunnelJob()
-        return
-      }
-  
-      // Report: Page users
-      if (step.measurables[0].metric === 'pageUsers') {
-        gaDataApi.pageUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          pagePaths: step.measurables.map(measurable => measurable.pagePath),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-              stepsProcessed = 0
-          }
-        }) // End GA page views report
-      }
+    gaDataApi.funnelReport(funnel.connection_id, {
+      startDate: selectedDateRange.value.startDate,
+      endDate: selectedDateRange.value.endDate,
+      steps: funnel.steps,
+    }).then(response => {
+      if (response.data.data.error) console.log(response.data.data.error)
 
-      // Report: Virtual page users
-      if (step.measurables[0].metric === 'pagePlusQueryStringUsers') {
-        gaDataApi.pagePlusQueryStringUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          pagePathPlusQueryStrings: step.measurables.map(measurable => measurable.pagePathPlusQueryString),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-              stepsProcessed = 0
-          }
-        }) // End GA page views report
-      }
-  
-      // Report outbound clicks
-      if (step.measurables[0].metric === 'outboundLinkUsers') {
-        gaDataApi.outboundLinkByPagePathUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          sourcePagePath: step.measurables[0].sourcePagePath,
-          linkUrls: step.measurables.map(measurable => measurable.linkUrl),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          step.total = report.total
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-            stepsProcessed = 0
-          }
-        }) // End GA outbound clicks report
-      }
-    }) // End foreach on funnel step
+      console.log(response.data.data)
+      funnel.report = response.data.data
+    })
 
     startNextFunnelJob()
   }, 500)
