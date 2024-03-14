@@ -157,8 +157,8 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div v-if="!isLoading" class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
-        <!-- Automation running -->
+      <div class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
+        <!-- Automation running (TODO: Make a notification component for these) -->
         <div v-if="isGeneratingSteps" class="rounded-md bg-indigo-50 p-4 mb-4">
           <div class="flex">
             <div class="flex-shrink-0 text-indigo-600">
@@ -170,7 +170,7 @@
           </div>
         </div>
 
-        <!-- Automation error -->
+        <!-- Automation error (TODO: Do this in the notification component) -->
         <div v-if="errorGeneratingSteps" class="rounded-md bg-pink-50 p-4 mb-6">
           <div class="flex items-center">
             <div class="flex-shrink-0 text-pink-600">
@@ -183,7 +183,41 @@
         </div>
 
         <!-- Chart -->
-        <Chart v-if="funnel && funnel.report" :report="funnel.report" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="funnel.zoom" />
+        <Chart 
+          v-if="funnel.report"
+          :report="funnel.report" 
+          :startDate="selectedDateRange.startDate" 
+          :endDate="selectedDateRange.endDate" 
+          :zoom="funnel.zoom"
+          :updating="isReportRunning"
+        />
+
+        <!-- State: Loading (TODO: Make into component, put into Chart component) -->
+        <div v-else class="flex gap-6 mt-6">
+          <div class="flex-1">
+            <div class="flex flex-col w-full">
+              <div class="relative flex h-[400px]">
+                <div class="animate-pulse flex flex-[8] gap-3 items-end">
+                  <div class="bg-gray-200 flex-1 h-full"></div>
+                  <div class="bg-gray-200 flex-1 h-60"></div>
+                  <div class="bg-gray-200 flex-1 h-32"></div>
+                </div>
+              </div>
+
+              <div class="relative flex mt-2">
+                <div class="animate-pulse flex flex-[8] gap-3">
+                  <div class="bg-gray-200 flex-1 h-4"></div>
+                  <div class="bg-gray-200 flex-1 h-4"></div>
+                  <div class="bg-gray-200 flex-1 h-4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-[14rem]">
+            <div class="animate-pulse bg-gray-200 flex-1 h-32"></div>
+          </div>
+        </div>
 
         <!-- Messages -->
         <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
@@ -223,10 +257,9 @@
           </div>
         </div>
 
-      </div>
+      </div>      
     </div>
 
-    <!-- TODO: Add loading state -->
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
   </LayoutDefault>
 </template>
@@ -254,10 +287,10 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const route = useRoute()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
-const { funnel, addFunnel, addFunnelJob } = useFunnels()
+const { funnel, addFunnel, addFunnelJob, isReportRunning } = useFunnels()
 
 const isGenerateStepsModalOpen = ref(false)
-const isLoading = ref(false)
+const isLoading = ref(true)
 const isUpdating = ref(false)
 const isGeneratingSteps = ref(false)
 const errorGeneratingSteps = ref()
@@ -271,6 +304,7 @@ provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 
 const updateFunnel = debounce(() => {
+  console.log('Updating funnel...')
   isUpdating.value = true
 
   funnelApi.update(route.params.organization, route.params.funnel, {
@@ -284,16 +318,19 @@ const updateFunnel = debounce(() => {
 }, 800)
 
 const updateStepName = debounce((step) => {
+  console.log('Updating step name...')
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     name: step.name,
   }).then(() => {
+    addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
 
 const updateStepMeasurables = debounce((step) => {
+  console.log('Updating step measurables...')
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
@@ -305,17 +342,21 @@ const updateStepMeasurables = debounce((step) => {
 }, 800)
 
 function handleDragEvent(e) {
+  console.log('Handing drag event...')
   isUpdating.value = true
   let event = e.moved || e.added
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, event.element.id, {
     order: event.newIndex + 1
   }).then(() => {
+    addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 500)
   })
 }
 
 function addStep() {
+  console.log('Adding step...')
+
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: 'New step',
     description: null,
@@ -325,6 +366,8 @@ function addStep() {
 }
 
 function addNewMeasurable() {
+  console.log('Adding new measurable...')
+
   activeStep.value.metrics.push({
     connection_id: funnel.value.connection.id,
     metric: 'pageUsers', 
@@ -333,14 +376,19 @@ function addNewMeasurable() {
 }
 
 function deleteMetric(index) {
+  console.log('Deleting metric...')
+
   activeStep.value.metrics.splice(index, 1)
   updateStepMeasurables(activeStep.value)
+  addFunnelJob(funnel.value)
 }
 
 function deleteStep(index, id) {
+  console.log('Deleting step...')
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
       funnel.value.steps.splice(index, 1)
+      addFunnelJob(funnel.value)
     })
 }
 
@@ -349,14 +397,16 @@ function toggleModal() {
 }
 
 function loadFunnel() {
+  console.log('Loading funnel...')
   funnelApi.show(route.params.organization, route.params.funnel)
     .then(response => {
       addFunnel(response.data.data)
+      setTimeout(() => isLoading.value = false, 500)
     })
 }
 
 watch(selectedDateRange, () => {
-  console.log('Selecting data range')
+  console.log('Date range has changed...')
   addFunnelJob(funnel.value)
 })
 

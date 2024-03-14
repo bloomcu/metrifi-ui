@@ -10,6 +10,7 @@ export function useFunnels() {
   const pendingFunnels = ref([])
   const completedFunnels = ref([])
   const activeFunnels = ref()
+  const isReportRunning = ref(false)
 
   // TODO: Do we need this?
   const addFunnel = (funnel) => {
@@ -40,13 +41,7 @@ export function useFunnels() {
 
   const runReport = debounce((funnel) => {
     console.log('Running report...')
-
-    // If no steps have metrics, skip
-    // if (!step.metrics.length) {
-    //   step.total = '0' // TODO: This won't be updated in the funnel
-    //   startNextFunnelJob()
-    //   return
-    // }
+    isReportRunning.value = true
   
     gaDataApi.funnelReport(funnel.connection_id, {
       startDate: selectedDateRange.value.startDate,
@@ -54,9 +49,8 @@ export function useFunnels() {
       steps: funnel.steps,
     }).then(response => {
       if (response.data.data.error) console.log(response.data.data.error)
-
-      console.log(response.data.data)
       funnel.report = response.data.data
+      isReportRunning.value = false
     })
 
     startNextFunnelJob()
@@ -73,7 +67,8 @@ export function useFunnels() {
 
   return { 
     funnels: computed(() => funnels.value),
-    funnel: computed(() => funnels.value[0]),
+    funnel: computed(() => funnels.value[0]), // TODO: Delete this
+    isReportRunning: computed(() => isReportRunning.value),
     pendingFunnels,
     activeFunnels,
     completedFunnels,

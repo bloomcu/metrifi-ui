@@ -15,6 +15,7 @@
                             :value="step.users" 
                             :max="maxValue" 
                             :zoom="zoom"
+                            :updating="updating"
                             @click="emit('stepSelected', step)"
                         />
                     </div>
@@ -62,6 +63,10 @@ const props = defineProps({
     startDate: String,
     endDate: String,
     zoom: Number,
+    updating: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const emit = defineEmits(['stepSelected'])
