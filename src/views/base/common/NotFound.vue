@@ -5,9 +5,10 @@
     </div>
 
     <div class="text-center">
-      <p class="text-lg font-medium text-indigo-600">404</p>
-      <h1 class="mt-4 text-4xl sm:text-6xl font-medium tracking-tight text-gray-900">Not found</h1>
-      <p class="mt-6 text-base sm:text-lg leading-7 text-gray-600">We can't find what you're looking for because it has either expired or never existed.</p>
+      <p class="mb-4 text-lg font-medium text-indigo-600">404</p>
+      <h1 class="mb-6 text-4xl sm:text-6xl font-medium tracking-tight text-gray-900">Not found</h1>
+      <p class="mb-10 text-base sm:text-lg leading-7 text-gray-600">We can't find what you're looking for because it has either expired or never existed.</p>
+      <AppButton href="/login" size="lg">Start over</AppButton>
     </div>
   </main>
 </template>

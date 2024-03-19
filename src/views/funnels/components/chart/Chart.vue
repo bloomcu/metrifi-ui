@@ -28,12 +28,12 @@
                         <!-- Label: E.g., "Homepage" -->
                         <ChartLabel :name="step.name" />
 
-                        <!-- Metric: E.g., "1,000 Page views" -->
+                        <!-- Metric: E.g., "1,000 users" -->
                         <p>{{ Number(step.users).toLocaleString() }} users</p>
 
                         <!-- Conversion rate: E.g., "100%" -->
                         <!-- <p v-if="index != 0">{{ conversions[index] }}% conversion rate</p> -->
-                        <p v-if="step.conversionRate">{{ step.conversionRate }} conversion rate</p>
+                        <p v-show="index != 0">{{ step.conversionRate }} conversion rate</p>
                     </div>
                 </div>
             </div>

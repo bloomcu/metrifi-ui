@@ -19,7 +19,9 @@ export function useFunnels() {
   }
 
   const addFunnelJob = (job) => {
-    pendingFunnels.value.push(job)
+    if (job.steps.length) {
+      pendingFunnels.value.push(job)
+    }
     
     if (!activeFunnels.value) {
       startNextFunnelJob()
@@ -50,6 +52,7 @@ export function useFunnels() {
     }).then(response => {
       if (response.data.data.error) console.log(response.data.data.error)
       funnel.report = response.data.data
+      console.log('Report', response.data.data)
       isReportRunning.value = false
     })
 

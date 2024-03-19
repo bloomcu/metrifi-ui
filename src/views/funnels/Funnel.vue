@@ -120,17 +120,17 @@
                     </button>
                   </div>
 
-                  <div v-if="metric.pagePath" class="overflow-hidden">
+                  <div v-if="metric.pagePath" class="_overflow-hidden">
                     <p class="text-xs uppercase">Page path:</p>
                     <p class="text-gray-500">{{ metric.pagePath }}</p>
                   </div>
 
-                  <div v-if="metric.pagePathPlusQueryString" class="overflow-hidden">
+                  <div v-if="metric.pagePathPlusQueryString" class="_overflow-hidden">
                     <p class="text-xs uppercase">Page path + query string:</p>
                     <p class="text-gray-500">{{ metric.pagePathPlusQueryString }}</p>
                   </div>
                   
-                  <div v-if="metric.linkUrl" class="overflow-hidden">
+                  <div v-if="metric.linkUrl" class="_overflow-hidden">
                     <p class="text-xs uppercase">Link url:</p>
                     <p class="text-gray-500">{{ metric.linkUrl }}</p>
                   </div>
@@ -198,24 +198,24 @@
             <div class="flex flex-col w-full">
               <div class="relative flex h-[400px]">
                 <div class="animate-pulse flex flex-[8] gap-3 items-end">
-                  <div class="bg-gray-200 flex-1 h-full"></div>
-                  <div class="bg-gray-200 flex-1 h-60"></div>
-                  <div class="bg-gray-200 flex-1 h-32"></div>
+                  <div class="bg-gray-200 flex-1 h-full rounded-xl"></div>
+                  <div class="bg-gray-200 flex-1 h-60 rounded-xl"></div>
+                  <div class="bg-gray-200 flex-1 h-32 rounded-xl"></div>
                 </div>
               </div>
 
               <div class="relative flex mt-2">
                 <div class="animate-pulse flex flex-[8] gap-3">
-                  <div class="bg-gray-200 flex-1 h-4"></div>
-                  <div class="bg-gray-200 flex-1 h-4"></div>
-                  <div class="bg-gray-200 flex-1 h-4"></div>
+                  <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
+                  <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
+                  <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="w-[14rem]">
-            <div class="animate-pulse bg-gray-200 flex-1 h-32"></div>
+            <div class="animate-pulse bg-gray-200 flex-1 h-32 rounded-xl"></div>
           </div>
         </div>
 
@@ -400,6 +400,8 @@ function loadFunnel() {
   console.log('Loading funnel...')
   funnelApi.show(route.params.organization, route.params.funnel)
     .then(response => {
+      // let funnel = response.data.data
+      // console.log(funnel.steps)
       addFunnel(response.data.data)
       setTimeout(() => isLoading.value = false, 500)
     })
