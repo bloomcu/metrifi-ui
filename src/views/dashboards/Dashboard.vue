@@ -103,7 +103,6 @@ provide('isModalOpen', isModalOpen)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
 function handleStepSelected(step) {
-  console.log(step)
   selectStep(step)
   openTray()
 }

@@ -31,7 +31,7 @@
                   <p class="text-gray-500">{{ metric.metric }}</p>
                 </div>
 
-                <div class="overflow-x-scroll">
+                <div class="overflow-x-scroll no-scrollbar">
                   <p class="font-medium text-gray-900">Dimension</p>
                   <p class="text-gray-500">{{ metric.pagePath }}</p>
                 </div>
