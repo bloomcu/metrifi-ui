@@ -40,10 +40,12 @@
         </div>
 
         <Chart 
-          :funnel="funnel" 
+          v-if="funnel.report"
+          :report="funnel.report" 
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
-          :zoom="dashboard.zoom"
+          :zoom="funnel.zoom"
+          :updating="isReportLoading"
           @stepSelected="handleStepSelected"
         />
 
@@ -82,7 +84,7 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const router = useRouter()
 const route = useRoute()
 
-const { funnels, pending, completed, active, addFunnel, addJob } = useFunnels()
+const { funnels, addFunnel, addJob, isReportLoading } = useFunnels()
 const { selectStep, openTray } = useStepDetailsTray()
 const { selectedDateRange } = useDatePicker()
 
