@@ -160,11 +160,11 @@ const tabs = ref([
     metric: 'pagePlusQueryStringUsers',
     icon: EyeIcon,
   },  
-  { 
-    name: 'Outbound link users',
-    metric: 'outboundLinkUsers',
-    icon: EyeIcon,
-  },
+  // { 
+  //   name: 'Outbound link users',
+  //   metric: 'outboundLinkUsers',
+  //   icon: EyeIcon,
+  // },
 ])
 
 const selectedTab = ref(tabs.value.find(tab => tab.metric === props.modelValue.metric))
