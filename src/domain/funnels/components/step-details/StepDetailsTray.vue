@@ -23,26 +23,26 @@
             <p class="mb-1 font-medium text-gray-900">Metrics</p>
 
             <!-- Measurables -->
-            <template v-for="(measurable, index) in selectedStep.measurables">
+            <template v-for="(metric, index) in selectedStep.metrics">
               <!-- Pageviews metrics -->
-              <div v-if="measurable.metric === 'pageViews'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
+              <div v-if="metric.metric === 'pageUsers'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
                 <div class="border-b pb-4">
                   <p class="font-medium text-gray-900">Metric</p>
-                  <p class="text-gray-500">{{ measurable.metric }}</p>
+                  <p class="text-gray-500">{{ metric.metric }}</p>
                 </div>
 
-                <div>
+                <div class="overflow-x-scroll">
                   <p class="font-medium text-gray-900">Dimension</p>
-                  <p class="text-gray-500">{{ measurable.measurable }}</p>
+                  <p class="text-gray-500">{{ metric.pagePath }}</p>
                 </div>
               </div>
 
               <!-- Outbound clicks metrics -->
-              <div v-if="measurable.metric === 'outboundClicks'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
-                <p>{{ measurable.metric }}</p>
-                <p>{{ measurable.pagePath }}</p>
-                <p>{{ measurable.measurable }}</p>
-              </div>
+              <!-- <div v-if="metric.metric === 'outboundLinkUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+                <p>{{ metric.metric }}</p>
+                <p>{{ metric.pagePath }}</p>
+                <p>{{ metric.measurable }}</p>
+              </div> -->
             </template>
           </div>
         </div>
