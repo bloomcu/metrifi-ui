@@ -24,7 +24,7 @@
 
             <!-- Measurables -->
             <template v-for="(metric, index) in selectedStep.metrics">
-              <!-- Pageviews metrics -->
+              <!-- Page users metric -->
               <div v-if="metric.metric === 'pageUsers'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
                 <div class="border-b pb-4">
                   <p class="font-medium text-gray-900">Metric</p>
@@ -34,6 +34,19 @@
                 <div class="overflow-x-auto">
                   <p class="font-medium text-gray-900">Dimension</p>
                   <p class="text-gray-500">{{ metric.pagePath }}</p>
+                </div>
+              </div>
+
+              <!-- Page plus query string users metric -->
+              <div v-if="metric.metric === 'pagePlusQueryStringUsers'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
+                <div class="border-b pb-4">
+                  <p class="font-medium text-gray-900">Metric</p>
+                  <p class="text-gray-500">{{ metric.metric }}</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <p class="font-medium text-gray-900">Dimension</p>
+                  <p class="text-gray-500">{{ metric.pagePathPlusQueryString }}</p>
                 </div>
               </div>
 
