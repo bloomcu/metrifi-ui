@@ -184,40 +184,12 @@
 
         <!-- Chart -->
         <Chart 
-          v-if="funnel.report"
           :report="funnel.report" 
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
           :zoom="funnel.zoom"
-          :updating="isReportRunning"
+          :updating="isReportLoading"
         />
-
-        <!-- State: Loading (TODO: Make into component, put into Chart component) -->
-        <div v-else class="flex gap-6 mt-6">
-          <div class="flex-1">
-            <div class="flex flex-col w-full">
-              <div class="relative flex h-[400px]">
-                <div class="animate-pulse flex flex-[8] gap-3 items-end">
-                  <div class="bg-gray-200 flex-1 h-full rounded-xl"></div>
-                  <div class="bg-gray-200 flex-1 h-60 rounded-xl"></div>
-                  <div class="bg-gray-200 flex-1 h-32 rounded-xl"></div>
-                </div>
-              </div>
-
-              <div class="relative flex mt-2">
-                <div class="animate-pulse flex flex-[8] gap-3">
-                  <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
-                  <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
-                  <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="w-[14rem]">
-            <div class="animate-pulse bg-gray-200 flex-1 h-32 rounded-xl"></div>
-          </div>
-        </div>
 
         <!-- Messages -->
         <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
@@ -287,7 +259,7 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const route = useRoute()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
-const { funnel, addFunnel, addFunnelJob, isReportRunning } = useFunnels()
+const { funnel, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 
 const isGenerateStepsModalOpen = ref(false)
 const isLoading = ref(true)

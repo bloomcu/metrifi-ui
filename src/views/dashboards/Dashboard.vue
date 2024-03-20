@@ -39,8 +39,8 @@
           <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
         </div>
 
+        <!-- Chart -->
         <Chart 
-          v-if="funnel.report"
           :report="funnel.report" 
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex gap-6 mt-6">
+    <div v-if="report" class="flex gap-6 mt-6">
         <!-- Left -->
         <div class="flex-1">
             <!-- Bars -->
@@ -50,10 +50,36 @@
         </div>
     </div>
 
+    <!-- State: Loading (TODO: Make into component, put into Chart component) -->
+    <div v-else class="flex gap-6 mt-6">
+        <div class="flex-1">
+        <div class="flex flex-col w-full">
+            <div class="relative flex h-[400px]">
+            <div class="animate-pulse flex flex-[8] gap-3 items-end">
+                <div class="bg-gray-200 flex-1 h-full rounded-xl"></div>
+                <div class="bg-gray-200 flex-1 h-60 rounded-xl"></div>
+                <div class="bg-gray-200 flex-1 h-32 rounded-xl"></div>
+            </div>
+            </div>
+
+            <div class="relative flex mt-2">
+            <div class="animate-pulse flex flex-[8] gap-3">
+                <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
+                <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
+                <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="w-[14rem]">
+        <div class="animate-pulse bg-gray-200 flex-1 h-32 rounded-xl"></div>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
 import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
 import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
@@ -69,47 +95,11 @@ const props = defineProps({
     }
 })
 
+onMounted(() => {
+    console.log('report', props.report)
+})
+
 const emit = defineEmits(['stepSelected'])
 
 const maxValue = computed(() => Math.max(...props.report.steps.map((step) => step.users)))
-
-// const conversions = computed(() => {
-//     let steps = props.funnel.steps
-
-//     let array = []
-//         array.push(100) // First conversion rate is always 100%
-
-//     steps.forEach((step, index) => {
-//         let cr = (steps[index + 1]?.total / step.total)
-        
-//         if (cr === Infinity || isNaN(cr)) {
-//             array.push('0.00')
-//             return
-//         }
-
-//         let formatted = cr * 100 // Get a percentage
-//             formatted = formatted.toFixed(2) // Round to 2 decimal places
-//             formatted = formatted.substring(0, 4) // Trim to 2 decimal places
-
-//         array.push(formatted)
-//     })
-
-//     return array
-// })
-
-// const overallConversionRate = computed(() => {
-//   let steps = props.funnel.steps
-//   if (!steps.length) return '0.00'
-  
-//   let lastStep = steps[steps.length - 1]
-//   let firstStep = steps[0]
-//   let ocr = (lastStep.total / firstStep.total)
-//   if (!ocr || ocr === Infinity) return '0.00'
-
-//   let formatted = ocr * 100 // Get a percentage
-//       formatted = formatted.toFixed(2) // Round to 2 decimal places
-//       formatted = formatted.substring(0, 4) // Trim to 2 decimal places
-  
-//   return formatted
-// })
 </script>
