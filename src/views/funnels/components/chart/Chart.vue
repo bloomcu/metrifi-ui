@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
 import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
 import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
@@ -93,10 +93,6 @@ const props = defineProps({
         type: Boolean,
         default: false
     }
-})
-
-onMounted(() => {
-    console.log('report', props.report)
 })
 
 const emit = defineEmits(['stepSelected'])

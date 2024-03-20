@@ -52,6 +52,7 @@ export function useFunnels() {
     }).then(response => {
       if (response.data.data.error) console.log(response.data.data.error)
       funnel.report = response.data.data
+      console.log(response.data.data)
       isReportLoading.value = false
     })
 

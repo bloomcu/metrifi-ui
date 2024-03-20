@@ -91,19 +91,18 @@
 
       <!-- Center: Active Step -->
       <aside v-if="activeStep" class="min-w-[24rem] max-w-[24rem] border-r">
-        <!-- Header -->
+        <!-- Step header -->
         <div class="flex items-center justify-between border-b p-3">
           <button @click="activeStepId = null" type="button" class="inline-flex items-center rounded-md p-1 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
             <ChevronLeftIcon class="h-5 w-5 shrink-0" />
           </button>
         </div>
 
-        <!-- Options -->
+        <!-- Step metrics -->
         <div class="flex flex-col gap-4 p-3">
           <AppInput v-model="activeStep.name" @update:modelValue="updateStepName(activeStep)" label="Step name" placeholder="Step name" />
 
           <div>
-            <!-- <pre>{{ activeStep }}</pre> -->
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
             <!-- Metrics -->
@@ -120,19 +119,19 @@
                     </button>
                   </div>
 
-                  <div v-if="metric.pagePath" class="_overflow-hidden">
+                  <div v-if="metric.pagePath" class="">
                     <p class="text-xs uppercase">Page path:</p>
-                    <p class="text-gray-500">{{ metric.pagePath }}</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.pagePath }}</p>
                   </div>
 
-                  <div v-if="metric.pagePathPlusQueryString" class="_overflow-hidden">
+                  <div v-if="metric.pagePathPlusQueryString" class="">
                     <p class="text-xs uppercase">Page path + query string:</p>
-                    <p class="text-gray-500">{{ metric.pagePathPlusQueryString }}</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.pagePathPlusQueryString }}</p>
                   </div>
                   
-                  <div v-if="metric.linkUrl" class="_overflow-hidden">
+                  <div v-if="metric.linkUrl" class="">
                     <p class="text-xs uppercase">Link url:</p>
-                    <p class="text-gray-500">{{ metric.linkUrl }}</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.linkUrl }}</p>
                   </div>
 
                   <!-- <pre>{{ metric }}</pre> -->
