@@ -35,16 +35,16 @@
             
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="min-w-full max-w-full divide-y divide-gray-300">
                 <thead>
-                <tr class="divide-x divide-gray-200">
-                    <th v-for="header in reports[selectedTab.metric].dimensionHeaders" scope="col" class="py-3 px-4 text-left">
-                    <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
-                    <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
-                    </th>
-                    <th v-for="header in reports[selectedTab.metric].metricHeaders" scope="col" class="py-3 px-4 text-left">
-                    <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
-                    <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
-                    </th>
-                </tr>
+                  <tr class="divide-x divide-gray-200">
+                      <th v-for="header in reports[selectedTab.metric].dimensionHeaders" scope="col" class="py-3 px-4 text-left">
+                      <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
+                      <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+                      </th>
+                      <th v-for="header in reports[selectedTab.metric].metricHeaders" scope="col" class="py-3 px-4 text-left">
+                      <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
+                      <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+                      </th>
+                  </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                   <tr 
@@ -81,6 +81,20 @@
                       linkUrl: row.dimensionValues[0].value,
                       pagePath: row.dimensionValues[1].value,
                     })"
+                    class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
+                  >
+                      <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[1].value }}</td>
+                      <td class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ row.metricValues[0].value }}</td>
+                  </tr>
+
+                  <tr 
+                    v-if="selectedTab.metric === 'formUserSubmissions'" 
+                    v-for="row in filteredReportRows" 
+                    @click="updateMetric({
+                      metric: selectedTab.metric,
+                      pagePath: row.dimensionValues[1].value,
+                    })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
                       <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
@@ -126,7 +140,7 @@ import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { EyeIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
 
 const props = defineProps({
@@ -160,11 +174,16 @@ const tabs = ref([
     metric: 'pagePlusQueryStringUsers',
     icon: EyeIcon,
   },  
-  // { 
-  //   name: 'Outbound link users',
-  //   metric: 'outboundLinkUsers',
-  //   icon: EyeIcon,
-  // },
+  { 
+    name: 'Outbound link users',
+    metric: 'outboundLinkUsers',
+    icon: EyeIcon,
+  },
+  { 
+    name: 'Form submissions',
+    metric: 'formUserSubmissions',
+    icon: EnvelopeIcon,
+  },
 ])
 
 const selectedTab = ref(tabs.value.find(tab => tab.metric === props.modelValue.metric))
@@ -279,8 +298,11 @@ const dictionary = {
     displayName: 'Domain',
   },
   eventCount: {
-    displayName: 'Clicks',
-  }
+    displayName: 'Events',
+  },
+  eventName: {
+    displayName: 'Event',
+  },
 }
 
 const emit = defineEmits(['update:modelValue'])
