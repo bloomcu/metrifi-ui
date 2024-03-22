@@ -125,7 +125,7 @@ import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
-import { EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, CursorArrowRippleIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import ConnectionPicker from '@/domain/connections/components/ConnectionPicker.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
@@ -152,7 +152,12 @@ const tabs = ref([
   { 
     name: 'Outbound link users',
     report: 'outboundLinkUsers',
-    icon: ArrowRightOnRectangleIcon,
+    icon: CursorArrowRippleIcon,
+  },
+  { 
+    name: 'Form submissions',
+    report: 'formUserSubmissions',
+    icon: EnvelopeIcon,
   },
 ])
 
@@ -230,7 +235,13 @@ const dictionary = {
   },
   eventCount: {
     displayName: 'Clicks',
-  }
+  },
+  eventName: {
+    displayName: 'Event',
+  },
+  'customEvent:form_destination': {
+    displayName: 'Form destination',
+  },
 }
 
 function makeCSV() {
