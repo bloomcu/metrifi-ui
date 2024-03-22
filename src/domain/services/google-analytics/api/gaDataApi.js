@@ -48,6 +48,15 @@ const gaDataApi = {
   async outboundLinkByPagePathUsers(connectionId, request) {
     return await HttpClient.post(`/ga/outbound-link-by-page-path-users/${connectionId}`, request)
   },
+
+  /**
+   * Get a list of all pages with user form submissions by form id
+   *
+   * @return promise
+   */
+  async formUserSubmissions(connectionId, request) {
+    return await HttpClient.post(`/ga/form-user-submissions/${connectionId}`, request)
+  },
 }
 
 export { gaDataApi }

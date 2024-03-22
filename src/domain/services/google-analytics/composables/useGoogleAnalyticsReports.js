@@ -24,6 +24,7 @@ const reports = ref({
   pageUsers: null,
   pagePlusQueryStringUsers: null,
   outboundLinkUsers: null,
+  formUserSubmissions: null,
 })
 
 const isReportLoading = ref(false)
@@ -73,6 +74,7 @@ export function useGoogleAnalyticsReports() {
         console.log(response.data.data.error)
         return
       }
+      console.log(response.data.data)
       reports.value[report] = response.data.data
       isReportLoading.value = false
     })

@@ -134,6 +134,11 @@
                     <p class="text-gray-500 overflow-x-auto">{{ metric.linkUrl }}</p>
                   </div>
 
+                  <div v-if="metric.formDestination" class="">
+                    <p class="text-xs uppercase">Form destination:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.formDestination }}</p>
+                  </div>
+
                   <!-- <pre>{{ metric }}</pre> -->
                 </div>
 

@@ -93,12 +93,14 @@
                     v-for="row in filteredReportRows" 
                     @click="updateMetric({
                       metric: selectedTab.metric,
-                      pagePath: row.dimensionValues[1].value,
+                      pagePath: row.dimensionValues[0].value,
+                      formDestination: row.dimensionValues[1].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
                       <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
                       <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[1].value }}</td>
+                      <!-- <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[2].value }}</td> -->
                       <td class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ row.metricValues[0].value }}</td>
                   </tr>
                 </tbody>
@@ -302,6 +304,9 @@ const dictionary = {
   },
   eventName: {
     displayName: 'Event',
+  },
+  'customEvent:form_destination': {
+    displayName: 'Form destination',
   },
 }
 
