@@ -139,6 +139,21 @@
                     <p class="text-gray-500 overflow-x-auto">{{ metric.formDestination }}</p>
                   </div>
 
+                  <div v-if="metric.formId" class="">
+                    <p class="text-xs uppercase">Form id:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.formId }}</p>
+                  </div>
+
+                  <div v-if="metric.formLength" class="">
+                    <p class="text-xs uppercase">Form length:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.formLength }}</p>
+                  </div>
+
+                  <div v-if="metric.formSubmitText" class="">
+                    <p class="text-xs uppercase">Form submit text:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.formSubmitText }}</p>
+                  </div>
+
                   <!-- <pre>{{ metric }}</pre> -->
                 </div>
 

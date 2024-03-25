@@ -93,15 +93,21 @@
                     v-for="row in filteredReportRows" 
                     @click="updateMetric({
                       metric: selectedTab.metric,
-                      pagePath: row.dimensionValues[0].value,
-                      formDestination: row.dimensionValues[1].value,
+                      pagePath: row.dimensionValues[1].value,
+                      formDestination: row.dimensionValues[2].value,
+                      formId: row.dimensionValues[3].value,
+                      formLength: row.dimensionValues[4].value,
+                      formSubmitText: row.dimensionValues[5].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
-                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[1].value }}</td>
-                      <!-- <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[2].value }}</td> -->
-                      <td class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ row.metricValues[0].value }}</td>
+                      <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Event name -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td> <!-- Page path -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td> <!-- Form destination -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td> <!-- Form id -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[4].value ? row.dimensionValues[4].value : '(not set)'}}</td> <!-- Form length -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td> <!-- Form submit text -->
+                      <td class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ row.metricValues[0].value }}</td> <!-- Users -->
                   </tr>
                 </tbody>
             </table>
@@ -307,6 +313,15 @@ const dictionary = {
   },
   'customEvent:form_destination': {
     displayName: 'Form destination',
+  },
+  'customEvent:form_id': {
+    displayName: 'Form id',
+  },
+  'customEvent:form_length': {
+    displayName: 'Form length',
+  },
+  'customEvent:form_submit_text': {
+    displayName: 'Form submit text',
   },
 }
 
