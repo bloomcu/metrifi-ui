@@ -41,19 +41,20 @@
 
         <!-- Right -->
         <div class="w-[14rem]">
-            <!-- Overall conversion rate -->
-            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4 mb-2">
-                <p>Overall</p>
-                <span class="text-3xl font-medium">{{ report.overallConversionRate }}</span>
-                <p>conversion rate</p>
-            </div>
-
             <!-- Revenue -->
-            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
+            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4 mb-2">
                 <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
+                <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
                 <p>Total value</p>
                 <span class="text-3xl font-medium">{{ revenue }}</span>
                 <!-- <p>conversion rate</p> -->
+            </div>
+
+            <!-- Overall conversion rate -->
+            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
+                <p>Overall</p>
+                <span class="text-3xl font-medium">{{ report.overallConversionRate }}</span>
+                <p>conversion rate</p>
             </div>
         </div>
     </div>
