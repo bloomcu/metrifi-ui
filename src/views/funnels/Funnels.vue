@@ -218,6 +218,8 @@ function storeNewFunnel() {
   funnelApi.store(route.params.organization, {
     name: 'New funnel',
     description: 'This is the funnel description',
+    zoom: 0,
+    conversion_value: 0,
   }).then(response => {
     let funnel = response.data.data
     router.push({ name: 'funnel', params: { funnel: funnel.id } })

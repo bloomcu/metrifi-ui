@@ -3,8 +3,14 @@
     <!-- Header -->
     <header class="border-b p-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
+        <!-- Back -->
         <AppButton :to="{name: 'funnels'}" variant="tertiary" size="base">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
+        </AppButton>
+
+        <!-- Settings -->
+        <AppButton @click="isEditFunnelModalOpen = true" variant="tertiary" size="base">
+          <Cog6ToothIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
         <!-- Funnel name -->
@@ -177,6 +183,16 @@
 
       <!-- Right: Chart -->
       <div class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
+        <!-- Chart -->
+        <Chart 
+          :funnel="funnel"
+          :report="funnel.report"
+          :startDate="selectedDateRange.startDate" 
+          :endDate="selectedDateRange.endDate" 
+          :zoom="funnel.zoom"
+          :updating="isReportLoading"
+        />
+
         <!-- Automation running (TODO: Make a notification component for these) -->
         <div v-if="isGeneratingSteps" class="rounded-md bg-indigo-50 p-4 mb-4">
           <div class="flex">
@@ -200,15 +216,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Chart -->
-        <Chart 
-          :report="funnel.report" 
-          :startDate="selectedDateRange.startDate" 
-          :endDate="selectedDateRange.endDate" 
-          :zoom="funnel.zoom"
-          :updating="isReportLoading"
-        />
 
         <!-- Messages -->
         <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
@@ -252,6 +259,7 @@
     </div>
 
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
+    <EditFunnelModal :open="isEditFunnelModalOpen" />
   </LayoutDefault>
 </template>
   
@@ -265,11 +273,12 @@ import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
-import { Bars2Icon, QueueListIcon } from '@heroicons/vue/24/outline'
+import { Bars2Icon, QueueListIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import { TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
+import EditFunnelModal from '@/views/funnels/modals/EditFunnelModal.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
@@ -280,19 +289,22 @@ const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
 const { funnel, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 
-const isGenerateStepsModalOpen = ref(false)
 const isLoading = ref(true)
 const isUpdating = ref(false)
 const isGeneratingSteps = ref(false)
 const errorGeneratingSteps = ref()
+const isEditFunnelModalOpen = ref(false)
+const isGenerateStepsModalOpen = ref(false)
 
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
 
 provide('funnel', funnel)
-provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
+provide('isUpdating', isUpdating)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
+provide('isEditFunnelModalOpen', isEditFunnelModalOpen)
+provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
 const updateFunnel = debounce(() => {
   console.log('Updating funnel...')
@@ -303,6 +315,7 @@ const updateFunnel = debounce(() => {
     name: funnel.value.name,
     description: funnel.value.description,
     zoom: funnel.value.zoom,
+    conversion_value: funnel.value.conversion_value,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })

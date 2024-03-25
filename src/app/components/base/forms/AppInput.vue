@@ -32,7 +32,7 @@ import { ref } from 'vue'
 
 const props = defineProps({
   modelValue: { 
-    type: String
+    type: [String, Number]
   },
   type: {
     type: String,

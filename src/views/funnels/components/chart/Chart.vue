@@ -42,10 +42,18 @@
         <!-- Right -->
         <div class="w-[14rem]">
             <!-- Overall conversion rate -->
-            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
+            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4 mb-2">
                 <p>Overall</p>
                 <span class="text-3xl font-medium">{{ report.overallConversionRate }}</span>
                 <p>conversion rate</p>
+            </div>
+
+            <!-- Revenue -->
+            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
+                <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
+                <p>Total value</p>
+                <span class="text-3xl font-medium">{{ revenue }}</span>
+                <!-- <p>conversion rate</p> -->
             </div>
         </div>
     </div>
@@ -76,6 +84,8 @@
         <div class="animate-pulse bg-gray-200 flex-1 h-32 rounded-xl"></div>
         </div>
     </div>
+
+    <!-- <pre>{{ funnel }}</pre> -->
 </template>
 
 <script setup>
@@ -85,6 +95,7 @@ import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
 import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
 
 const props = defineProps({
+    funnel: Object,
     report: Object,
     startDate: String,
     endDate: String,
@@ -98,4 +109,12 @@ const props = defineProps({
 const emit = defineEmits(['stepSelected'])
 
 const maxValue = computed(() => Math.max(...props.report.steps.map((step) => step.users)))
+
+const revenue = computed(() => {
+    let users = props.report.steps[props.report.steps.length - 1].users
+    let value = props.funnel.conversion_value
+    let rev = users * value
+
+    return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+})
 </script>

@@ -30,7 +30,7 @@
           </div> -->
 
           <!-- Right -->
-          <div class="h-[50vh] w-[40vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+          <div class="h-[50vh] w-[50vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
             <!-- <pre>{{ reports }}</pre> -->
             
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="min-w-full max-w-full divide-y divide-gray-300">
