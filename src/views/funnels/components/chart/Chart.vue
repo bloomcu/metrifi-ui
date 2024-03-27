@@ -1,5 +1,5 @@
 <template>
-    <div class="flex gap-6 mt-6">
+    <div v-if="report" class="flex gap-6 mt-6">
         <!-- Left -->
         <div class="flex-1">
             <!-- Bars -->
@@ -11,10 +11,11 @@
 
                     <div class="flex flex-[8] gap-3 z-0">
                         <ChartBar 
-                            v-for="step in funnel.steps" 
-                            :value="step.total" 
+                            v-for="step in report.steps" 
+                            :value="step.users" 
                             :max="maxValue" 
                             :zoom="zoom"
+                            :updating="updating"
                             @click="emit('stepSelected', step)"
                         />
                     </div>
@@ -23,15 +24,16 @@
                 <div class="h-[10px]" />
 
                 <div class="flex flex-[8] gap-3">
-                    <div v-for="(step, index) in funnel.steps" @click="emit('stepSelected', step)" class="flex-1 text-sm cursor-pointer hover:text-indigo-600">
+                    <div v-for="(step, index) in report.steps" @click="emit('stepSelected', step)" class="flex-1 text-sm cursor-pointer hover:text-indigo-600">
                         <!-- Label: E.g., "Homepage" -->
                         <ChartLabel :name="step.name" />
 
-                        <!-- Metric: E.g., "1,000 Page views" -->
-                        <p>{{ Number(step.total).toLocaleString() }} users</p>
+                        <!-- Metric: E.g., "1,000 users" -->
+                        <p>{{ Number(step.users).toLocaleString() }} users</p>
 
                         <!-- Conversion rate: E.g., "100%" -->
-                        <p v-if="index != 0">{{ conversions[index] }}% conversion rate</p>
+                        <!-- <p v-if="index != 0">{{ conversions[index] }}% conversion rate</p> -->
+                        <p v-show="index != 0">{{ step.conversionRate }} conversion rate</p>
                     </div>
                 </div>
             </div>
@@ -39,15 +41,52 @@
 
         <!-- Right -->
         <div class="w-[14rem]">
+            <!-- Revenue -->
+            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4 mb-2">
+                <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
+                <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
+                <p>Total value</p>
+                <span class="text-3xl font-medium">{{ revenue }}</span>
+                <!-- <p>conversion rate</p> -->
+            </div>
+
             <!-- Overall conversion rate -->
             <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
                 <p>Overall</p>
-                <span class="text-3xl font-medium">{{ overallConversionRate }}%</span>
+                <span class="text-3xl font-medium">{{ report.overallConversionRate }}</span>
                 <p>conversion rate</p>
             </div>
         </div>
     </div>
 
+    <!-- State: Loading (TODO: Make into component, put into Chart component) -->
+    <div v-else class="flex gap-6 mt-6">
+        <div class="flex-1">
+        <div class="flex flex-col w-full">
+            <div class="relative flex h-[400px]">
+            <div class="animate-pulse flex flex-[8] gap-3 items-end">
+                <div class="bg-gray-200 flex-1 h-full rounded-xl"></div>
+                <div class="bg-gray-200 flex-1 h-60 rounded-xl"></div>
+                <div class="bg-gray-200 flex-1 h-32 rounded-xl"></div>
+            </div>
+            </div>
+
+            <div class="relative flex mt-2">
+            <div class="animate-pulse flex flex-[8] gap-3">
+                <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
+                <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
+                <div class="bg-gray-200 flex-1 h-4 rounded-xl"></div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="w-[14rem]">
+        <div class="animate-pulse bg-gray-200 flex-1 h-32 rounded-xl"></div>
+        </div>
+    </div>
+
+    <!-- <pre>{{ funnel }}</pre> -->
 </template>
 
 <script setup>
@@ -58,52 +97,25 @@ import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
 
 const props = defineProps({
     funnel: Object,
+    report: Object,
     startDate: String,
     endDate: String,
     zoom: Number,
+    updating: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const emit = defineEmits(['stepSelected'])
 
-const maxValue = computed(() => Math.max(...props.funnel.steps.map((step) => step.total)))
+const maxValue = computed(() => Math.max(...props.report.steps.map((step) => step.users)))
 
-const conversions = computed(() => {
-    let steps = props.funnel.steps
+const revenue = computed(() => {
+    let users = props.report.steps[props.report.steps.length - 1].users
+    let value = props.funnel.conversion_value
+    let rev = users * value
 
-    let array = []
-        array.push(100) // First conversion rate is always 100%
-
-    steps.forEach((step, index) => {
-        let cr = (steps[index + 1]?.total / step.total)
-        
-        if (cr === Infinity || isNaN(cr)) {
-            array.push('0.00')
-            return
-        }
-
-        let formatted = cr * 100 // Get a percentage
-            formatted = formatted.toFixed(2) // Round to 2 decimal places
-            formatted = formatted.substring(0, 4) // Trim to 2 decimal places
-
-        array.push(formatted)
-    })
-
-    return array
-})
-
-const overallConversionRate = computed(() => {
-  let steps = props.funnel.steps
-  if (!steps.length) return '0.00'
-  
-  let lastStep = steps[steps.length - 1]
-  let firstStep = steps[0]
-  let ocr = (lastStep.total / firstStep.total)
-  if (!ocr || ocr === Infinity) return '0.00'
-
-  let formatted = ocr * 100 // Get a percentage
-      formatted = formatted.toFixed(2) // Round to 2 decimal places
-      formatted = formatted.substring(0, 4) // Trim to 2 decimal places
-  
-  return formatted
+    return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
 })
 </script>

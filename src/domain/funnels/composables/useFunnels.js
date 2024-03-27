@@ -4,177 +4,79 @@ import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 
 const { selectedDateRange } = useDatePicker()
-// console.log(selectedDateRange)
 
 export function useFunnels() {
-  // const reports = ref([])
   const funnels = ref([])
-  const pending = ref([])
-  const completed = ref([])
-  const active = ref()
+  const pendingFunnels = ref([])
+  const completedFunnels = ref([])
+  const activeFunnels = ref()
+  const isReportLoading = ref(false)
 
+  // TODO: Do we need this?
   const addFunnel = (funnel) => {
     funnels.value.push(funnel)
-    
-    // addJob({ funnelId: funnel.id }) // Add funnel job by id
-    addJob(funnel) // Add funnel job by funnel object
+    addFunnelJob(funnel) // Add funnel job by funnel object
   }
 
-  const addJob = (job) => {
-    pending.value.push(job)
+  const addFunnelJob = (job) => {
+    if (job.steps.length) {
+      pendingFunnels.value.push(job)
+    }
     
-    if (!active.value) {
-      startNextJob()
+    if (!activeFunnels.value) {
+      startNextFunnelJob()
     }
   };
 
-  const startNextJob = () => {
-    if (active.value) {
-      completed.value.push(active.value)
+  const startNextFunnelJob = () => {
+    if (activeFunnels.value) {
+      completedFunnels.value.push(activeFunnels.value)
     }
 
-    if (pending.value.length > 0) {
-      active.value = pending.value[0]
-      pending.value.shift()
+    if (pendingFunnels.value.length > 0) {
+      activeFunnels.value = pendingFunnels.value[0]
+      pendingFunnels.value.shift()
     } else {
-      active.value = null
+      activeFunnels.value = null
     }
   };
 
-  const runReport = debounce((job) => {
+  const runReport = debounce((funnel) => {
     console.log('Running report...')
+    isReportLoading.value = true
+  
+    gaDataApi.funnelReport(funnel.connection_id, {
+      startDate: selectedDateRange.value.startDate,
+      endDate: selectedDateRange.value.endDate,
+      steps: funnel.steps,
+    }).then(response => {
+      if (response.data.data.error) console.log(response.data.data.error)
+      funnel.report = response.data.data
+      console.log(response.data.data)
+      isReportLoading.value = false
+    })
 
-    let funnel = job
-    // console.log(funnel.steps[0].total)
-  
-    // Iterate each step
-    let stepsProcessed = 0
-    funnel.steps.forEach((step) => {
-  
-      if (!step.measurables.length) {
-        step.total = '0' // TODO: This won't be updated in the funnel
-        startNextJob()
-        return
-      }
-  
-      // Report: Page users
-      if (step.measurables[0].metric === 'pageUsers') {
-        gaDataApi.pageUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          measurables: step.measurables.map(measurable => measurable.measurable),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          // console.log(report)
-          step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-              stepsProcessed = 0
-          }
-        }) // End GA page views report
-      }
-
-      // Report: Virtual page users
-      if (step.measurables[0].metric === 'pagePlusQueryStringUsers') {
-        // console.log(step.measurables[0].contains)
-
-        gaDataApi.pagePlusQueryStringUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          measurables: step.measurables.map(measurable => measurable.measurable),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          // console.log(report)
-          step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-              stepsProcessed = 0
-          }
-        }) // End GA page views report
-      }
-  
-      // Report outbound clicks
-      if (step.measurables[0].metric === 'outboundLinkUsers') {
-        gaDataApi.outboundLinkByPagePathUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          pagePath: step.measurables[0].pagePath,
-          outboundLinkUrls: step.measurables.map(measurable => measurable.measurable),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          // console.log(report)
-          step.total = report.total
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-            stepsProcessed = 0
-          }
-        }) // End GA outbound clicks report
-      }
-    }) // End foreach on funnel steps
-    
-    // console.log(funnel.steps[0].total)
-
-    // const i = funnels.value.findIndex(f => f.id === funnel.id)
-    // console.log('i', i)
-    // Object.assign(funnels.value[i], funnel)
-    // funnels.value[i].steps = funnel.steps
-    // console.log('funnels i', funnels.value[i])
-
-    startNextJob()
+    startNextFunnelJob()
   }, 500)
 
-  watch(active, (funnel) => {
-    // if (job.handler && typeof job.handler === 'function') {
-    //   job.handler(() => startNextJob());
-    // }
-    // console.log(funnel)
-
+  watch(activeFunnels, (funnel) => {
     if (!funnel) {
-      startNextJob()
+      startNextFunnelJob()
       return
     }
 
     runReport(funnel)
   });
 
-  // const getFunnels = () => funnels.value
-  // const getPending = () => pending.value
-  // const getActive = () => active.value
-  // const getCompleted = () => completed.value
-
   return { 
     funnels: computed(() => funnels.value),
-    funnel: computed(() => funnels.value[0]),
-    pending,
-    active,
-    completed,
+    funnel: computed(() => funnels.value[0]), // TODO: Delete this
+    isReportLoading: computed(() => isReportLoading.value),
+    pendingFunnels,
+    activeFunnels,
+    completedFunnels,
     addFunnel, 
-    addJob, 
-    startNextJob, 
-    // getFunnels, 
-    // getPending, 
-    // getActive, 
-    // getCompleted,
+    addFunnelJob, 
+    startNextFunnelJob,
   }
 }

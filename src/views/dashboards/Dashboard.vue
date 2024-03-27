@@ -22,7 +22,7 @@
         <DatePicker/>
 
         <!-- Zoom -->
-        <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/>
+        <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
       </div>
     </header>
 
@@ -39,11 +39,13 @@
           <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
         </div>
 
+        <!-- Chart -->
         <Chart 
-          :funnel="funnel" 
+          :funnel="funnel"
+          :report="funnel.report" 
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
-          :zoom="dashboard.zoom"
+          :updating="isReportLoading"
           @stepSelected="handleStepSelected"
         />
 
@@ -76,18 +78,18 @@ import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import AddFunnelModal from '@/views/dashboards/modals/AddFunnelModal.vue'
 import StepDetailsTray from '@/domain/funnels/components/step-details/StepDetailsTray.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
-import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
+// import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
 const router = useRouter()
 const route = useRoute()
 
-const { funnels, pending, completed, active, addFunnel, addJob } = useFunnels()
+const { funnels, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 const { selectStep, openTray } = useStepDetailsTray()
 const { selectedDateRange } = useDatePicker()
 
 const dashboard = ref()
-const zoom = ref(0)
+// const zoom = ref(0)
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
@@ -113,7 +115,7 @@ const updateDashboard = debounce(() => {
   dashboardApi.update(route.params.organization, route.params.dashboard, {
     name: dashboard.value.name,
     description: dashboard.value.description,
-    zoom: dashboard.value.zoom,
+    // zoom: dashboard.value.zoom,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
@@ -175,12 +177,11 @@ function loadDashboard() {
 }
 
 watch(selectedDateRange, () => {
-  console.log('Selecting data range...')
+  console.log('Date range has changed...')
 
   dashboard.value.funnels.forEach(funnel => {
-    addJob(funnel)
+    addFunnelJob(funnel)
   })
-  // runReport()
 })
 
 onMounted(() => {
