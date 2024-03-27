@@ -65,15 +65,68 @@
                 </table>
             </main>
         </div>
+
+        <!-- Basic teleport demo -->
+        <Teleport v-if="teleporting" :to="teleportTarget" :disabled="false">
+            <div class="absolute left-full top-0 translate-x-2 w-96 border bg-white shadow z-50 sm:rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-base font-semibold leading-6 text-gray-900">The modal</h3>
+                <div class="mt-2 max-w-xl text-sm text-gray-500">
+                    <p>Lorem ipsum dolor.</p>
+                </div>
+                </div>
+            </div>
+        </Teleport>
+
+        <div>
+            <div class="mb-4 relative inline-block">
+                <button @click="teleport('#target1')" class="items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white">Button One</button>
+                <div id="target1"></div>
+            </div>
+        </div>
+        <div>
+            <div class="mb-4 relative inline-block">
+                <button @click="teleport('#target2')" class="items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white">Button Two</button>
+                <div id="target2"></div>
+            </div>
+        </div>
+        <div>
+            <div class="mb-4 relative inline-block">
+                <button @click="teleport('#target3')" class="items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white">Button Three</button>
+                <div id="target3"></div>
+            </div>
+        </div>
+
     </LayoutDefault>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import useQuery from '@/app/composables/base/useQuery.js'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import AppNestedMenu from '@/app/components/base/nested-menu/AppNestedMenu.vue'
 import AppListbox from '@/app/components/base/forms/AppListbox.vue'
-import useQuery from '@/app/composables/base/useQuery.js'
+// import MetricWizard from '@/views/funnels/components/metrics/MetricWizard.vue'
+
+const teleporting = ref(false)
+const teleportTarget = ref(null)
+
+const teleport = (target) => {
+    if (teleportTarget.value === target) {
+        teleporting.value = false
+        teleportTarget.value = null
+        return
+    }
+
+    teleporting.value = true
+    teleportTarget.value = target
+}
+
+// const mounted = ref(false)
+
+onMounted(() => {
+    // mounted.value = true;
+});
 
 function loggit(msg) {
     console.log('loggit', msg)

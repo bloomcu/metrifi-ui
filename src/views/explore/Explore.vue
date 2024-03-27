@@ -26,15 +26,15 @@
       <!-- Tabs -->
       <div class="sm:hidden mb-6">
         <select @change="" id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          <option v-for="request in requests" :key="request.name" :selected="selectedRequest.report == request.report">{{ request.name }}</option>
+          <option v-for="tab in tabs" :key="tab.name" :selected="selectedTab.report == tab.report">{{ tab.name }}</option>
         </select>
       </div>
       <div class="hidden sm:block mb-6">
         <div class="flex justify-between border-b border-gray-200">
           <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-            <button v-for="request in requests" :key="request.name" @click="selectedRequest = request" :class="selectedRequest.report == request.report ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
-              <component :is="request.icon" :class="selectedRequest == request ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-              <span>{{ request.name }}</span>
+            <button v-for="tab in tabs" :key="tab.name" @click="selectedTab = tab" :class="selectedTab.report == tab.report ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 pb-4 px-1 text-sm font-medium">
+              <component :is="tab.icon" :class="selectedTab == tab ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
+              <span>{{ tab.name }}</span>
             </button>
           </nav>
           <div v-if="report & report.rows" class="text-gray-400 text-sm">Showing {{ report.rows.length }} of {{ report.rowCount }} results</div>
@@ -45,14 +45,6 @@
       <div class="flex items-center gap-2 mb-4">
         <span class="text-sm text-gray-400 w-14">Search</span>
         <AppInput v-model="searchInput" placeholder="Search..." class="flex-1"></AppInput>
-      </div>
-
-      <div v-if="selectedRequest.report == 'page-plus-query-string-users'" class="flex items-center gap-2 mb-4">
-        <span class="text-sm text-gray-400 w-14">Filters</span>
-        <AppInput v-model="containsFilters[0]" placeholder="Contains..." class="flex-1"></AppInput>
-        <AppInput v-model="containsFilters[1]" placeholder="Contains..." class="flex-1"></AppInput>
-        <AppInput v-model="containsFilters[2]" placeholder="Contains..." class="flex-1"></AppInput>
-        <AppButton @click="runReport()">Apply filters</AppButton>
       </div>
 
       <!-- Table -->
@@ -83,7 +75,7 @@
         <h2 class="mt-2 text-lg font-medium text-gray-900">No results</h2>
         <p class="mt-1 text-gray-500">Try extending the date range</p>
       </div>
-    </div> <!-- End state: Report exists -->
+    </div>
 
     <!-- State: Loading -->
     <div v-if="loading" class="animate-pulse space-y-4">
@@ -133,7 +125,7 @@ import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useRoute } from 'vue-router'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
-import { EyeIcon, ArrowRightOnRectangleIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, CursorArrowRippleIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import ConnectionPicker from '@/domain/connections/components/ConnectionPicker.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
@@ -146,26 +138,30 @@ const report = ref()
 const selectedConnection = ref()
 const { selectedDateRange } = useDatePicker()
 
-const requests = ref([
+const tabs = ref([
   { 
     name: 'Page users',
-    report: 'page-users',
+    report: 'pageUsers',
     icon: EyeIcon,
   },
   { 
     name: 'Page + query string users',
-    report: 'page-plus-query-string-users',
+    report: 'pagePlusQueryStringUsers',
     icon: EyeIcon,
   },  
   { 
     name: 'Outbound link users',
-    report: 'outbound-link-users',
-    icon: ArrowRightOnRectangleIcon,
+    report: 'outboundLinkUsers',
+    icon: CursorArrowRippleIcon,
+  },
+  { 
+    name: 'Form submissions',
+    report: 'formUserSubmissions',
+    icon: EnvelopeIcon,
   },
 ])
 
-const selectedRequest = ref(requests.value[0])
-
+const selectedTab = ref(tabs.value[0])
 const searchInput = ref('')
 const containsFilters = ref([])
 
@@ -180,13 +176,19 @@ const filteredReportRows = computed(() => {
 function runReport() {
   loading.value = true
 
-  if (selectedRequest.value.report == 'page-users') {
-    fetchPageUsers()
-  } else if (selectedRequest.value.report == 'page-plus-query-string-users') {
-    fetchPagePlusQueryStringUsers()
-  } else if (selectedRequest.value.report == 'outbound-link-users') {
-    outboundLinkUsers()
-  }
+  gaDataApi[selectedTab.value.report](selectedConnection.value.id, {
+    startDate: selectedDateRange.value.startDate,
+    endDate: selectedDateRange.value.endDate,
+    // contains: containsFilters.value.map(filter => filter)
+    // contains: containsFilters.value
+  }).then(response => {
+    if (response.data.data.error) {
+      console.log(response.data.data.error)
+      return
+    }
+    loading.value = false
+    report.value = response.data.data
+  })
 }
 
 watch(selectedConnection, () => {
@@ -199,7 +201,7 @@ watch(selectedDateRange, () => {
   runReport()
 })
 
-watch(selectedRequest, () => {
+watch(selectedTab, () => {
   console.log('Request changed...')
   runReport()
 })
@@ -212,54 +214,43 @@ onMounted(() => {
   })
 })
 
-function fetchPageUsers() {
-  gaDataApi.pageUsers(selectedConnection.value.id, {
-    startDate: selectedDateRange.value.startDate, 
-    endDate: selectedDateRange.value.endDate 
-  }).then(response => {
-    if (response.data.data.error) {
-      console.log(response.data.data.error)
-      return
-    }
-    loading.value = false
-    // console.log(response.data.data)
-    report.value = response.data.data
-  })
-}
-
-function fetchPagePlusQueryStringUsers() {
-  console.log(containsFilters.value.map(filter => filter))
-  console.log(containsFilters.value)
-
-  gaDataApi.pagePlusQueryStringUsers(selectedConnection.value.id, {
-    startDate: selectedDateRange.value.startDate,
-    endDate: selectedDateRange.value.endDate,
-    // contains: containsFilters.value.map(filter => filter)
-    contains: containsFilters.value
-  }).then(response => {
-    if (response.data.data.error) {
-      console.log(response.data.data.error)
-      return
-    }
-    loading.value = false
-    // console.log(response.data.data)
-    report.value = response.data.data
-  })
-}
-
-function outboundLinkUsers() {
-  gaDataApi.outboundLinkUsers(selectedConnection.value.id, {
-    startDate: selectedDateRange.value.startDate, 
-    endDate: selectedDateRange.value.endDate 
-  }).then(response => {
-    if (response.data.data.error) {
-      console.log(response.data.data.error)
-      return
-    }
-    loading.value = false
-    // console.log(response.data.data)
-    report.value = response.data.data
-  })
+const dictionary = {
+  pagePath: {
+    displayName: 'Page path',
+  },
+  pagePathPlusQueryString: {
+    displayName: 'Page path + query string',
+  },
+  screenPageViews: {
+    displayName: 'Views',
+  },
+  totalUsers: {
+    displayName: 'Users',
+  },
+  linkUrl: {
+    displayName: 'Link',
+  },
+  linkDomain: {
+    displayName: 'Domain',
+  },
+  eventCount: {
+    displayName: 'Events',
+  },
+  eventName: {
+    displayName: 'Event',
+  },
+  'customEvent:form_destination': {
+    displayName: 'Form destination',
+  },
+  'customEvent:form_id': {
+    displayName: 'Form id',
+  },
+  'customEvent:form_length': {
+    displayName: 'Form length',
+  },
+  'customEvent:form_submit_text': {
+    displayName: 'Form submit text',
+  },
 }
 
 function makeCSV() {
@@ -295,33 +286,9 @@ function downloadCSV() {
   const encodedUri = encodeURI(csv);
   const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
-  link.setAttribute('download', `${selectedRequest.value.name} - ${selectedConnection.value.name} - ${selectedDateRange.value.label}.csv`);
+  link.setAttribute('download', `${selectedTab.value.name} - ${selectedConnection.value.name} - ${selectedDateRange.value.label}.csv`);
   document.body.appendChild(link); // Required for FF
 
   link.click();
-}
-
-const dictionary = {
-  pagePath: {
-    displayName: 'Page path',
-  },
-  pagePathPlusQueryString: {
-    displayName: 'Page path + query string',
-  },
-  screenPageViews: {
-    displayName: 'Views',
-  },
-  totalUsers: {
-    displayName: 'Users',
-  },
-  linkUrl: {
-    displayName: 'Link',
-  },
-  linkDomain: {
-    displayName: 'Domain',
-  },
-  eventCount: {
-    displayName: 'Clicks',
-  }
 }
 </script>

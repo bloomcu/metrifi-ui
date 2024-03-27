@@ -2,6 +2,16 @@ import { httpClient as HttpClient } from '@/app/api/base/httpClient'
 
 const gaDataApi = {
   /**
+   * Get a funnel report
+   *
+   * @return promise
+   */
+  async funnelReport(connectionId, request) {
+    // TODO: Breakup 'request' so we know what can be sent
+    return await HttpClient.post(`/ga/funnel-report/${connectionId}`, request)
+  },
+
+  /**
    * Fetch users by page (pagePath)
    *
    * @return promise
@@ -37,6 +47,15 @@ const gaDataApi = {
    */
   async outboundLinkByPagePathUsers(connectionId, request) {
     return await HttpClient.post(`/ga/outbound-link-by-page-path-users/${connectionId}`, request)
+  },
+
+  /**
+   * Get a list of all pages with user form submissions by form id
+   *
+   * @return promise
+   */
+  async formUserSubmissions(connectionId, request) {
+    return await HttpClient.post(`/ga/form-user-submissions/${connectionId}`, request)
   },
 }
 

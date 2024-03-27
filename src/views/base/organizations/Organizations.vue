@@ -13,12 +13,17 @@
           <div class="flex gap-x-4">
             <div class="min-w-0 flex-auto">
               <p class="text-base font-medium leading-6 text-gray-900">
-                <RouterLink :to="{ name: redirectRoute, params: { organization: organization.slug } }">
+                <!-- <RouterLink :to="{ name: redirectRoute, params: { organization: organization.slug } }">
                   <span class="absolute inset-x-0 -top-px bottom-0" />
                   {{ organization.title }}
-                </RouterLink>
+                </RouterLink> -->
+
+                <a :href="`/${organization.slug}`">
+                  <span class="absolute inset-x-0 -top-px bottom-0" />
+                  {{ organization.title }}
+                </a>
               </p>
-              <p class="mt-1 text-sm leading-5 text-gray-500">{{ organization.plan.title }}</p>
+              <!-- <p class="mt-1 text-sm leading-5 text-gray-500">{{ organization.plan.title }}</p> -->
             </div>
           </div>
           

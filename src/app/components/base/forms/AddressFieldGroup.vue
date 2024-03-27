@@ -1,27 +1,27 @@
 <template>
   <div class="grid grid-cols-12 gap-x-4 gap-y-6">
     <div class="col-span-full">
-      <AppInput v-model="address1" @input="$emit('update:address1', $event.target.value)" ref="address1Ref" label="Street Address*" autocomplete="address-line1" placeholder="Enter a location" required :errors="errorStore.errors.address1" />
+      <AppInput v-bind="address1" @input="$emit('update:address1', $event.target.value)" ref="address1Ref" label="Street Address*" autocomplete="address-line1" placeholder="Enter a location" required :errors="errorStore.errors.address1" />
     </div>
 
     <div class="col-span-full">
-      <AppInput v-model="address2" @input="$emit('update:address2', $event.target.value)" label="Apartment, unit, suite, or floor #" autocomplete="address-line2" :errors="errorStore.errors.address2" />
+      <AppInput v-bind="address2" @input="$emit('update:address2', $event.target.value)" label="Apartment, unit, suite, or floor #" autocomplete="address-line2" :errors="errorStore.errors.address2" />
     </div>
 
     <div class="col-span-full sm:col-span-6">
-      <AppInput v-model="city" @input="$emit('update:city', $event.target.value)" label="City*" autocomplete="address-level2" required :errors="errorStore.errors.city" />
+      <AppInput v-bind="city" @input="$emit('update:city', $event.target.value)" label="City*" autocomplete="address-level2" required :errors="errorStore.errors.city" />
     </div>
 
     <div class="col-span-full sm:col-span-6">
-      <AppInput v-model="state" @input="$emit('update:state', $event.target.value)" label="State/Province*" autocomplete="address-level1" required :errors="errorStore.errors.state" />
+      <AppInput v-bind="state" @input="$emit('update:state', $event.target.value)" label="State/Province*" autocomplete="address-level1" required :errors="errorStore.errors.state" />
     </div>
 
     <div class="col-span-full sm:col-span-6">
-      <AppInput v-model="postal_code" @input="$emit('update:postal_code', $event.target.value)" label="Zip/Postal Code*" autocomplete="postal-code" required :errors="errorStore.errors.postal_code" />
+      <AppInput v-bind="postal_code" @input="$emit('update:postal_code', $event.target.value)" label="Zip/Postal Code*" autocomplete="postal-code" required :errors="errorStore.errors.postal_code" />
     </div>
 
     <div class="col-span-full sm:col-span-6">
-      <AppInput v-model="country" @input="$emit('update:country', $event.target.value)" label="Country/Reqion*" autocomplete="country" required :errors="errorStore.errors.country" />
+      <AppInput v-bind="country" @input="$emit('update:country', $event.target.value)" label="Country/Reqion*" autocomplete="country" required :errors="errorStore.errors.country" />
     </div>
   </div>
 </template>
