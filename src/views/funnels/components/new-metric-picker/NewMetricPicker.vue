@@ -14,17 +14,6 @@
               <span>{{ tab.name }}</span>
             </button>
           </nav>
-
-        <!-- <div class="flex justify-between items-center">
-          <nav>
-            <button v-for="tab in tabs" :key="tab.name" @click.stop="selectTab(tab)" :class="selectedTab.metric == tab.metric ? 'border-indigo-500 text-indigo-600' : 'border-transparent hover:border-gray-300 text-gray-500 hover:text-gray-700'" class="group inline-flex items-center border-b-2 py-4 px-4 text-sm font-medium">
-              <component :is="tab.icon" :class="selectedTab == tab ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'" class="-ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />
-              <span>{{ tab.name }}</span>
-            </button>
-          </nav> -->
-
-          <!-- <div v-if="reports[activeReport] && reports[activeReport].rows" class="text-gray-400 text-sm mr-4">{{ reports[activeReport].rows.length }} of {{ reports[activeReport].rowCount }}</div> -->
-        <!-- </div> -->
       </div>
 
       <div class="flex transform-gpu divide-x divide-gray-100" as="div">
@@ -41,21 +30,21 @@
           </div> -->
 
           <!-- Right -->
-          <div class="h-[50vh] w-[40vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+          <div class="h-[50vh] w-[50vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
             <!-- <pre>{{ reports }}</pre> -->
             
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="min-w-full max-w-full divide-y divide-gray-300">
                 <thead>
-                <tr class="divide-x divide-gray-200">
-                    <th v-for="header in reports[selectedTab.metric].dimensionHeaders" scope="col" class="py-3 px-4 text-left">
-                    <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
-                    <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
-                    </th>
-                    <th v-for="header in reports[selectedTab.metric].metricHeaders" scope="col" class="py-3 px-4 text-left">
-                    <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
-                    <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
-                    </th>
-                </tr>
+                  <tr class="divide-x divide-gray-200">
+                      <th v-for="header in reports[selectedTab.metric].dimensionHeaders" scope="col" class="py-3 px-4 text-left">
+                      <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
+                      <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+                      </th>
+                      <th v-for="header in reports[selectedTab.metric].metricHeaders" scope="col" class="py-3 px-4 text-left">
+                      <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
+                      <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+                      </th>
+                  </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                   <tr 
@@ -70,7 +59,7 @@
                       <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
                       <td class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ row.metricValues[0].value }}</td>
                   </tr>
-
+                  
                   <tr 
                     v-if="selectedTab.metric === 'pagePlusQueryStringUsers'" 
                     v-for="row in filteredReportRows" 
@@ -90,13 +79,35 @@
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       linkUrl: row.dimensionValues[0].value,
-                      sourcePagePath: row.dimensionValues[1].value,
+                      pagePath: row.dimensionValues[1].value,
                     })"
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
                       <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
                       <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[1].value }}</td>
                       <td class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ row.metricValues[0].value }}</td>
+                  </tr>
+
+                  <tr 
+                    v-if="selectedTab.metric === 'formUserSubmissions'" 
+                    v-for="row in filteredReportRows" 
+                    @click="updateMetric({
+                      metric: selectedTab.metric,
+                      pagePath: row.dimensionValues[1].value,
+                      formDestination: row.dimensionValues[2].value,
+                      formId: row.dimensionValues[3].value,
+                      formLength: row.dimensionValues[4].value,
+                      formSubmitText: row.dimensionValues[5].value,
+                    })" 
+                    class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
+                  >
+                      <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Event name -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td> <!-- Page path -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td> <!-- Form destination -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td> <!-- Form id -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[4].value ? row.dimensionValues[4].value : '(not set)'}}</td> <!-- Form length -->
+                      <td  class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td> <!-- Form submit text -->
+                      <td class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ row.metricValues[0].value }}</td> <!-- Users -->
                   </tr>
                 </tbody>
             </table>
@@ -133,14 +144,11 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-// import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
-import { useMeasurablePicker } from '@/views/funnels/components/measurables/useMeasurablePicker'
-// import useClickOutside from '@/app/composables/base/useClickOutside'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { EyeIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
 
 const props = defineProps({
@@ -159,17 +167,9 @@ function updateMetric(updatedMetric) {
   emit('update:modelValue', updatedMetric)
 }
 
-// function updateMetric(measurable) {
-//   emit('update:modelValue', {
-//     metric: selectedTab.value.metric,
-//     measurable: measurable,
-//   })
-// }
-
 const { selectedDateRange } = useDatePicker()
 const { selectedConnection } = useConnections()
 const { reports, isReportLoading, runReport } = useGoogleAnalyticsReports()
-// const { closeMeasurablePicker, measurablePickerTab, setMeasurablePickerTab } = useMeasurablePicker()
 
 const tabs = ref([
   { 
@@ -186,6 +186,11 @@ const tabs = ref([
     name: 'Outbound link users',
     metric: 'outboundLinkUsers',
     icon: EyeIcon,
+  },
+  { 
+    name: 'Form submissions',
+    metric: 'formUserSubmissions',
+    icon: EnvelopeIcon,
   },
 ])
 
@@ -301,8 +306,23 @@ const dictionary = {
     displayName: 'Domain',
   },
   eventCount: {
-    displayName: 'Clicks',
-  }
+    displayName: 'Events',
+  },
+  eventName: {
+    displayName: 'Event',
+  },
+  'customEvent:form_destination': {
+    displayName: 'Form destination',
+  },
+  'customEvent:form_id': {
+    displayName: 'Form id',
+  },
+  'customEvent:form_length': {
+    displayName: 'Form length',
+  },
+  'customEvent:form_submit_text': {
+    displayName: 'Form submit text',
+  },
 }
 
 const emit = defineEmits(['update:modelValue'])

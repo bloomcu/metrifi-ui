@@ -10,14 +10,18 @@ export function useFunnels() {
   const pendingFunnels = ref([])
   const completedFunnels = ref([])
   const activeFunnels = ref()
+  const isReportLoading = ref(false)
 
+  // TODO: Do we need this?
   const addFunnel = (funnel) => {
     funnels.value.push(funnel)
     addFunnelJob(funnel) // Add funnel job by funnel object
   }
 
   const addFunnelJob = (job) => {
-    pendingFunnels.value.push(job)
+    if (job.steps.length) {
+      pendingFunnels.value.push(job)
+    }
     
     if (!activeFunnels.value) {
       startNextFunnelJob()
@@ -37,91 +41,20 @@ export function useFunnels() {
     }
   };
 
-  const runReport = debounce((job) => {
+  const runReport = debounce((funnel) => {
     console.log('Running report...')
-
-    let funnel = job
+    isReportLoading.value = true
   
-    // Iterate each step
-    let stepsProcessed = 0
-    funnel.steps.forEach((step) => {
-  
-      if (!step.measurables.length) {
-        step.total = '0' // TODO: This won't be updated in the funnel
-        startNextFunnelJob()
-        return
-      }
-  
-      // Report: Page users
-      if (step.measurables[0].metric === 'pageUsers') {
-        gaDataApi.pageUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          pagePaths: step.measurables.map(measurable => measurable.pagePath),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-              stepsProcessed = 0
-          }
-        }) // End GA page views report
-      }
-
-      // Report: Virtual page users
-      if (step.measurables[0].metric === 'pagePlusQueryStringUsers') {
-        gaDataApi.pagePlusQueryStringUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          pagePathPlusQueryStrings: step.measurables.map(measurable => measurable.pagePathPlusQueryString),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          step.total = report.totals[0].metricValues ? report.totals[0].metricValues[0].value : 0
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-              stepsProcessed = 0
-          }
-        }) // End GA page views report
-      }
-  
-      // Report outbound clicks
-      if (step.measurables[0].metric === 'outboundLinkUsers') {
-        gaDataApi.outboundLinkByPagePathUsers(funnel.connection_id, {
-          startDate: selectedDateRange.value.startDate,
-          endDate: selectedDateRange.value.endDate,
-          sourcePagePath: step.measurables[0].sourcePagePath,
-          linkUrls: step.measurables.map(measurable => measurable.linkUrl),
-        }).then(response => {
-          if (response.data.data.error) {
-            console.log(response.data.data.error)
-            return
-          }
-  
-          // Set total for this step
-          let report = response.data.data
-          step.total = report.total
-          stepsProcessed++;
-          
-          if (stepsProcessed === funnel.steps.length) {
-            stepsProcessed = 0
-          }
-        }) // End GA outbound clicks report
-      }
-    }) // End foreach on funnel step
+    gaDataApi.funnelReport(funnel.connection_id, {
+      startDate: selectedDateRange.value.startDate,
+      endDate: selectedDateRange.value.endDate,
+      steps: funnel.steps,
+    }).then(response => {
+      if (response.data.data.error) console.log(response.data.data.error)
+      funnel.report = response.data.data
+      console.log(response.data.data)
+      isReportLoading.value = false
+    })
 
     startNextFunnelJob()
   }, 500)
@@ -137,7 +70,8 @@ export function useFunnels() {
 
   return { 
     funnels: computed(() => funnels.value),
-    funnel: computed(() => funnels.value[0]),
+    funnel: computed(() => funnels.value[0]), // TODO: Delete this
+    isReportLoading: computed(() => isReportLoading.value),
     pendingFunnels,
     activeFunnels,
     completedFunnels,

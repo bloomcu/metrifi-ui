@@ -23,25 +23,77 @@
             <p class="mb-1 font-medium text-gray-900">Metrics</p>
 
             <!-- Measurables -->
-            <template v-for="(measurable, index) in selectedStep.measurables">
-              <!-- Pageviews metrics -->
-              <div v-if="measurable.metric === 'pageViews'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
+            <template v-for="(metric, index) in selectedStep.metrics">
+              <!-- Page users metric -->
+              <div v-if="metric.metric === 'pageUsers'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
                 <div class="border-b pb-4">
                   <p class="font-medium text-gray-900">Metric</p>
-                  <p class="text-gray-500">{{ measurable.metric }}</p>
+                  <p class="text-gray-500">{{ metric.metric }}</p>
                 </div>
 
-                <div>
-                  <p class="font-medium text-gray-900">Dimension</p>
-                  <p class="text-gray-500">{{ measurable.measurable }}</p>
+                <div class="overflow-x-auto">
+                  <p class="font-medium text-gray-900">Page path</p>
+                  <p class="text-gray-500">{{ metric.pagePath }}</p>
+                </div>
+              </div>
+
+              <!-- Page plus query string users metric -->
+              <div v-if="metric.metric === 'pagePlusQueryStringUsers'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
+                <div class="border-b pb-4">
+                  <p class="font-medium text-gray-900">Metric</p>
+                  <p class="text-gray-500">{{ metric.metric }}</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <p class="font-medium text-gray-900">Page path + query string</p>
+                  <p class="text-gray-500">{{ metric.pagePathPlusQueryString }}</p>
                 </div>
               </div>
 
               <!-- Outbound clicks metrics -->
-              <div v-if="measurable.metric === 'outboundClicks'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
-                <p>{{ measurable.metric }}</p>
-                <p>{{ measurable.pagePath }}</p>
-                <p>{{ measurable.measurable }}</p>
+              <div v-if="metric.metric === 'outboundLinkUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+                <div class="border-b pb-4">
+                  <p class="font-medium text-gray-900">Metric</p>
+                  <p class="text-gray-500">{{ metric.metric }}</p>
+                </div>
+
+                <div class="border-b pb-4 overflow-x-auto">
+                  <p class="font-medium text-gray-900">Page path</p>
+                  <p class="text-gray-500">{{ metric.pagePath }}</p>
+                </div>
+                
+                <div class="overflow-x-auto">
+                  <p class="font-medium text-gray-900">Link url</p>
+                  <p class="text-gray-500">{{ metric.linkUrl }}</p>
+                </div>
+              </div>
+
+              <!-- Form user submissions -->
+              <div v-if="metric.metric === 'formUserSubmissions'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
+                <div class="border-b pb-4">
+                  <p class="font-medium text-gray-900">Metric</p>
+                  <p class="text-gray-500">{{ metric.metric }}</p>
+                </div>
+
+                <div class="border-b pb-4 overflow-x-auto">
+                  <p class="font-medium text-gray-900">Page path</p>
+                  <p class="text-gray-500">{{ metric.pagePath }}</p>
+                </div>
+
+                <div class="border-b pb-4 overflow-x-auto">
+                  <p class="font-medium text-gray-900">Form destination</p>
+                  <p class="text-gray-500">{{ metric.formDestination }}</p>
+                </div>
+
+                <div class="border-b pb-4 overflow-x-auto">
+                  <p class="font-medium text-gray-900">Form length</p>
+                  <p class="text-gray-500">{{ metric.formLength }}</p>
+                </div>
+                
+                <div class="overflow-x-auto">
+                  <p class="font-medium text-gray-900">Form submit text</p>
+                  <p class="text-gray-500">{{ metric.formSubmitText }}</p>
+                </div>
               </div>
             </template>
           </div>

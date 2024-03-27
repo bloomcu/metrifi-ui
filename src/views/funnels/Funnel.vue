@@ -3,8 +3,14 @@
     <!-- Header -->
     <header class="border-b p-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
+        <!-- Back -->
         <AppButton :to="{name: 'funnels'}" variant="tertiary" size="base">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
+        </AppButton>
+
+        <!-- Settings -->
+        <AppButton @click="isEditFunnelModalOpen = true" variant="tertiary" size="base">
+          <Cog6ToothIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
         <!-- Funnel name -->
@@ -42,11 +48,11 @@
 
           <div class="flex gap-2">
             <!-- Generate with AI -->
-            <button @click.stop="toggleModal()" type="button" class="group inline-flex items-center gap-1 rounded-md py-1 px-2 text-sm text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:translate-y-px">
+            <!-- <button @click.stop="toggleModal()" type="button" class="group inline-flex items-center gap-1 rounded-md py-1 px-2 text-sm text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:translate-y-px">
               <svg v-if="isGeneratingSteps" class="w-4 h-4 mr-1 animate-spin" fill="none" viewBox="0 0 100 101"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/></svg>
               <svg v-else class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></svg>
               {{ isGeneratingSteps ? 'Generating' : 'Generate steps with AI' }}
-            </button>
+            </button> -->
             
             <!-- Add new -->
             <button @click.stop="addStep()" type="button" class="inline-flex items-center rounded-md p-1 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
@@ -91,112 +97,81 @@
 
       <!-- Center: Active Step -->
       <aside v-if="activeStep" class="min-w-[24rem] max-w-[24rem] border-r">
-        <!-- Header -->
+        <!-- Step header -->
         <div class="flex items-center justify-between border-b p-3">
           <button @click="activeStepId = null" type="button" class="inline-flex items-center rounded-md p-1 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
             <ChevronLeftIcon class="h-5 w-5 shrink-0" />
           </button>
         </div>
 
-        <!-- Options -->
+        <!-- Step metrics -->
         <div class="flex flex-col gap-4 p-3">
           <AppInput v-model="activeStep.name" @update:modelValue="updateStepName(activeStep)" label="Step name" placeholder="Step name" />
 
           <div>
-            <!-- <pre>{{ activeStep }}</pre> -->
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
-            <!-- Measurables -->
-            <template v-for="(measurable, index) in activeStep.measurables" :key="index">
+            <!-- Metrics -->
+            <template v-for="(metric, index) in activeStep.metrics" :key="index">
               <div class="relative">
-                <div @click="measurable.showPicker = !measurable.showPicker" class="flex flex-col gap-2 cursor-pointer bg-gray-50 border border-gray-300 rounded-md p-2 mb-2 hover:bg-gray-100">
+                <div @click="metric.showPicker = !metric.showPicker" class="flex flex-col gap-2 cursor-pointer bg-gray-50 border border-gray-300 rounded-md p-2 mb-2 hover:bg-gray-100">
                   <div class="flex flex-row items-center justify-between">
                     <div>
                       <p class="text-xs uppercase">Metric:</p>
-                      <p class="text-gray-500">{{ measurable.metric }}</p>
+                      <p class="text-gray-500">{{ metric.metric }}</p>
                     </div>
-                    <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                    <button @click="deleteMetric(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
                       <TrashIcon class="h-5 w-5 shrink-0" />
                     </button>
                   </div>
 
-                  <div v-if="measurable.pagePath" class="overflow-hidden">
+                  <div v-if="metric.pagePath" class="">
                     <p class="text-xs uppercase">Page path:</p>
-                    <p class="text-gray-500">{{ measurable.pagePath }}</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.pagePath }}</p>
                   </div>
 
-                  <div v-if="measurable.pagePathPlusQueryString" class="overflow-hidden">
+                  <div v-if="metric.pagePathPlusQueryString" class="">
                     <p class="text-xs uppercase">Page path + query string:</p>
-                    <p class="text-gray-500">{{ measurable.pagePathPlusQueryString }}</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.pagePathPlusQueryString }}</p>
                   </div>
                   
-                  <div v-if="measurable.linkUrl" class="overflow-hidden">
+                  <div v-if="metric.linkUrl" class="">
                     <p class="text-xs uppercase">Link url:</p>
-                    <p class="text-gray-500">{{ measurable.linkUrl }}</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.linkUrl }}</p>
                   </div>
 
-                  <!-- <pre>{{ measurable }}</pre> -->
+                  <div v-if="metric.formDestination" class="">
+                    <p class="text-xs uppercase">Form destination:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.formDestination }}</p>
+                  </div>
+
+                  <div v-if="metric.formId" class="">
+                    <p class="text-xs uppercase">Form id:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.formId }}</p>
+                  </div>
+
+                  <div v-if="metric.formLength" class="">
+                    <p class="text-xs uppercase">Form length:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.formLength }}</p>
+                  </div>
+
+                  <div v-if="metric.formSubmitText" class="">
+                    <p class="text-xs uppercase">Form submit text:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.formSubmitText }}</p>
+                  </div>
+
+                  <!-- <pre>{{ metric }}</pre> -->
                 </div>
 
                 <NewMetricPicker 
-                  v-if="measurable.showPicker"
-                  v-model="activeStep.measurables[index]"
+                  v-if="metric.showPicker"
+                  v-model="activeStep.metrics[index]"
                   @update:modelValue="updateStepMeasurables(activeStep)"
                 />
               </div>
-
-              <!-- Metric: Page + query strings  -->
-              <!-- <div v-if="measurable.metric === 'pagePlusQueryStringUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
-                <div class="flex flex-row items-center justify-between">
-                  <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
-                  <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
-                    <TrashIcon class="h-5 w-5 shrink-0" />
-                  </button>
-                </div>
-
-                <div class="relative inline-block">
-                    <AppInput v-model="measurable.measurable" @click.stop="setMeasurablePickerTarget(index + '-measurable-' + measurable.measurable)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Page path + query strings"/>
-                    <MeasurablePicker 
-                      v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
-                      v-model="measurable.measurable"
-                      activeReport="pagePlusQueryStringUsers"
-                      @update:modelValue="updateStepMeasurables(activeStep)"
-                    />
-                </div>
-              </div> -->
-
-              <!-- Metric: Outbound link users -->
-              <!-- <div v-if="measurable.metric === 'outboundLinkUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
-                <div class="flex flex-row items-center justify-between">
-                  <MetricPicker v-model="measurable.metric" @update:modelValue="updateStepMeasurables(activeStep)" class="w-full"/>
-                  <button @click="deleteMeasurable(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
-                    <TrashIcon class="h-5 w-5 shrink-0" />
-                  </button>
-                </div>
-
-                <div class="relative inline-block">
-                  <AppInput v-model="measurable.pagePath" @click.stop="setMeasurablePickerTarget(index + '-pagePath-' + measurable.pagePath)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Source page path"/>
-                  <MeasurablePicker 
-                    v-if="measurablePickerTarget === index + '-pagePath-' + measurable.pagePath"
-                    v-model="measurable.pagePath"
-                    activeReport="outboundLinkUsers"
-                    @update:modelValue="updateStepMeasurables(activeStep)"
-                  />
-                </div>
-
-                <div class="relative inline-block">
-                  <AppInput v-model="measurable.measurable" @click.stop="setMeasurablePickerTarget(index + '-measurable-' + measurable.measurable)"  @update:modelValue="updateStepMeasurables(activeStep)" placeholder="Outbound url"/>
-                  <MeasurablePicker 
-                    v-if="measurablePickerTarget === index + '-measurable-' + measurable.measurable"
-                    v-model="measurable.measurable"
-                    activeReport="outboundLinkUsers"
-                    @update:modelValue="updateStepMeasurables(activeStep)"
-                  />
-                </div>
-              </div> -->
             </template>
             
-            <!-- Add measurable -->
+            <!-- Add metric -->
             <button @click="addNewMeasurable()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
               Add metric
@@ -207,8 +182,18 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div v-if="!isLoading" class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
-        <!-- Automation running -->
+      <div class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
+        <!-- Chart -->
+        <Chart 
+          :funnel="funnel"
+          :report="funnel.report"
+          :startDate="selectedDateRange.startDate" 
+          :endDate="selectedDateRange.endDate" 
+          :zoom="funnel.zoom"
+          :updating="isReportLoading"
+        />
+
+        <!-- Automation running (TODO: Make a notification component for these) -->
         <div v-if="isGeneratingSteps" class="rounded-md bg-indigo-50 p-4 mb-4">
           <div class="flex">
             <div class="flex-shrink-0 text-indigo-600">
@@ -220,7 +205,7 @@
           </div>
         </div>
 
-        <!-- Automation error -->
+        <!-- Automation error (TODO: Do this in the notification component) -->
         <div v-if="errorGeneratingSteps" class="rounded-md bg-pink-50 p-4 mb-6">
           <div class="flex items-center">
             <div class="flex-shrink-0 text-pink-600">
@@ -231,9 +216,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Chart -->
-        <Chart :funnel="funnel" :startDate="selectedDateRange.startDate" :endDate="selectedDateRange.endDate" :zoom="funnel.zoom" />
 
         <!-- Messages -->
         <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
@@ -273,13 +255,11 @@
           </div>
         </div>
 
-      </div>
+      </div>      
     </div>
 
-    <!-- TODO: Add loading state -->
-
-    <!-- <MeasurablePicker v-if="isMeasurablePickerOpen" :metric="activeStep.measurables[0]"/> -->
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
+    <EditFunnelModal :open="isEditFunnelModalOpen" />
   </LayoutDefault>
 </template>
   
@@ -291,43 +271,43 @@ import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
-import { useMeasurablePicker } from '@/views/funnels/components/measurables/useMeasurablePicker';
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
-import { Bars2Icon, QueueListIcon } from '@heroicons/vue/24/outline'
+import { Bars2Icon, QueueListIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import { TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
-// import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
+import EditFunnelModal from '@/views/funnels/modals/EditFunnelModal.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
-// import MetricPicker from '@/views/funnels/components/metrics/MetricPicker.vue'
-// import MeasurablePicker from '@/views/funnels/components/measurables/MeasurablePicker.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
 const route = useRoute()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
-const { funnel, addFunnel, addFunnelJob } = useFunnels()
-const { measurablePickerTarget, setMeasurablePickerTarget } = useMeasurablePicker()
+const { funnel, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 
-const isGenerateStepsModalOpen = ref(false)
-const isLoading = ref(false)
+const isLoading = ref(true)
 const isUpdating = ref(false)
 const isGeneratingSteps = ref(false)
 const errorGeneratingSteps = ref()
+const isEditFunnelModalOpen = ref(false)
+const isGenerateStepsModalOpen = ref(false)
 
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
 
 provide('funnel', funnel)
-provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
+provide('isUpdating', isUpdating)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
+provide('isEditFunnelModalOpen', isEditFunnelModalOpen)
+provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
 const updateFunnel = debounce(() => {
+  console.log('Updating funnel...')
   isUpdating.value = true
 
   funnelApi.update(route.params.organization, route.params.funnel, {
@@ -335,26 +315,30 @@ const updateFunnel = debounce(() => {
     name: funnel.value.name,
     description: funnel.value.description,
     zoom: funnel.value.zoom,
+    conversion_value: funnel.value.conversion_value,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
 
 const updateStepName = debounce((step) => {
+  console.log('Updating step name...')
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     name: step.name,
   }).then(() => {
+    addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
 
 const updateStepMeasurables = debounce((step) => {
+  console.log('Updating step measurables...')
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
-    measurables: step.measurables,
+    metrics: step.metrics,
   }).then(() => {
     addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
@@ -362,46 +346,53 @@ const updateStepMeasurables = debounce((step) => {
 }, 800)
 
 function handleDragEvent(e) {
+  console.log('Handing drag event...')
   isUpdating.value = true
   let event = e.moved || e.added
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, event.element.id, {
     order: event.newIndex + 1
   }).then(() => {
+    addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 500)
   })
 }
 
 function addStep() {
+  console.log('Adding step...')
+
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: 'New step',
     description: null,
-    // measurables: [{
-    //   metric: 'pageUsers', 
-    //   measurable: ''
-    // }],
   }).then(response => {
     funnel.value.steps.push(response.data.data)
   })
 }
 
 function addNewMeasurable() {
-  activeStep.value.measurables.push({
+  console.log('Adding new measurable...')
+
+  activeStep.value.metrics.push({
     connection_id: funnel.value.connection.id,
     metric: 'pageUsers', 
     showPicker: true
   })
 }
 
-function deleteMeasurable(index) {
-  activeStep.value.measurables.splice(index, 1)
+function deleteMetric(index) {
+  console.log('Deleting metric...')
+
+  activeStep.value.metrics.splice(index, 1)
   updateStepMeasurables(activeStep.value)
+  addFunnelJob(funnel.value)
 }
 
 function deleteStep(index, id) {
+  console.log('Deleting step...')
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
       funnel.value.steps.splice(index, 1)
+      addFunnelJob(funnel.value)
     })
 }
 
@@ -410,14 +401,18 @@ function toggleModal() {
 }
 
 function loadFunnel() {
+  console.log('Loading funnel...')
   funnelApi.show(route.params.organization, route.params.funnel)
     .then(response => {
+      // let funnel = response.data.data
+      // console.log(funnel.steps)
       addFunnel(response.data.data)
+      setTimeout(() => isLoading.value = false, 500)
     })
 }
 
 watch(selectedDateRange, () => {
-  console.log('Selecting data range')
+  console.log('Date range has changed...')
   addFunnelJob(funnel.value)
 })
 
