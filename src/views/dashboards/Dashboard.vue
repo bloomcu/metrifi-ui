@@ -41,6 +41,7 @@
 
         <!-- Chart -->
         <Chart 
+          :funnel="funnel"
           :report="funnel.report" 
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
