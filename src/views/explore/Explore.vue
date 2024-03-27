@@ -234,13 +234,22 @@ const dictionary = {
     displayName: 'Domain',
   },
   eventCount: {
-    displayName: 'Clicks',
+    displayName: 'Events',
   },
   eventName: {
     displayName: 'Event',
   },
   'customEvent:form_destination': {
     displayName: 'Form destination',
+  },
+  'customEvent:form_id': {
+    displayName: 'Form id',
+  },
+  'customEvent:form_length': {
+    displayName: 'Form length',
+  },
+  'customEvent:form_submit_text': {
+    displayName: 'Form submit text',
   },
 }
 
