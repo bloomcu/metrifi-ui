@@ -96,8 +96,8 @@ import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
 import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
 
 const props = defineProps({
-    funnel: Object,
     report: Object,
+    conversion_value: Number,
     startDate: String,
     endDate: String,
     zoom: Number,
@@ -113,7 +113,7 @@ const maxValue = computed(() => Math.max(...props.report.steps.map((step) => ste
 
 const revenue = computed(() => {
     let users = props.report.steps[props.report.steps.length - 1].users
-    let value = props.funnel.conversion_value
+    let value = props.conversion_value
     let rev = users * value
 
     return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});

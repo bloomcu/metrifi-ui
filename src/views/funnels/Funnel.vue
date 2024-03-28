@@ -185,8 +185,8 @@
       <div class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
         <!-- Chart -->
         <Chart 
-          :funnel="funnel"
           :report="funnel.report"
+          :conversion_value="funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
           :zoom="funnel.zoom"
