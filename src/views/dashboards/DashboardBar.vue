@@ -41,7 +41,7 @@
 
         <!-- Chart -->
         <Chart 
-          :report="funnel.report" 
+          :funnel="funnel" 
           :conversion_value="funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
