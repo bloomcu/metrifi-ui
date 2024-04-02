@@ -126,7 +126,7 @@
             </div>
 
             <AppButton @click="toggleProjection()" variant="secondary" class="w-full mt-2">
-                {{ showProjection ? 'Close projection' : 'Make projection' }}
+                {{ showProjection ? 'Save projection' : 'Make projection' }}
             </AppButton>
         </div>
     </div>
