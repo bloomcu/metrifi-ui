@@ -182,7 +182,7 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
+      <div class="mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
         <!-- Chart -->
         <Chart 
           :funnel="funnel"
