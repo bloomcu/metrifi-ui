@@ -68,7 +68,7 @@
                                         <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
                                     </p>
                                 </template>
-                                <AppInput v-model="projection[index].users" @input="calculateProjectionConversions()" type="number"/>
+                                <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
                             </MetricModifier>
 
                             <p v-else class="py-0.5">
@@ -211,30 +211,30 @@ const toggleProjection = () => {
     showProjection.value = !showProjection.value
 }
 
-const calculateProjectionConversions = () => {
-    console.log('Calculating projection conversions...')
+// const calculateProjectionConversions = () => {
+//     console.log('Calculating projection conversions...')
 
-    projection.value.forEach((step, index) => {
-        // First conversion rate is always 100%
-        if (index === 0) {
-            projection.value[0].conversionRate = '100'
-          return
-        }
+//     projection.value.forEach((step, index) => {
+//         // First conversion rate is always 100%
+//         if (index === 0) {
+//             projection.value[0].conversionRate = '100'
+//           return
+//         }
         
-        let cr = (step.users / projection.value[index - 1]?.users)
+//         let cr = (step.users / projection.value[index - 1]?.users)
         
-        if (cr === Infinity || isNaN(cr)) {
-            step.conversionRate = '0.00'
-            return
-        }
+//         if (cr === Infinity || isNaN(cr)) {
+//             step.conversionRate = '0.00'
+//             return
+//         }
 
-        let formatted = cr * 100 // Get a percentage
-            formatted = formatted.toFixed(2) // Round to 2 decimal places
-            formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+//         let formatted = cr * 100 // Get a percentage
+//             formatted = formatted.toFixed(2) // Round to 2 decimal places
+//             formatted = formatted.substring(0, 4) // Trim to 2 decimal places
 
-        step.conversionRate = formatted
-    })
-}
+//         step.conversionRate = formatted
+//     })
+// }
 
 const calculateProjectionUsers = () => {
     console.log('Calculating projection users...')
