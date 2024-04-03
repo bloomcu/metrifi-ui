@@ -21,7 +21,7 @@
                             />
 
                             <ChartBar 
-                                v-if="projection.length && projection[index]"
+                                v-if="showProjection && projection[index]"
                                 :value="projection[index].users" 
                                 :max="maxValue" 
                                 :zoom="zoom"
@@ -52,7 +52,7 @@
                             </p>
                         </div>
                         
-                        <div v-if="projection.length && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
+                        <div v-if="showProjection && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
                             <!-- Label: E.g., "Homepage" -->
                             <ChartLabel :name="projection[index].name" class="mb-0.5"/>
 
@@ -108,7 +108,7 @@
                 <span class="text-3xl font-medium">{{ revenue }}</span>
                 <!-- <p>conversion rate</p> -->
 
-                <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
+                <div v-if="showProjection" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected</p>
                     <span class="text-3xl font-medium mb-2">{{ projectedRevenue }}</span>
                 </div>
@@ -119,7 +119,7 @@
                 <p>Overall conversion rate</p>
                 <span class="text-3xl font-medium">{{ overallConversionRate }}</span>
 
-                <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
+                <div v-if="showProjection" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected</p>
                     <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}</span>
                 </div>
@@ -159,11 +159,11 @@
     </div>
 
     <!-- <pre>{{ funnel.steps }}</pre> -->
-    <pre>{{ projection }}</pre>
+    <pre>{{ funnel.projection }}</pre>
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { PencilIcon } from '@heroicons/vue/24/solid'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
@@ -182,13 +182,12 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    // showProjection: {
-    //     type: Boolean,
-    //     default: false
-    // }
+    showProjection: {
+        type: Boolean,
+        default: false
+    }
 })
 
-const projection = inject('projection')
 const { calculateFunnelConversions, calculateFunnelUsers } = useFunnels()
 
 // const showProjection = ref(false)
@@ -275,5 +274,5 @@ const revenue = computed(() => {
     return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
 })
 
-const emit = defineEmits(['stepSelected'])
+const emit = defineEmits(['stepSelected', 'createProjection'])
 </script>

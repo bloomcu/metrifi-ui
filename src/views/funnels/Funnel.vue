@@ -172,7 +172,7 @@
             </template>
             
             <!-- Add metric -->
-            <button @click="addNewMeasurable()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
+            <button @click="addMetricToStep()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
               Add metric
             </button>
@@ -182,7 +182,10 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div class="mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
+      <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
+        <AppButton v-if="!projection.length" @click="generateProjection()" variant="secondary" class="ml-auto">Create projection</AppButton>
+        <AppButton v-else @click="saveProjection()" variant="secondary" class="ml-auto">Save projection</AppButton>
+
         <!-- Chart -->
         <Chart 
           :funnel="funnel"
@@ -298,15 +301,39 @@ const errorGeneratingSteps = ref()
 const isEditFunnelModalOpen = ref(false)
 const isGenerateStepsModalOpen = ref(false)
 
+const projection = ref([])
+// const showProjection = ref(false)
+
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
 
 provide('funnel', funnel)
+provide('projection', projection)
 provide('isUpdating', isUpdating)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 provide('isEditFunnelModalOpen', isEditFunnelModalOpen)
 provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
+
+function saveProjection() {
+  console.log('Saving projection')
+  console.log(funnel.value.projections)
+  funnel.value.projections.push(projection.value)
+  projection.value = []
+  updateFunnel()
+}
+
+function generateProjection() {
+  console.log('Generating projection...')
+
+  funnel.value.steps.forEach((step, index) => {
+    projection.value.push({
+      name: step.name,
+      users: step.users,
+      conversionRate: step.conversionRate
+    })
+  })
+}
 
 const updateFunnel = debounce(() => {
   console.log('Updating funnel...')
@@ -318,6 +345,7 @@ const updateFunnel = debounce(() => {
     description: funnel.value.description,
     zoom: funnel.value.zoom,
     conversion_value: funnel.value.conversion_value,
+    projections: funnel.value.projections,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
@@ -371,7 +399,7 @@ function addStep() {
   })
 }
 
-function addNewMeasurable() {
+function addMetricToStep() {
   console.log('Adding new measurable...')
 
   activeStep.value.metrics.push({
@@ -406,8 +434,6 @@ function loadFunnel() {
   console.log('Loading funnel...')
   funnelApi.show(route.params.organization, route.params.funnel)
     .then(response => {
-      // let funnel = response.data.data
-      // console.log(funnel.steps)
       addFunnel(response.data.data)
       setTimeout(() => isLoading.value = false, 500)
     })
