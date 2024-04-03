@@ -183,7 +183,9 @@
 
       <!-- Right: Chart -->
       <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
-        <AppButton v-if="!projection.length" @click="generateProjection()" variant="secondary" class="ml-auto">Create projection</AppButton>
+        <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary" class="ml-auto">
+          {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
+        </AppButton>
         <AppButton v-else @click="saveProjection()" variant="secondary" class="ml-auto">Save projection</AppButton>
 
         <!-- Chart -->
@@ -317,14 +319,19 @@ provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
 function saveProjection() {
   console.log('Saving projection')
-  console.log(funnel.value.projections)
+
   funnel.value.projections.push(projection.value)
   projection.value = []
   updateFunnel()
 }
 
-function generateProjection() {
-  console.log('Generating projection...')
+function showProjection() {
+  console.log('Showing projection...')
+
+  if (funnel.value.projections.length) {
+    projection.value = funnel.value.projections[0]
+    return
+  }
 
   funnel.value.steps.forEach((step, index) => {
     projection.value.push({

@@ -124,10 +124,6 @@
                     <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}</span>
                 </div>
             </div>
-
-            <!-- <AppButton @click="emit('createProjection')" variant="secondary" class="w-full mt-2">
-                {{ showProjection ? 'Save projection' : 'Create projection' }}
-            </AppButton> -->
         </div>
     </div>
 
@@ -159,12 +155,12 @@
     </div>
 
     <!-- <pre>{{ funnel.steps }}</pre> -->
-    <pre>{{ projection }}</pre>
+    <!-- <pre>{{ projection }}</pre> -->
 </template>
 
 <script setup>
 import { ref, computed, inject } from 'vue'
-import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+// import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { PencilIcon } from '@heroicons/vue/24/solid'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
 import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
@@ -189,33 +185,7 @@ const props = defineProps({
 })
 
 const projection = inject('projection')
-const { calculateFunnelConversions, calculateFunnelUsers } = useFunnels()
-
-// const showProjection = ref(false)
-// const projection = ref([
-//   {
-//     "order": 1,
-//     "name": "Loans",
-//     "users": "298",
-//     "conversionRate": "100"
-//   },
-//   {
-//     "order": 2,
-//     "name": "Auto loan",
-//     "users": "93",
-//     "conversionRate": "31.2"
-//   },
-//   {
-//     "order": 3,
-//     "name": "Application starts",
-//     "users": "7",
-//     "conversionRate": "7.53"
-//   }
-// ])
-
-// const toggleProjection = () => {
-//     showProjection.value = !showProjection.value
-// }
+// const { calculateFunnelConversions, calculateFunnelUsers } = useFunnels()
 
 const calculateProjectionUsers = () => {
     console.log('Calculating projection users...')
