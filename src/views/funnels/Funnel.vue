@@ -168,13 +168,13 @@
 
                   <!-- <pre>{{ metric }}</pre> -->
                 </div>
+              </div>
 
-                <NewMetricPicker 
+              <NewMetricPicker 
                   v-if="metric.showPicker"
                   v-model="activeStep.metrics[index]"
                   @update:modelValue="updateStepMeasurables(activeStep)"
                 />
-              </div>
             </template>
             
             <!-- Add metric -->
