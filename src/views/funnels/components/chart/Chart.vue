@@ -239,7 +239,6 @@ const projectedOverallConversionRate = computed(() => {
 })
 
 const projectedOverallConversionRateDifference = computed(() => {
-    console.log(projectedOverallConversionRate.value, overallConversionRate.value)
     let diff = projectedOverallConversionRate.value - overallConversionRate.value
     return diff
 })

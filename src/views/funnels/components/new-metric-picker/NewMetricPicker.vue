@@ -1,6 +1,6 @@
 <template>
   <!-- <div ref="picker" class="absolute left-full top-0 translate-x-2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg"> -->
-  <div ref="picker" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg">
+  <div ref="picker" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg">
     <div class="divide-y divide-gray-200">
       <!-- Search -->
       <div class="relative">
