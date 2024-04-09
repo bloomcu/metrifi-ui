@@ -42,7 +42,7 @@
       </div>
 
       <!-- Contains search -->
-      <div class="flex items-center gap-2 mb-4">
+      <div v-if="selectedTab !== tabs[3]" class="flex items-center gap-2 mb-4">
         <!-- <span class="text-sm text-gray-400 w-16">Search</span> -->
         <AppInput v-model="containsInput" placeholder="Search..." class="flex-1"></AppInput>
       </div>
