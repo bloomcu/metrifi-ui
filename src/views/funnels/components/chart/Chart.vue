@@ -106,14 +106,14 @@
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
                 <p>Total value</p>
                 <span class="text-3xl font-medium">{{ revenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                <p class="text-sm">ROA</p>
+                <p class="text-sm">Profit (0.5% ROA)</p>
                 <span class="font-medium">{{ (revenue * (0.5 / 100)).toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
                 <!-- <p>conversion rate</p> -->
 
                 <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected</p>
                     <span class="text-3xl font-medium mb-2">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                    <p class="text-sm">ROA</p>
+                    <p class="text-sm">Profit</p>
                     <span class="font-medium">{{ (projectedRevenue * (0.5 / 100)).toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
                 </div>
             </div>
