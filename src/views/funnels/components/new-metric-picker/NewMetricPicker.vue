@@ -247,8 +247,9 @@ const filteredReportRows = computed(() => {
 // }
 
 watch(selectedTab, () => {
-  console.log('Selected tab changed...')
+  console.log('Metric Picker: Selected tab changed...')
 
+  // If report has already been run, don't run it again
   if (reports.value[selectedTab.value.metric]) return
 
   runReport(
@@ -265,15 +266,14 @@ watch(selectedTab, () => {
 
 onClickOutside(picker, () => {
   console.log('Clicked outside...')
-  // closeMeasurablePicker()
   metric.value.showPicker = false
 })
 
 onMounted(() => {
   console.log('Mounted...')
 
-  // setMeasurablePickerTab(props.activeReport)
-  if (reports.value[props.modelValue.metric]) return
+  // If report has already been run, don't run it again
+  // if (reports.value[props.modelValue.metric]) return
 
   runReport(
     selectedTab.value.metric, 
