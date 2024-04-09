@@ -22,7 +22,7 @@
       </div>
     </template>
 
-    <div v-if="report">
+    <div>
       <!-- Tabs -->
       <div class="sm:hidden mb-6">
         <select @change="" id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -37,43 +37,60 @@
               <span>{{ tab.name }}</span>
             </button>
           </nav>
-          <div v-if="report & report.rows" class="text-gray-400 text-sm">Showing {{ report.rows.length }} of {{ report.rowCount }} results</div>
+          <!-- <div v-if="report & report.rows" class="text-gray-400 text-sm">Showing {{ report.rows.length }} of {{ report.rowCount }} results</div> -->
         </div>
       </div>
 
-      <!-- Search -->
+      <!-- Contains search -->
       <div class="flex items-center gap-2 mb-4">
-        <span class="text-sm text-gray-400 w-14">Search</span>
-        <AppInput v-model="searchInput" placeholder="Search..." class="flex-1"></AppInput>
+        <!-- <span class="text-sm text-gray-400 w-16">Search</span> -->
+        <AppInput v-model="containsInput" placeholder="Search..." class="flex-1"></AppInput>
       </div>
 
-      <!-- Table -->
-      <table v-if="!loading && report.rows" class="min-w-full max-w-full divide-y divide-gray-300">
-        <thead>
-          <tr class="divide-x divide-gray-200">
-            <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left">
-              <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
-              <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
-            </th>
-            <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left">
-              <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
-              <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-          <tr v-for="row in filteredReportRows" class="divide-x divide-gray-200 hover:bg-gray-50">
-            <td v-for="value in row.dimensionValues" class="py-3 px-4 text-sm text-gray-500 break-all">{{ value.value }}</td>
-            <td v-for="value in row.metricValues" class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ value.value }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Filter search -->
+      <!-- <div class="flex items-center gap-2 mb-4">
+        <span class="text-sm text-gray-400 w-16">Filter results</span>
+        <AppInput v-model="filterInput" placeholder="Filter..." class="flex-1"></AppInput>
+      </div> -->
 
-      <!-- Empty state: No report rows -->
-      <div v-if="!loading && !report.rows" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+      <!-- Report -->
+      <div v-if="report">
+        <table v-if="!loading && report.rows" class="min-w-full max-w-full divide-y divide-gray-300">
+          <thead>
+            <tr class="divide-x divide-gray-200">
+              <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left">
+                <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
+                <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+              </th>
+              <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left">
+                <div class="text-sm font-semibold text-gray-900">
+                  {{ dictionary[header.name].displayName ?? header.name }} ({{ report.totals[0].metricValues[0].value }})
+                </div>
+                <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr v-for="row in report.rows" class="divide-x divide-gray-200 hover:bg-gray-50">
+              <td v-for="value in row.dimensionValues" class="py-3 px-4 text-sm text-gray-500 break-all">{{ value.value }}</td>
+              <td v-for="value in row.metricValues" class="py-3 px-4 text-sm font-medium text-gray-900 break-all">{{ value.value }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Empty state: No results -->
+        <div v-if="!loading && !report.rows" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+          <NoSymbolIcon class="mx-auto w-8 text-gray-400"/>
+          <h2 class="mt-2 text-lg font-medium text-gray-900">No results</h2>
+          <p class="mt-1 text-gray-500">Try another date range or search term.</p>
+        </div>
+      </div>
+
+      <!-- Report error: Problem from Google Analytics report API -->
+      <div v-if="!loading && reportError" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
         <NoSymbolIcon class="mx-auto w-8 text-gray-400"/>
-        <h2 class="mt-2 text-lg font-medium text-gray-900">No results</h2>
-        <p class="mt-1 text-gray-500">Try extending the date range</p>
+        <h2 class="mt-2 text-lg font-medium text-gray-900">Unable to run report</h2>
+        <p class="mt-1 text-gray-500">Enhanced reporting and custom dimensions may not be enabled.</p>
       </div>
     </div>
 
@@ -120,6 +137,7 @@
 </template>
 
 <script setup>
+import debounce from 'lodash.debounce'
 import { ref, computed, watch, onMounted } from 'vue'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useRoute } from 'vue-router'
@@ -134,6 +152,7 @@ const route = useRoute()
 const loading = ref(true)
 const connections = ref()
 const report = ref()
+const reportError = ref(false)
 
 const selectedConnection = ref()
 const { selectedDateRange } = useDatePicker()
@@ -162,34 +181,39 @@ const tabs = ref([
 ])
 
 const selectedTab = ref(tabs.value[0])
-const searchInput = ref('')
-const containsFilters = ref([])
+const containsInput = ref('')
+// const filterInput = ref('')
 
-const filteredReportRows = computed(() => {
-  return report.value.rows.filter(row => {
-    if (JSON.stringify(row.dimensionValues).includes(searchInput.value)) {
-      return row
-    }
-  })
-})
+// const filteredReportRows = computed(() => {
+//   return report.value.rows.filter(row => {
+//     if (JSON.stringify(row.dimensionValues).includes(filterInput.value)) {
+//       return row
+//     }
+//   })
+// })
 
-function runReport() {
+const runReport = debounce(() => {
   loading.value = true
 
   gaDataApi[selectedTab.value.report](selectedConnection.value.id, {
     startDate: selectedDateRange.value.startDate,
     endDate: selectedDateRange.value.endDate,
-    // contains: containsFilters.value.map(filter => filter)
-    // contains: containsFilters.value
+    contains: containsInput.value,
+    // contains: containsInput.value.map(filter => filter),
   }).then(response => {
     if (response.data.data.error) {
-      console.log(response.data.data.error)
+      console.log('Error running report: ', response.data.data.error)
+      loading.value = false
+      reportError.value = true
+      report.value = null
       return
     }
+
     loading.value = false
+    reportError.value = false
     report.value = response.data.data
   })
-}
+}, 500)
 
 watch(selectedConnection, () => {
   console.log('Connection changed...')
@@ -203,6 +227,12 @@ watch(selectedDateRange, () => {
 
 watch(selectedTab, () => {
   console.log('Request changed...')
+  loading.value = true
+  runReport()
+})
+
+watch(containsInput, () => {
+  console.log('Contains input changed...')
   runReport()
 })
 
