@@ -113,7 +113,7 @@
                 <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected assets</p>
                     <span class="text-3xl font-medium mb-2">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                    <p class="text-sm">+{{ projectedAssetDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
+                    <p class="text-sm">Difference: {{ projectedAssetDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
 
                     <!-- <p class="text-sm">Projected profit</p>
                     <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
@@ -130,7 +130,7 @@
                 <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected conversion rate</p>
                     <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}%</span>
-                    <p class="text-sm">+{{ projectedOverallConversionRateDifference }}%</p>
+                    <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference.toFixed(2) }}%</p>
                 </div>
             </div>
         </div>
