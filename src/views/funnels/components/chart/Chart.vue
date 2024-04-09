@@ -104,28 +104,33 @@
             <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4 mb-2">
                 <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
-                <p>Total value</p>
+                <p>Assets</p>
                 <span class="text-3xl font-medium">{{ revenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                <p class="text-sm">Profit (0.5% ROA)</p>
-                <span class="font-medium">{{ (revenue * (0.5 / 100)).toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
+                <!-- <p class="text-sm">Profit (0.5% ROA)</p>
+                <span class="font-medium">{{ profit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span> -->
                 <!-- <p>conversion rate</p> -->
 
                 <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
-                    <p>Projected</p>
+                    <p>Projected assets</p>
                     <span class="text-3xl font-medium mb-2">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                    <p class="text-sm">Profit</p>
-                    <span class="font-medium">{{ (projectedRevenue * (0.5 / 100)).toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
+                    <p class="text-sm">+{{ projectedAssetDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
+
+                    <!-- <p class="text-sm">Projected profit</p>
+                    <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
+                    <p v-if="projectedProfitDifference" class="text-sm">(+ {{ projectedProfitDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }})</p> -->
+                    
                 </div>
             </div>
 
             <!-- Overall conversion rate -->
             <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
-                <p>Overall conversion rate</p>
-                <span class="text-3xl font-medium">{{ overallConversionRate }}</span>
+                <p>Conversion rate</p>
+                <span class="text-3xl font-medium">{{ overallConversionRate }}%</span>
 
                 <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
-                    <p>Projected</p>
-                    <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}</span>
+                    <p>Projected conversion rate</p>
+                    <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}%</span>
+                    <p class="text-sm">+{{ projectedOverallConversionRateDifference }}%</p>
                 </div>
             </div>
         </div>
@@ -207,13 +212,36 @@ const calculateProjectionUsers = () => {
     })
 }
 
+const overallConversionRate = computed(() => {
+    if (!props.funnel.steps.length) return "0.00%"
+
+    let firstStepUsers = props.funnel.steps[0].users
+    let lastStepUsers = props.funnel.steps[props.funnel.steps.length - 1].users
+    let rate = (lastStepUsers / firstStepUsers) * 100
+
+    // if (isNaN(rate)) return "0.00%"
+    // return rate.toFixed(2) + "%"
+
+    if (isNaN(rate)) return 0.00
+    return rate.toFixed(2)
+})
+
 const projectedOverallConversionRate = computed(() => {
     let firstStepUsers = projection.value[0].users
     let lastStepUsers = projection.value[projection.value.length - 1].users
     let rate = (lastStepUsers / firstStepUsers) * 100
 
-    if (isNaN(rate)) return "0.00%"
-    return rate.toFixed(2) + "%"
+    // if (isNaN(rate)) return "0.00%"
+    // return rate.toFixed(2) + "%"
+
+    if (isNaN(rate)) return 0.00
+    return rate.toFixed(2)
+})
+
+const projectedOverallConversionRateDifference = computed(() => {
+    console.log(projectedOverallConversionRate.value, overallConversionRate.value)
+    let diff = projectedOverallConversionRate.value - overallConversionRate.value
+    return diff
 })
 
 const projectedRevenue = computed(() => {
@@ -224,23 +252,9 @@ const projectedRevenue = computed(() => {
     return (rev / 100)
 })
 
-const maxValue = computed(() => {
-    // return Math.max(...props.funnel.steps.map(step => step.users))
-    let funnelMax = Math.max(...props.funnel.steps.map(step => step.users))
-    let projectionMax = Math.max(...projection.value.map(step => step.users))
-
-    return Math.max(funnelMax, projectionMax)
-})
-
-const overallConversionRate = computed(() => {
-    if (!props.funnel.steps.length) return "0.00%"
-
-    let firstStepUsers = props.funnel.steps[0].users
-    let lastStepUsers = props.funnel.steps[props.funnel.steps.length - 1].users
-    let rate = (lastStepUsers / firstStepUsers) * 100
-
-    if (isNaN(rate)) return "0.00%"
-    return rate.toFixed(2) + "%"
+const projectedAssetDifference = computed(() => {
+    let diff = projectedRevenue.value - revenue.value
+    return diff
 })
 
 const revenue = computed(() => {
@@ -251,6 +265,33 @@ const revenue = computed(() => {
     let rev = users * value
 
     return (rev / 100)
+})
+
+const profit = computed(() => {
+    let rev = revenue.value
+    let profit = rev * (0.5 / 100)
+
+    return profit
+})  
+
+const projectedProfit = computed(() => {
+    let projectedRevenue = projectedRevenue.value
+    let profit = projectedRevenue * (0.5 / 100)
+
+    return profit
+})
+
+const projectedProfitDifference = computed(() => {
+    let diff = projectedProfit.value - profit.value
+    return diff
+})
+
+const maxValue = computed(() => {
+    // return Math.max(...props.funnel.steps.map(step => step.users))
+    let funnelMax = Math.max(...props.funnel.steps.map(step => step.users))
+    let projectionMax = Math.max(...projection.value.map(step => step.users))
+
+    return Math.max(funnelMax, projectionMax)
 })
 
 const emit = defineEmits(['stepSelected'])
