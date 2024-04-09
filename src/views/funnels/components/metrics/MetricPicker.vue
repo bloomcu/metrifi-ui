@@ -31,7 +31,7 @@ const options = [
   {label: 'Page + query string users', value: 'pagePlusQueryStringUsers'},
   {label: 'Outbound link users', value: 'outboundLinkUsers'},
   // {label: 'Element clicks', value: 'elementClick'},
-  // {label: 'Form submissions', value: 'formSubmission'},
+  // {label: 'Form user submissions', value: 'formSubmission'},
 ]
 
 const selected = computed(() => {

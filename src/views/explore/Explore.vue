@@ -174,7 +174,7 @@ const tabs = ref([
     icon: CursorArrowRippleIcon,
   },
   { 
-    name: 'Form submissions',
+    name: 'Form submission users',
     report: 'formUserSubmissions',
     icon: EnvelopeIcon,
   },

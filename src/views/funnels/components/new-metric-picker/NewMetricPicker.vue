@@ -189,7 +189,7 @@ const tabs = ref([
     icon: EyeIcon,
   },
   { 
-    name: 'Form submissions',
+    name: 'Form submission users',
     metric: 'formUserSubmissions',
     icon: EnvelopeIcon,
   },
