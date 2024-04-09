@@ -105,12 +105,16 @@
                 <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
                 <p>Total value</p>
-                <span class="text-3xl font-medium">{{ revenue }}</span>
+                <span class="text-3xl font-medium">{{ revenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
+                <p class="text-sm">ROA</p>
+                <span class="font-medium">{{ (revenue * (0.5 / 100)).toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
                 <!-- <p>conversion rate</p> -->
 
                 <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected</p>
-                    <span class="text-3xl font-medium mb-2">{{ projectedRevenue }}</span>
+                    <span class="text-3xl font-medium mb-2">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
+                    <p class="text-sm">ROA</p>
+                    <span class="font-medium">{{ (projectedRevenue * (0.5 / 100)).toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
                 </div>
             </div>
 
@@ -217,7 +221,7 @@ const projectedRevenue = computed(() => {
     let value = props.conversion_value
     let rev = users * value
 
-    return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+    return (rev / 100)
 })
 
 const maxValue = computed(() => {
@@ -246,7 +250,7 @@ const revenue = computed(() => {
     let value = props.conversion_value
     let rev = users * value
 
-    return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"})
+    return (rev / 100)
 })
 
 const emit = defineEmits(['stepSelected'])
