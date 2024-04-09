@@ -106,7 +106,13 @@
 
         <!-- Step metrics -->
         <div class="flex flex-col gap-4 p-3">
-          <AppInput v-model="activeStep.name" @update:modelValue="updateStepName(activeStep)" label="Step name" placeholder="Step name" />
+          <AppInput 
+            v-model="activeStep.name" 
+            @update:modelValue="updateStepName(activeStep)" 
+            :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''" 
+            label="Step name" 
+            placeholder="Step name" 
+          />
 
           <div>
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
