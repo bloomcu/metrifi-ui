@@ -229,6 +229,8 @@ const maxValue = computed(() => {
 })
 
 const overallConversionRate = computed(() => {
+    if (!props.funnel.steps.length) return "0.00%"
+
     let firstStepUsers = props.funnel.steps[0].users
     let lastStepUsers = props.funnel.steps[props.funnel.steps.length - 1].users
     let rate = (lastStepUsers / firstStepUsers) * 100
@@ -238,11 +240,13 @@ const overallConversionRate = computed(() => {
 })
 
 const revenue = computed(() => {
+    if (!props.funnel.steps.length) return "$0.00"
+
     let users = props.funnel.steps[props.funnel.steps.length - 1].users
     let value = props.conversion_value
     let rev = users * value
 
-    return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+    return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"})
 })
 
 const emit = defineEmits(['stepSelected'])
