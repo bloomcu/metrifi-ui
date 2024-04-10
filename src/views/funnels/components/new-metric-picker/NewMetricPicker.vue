@@ -93,6 +93,7 @@
                     v-if="selectedTab.metric === 'formUserSubmissions'" 
                     v-for="row in filteredReportRows" 
                     @click="updateMetric({
+                      new: true,
                       metric: selectedTab.metric,
                       pagePath: row.dimensionValues[1].value,
                       formDestination: row.dimensionValues[2].value,
@@ -195,7 +196,9 @@ const tabs = ref([
   },
 ])
 
-const selectedTab = ref(tabs.value.find(tab => tab.metric === props.modelValue.metric))
+// const selectedTab = ref(tabs.value.find(tab => tab.metric === props.modelValue.metric))
+const selectedTab = ref(tabs.value[0])
+// const selectedTab = ref()
 
 const selectTab = (tab) => {
   selectedTab.value = tab
@@ -266,6 +269,7 @@ watch(selectedTab, () => {
 
 onClickOutside(picker, () => {
   console.log('Clicked outside...')
+  emit('update:modelValue', metric.value)
   metric.value.showPicker = false
 })
 
@@ -274,6 +278,11 @@ onMounted(() => {
 
   // If report has already been run, don't run it again
   // if (reports.value[props.modelValue.metric]) return
+
+  // Set selected tab
+  if (props.modelValue.metric) {
+    selectedTab.value =  tabs.value.find(tab => tab.metric === props.modelValue.metric)
+  }
 
   runReport(
     selectedTab.value.metric, 
