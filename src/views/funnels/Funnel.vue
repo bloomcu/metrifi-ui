@@ -106,7 +106,13 @@
 
         <!-- Step metrics -->
         <div class="flex flex-col gap-4 p-3">
-          <AppInput v-model="activeStep.name" @update:modelValue="updateStepName(activeStep)" label="Step name" placeholder="Step name" />
+          <AppInput 
+            v-model="activeStep.name" 
+            @update:modelValue="updateStepName(activeStep)" 
+            :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''" 
+            label="Step name" 
+            placeholder="Step name" 
+          />
 
           <div>
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
@@ -162,17 +168,17 @@
 
                   <!-- <pre>{{ metric }}</pre> -->
                 </div>
+              </div>
 
-                <NewMetricPicker 
+              <NewMetricPicker 
                   v-if="metric.showPicker"
                   v-model="activeStep.metrics[index]"
                   @update:modelValue="updateStepMeasurables(activeStep)"
                 />
-              </div>
             </template>
             
             <!-- Add metric -->
-            <button @click="addNewMeasurable()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
+            <button @click="addMetricToStep()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
               Add metric
             </button>
@@ -182,16 +188,23 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div class="mx-auto w-full max-w-6xl overflow-hidden px-10 py-4">
+      <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
+        <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary" class="ml-auto">
+          {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
+        </AppButton>
+        <AppButton v-else @click="saveProjection()" variant="secondary" class="ml-auto">Save projection</AppButton>
+
         <!-- Chart -->
         <Chart 
           :funnel="funnel"
-          :report="funnel.report"
+          :conversion_value="funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
           :zoom="funnel.zoom"
           :updating="isReportLoading"
         />
+
+        <!-- <ChartLine/> -->
 
         <!-- Automation running (TODO: Make a notification component for these) -->
         <div v-if="isGeneratingSteps" class="rounded-md bg-indigo-50 p-4 mb-4">
@@ -273,9 +286,8 @@ import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
-import { Bars2Icon, QueueListIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline'
+import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
-import { TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
 import EditFunnelModal from '@/views/funnels/modals/EditFunnelModal.vue'
@@ -283,6 +295,7 @@ import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
+import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
 
 const route = useRoute()
 const { selectedDateRange } = useDatePicker()
@@ -296,15 +309,44 @@ const errorGeneratingSteps = ref()
 const isEditFunnelModalOpen = ref(false)
 const isGenerateStepsModalOpen = ref(false)
 
+const projection = ref([])
+// const showProjection = ref(false)
+
 const activeStepId = ref()
 const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
 
 provide('funnel', funnel)
+provide('projection', projection)
 provide('isUpdating', isUpdating)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 provide('isEditFunnelModalOpen', isEditFunnelModalOpen)
 provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
+
+function saveProjection() {
+  console.log('Saving projection')
+
+  funnel.value.projections.push(projection.value)
+  projection.value = []
+  updateFunnel()
+}
+
+function showProjection() {
+  console.log('Showing projection...')
+
+  if (funnel.value.projections.length) {
+    projection.value = funnel.value.projections[0]
+    return
+  }
+
+  funnel.value.steps.forEach((step, index) => {
+    projection.value.push({
+      name: step.name,
+      users: step.users,
+      conversionRate: step.conversionRate
+    })
+  })
+}
 
 const updateFunnel = debounce(() => {
   console.log('Updating funnel...')
@@ -316,6 +358,7 @@ const updateFunnel = debounce(() => {
     description: funnel.value.description,
     zoom: funnel.value.zoom,
     conversion_value: funnel.value.conversion_value,
+    projections: funnel.value.projections,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
@@ -369,7 +412,7 @@ function addStep() {
   })
 }
 
-function addNewMeasurable() {
+function addMetricToStep() {
   console.log('Adding new measurable...')
 
   activeStep.value.metrics.push({
@@ -404,8 +447,6 @@ function loadFunnel() {
   console.log('Loading funnel...')
   funnelApi.show(route.params.organization, route.params.funnel)
     .then(response => {
-      // let funnel = response.data.data
-      // console.log(funnel.steps)
       addFunnel(response.data.data)
       setTimeout(() => isLoading.value = false, 500)
     })

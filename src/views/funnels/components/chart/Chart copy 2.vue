@@ -21,7 +21,7 @@
                             />
 
                             <ChartBar 
-                                v-if="projection.length && projection[index]"
+                                v-if="showProjection && projection[index]"
                                 :value="projection[index].users" 
                                 :max="maxValue" 
                                 :zoom="zoom"
@@ -52,7 +52,7 @@
                             </p>
                         </div>
                         
-                        <div v-if="projection.length && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
+                        <div v-if="showProjection && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
                             <!-- Label: E.g., "Homepage" -->
                             <ChartLabel :name="projection[index].name" class="mb-0.5"/>
 
@@ -104,35 +104,30 @@
             <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4 mb-2">
                 <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
-                <p>Assets</p>
-                <span class="text-3xl font-medium">{{ revenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                <!-- <p class="text-sm">Profit (0.5% ROA)</p>
-                <span class="font-medium">{{ profit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span> -->
+                <p>Total value</p>
+                <span class="text-3xl font-medium">{{ revenue }}</span>
                 <!-- <p>conversion rate</p> -->
 
-                <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
-                    <p>Projected assets</p>
-                    <span class="text-3xl font-medium mb-2">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                    <p class="text-sm">Difference: {{ projectedAssetDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
-
-                    <!-- <p class="text-sm">Projected profit</p>
-                    <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                    <p v-if="projectedProfitDifference" class="text-sm">(+ {{ projectedProfitDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }})</p> -->
-                    
+                <div v-if="showProjection" class="text-indigo-600 border-t mt-2 pt-2">
+                    <p>Projected</p>
+                    <span class="text-3xl font-medium mb-2">{{ projectedRevenue }}</span>
                 </div>
             </div>
 
             <!-- Overall conversion rate -->
             <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
-                <p>Conversion rate</p>
-                <span class="text-3xl font-medium">{{ overallConversionRate }}%</span>
+                <p>Overall conversion rate</p>
+                <span class="text-3xl font-medium">{{ overallConversionRate }}</span>
 
-                <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
-                    <p>Projected conversion rate</p>
-                    <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}%</span>
-                    <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference.toFixed(2) }}%</p>
+                <div v-if="showProjection" class="text-indigo-600 border-t mt-2 pt-2">
+                    <p>Projected</p>
+                    <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}</span>
                 </div>
             </div>
+
+            <!-- <AppButton @click="emit('createProjection')" variant="secondary" class="w-full mt-2">
+                {{ showProjection ? 'Save projection' : 'Create projection' }}
+            </AppButton> -->
         </div>
     </div>
 
@@ -164,12 +159,12 @@
     </div>
 
     <!-- <pre>{{ funnel.steps }}</pre> -->
-    <!-- <pre>{{ projection }}</pre> -->
+    <pre>{{ funnel.projection }}</pre>
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue'
-// import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+import { ref, computed } from 'vue'
+import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { PencilIcon } from '@heroicons/vue/24/solid'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
 import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
@@ -187,14 +182,39 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    // showProjection: {
-    //     type: Boolean,
-    //     default: false
-    // }
+    showProjection: {
+        type: Boolean,
+        default: false
+    }
 })
 
-const projection = inject('projection')
-// const { calculateFunnelConversions, calculateFunnelUsers } = useFunnels()
+const { calculateFunnelConversions, calculateFunnelUsers } = useFunnels()
+
+// const showProjection = ref(false)
+// const projection = ref([
+//   {
+//     "order": 1,
+//     "name": "Loans",
+//     "users": "298",
+//     "conversionRate": "100"
+//   },
+//   {
+//     "order": 2,
+//     "name": "Auto loan",
+//     "users": "93",
+//     "conversionRate": "31.2"
+//   },
+//   {
+//     "order": 3,
+//     "name": "Application starts",
+//     "users": "7",
+//     "conversionRate": "7.53"
+//   }
+// ])
+
+// const toggleProjection = () => {
+//     showProjection.value = !showProjection.value
+// }
 
 const calculateProjectionUsers = () => {
     console.log('Calculating projection users...')
@@ -212,35 +232,13 @@ const calculateProjectionUsers = () => {
     })
 }
 
-const overallConversionRate = computed(() => {
-    if (!props.funnel.steps.length) return "0.00%"
-
-    let firstStepUsers = props.funnel.steps[0].users
-    let lastStepUsers = props.funnel.steps[props.funnel.steps.length - 1].users
-    let rate = (lastStepUsers / firstStepUsers) * 100
-
-    // if (isNaN(rate)) return "0.00%"
-    // return rate.toFixed(2) + "%"
-
-    if (isNaN(rate)) return 0.00
-    return rate.toFixed(2)
-})
-
 const projectedOverallConversionRate = computed(() => {
     let firstStepUsers = projection.value[0].users
     let lastStepUsers = projection.value[projection.value.length - 1].users
     let rate = (lastStepUsers / firstStepUsers) * 100
 
-    // if (isNaN(rate)) return "0.00%"
-    // return rate.toFixed(2) + "%"
-
-    if (isNaN(rate)) return 0.00
-    return rate.toFixed(2)
-})
-
-const projectedOverallConversionRateDifference = computed(() => {
-    let diff = projectedOverallConversionRate.value - overallConversionRate.value
-    return diff
+    if (isNaN(rate)) return "0.00%"
+    return rate.toFixed(2) + "%"
 })
 
 const projectedRevenue = computed(() => {
@@ -248,41 +246,7 @@ const projectedRevenue = computed(() => {
     let value = props.conversion_value
     let rev = users * value
 
-    return (rev / 100)
-})
-
-const projectedAssetDifference = computed(() => {
-    let diff = projectedRevenue.value - revenue.value
-    return diff
-})
-
-const revenue = computed(() => {
-    if (!props.funnel.steps.length) return "$0.00"
-
-    let users = props.funnel.steps[props.funnel.steps.length - 1].users
-    let value = props.conversion_value
-    let rev = users * value
-
-    return (rev / 100)
-})
-
-const profit = computed(() => {
-    let rev = revenue.value
-    let profit = rev * (0.5 / 100)
-
-    return profit
-})  
-
-const projectedProfit = computed(() => {
-    let projectedRevenue = projectedRevenue.value
-    let profit = projectedRevenue * (0.5 / 100)
-
-    return profit
-})
-
-const projectedProfitDifference = computed(() => {
-    let diff = projectedProfit.value - profit.value
-    return diff
+    return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
 })
 
 const maxValue = computed(() => {
@@ -293,5 +257,22 @@ const maxValue = computed(() => {
     return Math.max(funnelMax, projectionMax)
 })
 
-const emit = defineEmits(['stepSelected'])
+const overallConversionRate = computed(() => {
+    let firstStepUsers = props.funnel.steps[0].users
+    let lastStepUsers = props.funnel.steps[props.funnel.steps.length - 1].users
+    let rate = (lastStepUsers / firstStepUsers) * 100
+
+    if (isNaN(rate)) return "0.00%"
+    return rate.toFixed(2) + "%"
+})
+
+const revenue = computed(() => {
+    let users = props.funnel.steps[props.funnel.steps.length - 1].users
+    let value = props.conversion_value
+    let rev = users * value
+
+    return (rev / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+})
+
+const emit = defineEmits(['stepSelected', 'createProjection'])
 </script>

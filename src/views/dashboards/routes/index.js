@@ -1,5 +1,6 @@
 import Dashboards from '@/views/dashboards/Dashboards.vue'
-import Dashboard from '@/views/dashboards/Dashboard.vue'
+import DashboardBar from '@/views/dashboards/DashboardBar.vue'
+import DashboardLine from '@/views/dashboards/DashboardLine.vue'
 
 export default [
   {
@@ -10,6 +11,6 @@ export default [
   {
     path: "/:organization/:dashboard",
     name: "dashboard",
-    component: Dashboard,
+    component: DashboardBar,
   },
 ]

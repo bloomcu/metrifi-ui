@@ -15,7 +15,10 @@
     "@tiptap/vue-3": "^2.0.0-beta.96",
     "@vuepic/vue-datepicker": "^8.1.1",
     "@vueuse/core": "^10.9.0",
+    "ag-charts-vue3": "^9.2.0",
+    "apexcharts": "^3.48.0",
     "axios": "^1.6.7",
+    "chart.js": "^4.4.2",
     "filepond": "^4.30.3",
     "filepond-plugin-file-validate-size": "^2.2.7",
     "filepond-plugin-file-validate-type": "^1.2.8",
@@ -26,8 +29,10 @@
     "pinia": "^2.0.14",
     "pusher-js": "^7.5.0",
     "vue": "^3.2.25",
+    "vue-chartjs": "^5.3.0",
     "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.0.15",
+    "vue3-apexcharts": "^1.5.2",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {

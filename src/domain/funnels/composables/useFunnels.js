@@ -51,13 +51,58 @@ export function useFunnels() {
       steps: funnel.steps,
     }).then(response => {
       if (response.data.data.error) console.log(response.data.data.error)
-      funnel.report = response.data.data
-      console.log(response.data.data)
+      funnel.steps = response.data.data
+      calculateFunnelConversions(funnel)
       isReportLoading.value = false
     })
 
     startNextFunnelJob()
   }, 500)
+
+  const calculateFunnelConversions = (funnel) => {
+    console.log('Calculating funnel conversions...')
+
+    let steps = funnel.steps
+
+    steps.forEach((step, index) => {
+        // First conversion rate is always 100%
+        if (index === 0) {
+          steps[0].conversionRate = '100'
+          return
+        }
+        
+        let cr = (step.users / steps[index - 1]?.users)
+        
+        if (cr === Infinity || isNaN(cr)) {
+            step.conversionRate = '0.00'
+            return
+        }
+
+        let formatted = cr * 100 // Get a percentage
+            formatted = formatted.toFixed(2) // Round to 2 decimal places
+            formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+
+        step.conversionRate = formatted
+    })
+  }
+
+  const calculateFunnelUsers = (funnel) => {
+    console.log('Calculating funnel users...')
+
+    let steps = funnel.steps
+    
+    steps.forEach((step, index) => {
+        // Skip first step in funnel
+        if (index === 0) return
+
+        // Conversion rate cannot be higher than 100%
+        if (step.conversionRate > 100) step.conversionRate = 100
+        
+        let users = (step.conversionRate * steps[index - 1].users) / 100
+
+        step.users = Math.round(users)
+    })
+  }
 
   watch(activeFunnels, (funnel) => {
     if (!funnel) {
@@ -67,6 +112,16 @@ export function useFunnels() {
 
     runReport(funnel)
   });
+
+  // watch(
+  //   () => funnels,
+  //   () => {
+  //     console.log(`The funnels has changed to ${funnels}!`);
+  //   },
+  //   {
+  //     deep: true,
+  //   }
+  // );
 
   return { 
     funnels: computed(() => funnels.value),
@@ -78,5 +133,7 @@ export function useFunnels() {
     addFunnel, 
     addFunnelJob, 
     startNextFunnelJob,
+    calculateFunnelConversions,
+    calculateFunnelUsers,
   }
 }
