@@ -369,7 +369,7 @@ const updateStepName = debounce((step) => {
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     name: step.name,
   }).then(() => {
-    addFunnelJob(funnel.value)
+    // addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)

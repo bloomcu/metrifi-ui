@@ -51,56 +51,42 @@ export function useFunnels() {
       steps: funnel.steps,
     }).then(response => {
       if (response.data.data.error) console.log(response.data.data.error)
-      funnel.steps = response.data.data
-      calculateFunnelConversions(funnel)
+      // funnel.steps = response.data.data
+      calculateFunnelConversions(funnel, response.data.data)
       isReportLoading.value = false
     })
 
     startNextFunnelJob()
   }, 500)
 
-  const calculateFunnelConversions = (funnel) => {
+  const calculateFunnelConversions = (funnel, steps) => {
     console.log('Calculating funnel conversions...')
 
-    let steps = funnel.steps
+    // let steps = funnel.steps
 
     steps.forEach((step, index) => {
-        // First conversion rate is always 100%
-        if (index === 0) {
-          steps[0].conversionRate = '100'
+      // Update user count
+      funnel.steps[index].users = step.users
+
+      // First conversion rate is always 100%
+      if (index === 0) {
+        funnel.steps[0].conversionRate = '100'
+        return
+      }
+      
+      let cr = (step.users / steps[index - 1]?.users)
+      
+      if (cr === Infinity || isNaN(cr)) {
+          funnel.steps[index].conversionRate = '0.00'
           return
-        }
-        
-        let cr = (step.users / steps[index - 1]?.users)
-        
-        if (cr === Infinity || isNaN(cr)) {
-            step.conversionRate = '0.00'
-            return
-        }
+      }
 
-        let formatted = cr * 100 // Get a percentage
-            formatted = formatted.toFixed(2) // Round to 2 decimal places
-            formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+      let formatted = cr * 100 // Get a percentage
+          formatted = formatted.toFixed(2) // Round to 2 decimal places
+          formatted = formatted.substring(0, 4) // Trim to 2 decimal places
 
-        step.conversionRate = formatted
-    })
-  }
-
-  const calculateFunnelUsers = (funnel) => {
-    console.log('Calculating funnel users...')
-
-    let steps = funnel.steps
-    
-    steps.forEach((step, index) => {
-        // Skip first step in funnel
-        if (index === 0) return
-
-        // Conversion rate cannot be higher than 100%
-        if (step.conversionRate > 100) step.conversionRate = 100
-        
-        let users = (step.conversionRate * steps[index - 1].users) / 100
-
-        step.users = Math.round(users)
+      // Update conversion rate
+      funnel.steps[index].conversionRate = formatted
     })
   }
 
@@ -134,6 +120,5 @@ export function useFunnels() {
     addFunnelJob, 
     startNextFunnelJob,
     calculateFunnelConversions,
-    calculateFunnelUsers,
   }
 }

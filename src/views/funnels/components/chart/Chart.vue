@@ -195,13 +195,6 @@ const props = defineProps({
 
 const projection = inject('projection')
 
-// onMounted(() => {
-//     if (!projection.value) {
-//         projection.value = props.funnel.steps.map(step => ({ ...step }))
-//     }
-// })
-// const { calculateFunnelConversions, calculateFunnelUsers } = useFunnels()
-
 const calculateProjectionUsers = () => {
     console.log('Calculating projection users...')
     
