@@ -21,7 +21,7 @@
                             />
 
                             <ChartBar 
-                                v-if="projection.length && projection[index]"
+                                v-if="projection && projection.length && projection[index]"
                                 :value="projection[index].users" 
                                 :max="maxValue" 
                                 :zoom="zoom"
@@ -52,7 +52,7 @@
                             </p>
                         </div>
                         
-                        <div v-if="projection.length && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
+                        <div v-if="projection && projection.length && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
                             <!-- Label: E.g., "Homepage" -->
                             <ChartLabel :name="projection[index].name" class="mb-0.5"/>
 
@@ -110,7 +110,7 @@
                 <span class="font-medium">{{ profit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span> -->
                 <!-- <p>conversion rate</p> -->
 
-                <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
+                <div v-if="projection && projection.length" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected assets</p>
                     <span class="text-3xl font-medium mb-2">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
                     <p class="text-sm">Difference: {{ projectedAssetDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
@@ -127,7 +127,7 @@
                 <p>Conversion rate</p>
                 <span class="text-3xl font-medium">{{ overallConversionRate }}%</span>
 
-                <div v-if="projection.length" class="text-indigo-600 border-t mt-2 pt-2">
+                <div v-if="projection && projection.length" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected conversion rate</p>
                     <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}%</span>
                     <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference.toFixed(2) }}%</p>
@@ -168,7 +168,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed, inject, onMounted } from 'vue'
 // import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { PencilIcon } from '@heroicons/vue/24/solid'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
@@ -194,6 +194,12 @@ const props = defineProps({
 })
 
 const projection = inject('projection')
+
+// onMounted(() => {
+//     if (!projection.value) {
+//         projection.value = props.funnel.steps.map(step => ({ ...step }))
+//     }
+// })
 // const { calculateFunnelConversions, calculateFunnelUsers } = useFunnels()
 
 const calculateProjectionUsers = () => {
@@ -286,11 +292,14 @@ const projectedProfitDifference = computed(() => {
 })
 
 const maxValue = computed(() => {
-    // return Math.max(...props.funnel.steps.map(step => step.users))
-    let funnelMax = Math.max(...props.funnel.steps.map(step => step.users))
-    let projectionMax = Math.max(...projection.value.map(step => step.users))
+    if (projection) {
+        let funnelMax = Math.max(...props.funnel.steps.map(step => step.users))
+        let projectionMax = Math.max(...projection.value.map(step => step.users))
 
-    return Math.max(funnelMax, projectionMax)
+        return Math.max(funnelMax, projectionMax)
+    }
+    
+    return Math.max(...props.funnel.steps.map(step => step.users))
 })
 
 const emit = defineEmits(['stepSelected'])
