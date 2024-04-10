@@ -165,20 +165,18 @@
                     <p class="text-xs uppercase">Form submit text:</p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.formSubmitText }}</p>
                   </div>
-
-                  <!-- <pre>{{ metric }}</pre> -->
                 </div>
               </div>
 
               <NewMetricPicker 
                   v-if="metric.showPicker"
                   v-model="activeStep.metrics[index]"
-                  @update:modelValue="updateStepMeasurables(activeStep)"
+                  @update:modelValue="updateStepMetrics(activeStep)"
                 />
             </template>
             
             <!-- Add metric -->
-            <button @click="addMetricToStep()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
+            <button @click="addMetric()" type="button" class="flex items-center gap-1 rounded-md p-1 text-sm text-gray-500 border border-gray-300 hover:text-gray-900 bg-gray-50 hover:bg-gray-200 active:translate-y-px">
               <PlusIcon class="h-5 w-5 shrink-0" />
               Add metric
             </button>
@@ -376,10 +374,18 @@ const updateStepName = debounce((step) => {
   })
 }, 800)
 
-const updateStepMeasurables = debounce((step) => {
+const updateStepMetrics = debounce((step) => {
   console.log('Updating step measurables...')
   isUpdating.value = true
 
+  // Iterate over metrics and delete any that don't have the metric property set
+  step.metrics.filter((element, index, array) => {
+    if (!element.metric) {
+      array.splice(index, 1)
+    }
+  })
+
+  // Update funnel step
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     metrics: step.metrics,
   }).then(() => {
@@ -412,13 +418,13 @@ function addStep() {
   })
 }
 
-function addMetricToStep() {
-  console.log('Adding new measurable...')
+function addMetric() {
+  console.log('Adding new metric to step...')
 
   activeStep.value.metrics.push({
     connection_id: funnel.value.connection.id,
-    metric: 'pageUsers', 
-    showPicker: true
+    metric: '',
+    showPicker: true,
   })
 }
 
@@ -426,7 +432,7 @@ function deleteMetric(index) {
   console.log('Deleting metric...')
 
   activeStep.value.metrics.splice(index, 1)
-  updateStepMeasurables(activeStep.value)
+  updateStepMetrics(activeStep.value)
   addFunnelJob(funnel.value)
 }
 
