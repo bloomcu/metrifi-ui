@@ -189,7 +189,11 @@
         <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary" class="ml-auto">
           {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
         </AppButton>
-        <AppButton v-else @click="saveProjection()" variant="secondary" class="ml-auto">Save projection</AppButton>
+        <div v-else class="flex gap-2 ml-auto">
+          <AppButton @click="projection = []" variant="tertiary">Hide projection</AppButton>
+          <AppButton @click="saveProjection()" variant="secondary">Save projection</AppButton>
+        </div>
+        
 
         <!-- Chart -->
         <Chart 
@@ -324,7 +328,6 @@ function saveProjection() {
   console.log('Saving projection')
 
   funnel.value.projections.push(projection.value)
-  projection.value = []
   updateFunnel()
 }
 
