@@ -190,6 +190,7 @@
           {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
         </AppButton>
         <div v-else class="flex gap-2 ml-auto">
+          <AppButton @click="deleteProjection()" variant="link">Delete projection</AppButton>
           <AppButton @click="projection = []" variant="tertiary">Hide projection</AppButton>
           <AppButton @click="saveProjection()" variant="secondary">Save projection</AppButton>
         </div>
@@ -324,13 +325,6 @@ provide('errorGeneratingSteps', errorGeneratingSteps)
 provide('isEditFunnelModalOpen', isEditFunnelModalOpen)
 provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
-function saveProjection() {
-  console.log('Saving projection')
-
-  funnel.value.projections.push(projection.value)
-  updateFunnel()
-}
-
 function showProjection() {
   console.log('Showing projection...')
 
@@ -346,6 +340,21 @@ function showProjection() {
       conversionRate: step.conversionRate
     })
   })
+}
+
+function saveProjection() {
+  console.log('Saving projection...')
+
+  funnel.value.projections.push(projection.value)
+  updateFunnel()
+}
+
+function deleteProjection() {
+  console.log('Deleting projection...')
+
+  funnel.value.projections = []
+  projection.value = []
+  updateFunnel()
 }
 
 const updateFunnel = debounce(() => {
