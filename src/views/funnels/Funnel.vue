@@ -39,7 +39,6 @@
     </header>
 
     <div class="flex-1 flex flex-col sm:flex-row">
-
       <!-- Left: Funnel steps -->
       <nav class="min-w-[24rem] max-w-[24rem] border-r">
         <!-- Header -->
@@ -367,7 +366,7 @@ const updateStepName = debounce((step) => {
   isUpdating.value = true
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
-    name: step.name,
+    name: step.name ? step.name : 'Unnamed step',
   }).then(() => {
     // addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
