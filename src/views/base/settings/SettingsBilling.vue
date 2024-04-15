@@ -104,9 +104,8 @@
 
 <script setup>
 import moment from "moment"
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
-import SettingsTabs from '@/views/base/settings/components/SettingsTabs.vue'
 import AddressFieldGroup from '@/app/components/base/forms/AddressFieldGroup.vue'
 
 const organizationStore = useOrganizationStore()
@@ -125,9 +124,5 @@ const address = ref({
   country: '',
   lat: '',
   lng: '',
-})
-
-onMounted(() => {
-  organizationStore.show()
 })
 </script>

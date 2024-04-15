@@ -9,6 +9,8 @@ export const useOrganizationStore = defineStore('organizationStore', {
         organization: null,
         isLoading: true,
         createModalOpen: false,
+        updateModalOpen: false,
+        destroyModalOpen: false,
     }),
     
     getters: {},
@@ -33,24 +35,47 @@ export const useOrganizationStore = defineStore('organizationStore', {
             })
         },
         
-        async show() {
-          const auth = useAuthStore()
+        async show(slug) {
           this.isLoading = true
           this.organization = null
           
-          await OrganizationApi.show(auth.organization)
+          await OrganizationApi.show(slug)
             .then(response => {
               this.organization = response.data.data
               this.isLoading = false
             })
         },
         
-        update() {},
+        async update() {
+          this.isLoading = true
+          
+          await OrganizationApi.update(this.organization.slug, this.organization)
+            .then(response => {
+              console.log('Site successfully updated')
+              this.isLoading = false
+            })
+        },
         
-        destroy(id) {},
+        async destroy(slug) {
+          this.isLoading = true
+          
+          await OrganizationApi.destroy(slug)
+            .then(response => {
+              this.organizations = this.organizations.filter((organization) => organization.slug !== slug)
+              this.isLoading = false
+            })
+        },
         
         toggleCreateModal() {
           this.createModalOpen = !this.createModalOpen
+        },
+
+        toggleUpdateModal() {
+          this.updateModalOpen = !this.updateModalOpen
+        },
+
+        toggleDestroyModal() {
+          this.destroyModalOpen = !this.destroyModalOpen
         }
     }
 })
