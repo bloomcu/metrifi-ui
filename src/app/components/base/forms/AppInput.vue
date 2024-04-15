@@ -3,6 +3,8 @@
     <label v-if="label" class="block text-sm font-medium text-gray-900" :for="label">{{ label }}</label>
     <input 
       @input="updateValue($event.target.value)"
+      @focus="emit('focus')"
+      @blur="emit('blur')"
       :value="modelValue"
       :type="type"
       :name="label"
@@ -30,7 +32,7 @@ import { ref } from 'vue'
 
 const props = defineProps({
   modelValue: { 
-    type: String
+    type: [String, Number]
   },
   type: {
     type: String,
@@ -67,7 +69,7 @@ const props = defineProps({
 })
 
 const inputRef = ref()
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
 function updateValue(value) {
   emit('update:modelValue', value)

@@ -1,7 +1,7 @@
 <template>
     <Listbox 
         by="slug" 
-        v-model="modelValue" 
+        v-bind="modelValue" 
         :multiple="multiple" 
         @update:modelValue="slug => emit('update:modelValue', slug)" 
     >
