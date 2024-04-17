@@ -31,8 +31,8 @@
 
 <script setup>
 import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
-import UpdateOrganizationModal from '@/views/base/organizations/modals/UpdateOrganizationModal.vue'
-import DestroyOrganizationModal from '@/views/base/organizations/modals/DestroyOrganizationModal.vue'
+import UpdateOrganizationModal from '@/views/base/settings/modals/UpdateOrganizationModal.vue'
+import DestroyOrganizationModal from '@/views/base/settings/modals/DestroyOrganizationModal.vue'
 
 const organizationStore = useOrganizationStore()
 </script>
