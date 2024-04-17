@@ -2,13 +2,13 @@
   <LayoutDefault v-if="dashboard" width="full" class="min-h-screen flex flex-col">
     <!-- Header -->
     <header class="border-b p-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 grow">
         <AppButton :to="{name: 'dashboards'}" variant="tertiary" size="base">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
         <!-- Dashboard name -->
-        <AppInput v-model="dashboard.name" @update:modelValue="updateDashboard"/>
+        <AppInput v-model="dashboard.name" @update:modelValue="updateDashboard" class="w-7/12"/>
 
         <!-- Loading/Updating/Reporting indicator -->
         <svg v-if="isLoading || isReporting || isUpdating" class="inline w-6 h-6 ml-2 text-indigo-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

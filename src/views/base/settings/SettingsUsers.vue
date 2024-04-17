@@ -73,7 +73,7 @@
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ user.role }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ moment(user.created_at).fromNow() }}</td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                  <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                  <AppButton v-if="authStore.user.id !== user.id" @click="userStore.destroy(user.id)" variant="link">Delete</AppButton>
                 </td>
               </tr>
             </tbody>
@@ -90,11 +90,13 @@ import { ref, onMounted } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useInvitationStore } from '@/domain/base/invitations/store/useInvitationStore'
 import { useUserStore } from '@/domain/base/users/store/useUserStore'
+import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import AppButtonCopyText from '@/app/components/base/buttons/AppButtonCopyText.vue'
 
 const errorStore = useErrorStore()
 const inviteStore = useInvitationStore()
 const userStore = useUserStore()
+const authStore = useAuthStore()
 
 const email = ref('')
 const sendingInvite = ref(false)

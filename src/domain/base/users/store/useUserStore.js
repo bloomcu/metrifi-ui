@@ -61,16 +61,18 @@ export const useUserStore = defineStore('userStore', {
         //     })
         // },
         
-        // destroy(id) {
-        //   const auth = useAuthStore()
-        //   this.isLoading = true
-        // 
-        //   UserApi.destroy(auth.organization, id)
-        //     .then(response => {
-        //       this.users = this.users.filter((user) => user.id !== id)
-        //       this.isLoading = false
-        //     })
-        // }
+        destroy(id) {
+          const auth = useAuthStore()
+          if (auth.user.id === id) return
+          
+          this.isLoading = true
+        
+          UserApi.destroy(auth.organization, id)
+            .then(response => {
+              this.users = this.users.filter((user) => user.id !== id)
+              this.isLoading = false
+            })
+        }
     }
 })
 

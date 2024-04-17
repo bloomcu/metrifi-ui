@@ -3,7 +3,7 @@
     :is="to ? 'router-link' : href ? 'a' : 'button'"
     :to="to"
     :href="href"
-    :class="`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`"
+    :class="`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]}`"
     :disable="loading"
   >
     <svg v-if="loading" aria-hidden="true" role="status" class="inline w-4 h-4 mr-3 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -59,17 +59,17 @@ const baseClasses = `
   focus-visible:outline-offset-2
 `
 
-const variantClasses = {
-  primary: 'text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm',
-  secondary: 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100',
-  tertiary: 'text-gray-900 bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 shadow-sm',
-  link: 'text-indigo-600 hover:text-indigo-900'
-}
-
 const sizeClasses = {
   sm: 'px-2.5 py-1.5 text-sm',
   base: 'px-3 py-2 text-sm',
   md: 'px-4 py-2 text-base',
   lg: 'px-8 py-3 text-md',
+}
+
+const variantClasses = {
+  primary: 'text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm',
+  secondary: 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100',
+  tertiary: 'text-gray-900 bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 shadow-sm',
+  link: 'text-indigo-600 hover:text-indigo-900 px-0',
 }
 </script>

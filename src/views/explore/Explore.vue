@@ -58,15 +58,15 @@
         <table v-if="!loading && report.rows" class="min-w-full max-w-full divide-y divide-gray-300">
           <thead>
             <tr class="divide-x divide-gray-200">
-              <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left">
+              <th v-for="header in report.dimensionHeaders" scope="col" class="py-3 px-4 text-left whitespace-nowrap">
                 <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
-                <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+                <!-- <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div> -->
               </th>
-              <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left">
+              <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left whitespace-nowrap">
                 <div class="text-sm font-semibold text-gray-900">
                   {{ dictionary[header.name].displayName ?? header.name }} ({{ report.totals[0].metricValues[0].value }})
                 </div>
-                <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
+                <!-- <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div> -->
               </th>
             </tr>
           </thead>
@@ -273,13 +273,13 @@ const dictionary = {
     displayName: 'Form destination',
   },
   'customEvent:form_id': {
-    displayName: 'Form id',
+    displayName: 'Id',
   },
   'customEvent:form_length': {
-    displayName: 'Form length',
+    displayName: 'Fields',
   },
   'customEvent:form_submit_text': {
-    displayName: 'Form submit text',
+    displayName: 'Submit text',
   },
 }
 

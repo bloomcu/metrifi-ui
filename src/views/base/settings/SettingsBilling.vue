@@ -11,16 +11,18 @@
 
       <AppCard v-if="organizationStore.organization">
         <div class="flex justify-between">
-          <p class="text-gray-900">{{ organizationStore.organization.plan.title }}</p>
+          <p class="text-gray-900">Free Plan</p>
+          <!-- <p class="text-gray-900">{{ organizationStore.organization.plan.title }}</p> -->
           <!-- <AppButton :to="{ name: 'subscription-swap' }">Change plan</AppButton> -->
         </div>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-gray-500">$0/month</p>
+        <!-- <p class="text-sm text-gray-500">
           {{ organizationStore.organization.plan.price }}{{ organizationStore.organization.plan.interval ? ' / ' + organizationStore.organization.plan.interval : '/month' }}
-        </p>
-        <p v-if="organizationStore.organization.ends_at" class="text-sm text-indigo-600">
+        </p> -->
+        <!-- <p v-if="organizationStore.organization.ends_at" class="text-sm text-indigo-600">
           Your subscription ends {{ moment(organizationStore.organization.ends_at).fromNow() }} 
           on {{ moment(organizationStore.organization.ends_at).format('LL') }}
-        </p>
+        </p> -->
       </AppCard>
     </div>
 
@@ -104,9 +106,8 @@
 
 <script setup>
 import moment from "moment"
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
-import SettingsTabs from '@/views/base/settings/components/SettingsTabs.vue'
 import AddressFieldGroup from '@/app/components/base/forms/AddressFieldGroup.vue'
 
 const organizationStore = useOrganizationStore()
@@ -125,9 +126,5 @@ const address = ref({
   country: '',
   lat: '',
   lng: '',
-})
-
-onMounted(() => {
-  organizationStore.show()
 })
 </script>
