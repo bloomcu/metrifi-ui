@@ -51,13 +51,44 @@ export function useFunnels() {
       steps: funnel.steps,
     }).then(response => {
       if (response.data.data.error) console.log(response.data.data.error)
-      funnel.report = response.data.data
-      console.log(response.data.data)
+      // funnel.steps = response.data.data
+      calculateFunnelConversions(funnel, response.data.data)
       isReportLoading.value = false
     })
 
     startNextFunnelJob()
   }, 500)
+
+  const calculateFunnelConversions = (funnel, steps) => {
+    console.log('Calculating funnel conversions...')
+
+    // let steps = funnel.steps
+
+    steps.forEach((step, index) => {
+      // Update user count
+      funnel.steps[index].users = step.users
+
+      // First conversion rate is always 100%
+      if (index === 0) {
+        funnel.steps[0].conversionRate = '100'
+        return
+      }
+      
+      let cr = (step.users / steps[index - 1]?.users)
+      
+      if (cr === Infinity || isNaN(cr)) {
+          funnel.steps[index].conversionRate = '0.00'
+          return
+      }
+
+      let formatted = cr * 100 // Get a percentage
+          formatted = formatted.toFixed(2) // Round to 2 decimal places
+          formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+
+      // Update conversion rate
+      funnel.steps[index].conversionRate = formatted
+    })
+  }
 
   watch(activeFunnels, (funnel) => {
     if (!funnel) {
@@ -67,6 +98,16 @@ export function useFunnels() {
 
     runReport(funnel)
   });
+
+  // watch(
+  //   () => funnels,
+  //   () => {
+  //     console.log(`The funnels has changed to ${funnels}!`);
+  //   },
+  //   {
+  //     deep: true,
+  //   }
+  // );
 
   return { 
     funnels: computed(() => funnels.value),
@@ -78,5 +119,6 @@ export function useFunnels() {
     addFunnel, 
     addFunnelJob, 
     startNextFunnelJob,
+    calculateFunnelConversions,
   }
 }

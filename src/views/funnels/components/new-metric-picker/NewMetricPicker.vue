@@ -1,5 +1,6 @@
 <template>
-  <div ref="picker" class="absolute left-full top-0 translate-x-2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg">
+  <!-- <div ref="picker" class="absolute left-full top-0 translate-x-2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg"> -->
+  <div ref="picker" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg">
     <div class="divide-y divide-gray-200">
       <!-- Search -->
       <div class="relative">
@@ -30,7 +31,7 @@
           </div> -->
 
           <!-- Right -->
-          <div class="h-[50vh] w-[50vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+          <div class="min-h-[480px] min-w-[860px] h-[60vh] w-[60vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
             <!-- <pre>{{ reports }}</pre> -->
             
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="min-w-full max-w-full divide-y divide-gray-300">
@@ -92,6 +93,7 @@
                     v-if="selectedTab.metric === 'formUserSubmissions'" 
                     v-for="row in filteredReportRows" 
                     @click="updateMetric({
+                      new: true,
                       metric: selectedTab.metric,
                       pagePath: row.dimensionValues[1].value,
                       formDestination: row.dimensionValues[2].value,
@@ -188,13 +190,15 @@ const tabs = ref([
     icon: EyeIcon,
   },
   { 
-    name: 'Form submissions',
+    name: 'Form submission users',
     metric: 'formUserSubmissions',
     icon: EnvelopeIcon,
   },
 ])
 
-const selectedTab = ref(tabs.value.find(tab => tab.metric === props.modelValue.metric))
+// const selectedTab = ref(tabs.value.find(tab => tab.metric === props.modelValue.metric))
+const selectedTab = ref(tabs.value[0])
+// const selectedTab = ref()
 
 const selectTab = (tab) => {
   selectedTab.value = tab
@@ -246,8 +250,9 @@ const filteredReportRows = computed(() => {
 // }
 
 watch(selectedTab, () => {
-  console.log('Selected tab changed...')
+  console.log('Metric Picker: Selected tab changed...')
 
+  // If report has already been run, don't run it again
   if (reports.value[selectedTab.value.metric]) return
 
   runReport(
@@ -264,15 +269,20 @@ watch(selectedTab, () => {
 
 onClickOutside(picker, () => {
   console.log('Clicked outside...')
-  // closeMeasurablePicker()
+  emit('update:modelValue', metric.value)
   metric.value.showPicker = false
 })
 
 onMounted(() => {
   console.log('Mounted...')
 
-  // setMeasurablePickerTab(props.activeReport)
-  if (reports.value[props.modelValue.metric]) return
+  // If report has already been run, don't run it again
+  // if (reports.value[props.modelValue.metric]) return
+
+  // Set selected tab
+  if (props.modelValue.metric) {
+    selectedTab.value =  tabs.value.find(tab => tab.metric === props.modelValue.metric)
+  }
 
   runReport(
     selectedTab.value.metric, 
