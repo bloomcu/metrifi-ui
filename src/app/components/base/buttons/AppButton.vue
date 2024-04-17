@@ -63,7 +63,7 @@ const variantClasses = {
   primary: 'text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm',
   secondary: 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100',
   tertiary: 'text-gray-900 bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 shadow-sm',
-  link: 'text-indigo-600 hover:text-indigo-900'
+  link: 'text-indigo-600 hover:text-indigo-900',
 }
 
 const sizeClasses = {

@@ -13,12 +13,12 @@
       <span class="rounded-md bg-gray-50 px-2 py-1 text-sm font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
         {{ organizationStore.organization.title }}
       </span>
-      organization will also delete all associated data. This action cannot be undone. Are you sure you want to delete?
+      organization will also delete all the data associated with it. This action cannot be undone. Are you sure you want to delete it?
     </p>
 
     <div class="flex justify-end gap-3 border-t pt-4">
       <AppButton @click="organizationStore.toggleDestroyModal()" variant="tertiary">Never mind</AppButton>
-      <AppButton @click="destroy()" :loading="organizationStore.loading" variant="primary">Delete</AppButton>
+      <AppButton @click="destroy()" :loading="organizationStore.loading" variant="primary" class="bg-red-600 hover:bg-red-700">Delete</AppButton>
     </div>
   </AppModal>
 </template>

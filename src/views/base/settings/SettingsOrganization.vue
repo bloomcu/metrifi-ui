@@ -1,15 +1,12 @@
 <template>
   <div class="max-w-xl">
-    <div class="mb-12">
+    <AppCard class="mb-12">
       <div class="flex items-center justify-between mb-6">
         <div>
           <p class="text-gray-900 font-medium mb-2">Organization</p>
-          <p class="text-sm text-gray-500">Your organizations details.</p>
+          <p class="text-sm text-gray-500">General information about your organization</p>
         </div>
-        <div class="flex gap-2">
-          <AppButton @click="organizationStore.toggleDestroyModal()" variant="tertiary">Delete</AppButton>
-          <AppButton @click="organizationStore.toggleUpdateModal()" variant="tertiary">Edit</AppButton>
-        </div>
+        <AppButton @click="organizationStore.toggleUpdateModal()" variant="tertiary">Edit</AppButton>
       </div>
 
       <dl v-if="organizationStore.organization" class="divide-y divide-gray-200">
@@ -22,7 +19,18 @@
           <dd class="mt-1 text-sm leading-6 text-gray-500 sm:col-span-2 sm:mt-0">{{ organizationStore.organization.slug }}</dd>
         </div>
       </dl>
-    </div>
+    </AppCard>
+
+    <AppCard class="mb-12">
+      <div class="mb-6">
+        <p class="text-gray-900 font-medium mb-2">Danger zone</p>
+        <p class="text-sm text-gray-500">Irreversible and destructive actions</p>
+      </div>
+
+      <div class="border-t pt-4">
+        <AppButton @click="organizationStore.toggleDestroyModal()" variant="link" class="text-red-600 hover:text-red-900 px-0">Delete this organization</AppButton>
+      </div>
+    </AppCard>
 
     <UpdateOrganizationModal/>
     <DestroyOrganizationModal/>
