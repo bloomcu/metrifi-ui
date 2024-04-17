@@ -22,8 +22,8 @@
     </p>
 
     <div class="flex justify-end gap-3 border-t pt-4">
-      <AppButton @click="isModalOpen = false" variant="tertiary" size="md">Never mind</AppButton>
-      <AppButton @click="disconnect()" variant="primary" size="md">Disconnect</AppButton>
+      <AppButton @click="isModalOpen = false" variant="tertiary">Never mind</AppButton>
+      <AppButton @click="disconnect()" variant="primary">Disconnect</AppButton>
     </div>
   </AppModal>
 </template>

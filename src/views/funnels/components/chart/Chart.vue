@@ -113,7 +113,7 @@
                 <div v-if="projection && projection.length" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected assets</p>
                     <span class="text-3xl font-medium mb-2">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                    <p class="text-sm">Difference: {{ projectedAssetDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
+                    <p class="text-sm">Difference: {{ projectedAssetDifference }}</p>
 
                     <!-- <p class="text-sm">Projected profit</p>
                     <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
@@ -130,7 +130,7 @@
                 <div v-if="projection && projection.length" class="text-indigo-600 border-t mt-2 pt-2">
                     <p>Projected conversion rate</p>
                     <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}%</span>
-                    <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference.toFixed(2) }}%</p>
+                    <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference }}%</p>
                 </div>
             </div>
         </div>
@@ -239,7 +239,10 @@ const projectedOverallConversionRate = computed(() => {
 
 const projectedOverallConversionRateDifference = computed(() => {
     let diff = projectedOverallConversionRate.value - overallConversionRate.value
-    return diff
+    
+    let direction = diff > 0 ? "+" : ""
+
+    return direction + diff.toFixed(2)
 })
 
 const projectedRevenue = computed(() => {
@@ -252,7 +255,10 @@ const projectedRevenue = computed(() => {
 
 const projectedAssetDifference = computed(() => {
     let diff = projectedRevenue.value - revenue.value
-    return diff
+
+    let direction = diff > 0 ? "+" : ""
+
+    return direction + diff.toLocaleString("en-US", {style:"currency", currency:"USD"})
 })
 
 const revenue = computed(() => {

@@ -42,15 +42,15 @@ const userApi = {
     //   return HttpClient.put(`/${organization}/users/${id}`, user)
     // },
     
-    // /**
-    //  * Destroy a user
-    //  *
-    //  * @param Integer id [Id of the user you want to destroy]
-    //  * @return promise
-    //  */
-    // destroy(organization, id) {
-    //     return HttpClient.delete(`/${organization}/users/${id}`)
-    // },
+    /**
+     * Destroy a user
+     *
+     * @param Integer id [Id of the user you want to destroy]
+     * @return promise
+     */
+    destroy(organization, id) {
+        return HttpClient.delete(`/${organization}/users/${id}`)
+    },
 }
 
 export { userApi }
