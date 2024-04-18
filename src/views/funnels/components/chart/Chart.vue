@@ -212,7 +212,7 @@ const calculateProjectionUsers = () => {
 }
 
 const overallConversionRate = computed(() => {
-    if (!props.funnel.steps.length) return "0.00"
+    if (!props.funnel.steps.length) return 0.00
 
     let firstStepUsers = props.funnel.steps[0].users
     let lastStepUsers = props.funnel.steps[props.funnel.steps.length - 1].users
