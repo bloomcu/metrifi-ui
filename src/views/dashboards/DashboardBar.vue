@@ -32,9 +32,9 @@
     </pre> -->
 
     <!-- Funnels -->
-    <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-6 p-4">
+    <div class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-2 xl:gap-y-2 p-2">
       <div v-for="(funnel, index) in funnels" class="p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-4">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
           <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
         </div>
@@ -61,8 +61,8 @@
         </AppButton>
       </div>
 
-      <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-2xl py-12 px-2 cursor-pointer hover:bg-indigo-50">
-        <h2 class="mt-2 text-lg font-medium text-indigo-600">Add a funnel</h2>
+      <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-2xl py-8 px-2 cursor-pointer hover:bg-indigo-50">
+        <h2 class="text-lg font-medium text-indigo-600">Add a funnel</h2>
       </div>
     </div>
 

@@ -1,137 +1,137 @@
 <template>
-    <div v-if="funnel" class="flex gap-6 mt-6">
-        <!-- Left -->
-        <div class="flex-1">
-            <!-- Bars -->
-            <div class="flex flex-col w-full">
-                <div class="relative flex h-[400px]">
-                    <div class="absolute w-full h-full flex flex-col justify-between">
-                        <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
-                    </div>
-
-                    <div class="flex flex-[8] gap-3 z-0">
-                        <template v-for="(step, index) in funnel.steps" >
-                            <ChartBar 
-                                :value="step.users" 
-                                :max="maxValue" 
-                                :zoom="zoom"
-                                :updating="updating"
-                                color="bg-indigo-600 hover:bg-indigo-700"
-                                @click="emit('stepSelected', step)"
-                            />
-
-                            <ChartBar 
-                                v-if="projection && projection.length && projection[index]"
-                                :value="projection[index].users" 
-                                :max="maxValue" 
-                                :zoom="zoom"
-                                :updating="updating"
-                                color="bg-indigo-400 hover:bg-indigo-500"
-                                @click="emit('stepSelected', step)"
-                            />
-                        </template>
-                        
-                    </div>
-                </div>
-
-                <div class="h-[10px]" />
-
-                <div class="flex flex-[8] gap-3">
-                    <template v-for="(step, index) in funnel.steps">
-                        <div @click="emit('stepSelected', step)" class="flex-1 text-sm">
-                            <!-- Label: E.g., "Homepage" -->
-                            <ChartLabel :name="step.name" class="mb-0.5"/>
-
-                            <!-- Metric: E.g., "1,000 users" -->
-                            <p class="pt-0.5 pb-1">{{ Number(step.users).toLocaleString() }} users</p>
-
-                            <!-- Conversion rate: E.g., "100%" -->
-                            <p v-if="index != 0">
-                                {{ step.conversionRate }}%
-                                <span>conversion rate</span>
-                            </p>
-                        </div>
-                        
-                        <div v-if="projection && projection.length && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
-                            <!-- Label: E.g., "Homepage" -->
-                            <ChartLabel :name="projection[index].name" class="mb-0.5"/>
-
-                            <!-- Metric: E.g., "1,000 users" -->
-                            <!-- <p v-if="index == 0" class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-indigo-600 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                                {{ Number(projection[index].users).toLocaleString() }} users
-                                <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
-                            </p> -->
-                            <MetricModifier v-if="index == 0">
-                                <template #title>
-                                    <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                                        {{ Number(projection[index].users).toLocaleString() }} users
-                                        <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
-                                    </p>
-                                </template>
-                                <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
-                            </MetricModifier>
-
-                            <p v-else class="py-0.5">
-                                {{ Number(projection[index].users).toLocaleString() }} users
-                            </p>
-
-                            <!-- Conversion rate: E.g., "100%" -->
-                            <!-- <p v-if="index != 0" class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                                {{ projection[index].conversionRate }}%
-                                <span class="_text-xs">conversion rate</span>
-                                <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
-                            </p> -->
-                            <MetricModifier v-if="index != 0">
-                                <template #title>
-                                    <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                                        {{ projection[index].conversionRate }}%
-                                        <span>conversion rate</span>
-                                        <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
-                                    </p>
-                                </template>
-                                <AppInput v-model="projection[index].conversionRate" @input="calculateProjectionUsers()" type="number"/>
-                            </MetricModifier>
-                        </div>
-                    </template>
-                    
-                </div>
-            </div>
-        </div>
-
-        <!-- Right -->
-        <div class="w-[14rem]">
-            <!-- Revenue -->
-            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4 mb-2">
+    <div v-if="funnel" class="flex flex-col gap-4">
+        <!-- Top -->
+        <div class="flex flex-row gap-3">
+            <!-- Assets card -->
+            <div class="flex w-auto rounded-md bg-white border shadow p-3">
                 <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
-                <p>Assets</p>
-                <span class="text-3xl font-medium">{{ revenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                <!-- <p class="text-sm">Profit (0.5% ROA)</p>
-                <span class="font-medium">{{ profit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span> -->
-                <!-- <p>conversion rate</p> -->
+                <div class="flex flex-col gap-0.5">
+                    <p>Assets</p>
+                    <span class="text-2xl font-medium">{{ revenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
+                    <!-- <p class="text-sm">Profit (0.5% ROA)</p>
+                    <span class="font-medium">{{ profit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span> -->
+                    <!-- <p>conversion rate</p> -->
+                </div>
 
-                <div v-if="projection && projection.length" class="text-indigo-600 border-t mt-2 pt-2">
+                <div v-if="projection && projection.length" class="flex flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
                     <p>Projected assets</p>
-                    <span class="text-3xl font-medium mb-2">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
+                    <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
                     <p class="text-sm">Difference: {{ projectedAssetDifference }}</p>
 
                     <!-- <p class="text-sm">Projected profit</p>
                     <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
                     <p v-if="projectedProfitDifference" class="text-sm">(+ {{ projectedProfitDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }})</p> -->
+                </div>
+            </div>
+
+            <!-- Conversion rate card -->
+            <div class="flex w-auto rounded-md bg-white border shadow p-3">
+                <div class="flex flex-col gap-0.5">
+                    <p>Conversion</p>
+                    <span class="text-2xl font-medium">{{ overallConversionRate }}%</span>
+                </div>
+
+                <div v-if="projection && projection.length" class="flex flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
+                    <p>Projected conversion</p>
+                    <p class="text-2xl font-medium">{{ projectedOverallConversionRate }}%</p>
+                    <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference }}%</p>
+                </div>
+            </div>
+        </div>
+            
+        <!-- Barchart -->
+        <div class="flex flex-col w-full">
+            <div class="relative flex h-[400px]">
+                <div class="absolute w-full h-full flex flex-col justify-between">
+                    <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
+                </div>
+
+                <div class="flex flex-[8] gap-3 z-0">
+                    <template v-for="(step, index) in funnel.steps" >
+                        <ChartBar 
+                            :value="step.users" 
+                            :max="maxValue" 
+                            :zoom="zoom"
+                            :updating="updating"
+                            color="bg-indigo-600 hover:bg-indigo-700"
+                            @click="emit('stepSelected', step)"
+                        />
+
+                        <ChartBar 
+                            v-if="projection && projection.length && projection[index]"
+                            :value="projection[index].users" 
+                            :max="maxValue" 
+                            :zoom="zoom"
+                            :updating="updating"
+                            color="bg-indigo-400 hover:bg-indigo-500"
+                            @click="emit('stepSelected', step)"
+                        />
+                    </template>
                     
                 </div>
             </div>
 
-            <!-- Overall conversion rate -->
-            <div class="flex flex-col gap-1 text-center rounded-md bg-white border shadow p-4">
-                <p>Conversion rate</p>
-                <span class="text-3xl font-medium">{{ overallConversionRate }}%</span>
+            <div class="h-[10px]" />
 
-                <div v-if="projection && projection.length" class="text-indigo-600 border-t mt-2 pt-2">
-                    <p>Projected conversion rate</p>
-                    <span class="text-3xl font-medium">{{ projectedOverallConversionRate }}%</span>
-                    <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference }}%</p>
-                </div>
+            <div class="flex flex-[8] gap-3">
+                <template v-for="(step, index) in funnel.steps">
+                    <div @click="emit('stepSelected', step)" class="flex-1 text-sm">
+                        <!-- Label: E.g., "Homepage" -->
+                        <ChartLabel :name="step.name" class="mb-0.5"/>
+
+                        <!-- Metric: E.g., "1,000 users" -->
+                        <p class="pt-0.5 pb-1">{{ Number(step.users).toLocaleString() }} users</p>
+
+                        <!-- Conversion rate: E.g., "100%" -->
+                        <p v-if="index != 0">
+                            {{ step.conversionRate }}%
+                            <span>conversion</span>
+                        </p>
+                    </div>
+                    
+                    <div v-if="projection && projection.length && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
+                        <!-- Label: E.g., "Homepage" -->
+                        <ChartLabel :name="projection[index].name" class="mb-0.5"/>
+
+                        <!-- Metric: E.g., "1,000 users" -->
+                        <!-- <p v-if="index == 0" class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-indigo-600 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
+                            {{ Number(projection[index].users).toLocaleString() }} users
+                            <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
+                        </p> -->
+                        <MetricModifier v-if="index == 0">
+                            <template #title>
+                                <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
+                                    {{ Number(projection[index].users).toLocaleString() }} users
+                                    <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
+                                </p>
+                            </template>
+                            <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
+                        </MetricModifier>
+
+                        <p v-else class="py-0.5">
+                            {{ Number(projection[index].users).toLocaleString() }} users
+                        </p>
+
+                        <!-- Conversion rate: E.g., "100%" -->
+                        <!-- <p v-if="index != 0" class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
+                            {{ projection[index].conversionRate }}%
+                            <span class="_text-xs">conversion rate</span>
+                            <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
+                        </p> -->
+                        <MetricModifier v-if="index != 0">
+                            <template #title>
+                                <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
+                                    {{ projection[index].conversionRate }}%
+                                    <span>conversion</span>
+                                    <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
+                                </p>
+                            </template>
+                            <AppInput v-model="projection[index].conversionRate" @input="calculateProjectionUsers()" type="number"/>
+                        </MetricModifier>
+                    </div>
+                </template>
+                
             </div>
         </div>
     </div>

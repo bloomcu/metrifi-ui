@@ -186,13 +186,15 @@
 
       <!-- Right: Chart -->
       <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
-        <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary" class="ml-auto">
-          {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
-        </AppButton>
-        <div v-else class="flex gap-2 ml-auto">
-          <AppButton @click="deleteProjection()" variant="link">Delete projection</AppButton>
-          <AppButton @click="projection = []" variant="tertiary">Hide projection</AppButton>
-          <AppButton @click="saveProjection()" variant="secondary">Save projection</AppButton>
+        <div class="ml-auto z-0">
+          <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary">
+            {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
+          </AppButton>
+          <div v-else class="flex gap-2 ml-auto">
+            <AppButton @click="deleteProjection()" variant="link">Delete projection</AppButton>
+            <AppButton @click="projection = []" variant="tertiary">Hide projection</AppButton>
+            <AppButton @click="saveProjection()" variant="secondary">Save projection</AppButton>
+          </div>
         </div>
         
 
