@@ -31,7 +31,7 @@
           </div> -->
 
           <!-- Right -->
-          <div class="min-h-[480px] min-w-[860px] h-[60vh] w-[60vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+          <div class="min-h-[480px] min-w-[860px] h-[66vh] w-[74vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
             <!-- <pre>{{ reports }}</pre> -->
             
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="min-w-full max-w-full divide-y divide-gray-300">
