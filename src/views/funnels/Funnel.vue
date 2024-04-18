@@ -125,7 +125,7 @@
                       <p class="text-xs uppercase">Metric:</p>
                       <p class="text-gray-500">{{ metric.metric }}</p>
                     </div>
-                    <button @click="deleteMetric(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                    <button @click.stop="deleteMetric(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
                       <TrashIcon class="h-5 w-5 shrink-0" />
                     </button>
                   </div>
