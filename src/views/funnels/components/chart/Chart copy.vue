@@ -1,5 +1,5 @@
 <template>
-    <div v-if="report" class="flex flex-col gap-4">
+    <div v-if="funnel" class="flex flex-col gap-4">
         <!-- Top -->
         <div class="flex flex-row gap-3">
             <!-- Assets card -->
@@ -15,12 +15,7 @@
                 </div>
 
                 <div v-if="projection && projection.length" class="flex flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
-                    <!-- <p>Projected</p> -->
                     <p>Projected assets</p>
-                    <!-- <p class="flex items-center gap-1 text-2xl font-medium">
-                        {{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}
-                        <span class="text-sm">({{ projectedAssetDifference }})</span>
-                    </p> -->
                     <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
                     <p class="text-sm">Difference: {{ projectedAssetDifference }}</p>
 
@@ -38,12 +33,7 @@
                 </div>
 
                 <div v-if="projection && projection.length" class="flex flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
-                    <!-- <p>Projected</p> -->
                     <p>Projected conversion</p>
-                    <!-- <p class="flex items-center gap-1 text-2xl font-medium">
-                        {{ projectedOverallConversionRate }}%
-                        <span class="text-sm">({{ projectedOverallConversionRateDifference }}%)</span>
-                    </p> -->
                     <p class="text-2xl font-medium">{{ projectedOverallConversionRate }}%</p>
                     <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference }}%</p>
                 </div>
@@ -58,7 +48,7 @@
                 </div>
 
                 <div class="flex flex-[8] gap-3 z-0">
-                    <template v-for="(step, index) in report" >
+                    <template v-for="(step, index) in funnel.steps" >
                         <ChartBar 
                             :value="step.users" 
                             :max="maxValue" 
@@ -85,7 +75,7 @@
             <div class="h-[10px]" />
 
             <div class="flex flex-[8] gap-3">
-                <template v-for="(step, index) in report">
+                <template v-for="(step, index) in funnel.steps">
                     <div @click="emit('stepSelected', step)" class="flex-1 text-sm">
                         <!-- Label: E.g., "Homepage" -->
                         <ChartLabel :name="step.name" class="mb-0.5"/>
@@ -188,7 +178,7 @@ import AppInput from '@/app/components/base/forms/AppInput.vue'
 import MetricModifier from '@/views/funnels/components/metrics/MetricModifier.vue'
 
 const props = defineProps({
-    report: Array,
+    funnel: Object,
     conversion_value: [Number, String],
     startDate: String,
     endDate: String,
@@ -222,10 +212,10 @@ const calculateProjectionUsers = () => {
 }
 
 const overallConversionRate = computed(() => {
-    if (!props.report.length) return 0.00
+    if (!props.funnel.steps.length) return 0.00
 
-    let firstStepUsers = props.report[0].users
-    let lastStepUsers = props.report[props.report.length - 1].users
+    let firstStepUsers = props.funnel.steps[0].users
+    let lastStepUsers = props.funnel.steps[props.funnel.steps.length - 1].users
     let rate = (lastStepUsers / firstStepUsers) * 100
 
     // if (isNaN(rate)) return "0.00%"
@@ -272,9 +262,9 @@ const projectedAssetDifference = computed(() => {
 })
 
 const revenue = computed(() => {
-    if (!props.report.length) return "$0.00"
+    if (!props.funnel.steps.length) return "$0.00"
 
-    let users = props.report[props.report.length - 1].users
+    let users = props.funnel.steps[props.funnel.steps.length - 1].users
     let value = props.conversion_value
     let rev = users * value
 
@@ -302,13 +292,13 @@ const projectedProfitDifference = computed(() => {
 
 const maxValue = computed(() => {
     if (projection) {
-        let funnelMax = Math.max(...props.report.map(step => step.users))
+        let funnelMax = Math.max(...props.funnel.steps.map(step => step.users))
         let projectionMax = Math.max(...projection.value.map(step => step.users))
 
         return Math.max(funnelMax, projectionMax)
     }
     
-    return Math.max(...props.report.map(step => step.users))
+    return Math.max(...props.funnel.steps.map(step => step.users))
 })
 
 const emit = defineEmits(['stepSelected'])

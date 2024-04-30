@@ -41,7 +41,7 @@ export function useFunnels() {
     }
   };
 
-  const runReport = debounce((funnel) => {
+  const getReport = debounce((funnel) => {
     console.log('Running report...')
     isReportLoading.value = true
   
@@ -51,33 +51,32 @@ export function useFunnels() {
       steps: funnel.steps,
     }).then(response => {
       if (response.data.data.error) console.log(response.data.data.error)
-      // funnel.steps = response.data.data
-      calculateFunnelConversions(funnel, response.data.data)
+      funnel.report = response.data.data
+      console.log('Reported steps:', response.data.data)
+      calculateConversions(funnel, response.data.data)
       isReportLoading.value = false
     })
 
     startNextFunnelJob()
   }, 500)
 
-  const calculateFunnelConversions = (funnel, steps) => {
-    console.log('Calculating funnel conversions...')
-
-    // let steps = funnel.steps
+  const calculateConversions = (funnel, steps) => {
+    console.log('Calculating conversions...')
 
     steps.forEach((step, index) => {
       // Update user count
-      funnel.steps[index].users = step.users
+      funnel.report[index].users = step.users
 
       // First conversion rate is always 100%
       if (index === 0) {
-        funnel.steps[0].conversionRate = '100'
+        funnel.report[0].conversionRate = '100'
         return
       }
       
       let cr = (step.users / steps[index - 1]?.users)
       
       if (cr === Infinity || isNaN(cr)) {
-          funnel.steps[index].conversionRate = '0.00'
+          funnel.report[index].conversionRate = '0.00'
           return
       }
 
@@ -86,9 +85,40 @@ export function useFunnels() {
           formatted = formatted.substring(0, 4) // Trim to 2 decimal places
 
       // Update conversion rate
-      funnel.steps[index].conversionRate = formatted
+      funnel.report[index].conversionRate = formatted
     })
   }
+
+  // const calculateConversions = (funnel, steps) => {
+  //   console.log('Calculating funnel conversions...')
+
+  //   funnel.steps = steps
+
+  //   steps.forEach((step, index) => {
+  //     // Update user count
+  //     funnel.steps[index].users = step.users
+
+  //     // First conversion rate is always 100%
+  //     if (index === 0) {
+  //       funnel.steps[0].conversionRate = '100'
+  //       return
+  //     }
+      
+  //     let cr = (step.users / steps[index - 1]?.users)
+      
+  //     if (cr === Infinity || isNaN(cr)) {
+  //         funnel.steps[index].conversionRate = '0.00'
+  //         return
+  //     }
+
+  //     let formatted = cr * 100 // Get a percentage
+  //         formatted = formatted.toFixed(2) // Round to 2 decimal places
+  //         formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+
+  //     // Update conversion rate
+  //     funnel.steps[index].conversionRate = formatted
+  //   })
+  // }
 
   watch(activeFunnels, (funnel) => {
     if (!funnel) {
@@ -96,7 +126,7 @@ export function useFunnels() {
       return
     }
 
-    runReport(funnel)
+    getReport(funnel)
   });
 
   // watch(
@@ -119,6 +149,6 @@ export function useFunnels() {
     addFunnel, 
     addFunnelJob, 
     startNextFunnelJob,
-    calculateFunnelConversions,
+    calculateConversions,
   }
 }

@@ -80,9 +80,15 @@
                 <p>{{ step.name }}</p>
               </div>
               
-              <button @click.stop="deleteStep(index, step.id)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-pink-500 hover:bg-pink-100 group-hover:visible active:translate-y-px">
-                <TrashIcon class="h-5 w-5 shrink-0" />
-              </button>
+              <div class="flex items-center gap-x-1">
+                <button @click.stop="deleteStep(index, step.id)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-pink-500 hover:bg-pink-100 group-hover:visible active:translate-y-px">
+                  <TrashIcon class="h-5 w-5 shrink-0" />
+                </button>
+                <span v-if="!step.metrics.length" class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                  No metrics
+                  <InformationCircleIcon class="h-5 w-5 shrink-0 ml-0.5" />
+                </span>
+              </div>
             </div>
           </VueDraggableNext>
         </div>
@@ -200,7 +206,7 @@
 
         <!-- Chart -->
         <Chart 
-          :funnel="funnel"
+          :report="funnel.report"
           :conversion_value="funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
@@ -290,7 +296,7 @@ import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
-import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
+import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
