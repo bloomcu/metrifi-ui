@@ -8,7 +8,7 @@
 
     <form action="#" @submit.prevent="updateFunnel()" class="flex flex-col gap-4">
       <AppInput v-model="funnel.name" label="Funnel name" required />
-      <AppInput v-model="funnel.conversion_value" type="number" label="Value of a conversion" />
+      <AppInput v-model="funnel.conversion_value" type="number" label="Assets per conversion" />
       <AppButton :loading="loading" class="w-full">Update</AppButton>
     </form>
   </AppModal>
