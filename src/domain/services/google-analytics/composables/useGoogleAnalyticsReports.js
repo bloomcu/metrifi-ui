@@ -61,20 +61,19 @@ export function useGoogleAnalyticsReports() {
   //   }
   // };
 
-  function runReport (report, connectionId, startDate, endDate) {
+  function runReport (report, connectionId, startDate, endDate, contains = '') {
     isReportLoading.value = true
 
     gaDataApi[report](connectionId, {
       startDate: startDate,
       endDate: endDate,
-      // contains: containsFilters.value.map(filter => filter)
-      // contains: containsFilters.value
+      contains: contains
     }).then(response => {
       if (response.data.data.error) {
         console.log(response.data.data.error)
         return
       }
-      console.log(response.data.data)
+      // console.log(response.data.data)
       reports.value[report] = response.data.data
       isReportLoading.value = false
     })
