@@ -113,7 +113,7 @@
         <div class="flex flex-col gap-4 p-3">
           <AppInput 
             v-model="activeStep.name" 
-            @update:modelValue="updateStepName(activeStep)" 
+            @update:modelValue="updateStepName(activeStep)"
             :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''" 
             label="Step name" 
             placeholder="Step name" 
@@ -384,14 +384,28 @@ const updateFunnel = debounce(() => {
 const updateStepName = debounce((step) => {
   console.log('Updating step name...')
   isUpdating.value = true
-
+  
+  let steps = funnel.value.steps.filter(s => s.id !== step.id)
+  step.name = getUniqueStepName(steps, step.name)
+  
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
-    name: step.name ? step.name : 'Unnamed step',
+    name: step.name,
   }).then(() => {
-    // addFunnelJob(funnel.value)
+    console.log('funnel.value: ', funnel.value)
+    addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
+
+function getUniqueStepName(steps, name) {
+  let uniqueName = name ? name : 'Unnamed step';
+  let isUnique = steps.filter(s => s.name === uniqueName).length === 0
+  if (!isUnique) {
+    uniqueName = uniqueName + ' Copy'
+    return getUniqueStepName(steps, uniqueName)
+  }
+  return uniqueName
+}
 
 const updateStepMetrics = debounce((step) => {
   console.log('Updating step measurables...')
@@ -429,8 +443,10 @@ function handleDragEvent(e) {
 function addStep() {
   console.log('Adding step...')
 
+  let name = getUniqueStepName(funnel.value.steps, 'New step')
+  // console.log('name; ', name)
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
-    name: 'New step',
+    name: name,
     description: null,
   }).then(response => {
     funnel.value.steps.push(response.data.data)
