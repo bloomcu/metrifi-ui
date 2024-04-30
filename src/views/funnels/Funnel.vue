@@ -341,7 +341,7 @@ function showProjection() {
     return
   }
 
-  funnel.value.steps.forEach((step, index) => {
+  funnel.value.report.forEach((step, index) => {
     projection.value.push({
       name: step.name,
       users: step.users,
