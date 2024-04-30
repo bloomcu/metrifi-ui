@@ -8,9 +8,9 @@
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
                 <div class="flex flex-col gap-0.5">
                     <p>Assets</p>
-                    <span class="text-2xl font-medium">{{ revenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
+                    <span class="text-2xl font-medium">{{ revenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
                     <!-- <p class="text-sm">Profit (0.5% ROA)</p>
-                    <span class="font-medium">{{ profit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span> -->
+                    <span class="font-medium">{{ profit.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span> -->
                     <!-- <p>conversion rate</p> -->
                 </div>
 
@@ -18,15 +18,15 @@
                     <!-- <p>Projected</p> -->
                     <p>Projected assets</p>
                     <!-- <p class="flex items-center gap-1 text-2xl font-medium">
-                        {{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}
+                        {{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
                         <span class="text-sm">({{ projectedAssetDifference }})</span>
                     </p> -->
-                    <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</p>
+                    <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</p>
                     <p class="text-sm">Difference: {{ projectedAssetDifference }}</p>
 
                     <!-- <p class="text-sm">Projected profit</p>
-                    <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString("en-US", {style:"currency", currency:"USD"}) }}</span>
-                    <p v-if="projectedProfitDifference" class="text-sm">(+ {{ projectedProfitDifference.toLocaleString("en-US", {style:"currency", currency:"USD"}) }})</p> -->
+                    <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
+                    <p v-if="projectedProfitDifference" class="text-sm">(+ {{ projectedProfitDifference.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</p> -->
                 </div>
             </div>
 
@@ -268,7 +268,7 @@ const projectedAssetDifference = computed(() => {
 
     let direction = diff > 0 ? "+" : ""
 
-    return direction + diff.toLocaleString("en-US", {style:"currency", currency:"USD"})
+    return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
 })
 
 const revenue = computed(() => {
