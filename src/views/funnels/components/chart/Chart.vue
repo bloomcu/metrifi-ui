@@ -6,8 +6,11 @@
             <div class="flex w-auto rounded-md bg-white border shadow p-3">
                 <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
-                <div class="flex flex-col gap-0.5">
-                    <p>Assets</p>
+                <div class="flex flex-col gap-0.5 -pl-2">
+                    <div @click="isEditFunnelModalOpen = true" class="flex items-center gap-0.5 group cursor-pointer hover:text-indigo-600">
+                        <p>Assets</p>
+                        <PencilIcon class="inline h-5 w-5 text-indigo-600 p-1 rounded-md group-hover:bg-indigo-50"/>
+                    </div>
                     <span class="text-2xl font-medium">{{ revenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
                     <!-- <p class="text-sm">Profit (0.5% ROA)</p>
                     <span class="font-medium">{{ profit.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span> -->
@@ -204,6 +207,7 @@ const props = defineProps({
 })
 
 const projection = inject('projection')
+const isEditFunnelModalOpen = inject('isEditFunnelModalOpen')
 
 const calculateProjectionUsers = () => {
     console.log('Calculating projection users...')
