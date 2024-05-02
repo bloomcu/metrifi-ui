@@ -4,7 +4,7 @@
     @closed="isOpen = false" 
     :open="isOpen"
   >
-    <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Edit assets per conversion</h3>
+    <!-- <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Edit</h3> -->
 
     <form action="#" @submit.prevent="updateFunnel()" class="flex flex-col gap-4">
       <AppInput v-model="computedValue" label="Assets per conversion" maxlength="18"/>
