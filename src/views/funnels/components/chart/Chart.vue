@@ -3,23 +3,23 @@
         <!-- Top -->
         <div class="flex flex-row gap-3">
             <!-- Assets card -->
-            <div class="flex w-auto rounded-md bg-white border shadow p-3">
+            <div class="flex flex-1 overflow-hidden rounded-md bg-white border shadow p-3">
                 <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
-                <div class="flex flex-col gap-0.5 -pl-2">
+                <div class="flex flex-1 flex-col gap-0.5 -pl-2">
                     <div v-if="projection" @click="isEditFunnelModalOpen = true" class="flex items-center gap-0.5 group cursor-pointer hover:text-indigo-600">
                         <p>Assets</p>
                         <PencilIcon class="inline h-5 w-5 text-indigo-600 p-1 rounded-md group-hover:bg-indigo-50"/>
                     </div>
                     <p v-else>Assets</p>
-                    
+
                     <span class="text-2xl font-medium">{{ revenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
                     <!-- <p class="text-sm">Profit (0.5% ROA)</p>
                     <span class="font-medium">{{ profit.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span> -->
                     <!-- <p>conversion rate</p> -->
                 </div>
 
-                <div v-if="projection && projection.length" class="flex flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
+                <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
                     <!-- <p>Projected</p> -->
                     <p>Projected assets</p>
                     <!-- <p class="flex items-center gap-1 text-2xl font-medium">
@@ -35,14 +35,14 @@
                 </div>
             </div>
 
-            <!-- Conversion rate card -->
-            <div class="flex w-auto rounded-md bg-white border shadow p-3">
-                <div class="flex flex-col gap-0.5">
+            <!-- Conversion card -->
+            <div class="flex flex-1 overflow-hidden rounded-md bg-white border shadow p-3">
+                <div class="flex flex-1 flex-col gap-0.5">
                     <p>Conversion</p>
                     <span class="text-2xl font-medium">{{ overallConversionRate }}%</span>
                 </div>
 
-                <div v-if="projection && projection.length" class="flex flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
+                <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
                     <!-- <p>Projected</p> -->
                     <p>Projected conversion</p>
                     <!-- <p class="flex items-center gap-1 text-2xl font-medium">

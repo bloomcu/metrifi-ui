@@ -32,7 +32,7 @@
     </pre> -->
 
     <!-- Funnels -->
-    <div class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-2 xl:gap-y-2 p-2">
+    <div class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-2 xl:gap-y-3 p-2">
       <div v-for="(funnel, index) in funnels" class="p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
         <div class="flex items-center justify-between mb-4">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>

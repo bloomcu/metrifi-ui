@@ -192,7 +192,7 @@
 
       <!-- Right: Chart -->
       <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
-        <div class="ml-auto z-0">
+        <div class="ml-auto mb-2 z-0">
           <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary">
             {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
           </AppButton>
