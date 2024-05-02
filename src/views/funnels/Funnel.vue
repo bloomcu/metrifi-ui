@@ -395,20 +395,31 @@ const updateStepName = debounce((step) => {
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     name: step.name,
   }).then(() => {
-    console.log('funnel.value: ', funnel.value)
+    // console.log('funnel.value: ', funnel.value)
     addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
 
 function getUniqueStepName(steps, name) {
-  let uniqueName = name ? name : 'Unnamed step';
-  let isUnique = steps.filter(s => s.name === uniqueName).length === 0
-  if (!isUnique) {
-    uniqueName = uniqueName + ' Copy'
-    return getUniqueStepName(steps, uniqueName)
+  let unique = steps.filter(step => step.name === name).length === 0
+  if (unique) return name
+
+  let baseName = name.replace(/ \(\d+\)$/, '')
+
+  let duplicates = steps.filter(step => step.name.replace(/ \(\d+\)$/, '') == baseName)
+
+  if (duplicates.length !== 0) {
+    let uniqueName = baseName+' ('+ duplicates.length +')'
+
+    if (duplicates.filter(step => step.name === uniqueName).length !== 0) {
+      return getUniqueStepName(steps, uniqueName)
+    }
+
+    return uniqueName
   }
-  return uniqueName
+  
+  return baseName
 }
 
 const updateStepMetrics = debounce((step) => {
@@ -447,7 +458,7 @@ function handleDragEvent(e) {
 function addStep() {
   console.log('Adding step...')
 
-  let name = getUniqueStepName(funnel.value.steps, 'New step')
+  let name = getUniqueStepName(funnel.value.steps, 'New step') 
   // console.log('name; ', name)
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: name,
