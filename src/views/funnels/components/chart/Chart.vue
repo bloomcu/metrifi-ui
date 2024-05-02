@@ -7,7 +7,7 @@
                 <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
                 <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
                 <div class="flex flex-1 flex-col gap-0.5 -pl-2">
-                    <div v-if="projection" @click="isEditFunnelModalOpen = true" class="flex items-center gap-0.5 group cursor-pointer hover:text-indigo-600">
+                    <div v-if="projection" @click="isEditConversionValueModalOpen = true" class="flex items-center gap-0.5 group cursor-pointer hover:text-indigo-600">
                         <p>Assets</p>
                         <PencilIcon class="inline h-5 w-5 text-indigo-600 p-1 rounded-md group-hover:bg-indigo-50"/>
                     </div>
@@ -209,7 +209,7 @@ const props = defineProps({
 })
 
 const projection = inject('projection', null)
-const isEditFunnelModalOpen = inject('isEditFunnelModalOpen', null)
+const isEditConversionValueModalOpen = inject('isEditConversionValueModalOpen', null)
 
 const calculateProjectionUsers = () => {
     console.log('Calculating projection users...')

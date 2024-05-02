@@ -9,9 +9,9 @@
         </AppButton>
 
         <!-- Settings -->
-        <AppButton @click="isEditFunnelModalOpen = true" variant="tertiary" size="base">
+        <!-- <AppButton @click="isEditFunnelModalOpen = true" variant="tertiary" size="base">
           <Cog6ToothIcon class="h-5 w-5 shrink-0" />
-        </AppButton>
+        </AppButton> -->
 
         <!-- Funnel name -->
         <AppInput v-model="funnel.name" @update:modelValue="updateFunnel" class="w-8/12"/>
@@ -283,6 +283,7 @@
 
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
     <EditFunnelModal :open="isEditFunnelModalOpen" />
+    <EditConversionValueModal :open="isEditConversionValueModalOpen" />
   </LayoutDefault>
 </template>
   
@@ -301,6 +302,7 @@ import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/soli
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
 import EditFunnelModal from '@/views/funnels/modals/EditFunnelModal.vue'
+import EditConversionValueModal from '@/views/funnels/modals/EditConversionValueModal.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
@@ -317,6 +319,7 @@ const isUpdating = ref(false)
 const isGeneratingSteps = ref(false)
 const errorGeneratingSteps = ref()
 const isEditFunnelModalOpen = ref(false)
+const isEditConversionValueModalOpen = ref(false)
 const isGenerateStepsModalOpen = ref(false)
 
 const projection = ref([])
@@ -331,6 +334,7 @@ provide('isUpdating', isUpdating)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 provide('isEditFunnelModalOpen', isEditFunnelModalOpen)
+provide('isEditConversionValueModalOpen', isEditConversionValueModalOpen)
 provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
 function showProjection() {
