@@ -86,7 +86,7 @@
                 </button>
                 <span v-if="!step.metrics.length" class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
                   No metrics
-                  <InformationCircleIcon class="h-5 w-5 shrink-0 ml-0.5" />
+                  <!-- <InformationCircleIcon class="h-5 w-5 shrink-0 ml-0.5" /> -->
                 </span>
               </div>
             </div>
