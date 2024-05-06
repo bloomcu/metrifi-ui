@@ -401,25 +401,17 @@ const updateStepName = debounce((step) => {
   })
 }, 800)
 
-function getUniqueStepName(steps, name) {
-  let unique = steps.filter(step => step.name === name).length === 0
-  if (unique) return name
+function getUniqueStepName(steps, name, index = 1) {
+  let nameHasDuplicates = steps.filter(step => step.name === name).length !== 0
 
-  let baseName = name.replace(/ \(\d+\)$/, '')
+  if (!nameHasDuplicates) {
+    return name
 
-  let duplicates = steps.filter(step => step.name.replace(/ \(\d+\)$/, '') == baseName)
-
-  if (duplicates.length !== 0) {
-    let uniqueName = baseName+' ('+ duplicates.length +')'
-
-    if (duplicates.filter(step => step.name === uniqueName).length !== 0) {
-      return getUniqueStepName(steps, uniqueName)
-    }
-
-    return uniqueName
+  } else {
+    let baseName = name.replace(/ \(\d+\)$/, '')
+    let uniqueName = baseName+' ('+ index +')'
+    return getUniqueStepName(steps, uniqueName, index + 1)
   }
-  
-  return baseName
 }
 
 const updateStepMetrics = debounce((step) => {
