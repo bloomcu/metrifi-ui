@@ -51,7 +51,14 @@
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
         <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
-        <!-- <AppButton v-if="funnel.organization.title == 'BloomCU'" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" variant="secondary" class="mt-2 text-xs">Edit</AppButton> -->
+        <AppButton 
+          v-if="authStore.user.role === 'admin' || authStore.user.organization.slug === funnel.organization.slug"
+          @click="openFunnel(funnel)" 
+          variant="secondary" 
+          class="mt-2 text-xs"
+        >
+          Edit
+        </AppButton>
       </div>
 
       <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-2xl py-12 px-2 cursor-pointer hover:bg-indigo-50">
@@ -67,6 +74,7 @@
 
 <script setup>
 import debounce from 'lodash.debounce'
+import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { ref, onMounted, computed, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
@@ -84,17 +92,17 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const router = useRouter()
 const route = useRoute()
 
+const authStore = useAuthStore()
+
 const { funnels, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 const { selectStep, openTray } = useStepDetailsTray()
 const { selectedDateRange } = useDatePicker()
 
 const dashboard = ref()
-// const zoom = ref(0)
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
 const isModalOpen = ref(false)
-const isStepDetailsTrayOpen = ref(false)
 
 const funnelsAlreadyAttachedIds = computed(() => {
   return funnels.value.map(funnel => funnel.id)
@@ -115,7 +123,6 @@ const updateDashboard = debounce(() => {
   dashboardApi.update(route.params.organization, route.params.dashboard, {
     name: dashboard.value.name,
     description: dashboard.value.description,
-    // zoom: dashboard.value.zoom,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
@@ -174,6 +181,15 @@ function loadDashboard() {
         addFunnel(funnel)
       })
     })
+}
+
+function openFunnel(funnel) {
+  const routeData = router.resolve({name: 'funnel', params: {
+      organization: funnel.organization.slug,
+      funnel: funnel.id,
+  }});
+  
+  window.open(routeData.href, '_blank');
 }
 
 watch(selectedDateRange, () => {
