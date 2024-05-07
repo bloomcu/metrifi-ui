@@ -28,7 +28,7 @@
       </div>
 
       <div class="border-t pt-4">
-        <AppButton @click="organizationStore.toggleDestroyModal()" variant="link" class="text-red-600 hover:text-red-900">Delete this organization</AppButton>
+        <AppButton @click="organizationStore.toggleDestroyModal()" variant="danger">Delete this organization</AppButton>
       </div>
     </AppCard>
 

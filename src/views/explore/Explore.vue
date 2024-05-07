@@ -64,7 +64,8 @@
               </th>
               <th v-for="header in report.metricHeaders" scope="col" class="py-3 px-4 text-left whitespace-nowrap">
                 <div class="text-sm font-semibold text-gray-900">
-                  {{ dictionary[header.name].displayName ?? header.name }} ({{ report.totals[0].metricValues[0].value }})
+                  {{ dictionary[header.name].displayName ?? header.name }} 
+                  ({{ report.totals[0].metricValues[0].value }})
                 </div>
                 <!-- <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div> -->
               </th>
