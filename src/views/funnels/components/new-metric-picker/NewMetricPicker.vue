@@ -306,9 +306,6 @@ onMounted(() => {
   // if (reports.value[props.modelValue.metric]) return
 
   // Set selected tab
-  if (props.modelValue.metric) {
-    selectedTab.value =  tabs.value.find(tab => tab.metric === props.modelValue.metric)
-  }
 
   run()
 
