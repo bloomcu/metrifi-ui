@@ -22,12 +22,12 @@
                 <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
                     <!-- <p>Projected</p> -->
                     <p>Projected assets</p>
-                    <!-- <p class="flex items-center gap-1 text-2xl font-medium">
+                    <p class="flex items-center gap-1 text-2xl font-medium">
                         {{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
                         <span class="text-sm">({{ projectedAssetDifference }})</span>
-                    </p> -->
-                    <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</p>
-                    <p class="text-sm">Difference: {{ projectedAssetDifference }}</p>
+                    </p>
+                    <!-- <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</p>
+                    <p class="text-sm">{{ projectedAssetDifference }}</p> -->
 
                     <!-- <p class="text-sm">Projected profit</p>
                     <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
@@ -45,12 +45,12 @@
                 <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
                     <!-- <p>Projected</p> -->
                     <p>Projected conversion</p>
-                    <!-- <p class="flex items-center gap-1 text-2xl font-medium">
+                    <p class="flex items-center gap-1 text-2xl font-medium">
                         {{ projectedOverallConversionRate }}%
                         <span class="text-sm">({{ projectedOverallConversionRateDifference }}%)</span>
-                    </p> -->
-                    <p class="text-2xl font-medium">{{ projectedOverallConversionRate }}%</p>
-                    <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference }}%</p>
+                    </p>
+                    <!-- <p class="text-2xl font-medium">{{ projectedOverallConversionRate }}%</p>
+                    <p class="text-sm">{{ projectedOverallConversionRateDifference }}%</p> -->
                 </div>
             </div>
         </div>
@@ -96,7 +96,9 @@
                         <ChartLabel :name="step.name" class="mb-0.5"/>
 
                         <!-- Metric: E.g., "1,000 users" -->
-                        <p class="pt-0.5 pb-1">{{ Number(step.users).toLocaleString() }} users</p>
+                        <!-- <p class="pt-0.5 pb-1">{{ Number(step.users).toLocaleString() }} users</p> -->
+                        <p class="pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p>
+                        
 
                         <!-- Conversion rate: E.g., "100%" -->
                         <p v-if="index != 0">
@@ -117,7 +119,7 @@
                         <MetricModifier v-if="index == 0">
                             <template #title>
                                 <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                                    {{ Number(projection[index].users).toLocaleString() }} users
+                                    {{ Number(projection[index].users).toFixed() }} users
                                     <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
                                 </p>
                             </template>
@@ -125,7 +127,7 @@
                         </MetricModifier>
 
                         <p v-else class="py-0.5">
-                            {{ Number(projection[index].users).toLocaleString() }} users
+                            {{ Number(projection[index].users).toFixed() }} users
                         </p>
 
                         <!-- Conversion rate: E.g., "100%" -->
@@ -223,7 +225,9 @@ const calculateProjectionUsers = () => {
         
         let users = (step.conversionRate * projection.value[index - 1].users) / 100
 
-        step.users = Math.round(users)
+        // step.users = Math.round(users)
+        // step.users = users.toFixed(2)
+        step.users = users
     })
 }
 
@@ -251,10 +255,12 @@ const projectedOverallConversionRate = computed(() => {
 
     if (isNaN(rate)) return 0.00
     return rate.toFixed(2)
+    // return rate
 })
 
 const projectedOverallConversionRateDifference = computed(() => {
-    let diff = projectedOverallConversionRate.value - overallConversionRate.value
+    let diff = (projectedOverallConversionRate.value - overallConversionRate.value) / overallConversionRate.value * 100
+    // let diff = projectedOverallConversionRate.value - overallConversionRate.value
     
     let direction = diff > 0 ? "+" : ""
 
