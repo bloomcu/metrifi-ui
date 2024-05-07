@@ -28,6 +28,7 @@ const reports = ref({
 })
 
 const isReportLoading = ref(false)
+const reportError = ref(false)
 
 export function useGoogleAnalyticsReports() {
   // const funnels = ref([])
@@ -62,6 +63,7 @@ export function useGoogleAnalyticsReports() {
   // };
 
   function runReport (report, connectionId, startDate, endDate, contains = '') {
+    reportError.value = false
     isReportLoading.value = true
 
     gaDataApi[report](connectionId, {
@@ -71,6 +73,8 @@ export function useGoogleAnalyticsReports() {
     }).then(response => {
       if (response.data.data.error) {
         console.log(response.data.data.error)
+        reportError.value = true
+        isReportLoading.value = false
         return
       }
       // console.log(response.data.data)
@@ -91,6 +95,7 @@ export function useGoogleAnalyticsReports() {
   return { 
     reports: computed(() => reports.value),
     isReportLoading: computed(() => isReportLoading.value),
+    reportError: computed(() => reportError.value),
     // getReport: (report) => reports.value[report],
     runReport,
   }

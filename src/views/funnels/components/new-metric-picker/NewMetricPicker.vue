@@ -37,16 +37,11 @@
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="table-fixedmin-w-full max-w-full divide-y divide-gray-300">
                 <thead>
                   <tr class="divide-x divide-gray-200">
-                      <th v-for="header in reports[selectedTab.metric].dimensionHeaders" scope="col" class="py-3 px-3 text-left">
-                        <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
-                        <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
-                      </th>
-                      <th v-for="header in reports[selectedTab.metric].metricHeaders" scope="col" class="py-3 px-3 text-left">
+                      <th v-for="column in selectedTab.columns" scope="col" class="py-3 px-3 text-left">
                         <div class="text-sm font-semibold text-gray-900">
-                          {{ dictionary[header.name].displayName ?? header.name }}
-                          ({{ reports[selectedTab.metric].totals[0].metricValues[0].value }})
+                          {{ column.displayName }}
+                          <span v-if="column.name === 'totalUsers'">({{ reports[selectedTab.metric].totals[0].metricValues[0].value }})</span>
                         </div>
-                        <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div>
                       </th>
                   </tr>
                 </thead>
@@ -61,8 +56,8 @@
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
-                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Page path -->
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
                   </tr>
                   
                   <tr 
@@ -74,8 +69,8 @@
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
-                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Page path + query string -->
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
                   </tr>
 
                   <tr 
@@ -88,9 +83,9 @@
                     })"
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
-                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td>
-                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Link -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td> <!-- Page path -->
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
                   </tr>
 
                   <tr 
@@ -107,7 +102,7 @@
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[8%]">{{ row.dimensionValues[0].value }}</td> <!-- Event name -->
+                      <!-- <td class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[8%]">{{ row.dimensionValues[0].value }}</td>--> <!-- Event name -->
                       <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td> <!-- Page path -->
                       <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td> <!-- Form destination -->
                       <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[14%]">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td> <!-- Form id -->
@@ -178,32 +173,52 @@ const { selectedDateRange } = useDatePicker()
 const { selectedConnection } = useConnections()
 const { reports, isReportLoading, runReport } = useGoogleAnalyticsReports()
 
-const tabs = ref([
-  { 
+const tabs = ref({
+  pageUsers: { 
     name: 'Page users',
     metric: 'pageUsers',
     icon: EyeIcon,
+    columns: [
+      { name: 'pagePath', displayName: 'Page path' },
+      { name: 'totalUsers', displayName: 'Users' },
+    ],
   },
-  { 
+  pagePlusQueryStringUsers: { 
     name: 'Page + query string users',
     metric: 'pagePlusQueryStringUsers',
     icon: EyeIcon,
+    columns: [
+      { name: 'pagePathPlusQueryString', displayName: 'Page path + query string' },
+      { name: 'totalUsers', displayName: 'Users' },
+    ],
   },  
-  { 
+  outboundLinkUsers: { 
     name: 'Outbound link users',
     metric: 'outboundLinkUsers',
     icon: EyeIcon,
+    columns: [
+      { name: 'linkUrl', displayName: 'Link' },
+      { name: 'pagePath', displayName: 'Page path' },
+      { name: 'totalUsers', displayName: 'Users' },
+    ],
   },
-  { 
+  formUserSubmissions: { 
     name: 'Form submission users',
     metric: 'formUserSubmissions',
     icon: EnvelopeIcon,
+    columns: [
+      // { name: 'eventName', displayName: 'Event name'},
+      { name: 'pagePath', displayName: 'Page path' },
+      { name: 'customEvent:form_destination', displayName: 'Form destination' },
+      { name: 'customEvent:form_id', displayName: 'Id' },
+      { name: 'customEvent:form_length', displayName: 'Fields' },
+      { name: 'customEvent:form_submit_text', displayName: 'Text' },
+      { name: 'totalUsers', displayName: 'Users' },
+    ],
   },
-])
+})
 
-// const selectedTab = ref(tabs.value.find(tab => tab.metric === props.modelValue.metric))
-const selectedTab = ref(tabs.value[0])
-// const selectedTab = ref()
+const selectedTab = ref(tabs.value['pageUsers'])
 
 const selectTab = (tab) => {
   selectedTab.value = tab
@@ -265,7 +280,7 @@ const run = debounce(() => {
 }, 500)
 
 watch(selectedTab, () => {
-  console.log('Metric Picker: Selected tab changed...')
+  console.log('Selected tab changed...')
 
   // If report has already been run, don't run it again
   if (reports.value[selectedTab.value.metric]) return
@@ -277,10 +292,6 @@ watch(searchInput, () => {
   console.log('Search input changed...')
   run()
 })
-
-// onClickOutside((picker) => {
-//   emit('close')
-// })
 
 onClickOutside(picker, () => {
   console.log('Clicked outside...')
@@ -305,45 +316,6 @@ onMounted(() => {
   //  searchElement.value.focus()
   // })
 })
-
-const dictionary = {
-  pagePath: {
-    displayName: 'Page path',
-  },
-  pagePathPlusQueryString: {
-    displayName: 'Page path + query string',
-  },
-  screenPageViews: {
-    displayName: 'Views',
-  },
-  totalUsers: {
-    displayName: 'Users',
-  },
-  linkUrl: {
-    displayName: 'Link',
-  },
-  linkDomain: {
-    displayName: 'Domain',
-  },
-  eventCount: {
-    displayName: 'Events',
-  },
-  eventName: {
-    displayName: 'Event',
-  },
-  'customEvent:form_destination': {
-    displayName: 'Form destination',
-  },
-  'customEvent:form_id': {
-    displayName: 'Id',
-  },
-  'customEvent:form_length': {
-    displayName: 'Fields',
-  },
-  'customEvent:form_submit_text': {
-    displayName: 'Submit text',
-  },
-}
 
 const emit = defineEmits(['update:modelValue'])
 </script>
