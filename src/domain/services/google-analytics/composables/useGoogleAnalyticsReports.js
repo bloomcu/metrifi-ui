@@ -29,6 +29,7 @@ const reports = ref({
 
 const isReportLoading = ref(false)
 const reportError = ref(false)
+// const searchQuery = ref('')
 
 export function useGoogleAnalyticsReports() {
   // const funnels = ref([])
@@ -97,6 +98,7 @@ export function useGoogleAnalyticsReports() {
     isReportLoading: computed(() => isReportLoading.value),
     reportError: computed(() => reportError.value),
     // getReport: (report) => reports.value[report],
+    // searchQuery,
     runReport,
   }
 }

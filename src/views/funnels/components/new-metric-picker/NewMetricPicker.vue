@@ -5,7 +5,7 @@
       <!-- Search -->
       <div class="relative">
           <MagnifyingGlassIcon class="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-          <input v-model="searchInput" ref="searchElement" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." />
+          <input v-model="searchQuery" ref="searchElement" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." />
       </div>
 
       <!-- Tabs -->
@@ -20,9 +20,9 @@
       <div class="flex transform-gpu divide-x divide-gray-100" as="div">
           <!-- Left -->
           <!-- <div class="max-h-96 w-1/3 scroll-py-4 overflow-y-auto px-6 py-4">
-              <h2 v-if="searchInput === ''" class="mb-4 mt-2 text-xs font-semibold text-gray-500">Recent searches</h2>
+              <h2 v-if="searchQuery === ''" class="mb-4 mt-2 text-xs font-semibold text-gray-500">Recent searches</h2>
               <div class="-mx-2 text-sm text-gray-700">
-                  <template v-for="person in searchInput === '' ? recent : filteredPeople">
+                  <template v-for="person in searchQuery === '' ? recent : filteredPeople">
                       <div class="group flex cursor-default select-none items-center rounded-md p-2">
                           <span class="ml-3 flex-auto truncate">John Doe</span>
                       </div>
@@ -36,7 +36,7 @@
             
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="table-fixedmin-w-full max-w-full divide-y divide-gray-300">
                 <thead>
-                  <tr class="divide-x divide-gray-200">
+                  <tr v-if="reports[selectedTab.metric].rows" class="divide-x divide-gray-200">
                       <th v-for="column in selectedTab.columns" scope="col" class="py-3 px-3 text-left">
                         <div class="text-sm font-semibold text-gray-900">
                           {{ column.displayName }}
@@ -113,7 +113,7 @@
                 </tbody>
             </table>
 
-            <div v-else-if="isReportLoading" class="animate-pulse space-y-4 p-4">
+            <div v-if="isReportLoading" class="animate-pulse space-y-4 p-4">
               <div class="h-4 bg-gray-200 rounded w-2/3"></div>
               <div class="h-4 bg-gray-200 rounded"></div>
               <div class="h-4 bg-gray-200 rounded"></div>
@@ -128,6 +128,13 @@
               <div class="h-4 bg-gray-200 rounded"></div>
               <div class="h-4 bg-gray-200 rounded"></div>
               <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+            </div>
+
+            <!-- Empty state: No results -->
+            <div v-if="!isReportLoading && reports[selectedTab.metric] && !reports[selectedTab.metric].rows" class="text-center py-16 px-2">
+              <NoSymbolIcon class="mx-auto w-8 text-gray-400"/>
+              <h2 class="mt-2 text-lg font-medium text-gray-900">No results</h2>
+              <p class="mt-1 text-gray-500">Try another date range or search term.</p>
             </div>
           </div>
       </div>
@@ -150,7 +157,7 @@ import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { EyeIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, EnvelopeIcon, NoSymbolIcon } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
 
 const props = defineProps({
@@ -225,14 +232,14 @@ const selectTab = (tab) => {
 }
 
 const picker = ref(null)
-const searchInput = ref('')
+const searchQuery = ref('')
 const searchElement = ref()
 // const loading = ref(true)
 // const report = ref()
 
 // const filteredReportRows = computed(() => {
 //   return reports.value[measurablePickerTab.value].rows.filter(row => {
-//     if (JSON.stringify(row.dimensionValues).includes(searchInput.value)) {
+//     if (JSON.stringify(row.dimensionValues).includes(searchQuery.value)) {
 //       return row
 //     }
 //   })
@@ -240,7 +247,7 @@ const searchElement = ref()
 
 // const filteredReportRows = computed(() => {
 //   return reports.value[selectedTab.value.metric].rows.filter(row => {
-//     if (JSON.stringify(row.dimensionValues).includes(searchInput.value)) {
+//     if (JSON.stringify(row.dimensionValues).includes(searchQuery.value)) {
 //       return row
 //     }
 //   })
@@ -269,14 +276,18 @@ const searchElement = ref()
 //   closeMeasurablePicker()
 // }
 
-const run = debounce(() => {
+function run() {
   runReport(
     selectedTab.value.metric, 
     selectedConnection.value.id,
     selectedDateRange.value.startDate,
     selectedDateRange.value.endDate,
-    searchInput.value,
+    searchQuery.value,
   )
+}
+
+const debounceRun = debounce(() => {
+  run()
 }, 500)
 
 watch(selectedTab, () => {
@@ -288,9 +299,9 @@ watch(selectedTab, () => {
   run()
 })
 
-watch(searchInput, () => {
+watch(searchQuery, () => {
   console.log('Search input changed...')
-  run()
+  debounceRun()
 })
 
 onClickOutside(picker, () => {

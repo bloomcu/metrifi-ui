@@ -118,8 +118,6 @@
             </tr>
           </tbody>
         </table>
-
-        
       </div>
 
       <!-- Empty state: No results -->
@@ -185,7 +183,7 @@ import { ref, watch, onMounted } from 'vue'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
-import { EyeIcon, CursorArrowRippleIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, DocumentArrowDownIcon, CloudIcon, NoSymbolIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 
