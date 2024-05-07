@@ -8,7 +8,6 @@
 
     <form action="#" @submit.prevent="updateFunnel()" class="flex flex-col gap-4">
       <AppInput v-model="funnel.name" label="Funnel name" required />
-      <AppInput v-model="funnel.conversion_value" type="number" label="Value of a conversion" />
       <AppButton :loading="loading" class="w-full">Update</AppButton>
     </form>
   </AppModal>
@@ -32,7 +31,6 @@ function updateFunnel() {
 
   funnelApi.update(route.params.organization, route.params.funnel, {
     name: funnel.value.name,
-    conversion_value: funnel.value.conversion_value,
   }).then(() => {
     isOpen.value = false
     setTimeout(() => isUpdating.value = false, 500);

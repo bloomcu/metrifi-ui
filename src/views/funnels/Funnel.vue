@@ -9,9 +9,9 @@
         </AppButton>
 
         <!-- Settings -->
-        <AppButton @click="isEditFunnelModalOpen = true" variant="tertiary" size="base">
+        <!-- <AppButton @click="isEditFunnelModalOpen = true" variant="tertiary" size="base">
           <Cog6ToothIcon class="h-5 w-5 shrink-0" />
-        </AppButton>
+        </AppButton> -->
 
         <!-- Funnel name -->
         <AppInput v-model="funnel.name" @update:modelValue="updateFunnel" class="w-8/12"/>
@@ -80,9 +80,15 @@
                 <p>{{ step.name }}</p>
               </div>
               
-              <button @click.stop="deleteStep(index, step.id)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-pink-500 hover:bg-pink-100 group-hover:visible active:translate-y-px">
-                <TrashIcon class="h-5 w-5 shrink-0" />
-              </button>
+              <div class="flex items-center gap-x-1">
+                <button @click.stop="deleteStep(index, step.id)" class="mr-1 p-1 rounded-md invisible text-gray-400 hover:text-pink-500 hover:bg-pink-100 group-hover:visible active:translate-y-px">
+                  <TrashIcon class="h-5 w-5 shrink-0" />
+                </button>
+                <span v-if="!step.metrics.length" class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                  No metrics
+                  <!-- <InformationCircleIcon class="h-5 w-5 shrink-0 ml-0.5" /> -->
+                </span>
+              </div>
             </div>
           </VueDraggableNext>
         </div>
@@ -107,7 +113,7 @@
         <div class="flex flex-col gap-4 p-3">
           <AppInput 
             v-model="activeStep.name" 
-            @update:modelValue="updateStepName(activeStep)" 
+            @update:modelValue="updateStepName(activeStep)"
             :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''" 
             label="Step name" 
             placeholder="Step name" 
@@ -125,7 +131,7 @@
                       <p class="text-xs uppercase">Metric:</p>
                       <p class="text-gray-500">{{ metric.metric }}</p>
                     </div>
-                    <button @click="deleteMetric(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                    <button @click.stop="deleteMetric(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
                       <TrashIcon class="h-5 w-5 shrink-0" />
                     </button>
                   </div>
@@ -186,19 +192,21 @@
 
       <!-- Right: Chart -->
       <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
-        <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary" class="ml-auto">
-          {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
-        </AppButton>
-        <div v-else class="flex gap-2 ml-auto">
-          <AppButton @click="deleteProjection()" variant="link">Delete projection</AppButton>
-          <AppButton @click="projection = []" variant="tertiary">Hide projection</AppButton>
-          <AppButton @click="saveProjection()" variant="secondary">Save projection</AppButton>
+        <div class="ml-auto mb-2 z-0">
+          <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary">
+            {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
+          </AppButton>
+          <div v-else class="flex gap-2 ml-auto">
+            <AppButton @click="deleteProjection()" variant="link">Delete projection</AppButton>
+            <AppButton @click="projection = []" variant="tertiary">Hide projection</AppButton>
+            <AppButton @click="saveProjection()" variant="secondary">Save projection</AppButton>
+          </div>
         </div>
         
 
         <!-- Chart -->
         <Chart 
-          :funnel="funnel"
+          :report="funnel.report"
           :conversion_value="funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
@@ -275,6 +283,7 @@
 
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
     <EditFunnelModal :open="isEditFunnelModalOpen" />
+    <EditConversionValueModal :open="isEditConversionValueModalOpen" />
   </LayoutDefault>
 </template>
   
@@ -288,11 +297,12 @@ import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
-import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
+import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
 import EditFunnelModal from '@/views/funnels/modals/EditFunnelModal.vue'
+import EditConversionValueModal from '@/views/funnels/modals/EditConversionValueModal.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
@@ -309,6 +319,7 @@ const isUpdating = ref(false)
 const isGeneratingSteps = ref(false)
 const errorGeneratingSteps = ref()
 const isEditFunnelModalOpen = ref(false)
+const isEditConversionValueModalOpen = ref(false)
 const isGenerateStepsModalOpen = ref(false)
 
 const projection = ref([])
@@ -323,6 +334,7 @@ provide('isUpdating', isUpdating)
 provide('isGeneratingSteps', isGeneratingSteps)
 provide('errorGeneratingSteps', errorGeneratingSteps)
 provide('isEditFunnelModalOpen', isEditFunnelModalOpen)
+provide('isEditConversionValueModalOpen', isEditConversionValueModalOpen)
 provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
 function showProjection() {
@@ -333,7 +345,7 @@ function showProjection() {
     return
   }
 
-  funnel.value.steps.forEach((step, index) => {
+  funnel.value.report.forEach((step, index) => {
     projection.value.push({
       name: step.name,
       users: step.users,
@@ -376,14 +388,31 @@ const updateFunnel = debounce(() => {
 const updateStepName = debounce((step) => {
   console.log('Updating step name...')
   isUpdating.value = true
-
+  
+  let steps = funnel.value.steps.filter(s => s.id !== step.id)
+  step.name = getUniqueStepName(steps, step.name)
+  
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
-    name: step.name ? step.name : 'Unnamed step',
+    name: step.name,
   }).then(() => {
-    // addFunnelJob(funnel.value)
+    // console.log('funnel.value: ', funnel.value)
+    addFunnelJob(funnel.value)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
+
+function getUniqueStepName(steps, name, index = 1) {
+  let nameHasDuplicates = steps.filter(step => step.name === name).length !== 0
+
+  if (!nameHasDuplicates) {
+    return name
+
+  } else {
+    let baseName = name.replace(/ \(\d+\)$/, '')
+    let uniqueName = baseName+' ('+ index +')'
+    return getUniqueStepName(steps, uniqueName, index + 1)
+  }
+}
 
 const updateStepMetrics = debounce((step) => {
   console.log('Updating step measurables...')
@@ -421,8 +450,10 @@ function handleDragEvent(e) {
 function addStep() {
   console.log('Adding step...')
 
+  let name = getUniqueStepName(funnel.value.steps, 'New step') 
+  // console.log('name; ', name)
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
-    name: 'New step',
+    name: name,
     description: null,
   }).then(response => {
     funnel.value.steps.push(response.data.data)

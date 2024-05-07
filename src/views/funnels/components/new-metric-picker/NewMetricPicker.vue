@@ -31,18 +31,21 @@
           </div> -->
 
           <!-- Right -->
-          <div class="min-h-[480px] min-w-[860px] h-[60vh] w-[60vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+          <div class="min-h-[480px] min-w-[860px] h-[70vh] w-[80vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
             <!-- <pre>{{ reports }}</pre> -->
             
-            <table v-if="!isReportLoading && reports[selectedTab.metric]" class="min-w-full max-w-full divide-y divide-gray-300">
+            <table v-if="!isReportLoading && reports[selectedTab.metric]" class="table-fixedmin-w-full max-w-full divide-y divide-gray-300">
                 <thead>
                   <tr class="divide-x divide-gray-200">
-                      <th v-for="header in reports[selectedTab.metric].dimensionHeaders" scope="col" class="py-3 px-4 text-left whitespace-nowrap">
+                      <th v-for="header in reports[selectedTab.metric].dimensionHeaders" scope="col" class="py-3 px-3 text-left">
                         <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
                         <!-- <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div> -->
                       </th>
-                      <th v-for="header in reports[selectedTab.metric].metricHeaders" scope="col" class="py-3 px-4 text-left whitespace-nowrap">
-                        <div class="text-sm font-semibold text-gray-900">{{ dictionary[header.name].displayName ?? header.name }}</div>
+                      <th v-for="header in reports[selectedTab.metric].metricHeaders" scope="col" class="py-3 px-3 text-left">
+                        <div class="text-sm font-semibold text-gray-900">
+                          {{ dictionary[header.name].displayName ?? header.name }}
+                          ({{ reports[selectedTab.metric].totals[0].metricValues[0].value }})
+                        </div>
                         <!-- <div class="mt-0.5 text-xs italic font-normal text-gray-400">{{ header.name }}</div> -->
                       </th>
                   </tr>
@@ -50,33 +53,33 @@
                 <tbody class="divide-y divide-gray-200">
                   <tr 
                     v-if="selectedTab.metric === 'pageUsers'" 
-                    v-for="row in filteredReportRows" 
+                    v-for="row in reports[selectedTab.metric].rows" 
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       pagePath: row.dimensionValues[0].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
-                      <td class="py-3 px-4 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
                   </tr>
                   
                   <tr 
                     v-if="selectedTab.metric === 'pagePlusQueryStringUsers'" 
-                    v-for="row in filteredReportRows" 
+                    v-for="row in reports[selectedTab.metric].rows" 
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       pagePathPlusQueryString: row.dimensionValues[0].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
-                      <td class="py-3 px-4 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
                   </tr>
 
                   <tr 
                     v-if="selectedTab.metric === 'outboundLinkUsers'" 
-                    v-for="row in filteredReportRows" 
+                    v-for="row in reports[selectedTab.metric].rows" 
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       linkUrl: row.dimensionValues[0].value,
@@ -84,14 +87,14 @@
                     })"
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-4 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
-                      <td  class="py-3 px-4 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td>
-                      <td class="py-3 px-4 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td>
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
                   </tr>
 
                   <tr 
                     v-if="selectedTab.metric === 'formUserSubmissions'" 
-                    v-for="row in filteredReportRows" 
+                    v-for="row in reports[selectedTab.metric].rows" 
                     @click="updateMetric({
                       new: true,
                       metric: selectedTab.metric,
@@ -103,13 +106,13 @@
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-4 text-sm text-gray-500">{{ row.dimensionValues[0].value }}</td> <!-- Event name -->
-                      <td  class="py-3 px-4 text-sm text-gray-500 break-all w-2/3">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td> <!-- Page path -->
-                      <td  class="py-3 px-4 text-sm text-gray-500 break-all w-1/3">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td> <!-- Form destination -->
-                      <td  class="py-3 px-4 text-sm text-gray-500">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td> <!-- Form id -->
-                      <td  class="py-3 px-4 text-sm text-gray-500">{{ row.dimensionValues[4].value ? row.dimensionValues[4].value : '(not set)'}}</td> <!-- Form length -->
-                      <td  class="py-3 px-4 text-sm text-gray-500">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td> <!-- Form submit text -->
-                      <td class="py-3 px-4 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
+                      <td class="py-3 px-3 text-sm text-gray-500 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap w-[8%]">{{ row.dimensionValues[0].value }}</td> <!-- Event name -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td> <!-- Page path -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td> <!-- Form destination -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap w-[10%]">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td> <!-- Form id -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[1%]">{{ row.dimensionValues[4].value ? row.dimensionValues[4].value : '(not set)'}}</td> <!-- Form length -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap w-[5%]">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td> <!-- Form submit text -->
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900 break-all w-[1%]">{{ row.metricValues[0].value }}</td> <!-- Users -->
                   </tr>
                 </tbody>
             </table>
@@ -145,6 +148,7 @@
 </template>
 
 <script setup>
+import debounce from 'lodash.debounce'
 import { ref, computed, watch, onMounted } from 'vue'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
@@ -218,13 +222,13 @@ const searchElement = ref()
 //   })
 // })
 
-const filteredReportRows = computed(() => {
-  return reports.value[selectedTab.value.metric].rows.filter(row => {
-    if (JSON.stringify(row.dimensionValues).includes(searchInput.value)) {
-      return row
-    }
-  })
-})
+// const filteredReportRows = computed(() => {
+//   return reports.value[selectedTab.value.metric].rows.filter(row => {
+//     if (JSON.stringify(row.dimensionValues).includes(searchInput.value)) {
+//       return row
+//     }
+//   })
+// })
 
 // function runReport() {
 //   loading.value = true
@@ -249,18 +253,28 @@ const filteredReportRows = computed(() => {
 //   closeMeasurablePicker()
 // }
 
+const run = debounce(() => {
+  runReport(
+    selectedTab.value.metric, 
+    selectedConnection.value.id,
+    selectedDateRange.value.startDate,
+    selectedDateRange.value.endDate,
+    searchInput.value,
+  )
+}, 500)
+
 watch(selectedTab, () => {
   console.log('Metric Picker: Selected tab changed...')
 
   // If report has already been run, don't run it again
   if (reports.value[selectedTab.value.metric]) return
 
-  runReport(
-    selectedTab.value.metric, 
-    selectedConnection.value.id,
-    selectedDateRange.value.startDate,
-    selectedDateRange.value.endDate,
-  )
+  run()
+})
+
+watch(searchInput, () => {
+  console.log('Search input changed...')
+  run()
 })
 
 // onClickOutside((picker) => {
@@ -284,12 +298,7 @@ onMounted(() => {
     selectedTab.value =  tabs.value.find(tab => tab.metric === props.modelValue.metric)
   }
 
-  runReport(
-    selectedTab.value.metric, 
-    selectedConnection.value.id,
-    selectedDateRange.value.startDate,
-    selectedDateRange.value.endDate,
-  )
+  run()
 
   // nextTick(() => {
   //  searchElement.value.focus()
