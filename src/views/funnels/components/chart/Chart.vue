@@ -248,7 +248,7 @@ const overallConversionRate = computed(() => {
 const projectedOverallConversionRate = computed(() => {
     let firstStepUsers = projection.value[0].users
     let lastStepUsers = projection.value[projection.value.length - 1].users
-    let rate = (lastStepUsers / firstStepUsers) * 100
+    let rate = (Math.round(lastStepUsers) / firstStepUsers) * 100
 
     // if (isNaN(rate)) return "0.00%"
     // return rate.toFixed(2) + "%"
