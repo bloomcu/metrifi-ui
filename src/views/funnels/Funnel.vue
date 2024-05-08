@@ -290,12 +290,13 @@
 <script setup>
 import moment from 'moment'
 import debounce from 'lodash.debounce'
+import { useRoute } from 'vue-router'
 import { ref, computed, onMounted, watch, provide } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
-import { useRoute } from 'vue-router'
+import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
@@ -307,12 +308,13 @@ import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
-import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
+// import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
 
 const route = useRoute()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
 const { funnel, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
+const { resetReports } = useGoogleAnalyticsReports()
 
 const isLoading = ref(true)
 const isUpdating = ref(false)
@@ -503,6 +505,7 @@ function loadFunnel() {
 watch(selectedDateRange, () => {
   console.log('Date range has changed...')
   addFunnelJob(funnel.value)
+  resetReports()
 })
 
 onMounted(() => {

@@ -84,6 +84,17 @@ export function useGoogleAnalyticsReports() {
     })
   }
 
+  function resetReports () {
+    console.log('Resetting reports')
+    
+    reports.value = {
+      pageUsers: null,
+      pagePlusQueryStringUsers: null,
+      outboundLinkUsers: null,
+      formUserSubmissions: null,
+    }
+  }
+
   // watch(activeFunnels, (funnel) => {
   //   if (!funnel) {
   //     startNextFunnelJob()
@@ -100,5 +111,6 @@ export function useGoogleAnalyticsReports() {
     // getReport: (report) => reports.value[report],
     // searchQuery,
     runReport,
+    resetReports,
   }
 }
