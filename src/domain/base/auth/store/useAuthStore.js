@@ -52,11 +52,11 @@ export const useAuthStore = defineStore('authStore', {
           .catch(error => {})
       },
       
-      async register(name, email, organization_title, password, password_confirmation) {
+      async register(name, email, organization_title, password, password_confirmation, accept_terms) {
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
         this.loading = true
         
-        await AuthApi.register(name, email, organization_title, password, password_confirmation)
+        await AuthApi.register(name, email, organization_title, password, password_confirmation, accept_terms)
           .then(response => {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
@@ -71,10 +71,10 @@ export const useAuthStore = defineStore('authStore', {
           .catch(error => {})
       },
       
-      async registerWithInvitation(invitation_uuid, name, email, password, password_confirmation) {
+      async registerWithInvitation(invitation_uuid, name, email, password, password_confirmation, accept_terms) {
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
         
-        await AuthApi.registerWithInvitation(invitation_uuid, name, email, password, password_confirmation)
+        await AuthApi.registerWithInvitation(invitation_uuid, name, email, password, password_confirmation, accept_terms)
           .then(response => {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data

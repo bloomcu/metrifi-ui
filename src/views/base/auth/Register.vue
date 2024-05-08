@@ -7,7 +7,7 @@
           <h2 class="mt-8 text-3xl font-medium leading-9 text-gray-900 tracking-tight sm:text-4xl sm:truncate">Register</h2>
           <p class="mt-3 leading-6 text-gray-500">
             Already have an account?
-            <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Log in</RouterLink>
+            <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Sign in</RouterLink>
           </p>
         </div>
 
@@ -24,13 +24,16 @@
               <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Password" required />
               <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm Password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
+              <div class="flex items-center py-2">
+                <input v-model="inputs.accept_terms" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+                <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
+                  I agree to MetriFi's <a href="#" target="_blank" class="text-indigo-600 hover:underline">Terms of Service</a> and <a href="#" target="_blank" class="text-indigo-600 hover:underline">Privacy Policy</a>
+                </label>
+              </div>
+
               <AppButton :loading="authStore.loading" class="w-full">Register with email</AppButton>
             </div>
             
-            <p class="mt-6 leading-6 text-gray-500">
-              Already have an account? 
-              <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Log in</RouterLink>
-            </p>
           </form>
         </div>
       </div>
@@ -84,11 +87,12 @@ const inputs = ref({
   email: '',
   organization_title: '',
   password: '',
-  password_confirmation: ''
+  password_confirmation: '',
+  accept_terms: false
 })
 
 function register() {
-  const { name, email, organization_title, password, password_confirmation } = inputs.value
-  authStore.register(name, email, organization_title, password, password_confirmation)
+  const { name, email, organization_title, password, password_confirmation, accept_terms } = inputs.value
+  authStore.register(name, email, organization_title, password, password_confirmation, accept_terms)
 }
 </script>
