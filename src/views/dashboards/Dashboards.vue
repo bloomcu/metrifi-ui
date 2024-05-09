@@ -51,9 +51,9 @@
       </div>
 
       <!-- Add dashboard -->
-      <!-- <div @click="router.push({name: 'dashboard', params: {dashboard: 4}})" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-indigo-50">
+      <div @click="router.push({name: 'dashboard', params: {dashboard: 4}})" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-indigo-50">
         <h2 class="text-lg font-medium text-indigo-600">Add a dashboard</h2>
-      </div> -->
+      </div>
     </div>
 
     <!-- State: Loading -->

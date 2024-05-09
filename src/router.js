@@ -8,6 +8,7 @@ import funnels from '@/views/funnels/routes/index.js'
 import connections from '@/views/connections/routes/index.js'
 import services from '@/views/services/routes/index.js'
 import sites from '@/views/sites/routes/index.js'
+import welcome from '@/views/welcome/routes/index.js'
 
 import Sandbox from '@/views/Sandbox.vue';
 // import Flowchart from '@/views/Flowchart.vue';
@@ -20,6 +21,7 @@ const routes = [
   ...connections,
   ...services,
   ...sites,
+  ...welcome,
   {
     path: '/',
     redirect: 'organizations'
