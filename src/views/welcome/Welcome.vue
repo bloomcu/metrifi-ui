@@ -21,7 +21,7 @@
               <CheckIcon class="h-5 w-5" aria-hidden="true" />
             </div>
             <div v-else class="h-8 w-8 rounded-full flex items-center justify-center bg-white border-2 border-gray-300 text-indigo-600">
-              <span class="text-indigo-600">{{ step.id }}</span>
+              <span class="text-indigo-600">{{ index + 1 }}</span>
             </div>
             <div class="flex items-center min-w-0 font-medium">
               <p v-if="step.current" class="text-gray-900">{{ step.title }}</p>
@@ -35,22 +35,22 @@
       <!-- Content -->
       <div class="w-2/3 flex items-center px-3 py-10">
         <div class="px-12">
-          <svg v-if="currentStep.id === 1" class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+          <svg v-if="currentStep.id === 'connect-google-analytics'" class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
 
           <div v-if="currentStep.video" class="mb-8 aspect-video">
-            <video v-if="currentStep.id === 2" class="h-full w-full rounded-lg" controls>
+            <video v-if="currentStep.id === 'enable-enhanced-measurement'" class="h-full w-full rounded-lg" controls>
               <source src="/video/enable-enhanced-measurement.mp4" type="video/mp4">
             </video>
-            <video v-if="currentStep.id === 3" class="h-full w-full rounded-lg" controls>
+            <video v-if="currentStep.id === 'extend-data-retention-period'" class="h-full w-full rounded-lg" controls>
               <source src="/video/extend-data-retention-period.mp4" type="video/mp4">
             </video>
-            <video v-if="currentStep.id === 4" class="h-full w-full rounded-lg" controls>
+            <video v-if="currentStep.id === 'setup-cross-domain-tracking'" class="h-full w-full rounded-lg" controls>
               <source src="/video/setup-cross-domain-tracking.mp4" type="video/mp4">
             </video>
-            <video v-if="currentStep.id === 5" class="h-full w-full rounded-lg" controls>
+            <video v-if="currentStep.id === 'add-custom-dimensions'" class="h-full w-full rounded-lg" controls>
               <source src="/video/add-custom-dimensions.mp4" type="video/mp4">
             </video>
-            <video v-if="currentStep.id === 6" class="h-full w-full rounded-lg" controls>
+            <video v-if="currentStep.id === 'filter-out-internal-traffic'" class="h-full w-full rounded-lg" controls>
               <source src="/video/filter-out-internal-traffic.mp4" type="video/mp4">
             </video>
           </div>
@@ -81,82 +81,76 @@ const { listConnections, connections } = useConnections()
 
 const steps = ref([
   {
-    id: 1,
+    id: 'connect-google-analytics',
     complete: true,
     current: false,
-    slug: 'connect-google-analytics',
     title: 'Connect Google Analytics',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     cta: 'Connect Google Analytics',
     action: connectToGoogle
   },
   {
-    id: 2,
+    id: 'enable-enhanced-measurement',
     complete: false,
     current: true,
-    slug: 'enable-enhanced-tracking',
-    title: 'Enable enhanced tracking',
+    title: 'Enable enhanced measurement',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
-      completeStep(2)
-      selectStep(3)
+      completeStep('enable-enhanced-measurement')
+      selectStep('extend-data-retention-period')
     }
   },
   {
-    id: 3,
+    id: 'extend-data-retention-period',
     complete: false,
     current: false,
-    slug: 'extend-data-retention-period',
     title: 'Extend data retention period',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
-      completeStep(3)
-      selectStep(4)
+      completeStep('extend-data-retention-period')
+      selectStep('setup-cross-domain-tracking')
     }
   },
   {
-    id: 4,
+    id: 'setup-cross-domain-tracking',
     complete: false,
     current: false,
-    slug: 'set-up-cross-domain-tracking',
     title: 'Set up cross-domain tracking',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
-      completeStep(4)
-      selectStep(5)
+      completeStep('setup-cross-domain-tracking')
+      selectStep('add-custom-dimensions')
     }
   },
   {
-    id: 5,
+    id: 'add-custom-dimensions',
     complete: false,
     current: false,
-    slug: 'add-custom-dimensions',
     title: 'Add custom dimensions',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
-      completeStep(5)
-      selectStep(6)
+      completeStep('add-custom-dimensions')
+      selectStep('filter-out-internal-traffic')
     }
   },
   {
-    id: 6,
+    id: 'filter-out-internal-traffic',
     complete: false,
     current: false,
-    slug: 'filter-out-internal-traffic',
     title: 'Filter out internal traffic',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
-      completeStep(6)
+      completeStep('filter-out-internal-traffic')
     }
   },
 ])
