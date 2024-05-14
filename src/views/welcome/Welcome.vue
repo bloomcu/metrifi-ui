@@ -17,9 +17,11 @@
             class="relative flex space-x-3 rounded-lg p-3 cursor-pointer"
             @click="selectStep(step.id)"
           >
-            <div class="h-8 w-8 rounded-full flex items-center justify-center bg-white border-2 border-gray-300 text-indigo-600">
-              <CheckIcon v-if="step.complete" class="h-5 w-5" aria-hidden="true" />
-              <span v-else class="text-indigo-600">{{ step.id }}</span>
+            <div v-if="step.complete" class="h-8 w-8 rounded-full flex items-center justify-center bg-emerald-500 text-white">
+              <CheckIcon class="h-5 w-5" aria-hidden="true" />
+            </div>
+            <div v-else class="h-8 w-8 rounded-full flex items-center justify-center bg-white border-2 border-gray-300 text-indigo-600">
+              <span class="text-indigo-600">{{ step.id }}</span>
             </div>
             <div class="flex items-center min-w-0 font-medium">
               <p v-if="step.current" class="text-gray-900">{{ step.title }}</p>
@@ -48,6 +50,9 @@
             <video v-if="currentStep.id === 5" class="h-full w-full rounded-lg" controls>
               <source src="/video/add-custom-dimensions.mp4" type="video/mp4">
             </video>
+            <video v-if="currentStep.id === 6" class="h-full w-full rounded-lg" controls>
+              <source src="/video/filter-out-internal-traffic.mp4" type="video/mp4">
+            </video>
           </div>
 
           <h2 class="mb-2 text-2xl font-medium text-gray-900">{{ currentStep.title }}</h2>
@@ -66,10 +71,12 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { CheckIcon } from '@heroicons/vue/20/solid'
 import { useConnections } from '@/domain/connections/composables/useConnections'
+import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()
+const organizationStore = useOrganizationStore()
 const { listConnections, connections } = useConnections()
 
 const steps = ref([
@@ -77,6 +84,7 @@ const steps = ref([
     id: 1,
     complete: true,
     current: false,
+    slug: 'connect-google-analytics',
     title: 'Connect Google Analytics',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     cta: 'Connect Google Analytics',
@@ -86,9 +94,10 @@ const steps = ref([
     id: 2,
     complete: false,
     current: true,
+    slug: 'enable-enhanced-tracking',
     title: 'Enable enhanced tracking',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    video: '/video/enable-enhanced-measurement.mp4',
+    video: true,
     cta: 'Mark as complete',
     action: () => {
       completeStep(2)
@@ -99,9 +108,10 @@ const steps = ref([
     id: 3,
     complete: false,
     current: false,
+    slug: 'extend-data-retention-period',
     title: 'Extend data retention period',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    video: '/video/extend-data-retention-period.mp4',
+    video: true,
     cta: 'Mark as complete',
     action: () => {
       completeStep(3)
@@ -112,9 +122,10 @@ const steps = ref([
     id: 4,
     complete: false,
     current: false,
+    slug: 'set-up-cross-domain-tracking',
     title: 'Set up cross-domain tracking',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    video: '/video/setup-cross-domain-tracking.mp4',
+    video: true,
     cta: 'Mark as complete',
     action: () => {
       completeStep(4)
@@ -125,9 +136,10 @@ const steps = ref([
     id: 5,
     complete: false,
     current: false,
+    slug: 'add-custom-dimensions',
     title: 'Add custom dimensions',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    video: '/video/add-custom-dimensions.mp4',
+    video: true,
     cta: 'Mark as complete',
     action: () => {
       completeStep(5)
@@ -138,8 +150,10 @@ const steps = ref([
     id: 6,
     complete: false,
     current: false,
+    slug: 'filter-out-internal-traffic',
     title: 'Filter out internal traffic',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    video: true,
     cta: 'Mark as complete',
     action: () => {
       completeStep(6)
@@ -167,6 +181,10 @@ const completeStep = (id) => {
     }
     return step
   })
+
+  // organizationStore.update().then(() => {
+  //   organizationStore.toggleUpdateModal()
+  // })
 }
 
 function connectToGoogle() {

@@ -13,8 +13,15 @@ export const useOrganizations = () => {
     })
   }
 
+  async function updateOrganization() {
+    await organizationApi.update(route.params.organization, ).then(response => {
+      organization.value = response.data.data
+    })
+  }
+
   return {
     organization: computed(() => organization.value),
-    showOrganization
+    showOrganization,
+    updateOrganization,
   }
 }
