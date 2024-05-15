@@ -102,7 +102,7 @@ router.beforeEach(async (to) => {
 * Get organization from url, persist in auth store for use in api requests
 */
 router.beforeEach(async (to) => {
-    // TODO: Can I just instantiate this store one in this file?
+    // TODO: Get rid of this, use the composable
     let store = useAuthStore()
     
     if (to.params.organization) {

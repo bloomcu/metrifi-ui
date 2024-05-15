@@ -67,8 +67,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { CheckIcon } from '@heroicons/vue/20/solid'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 // import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
@@ -77,15 +77,16 @@ import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()
+const router = useRouter()
 // const organizationStore = useOrganizationStore()
 const { listConnections, connections } = useConnections()
-const { showOrganization, updateOrganization, organization } = useOrganizations()
+const { updateOrganization, organization } = useOrganizations()
 
 const steps = ref([
   {
     id: 'connect-google-analytics',
     // complete: true,
-    current: false,
+    current: true,
     title: 'Connect Google Analytics',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     cta: 'Connect Google Analytics',
@@ -94,7 +95,7 @@ const steps = ref([
   {
     id: 'enable-enhanced-measurement',
     // complete: false,
-    current: true,
+    current: false,
     title: 'Enable enhanced measurement',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     video: true,
@@ -178,22 +179,38 @@ const selectNextIncompleteStep = () => {
     }
   }
 
-  return selectStep('connect-google-analytics')
+  // selectStep('connect-google-analytics')
 }
 
 const completeStep = (id) => {
   organization.value.onboarding[id] = 'complete'
-  
+
+  // check if all steps are complete
+  for (const property in organization.value.onboarding) {
+    if (organization.value.onboarding[property] === 'incomplete') {
+      updateOrganization().then(() => {
+        selectNextIncompleteStep()
+      })
+      return
+    }
+  }
+
+  organization.value.onboarding['onboardingComplete'] = true
   updateOrganization().then(() => {
-    selectNextIncompleteStep()
+    router.push({ name: 'dashboards'})
   })
 }
 
 const markStepIncomplete = (id) => {
   organization.value.onboarding[id] = 'incomplete'
-  
+  organization.value.onboarding['onboardingComplete'] = false
   updateOrganization()
 }
+
+// const completeOnboarding = () => {
+//   organization.value.onboarding['onboarding'] = 'complete'
+//   updateOrganization()
+// }
 
 function connectToGoogle() {
   googleApi.connect({
@@ -205,17 +222,30 @@ function connectToGoogle() {
   })
 }
 
-onMounted(() => {
-  showOrganization().then(() => {
-    console.log(organization.value.onboarding)
-
-    listConnections().then(() => {
-      if (connections.value.length !== 0) {
-        organization.value.onboarding['connect-google-analytics'] = 'complete'
-      }
-    })
+function checkConnections() {
+  listConnections().then(() => {
+    if (connections.value.length !== 0) {
+      organization.value.onboarding['connect-google-analytics'] = 'complete'
+    }
 
     selectNextIncompleteStep()
   })
+}
+
+// watch organization and redirect if onboarding is complete
+// watch(organization.value, (value) => {
+//   console.log(value)
+//   if (value.onboarding['onboarding'] === 'complete') {
+//     router.push({ name: 'dashboards'})
+//   }
+// })
+
+onMounted(() => {
+  checkConnections()
+  // if (!organization.value) {
+  //   showOrganization().then(() => {
+  //     checkConnections()
+  //   })
+  // }
 })
 </script>
