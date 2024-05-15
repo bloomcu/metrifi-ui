@@ -71,13 +71,15 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { CheckIcon } from '@heroicons/vue/20/solid'
 import { useConnections } from '@/domain/connections/composables/useConnections'
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+// import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()
-const organizationStore = useOrganizationStore()
+// const organizationStore = useOrganizationStore()
 const { listConnections, connections } = useConnections()
+const { showOrganization, organization } = useOrganizations()
 
 const steps = ref([
   {
@@ -198,6 +200,12 @@ onMounted(() => {
       selectStep(1)
     }
   })
+
+  showOrganization().then(() => {
+    console.log(organization.value.onboarding)
+  })
+
+  // console.log(organizationStore.organization.value)
 
   // Select the first step that is incomplete
   // const incompleteStep = steps.value.find(step => !step.complete)
