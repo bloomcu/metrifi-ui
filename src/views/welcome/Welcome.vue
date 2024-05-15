@@ -7,7 +7,7 @@
     </div>
 
     <!-- Step tabs -->
-    <AppCard padding="none" class="flex mb-6">
+    <AppCard v-if="organization" padding="none" class="flex mb-6">
       <div class="w-1/3 p-3 border-r">
         <ul role="list">
           <li 
@@ -17,7 +17,7 @@
             class="relative flex space-x-3 rounded-lg p-3 cursor-pointer"
             @click="selectStep(step.id)"
           >
-            <div v-if="step.complete" class="h-8 w-8 rounded-full flex items-center justify-center bg-emerald-500 text-white">
+            <div v-if="organization.onboarding[step.id] === 'complete'" class="h-8 w-8 rounded-full flex items-center justify-center bg-emerald-500 text-white">
               <CheckIcon class="h-5 w-5" aria-hidden="true" />
             </div>
             <div v-else class="h-8 w-8 rounded-full flex items-center justify-center bg-white border-2 border-gray-300 text-indigo-600">
@@ -25,7 +25,7 @@
             </div>
             <div class="flex items-center min-w-0 font-medium">
               <p v-if="step.current" class="text-gray-900">{{ step.title }}</p>
-              <p v-else-if="step.complete" class="text-gray-400 line-through">{{ step.title }}</p>
+              <p v-else-if="organization.onboarding[step.id] === 'complete'" class="text-gray-400 line-through">{{ step.title }}</p>
               <p v-else class="text-gray-500">{{ step.title }}</p>
             </div>
           </li>
@@ -33,7 +33,7 @@
       </div>
 
       <!-- Content -->
-      <div class="w-2/3 flex items-center px-3 py-10">
+      <div v-if="currentStep" class="w-2/3 flex items-center px-3 py-10">
         <div class="px-12">
           <svg v-if="currentStep.id === 'connect-google-analytics'" class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
 
@@ -58,8 +58,8 @@
           <h2 class="mb-2 text-2xl font-medium text-gray-900">{{ currentStep.title }}</h2>
           <p class="mb-4 text-lg text-gray-500">{{ currentStep.content }}</p>
 
-          <AppButton v-if="!currentStep.complete" @click="currentStep.action">{{ currentStep.cta }}</AppButton>
-          <AppButton v-else variant="tertiary">Mark as incomplete</AppButton>
+          <AppButton v-if="organization.onboarding[currentStep.id] === 'complete'" @click="markStepIncomplete(currentStep.id)" variant="tertiary">Mark as incomplete</AppButton>
+          <AppButton v-else @click="currentStep.action">{{ currentStep.cta }}</AppButton>
         </div>
       </div>
     </AppCard>
@@ -79,12 +79,12 @@ import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 const route = useRoute()
 // const organizationStore = useOrganizationStore()
 const { listConnections, connections } = useConnections()
-const { showOrganization, organization } = useOrganizations()
+const { showOrganization, updateOrganization, organization } = useOrganizations()
 
 const steps = ref([
   {
     id: 'connect-google-analytics',
-    complete: true,
+    // complete: true,
     current: false,
     title: 'Connect Google Analytics',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -93,7 +93,7 @@ const steps = ref([
   },
   {
     id: 'enable-enhanced-measurement',
-    complete: false,
+    // complete: false,
     current: true,
     title: 'Enable enhanced measurement',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -101,12 +101,12 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('enable-enhanced-measurement')
-      selectStep('extend-data-retention-period')
+      // selectStep('extend-data-retention-period')
     }
   },
   {
     id: 'extend-data-retention-period',
-    complete: false,
+    // complete: false,
     current: false,
     title: 'Extend data retention period',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -114,12 +114,12 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('extend-data-retention-period')
-      selectStep('setup-cross-domain-tracking')
+      // selectStep('setup-cross-domain-tracking')
     }
   },
   {
     id: 'setup-cross-domain-tracking',
-    complete: false,
+    // complete: false,
     current: false,
     title: 'Set up cross-domain tracking',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -127,12 +127,12 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('setup-cross-domain-tracking')
-      selectStep('add-custom-dimensions')
+      // selectStep('add-custom-dimensions')
     }
   },
   {
     id: 'add-custom-dimensions',
-    complete: false,
+    // complete: false,
     current: false,
     title: 'Add custom dimensions',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -140,12 +140,12 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('add-custom-dimensions')
-      selectStep('filter-out-internal-traffic')
+      // selectStep('filter-out-internal-traffic')
     }
   },
   {
     id: 'filter-out-internal-traffic',
-    complete: false,
+    // complete: false,
     current: false,
     title: 'Filter out internal traffic',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -170,17 +170,29 @@ const selectStep = (id) => {
   })
 }
 
-const completeStep = (id) => {
-  steps.value = steps.value.map(step => {
-    if (step.id === id) {
-      step.complete = true
+const selectNextIncompleteStep = () => {
+  for (const property in organization.value.onboarding) {
+    if (organization.value.onboarding[property] === 'incomplete') {
+      selectStep(property)
+      return
     }
-    return step
-  })
+  }
 
-  // organizationStore.update().then(() => {
-  //   organizationStore.toggleUpdateModal()
-  // })
+  return selectStep('connect-google-analytics')
+}
+
+const completeStep = (id) => {
+  organization.value.onboarding[id] = 'complete'
+  
+  updateOrganization().then(() => {
+    selectNextIncompleteStep()
+  })
+}
+
+const markStepIncomplete = (id) => {
+  organization.value.onboarding[id] = 'incomplete'
+  
+  updateOrganization()
 }
 
 function connectToGoogle() {
@@ -194,25 +206,16 @@ function connectToGoogle() {
 }
 
 onMounted(() => {
-  listConnections().then(() => {
-    if (connections.value.length === 0) {
-      steps.value[0].complete = false
-      selectStep(1)
-    }
-  })
-
   showOrganization().then(() => {
     console.log(organization.value.onboarding)
+
+    listConnections().then(() => {
+      if (connections.value.length !== 0) {
+        organization.value.onboarding['connect-google-analytics'] = 'complete'
+      }
+    })
+
+    selectNextIncompleteStep()
   })
-
-  // console.log(organizationStore.organization.value)
-
-  // Select the first step that is incomplete
-  // const incompleteStep = steps.value.find(step => !step.complete)
-  // if (incompleteStep) {
-  //   selectStep(incompleteStep.id)
-  // } else {
-  //   selectStep(6)
-  // }
 })
 </script>

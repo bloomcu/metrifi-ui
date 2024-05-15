@@ -14,8 +14,8 @@ export const useOrganizations = () => {
   }
 
   async function updateOrganization() {
-    await organizationApi.update(route.params.organization, ).then(response => {
-      organization.value = response.data.data
+    await organizationApi.update(route.params.organization, organization.value).then(response => {
+      // organization.value = response.data.data
     })
   }
 
