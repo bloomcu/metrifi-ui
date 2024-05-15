@@ -71,21 +71,18 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { CheckIcon } from '@heroicons/vue/20/solid'
 import { useConnections } from '@/domain/connections/composables/useConnections'
-// import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
 import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()
 const router = useRouter()
-// const organizationStore = useOrganizationStore()
 const { listConnections, connections } = useConnections()
 const { updateOrganization, organization } = useOrganizations()
 
 const steps = ref([
   {
     id: 'connect-google-analytics',
-    // complete: true,
     current: true,
     title: 'Connect Google Analytics',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -94,7 +91,6 @@ const steps = ref([
   },
   {
     id: 'enable-enhanced-measurement',
-    // complete: false,
     current: false,
     title: 'Enable enhanced measurement',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -102,12 +98,10 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('enable-enhanced-measurement')
-      // selectStep('extend-data-retention-period')
     }
   },
   {
     id: 'extend-data-retention-period',
-    // complete: false,
     current: false,
     title: 'Extend data retention period',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -115,12 +109,10 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('extend-data-retention-period')
-      // selectStep('setup-cross-domain-tracking')
     }
   },
   {
     id: 'setup-cross-domain-tracking',
-    // complete: false,
     current: false,
     title: 'Set up cross-domain tracking',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -128,12 +120,10 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('setup-cross-domain-tracking')
-      // selectStep('add-custom-dimensions')
     }
   },
   {
     id: 'add-custom-dimensions',
-    // complete: false,
     current: false,
     title: 'Add custom dimensions',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -141,12 +131,10 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('add-custom-dimensions')
-      // selectStep('filter-out-internal-traffic')
     }
   },
   {
     id: 'filter-out-internal-traffic',
-    // complete: false,
     current: false,
     title: 'Filter out internal traffic',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -178,8 +166,6 @@ const selectNextIncompleteStep = () => {
       return
     }
   }
-
-  // selectStep('connect-google-analytics')
 }
 
 const completeStep = (id) => {
@@ -207,11 +193,6 @@ const markStepIncomplete = (id) => {
   updateOrganization()
 }
 
-// const completeOnboarding = () => {
-//   organization.value.onboarding['onboarding'] = 'complete'
-//   updateOrganization()
-// }
-
 function connectToGoogle() {
   googleApi.connect({
     scope: 'https://www.googleapis.com/auth/analytics.readonly',
@@ -232,20 +213,7 @@ function checkConnections() {
   })
 }
 
-// watch organization and redirect if onboarding is complete
-// watch(organization.value, (value) => {
-//   console.log(value)
-//   if (value.onboarding['onboarding'] === 'complete') {
-//     router.push({ name: 'dashboards'})
-//   }
-// })
-
 onMounted(() => {
   checkConnections()
-  // if (!organization.value) {
-  //   showOrganization().then(() => {
-  //     checkConnections()
-  //   })
-  // }
 })
 </script>

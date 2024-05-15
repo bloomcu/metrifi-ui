@@ -136,17 +136,11 @@ function destroyDashboard(dashboardId) {
   dashboardApi.destroy(route.params.organization, dashboardId)
 }
 
-// watch organization
 watch(organization, () => {
   if (organization.value.onboarding['onboardingComplete'] === false) {
     router.push({ name: 'welcome' })
   }
 })
-// watch((organization) => () {
-//   if (organization.onboarding['onboardingComplete'] === false) {
-//     router.push({ name: 'welcome' })
-//   }
-// })
 
 onMounted(() => {
   loadDashboards()
