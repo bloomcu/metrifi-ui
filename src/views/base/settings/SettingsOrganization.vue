@@ -11,7 +11,7 @@
 
       <dl v-if="organizationStore.organization" class="divide-y divide-gray-200">
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-          <dt class="text-sm leading-6 text-gray-900">Title</dt>
+          <dt class="text-sm leading-6 text-gray-900">Name</dt>
           <dd class="mt-1 text-sm leading-6 text-gray-500 sm:col-span-2 sm:mt-0">{{ organizationStore.organization.title }}</dd>
         </div>
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

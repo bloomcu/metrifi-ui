@@ -20,7 +20,7 @@
             <div class="flex flex-col gap-4">
               <AppInput v-model="inputs.name" label="Full name" :errors="errorStore.errors.name" required autofocus />
               <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" required />
-              <AppInput v-model="inputs.organization_title" label="Organization Title" :errors="errorStore.errors.organization_title" required />
+              <AppInput v-model="inputs.organization_title" label="Organization Name" :errors="errorStore.errors.organization_title" required />
               <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Password" required />
               <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm Password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
