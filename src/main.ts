@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from '@/App.vue'
 import store from '@/store.js'
 import router from '@/router.js'
+import * as Sentry from "@sentry/vue";
 // import websocket from '@/websocket'
 // import Echo from 'laravel-echo'
 // import Pusher from 'pusher-js'
@@ -21,10 +22,28 @@ const app = createApp(App)
   .component('AppSelect', AppSelect)
   .component('AppHeader', AppHeader)
   .component('AppModal', AppModal)
+
+Sentry.init({
+  app,
+  dsn: "https://72b08d5732125a3cec895d73d58c96e8@o4507262580948992.ingest.us.sentry.io/4507262581145600",
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration(),
+  ],
+  // Performance Monitoring
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+  // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+  tracePropagationTargets: ["localhost", /^https:\/\/staging-api\.metrifi\.com\/api/, /^https:\/\/api\.metrifi\.com\/api/],
+  // Session Replay
+  replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+  replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+});
       
 router.isReady().then(() => {
   app.mount('#app')
 })
+
+
 
 // Setup realtime websockets
 // window.Pusher = Pusher
