@@ -1,5 +1,5 @@
 <template>
-    <AppDropdown class="w-[420px]">
+    <AppDropdown class="w-[380px]">
       <template #title>
         <div class="flex">
           <CalendarIcon  class="mr-1.5 h-5 w-5" />

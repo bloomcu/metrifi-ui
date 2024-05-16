@@ -14,7 +14,10 @@
         </AppButton> -->
 
         <!-- Funnel name -->
-        <AppInput v-model="funnel.name" @update:modelValue="updateFunnel" class="w-8/12"/>
+        <AppInput v-model="funnel.name" @update:modelValue="updateFunnel" class="w-6/12"/>
+
+        <!-- Category -->
+        <CategoryPicker v-model="funnel.category" @update:modelValue="updateFunnel"/>
 
         <!-- Loading/Updating/Reporting indicator -->
         <svg v-if="isLoading || isUpdating" class="inline w-6 h-6 ml-2 text-indigo-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -281,6 +284,8 @@
       </div>      
     </div>
 
+    <pre>{{ funnel.category }}</pre>
+
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
     <EditFunnelModal :open="isEditFunnelModalOpen" />
     <EditConversionValueModal :open="isEditConversionValueModalOpen" />
@@ -306,6 +311,7 @@ import EditFunnelModal from '@/views/funnels/modals/EditFunnelModal.vue'
 import EditConversionValueModal from '@/views/funnels/modals/EditConversionValueModal.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
+import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 // import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
@@ -377,6 +383,7 @@ const updateFunnel = debounce(() => {
 
   funnelApi.update(route.params.organization, route.params.funnel, {
     connection_id: funnel.value.connection_id,
+    category_id: funnel.value.category.id,
     name: funnel.value.name,
     description: funnel.value.description,
     zoom: funnel.value.zoom,
