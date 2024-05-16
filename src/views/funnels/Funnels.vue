@@ -44,6 +44,12 @@
       </div>
     </div>
 
+    <!-- Filters -->
+    <div class="flex gap-3 mb-4">
+      <AppInput v-model="filterSearch" placeholder="Search funnels" class="w-4/12"/>
+      <CategoryPicker v-model="filterCategory"/>
+    </div>
+
     <!-- Funnels -->
     <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
       <thead>
@@ -169,12 +175,16 @@ import { useRoute, useRouter } from 'vue-router'
 import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
+import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import GenerateFunnelsModal from '@/views/funnels/modals/GenerateFunnelsModal.vue'
 
 const route = useRoute()
 const router = useRouter()
 const { organization, showOrganization } = useOrganizations()
+
+const filterSearch = ref(null)
+const filterCategory = ref(null)
 
 const funnels = ref()
 const isLoading = ref(false)

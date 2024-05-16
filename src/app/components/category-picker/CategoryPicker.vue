@@ -1,14 +1,15 @@
 <template>
     <AppDropdown class="w-3/12">
       <template #title>
-        {{ modelValue ? modelValue.title : 'Select category' }} 
+        <span v-if="modelValue">{{ modelValue.title }}</span>
+        <span v-else class="text-gray-400">Select category</span>
         <ChevronDownIcon class="ml-auto h-4 w-4 text-gray-400"/>
       </template>
       <button 
         v-for="category in categories" 
         @click="updateValue(category)"
         :class="modelValue && category.id == modelValue.id ? 'bg-gray-50 text-indigo-600' : ''" 
-        class="w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+        class="w-full text-left rounded-md p-2 leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
       >
         {{ category.title }}
       </button>
