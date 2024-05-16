@@ -26,7 +26,7 @@ const app = createApp(App)
 Sentry.init({
   app,
   environment: import.meta.env.VITE_ENV,
-  // enabled: import.meta.env.VITE_ENV === 'staging' || import.meta.env.VITE_ENV === 'production',
+  enabled: import.meta.env.VITE_ENV === 'staging' || import.meta.env.VITE_ENV === 'production',
   dsn: "https://72b08d5732125a3cec895d73d58c96e8@o4507262580948992.ingest.us.sentry.io/4507262581145600",
   integrations: [
     Sentry.browserTracingIntegration(),
