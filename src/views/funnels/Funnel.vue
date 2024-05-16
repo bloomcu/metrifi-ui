@@ -284,8 +284,6 @@
       </div>      
     </div>
 
-    <pre>{{ funnel.category }}</pre>
-
     <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
     <EditFunnelModal :open="isEditFunnelModalOpen" />
     <EditConversionValueModal :open="isEditConversionValueModalOpen" />
