@@ -5,6 +5,9 @@
         <span v-else class="text-gray-400">Select category</span>
         <ChevronDownIcon class="ml-auto h-4 w-4 text-gray-400"/>
       </template>
+      <button @click="updateValue(null)" class="w-full text-left rounded-md p-2 leading-6 text-gray-400 hover:bg-gray-50 hover:text-indigo-600">
+        Select category...
+      </button>
       <button 
         v-for="category in categories" 
         @click="updateValue(category)"

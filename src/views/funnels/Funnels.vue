@@ -46,8 +46,8 @@
 
     <!-- Filters -->
     <div class="flex gap-3 mb-4">
-      <AppInput v-model="filterSearch" placeholder="Search funnels" class="w-4/12"/>
-      <CategoryPicker v-model="filterCategory"/>
+      <AppInput v-model="search" placeholder="Filter" class="w-4/12"/>
+      <CategoryPicker v-model="category"/>
     </div>
 
     <!-- Funnels -->
@@ -64,11 +64,11 @@
       </thead>
 
       <tbody class="divide-y divide-gray-200">
-        <tr v-for="funnel in funnels" :key="funnel.id" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" class="hover:bg-gray-50 cursor-pointer">
+        <tr v-for="funnel in filteredFunnels" :key="funnel.id" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" class="hover:bg-gray-50 cursor-pointer">
           <!-- Funnel -->
           <td class="py-4 pr-4 text-sm sm:pl-6">
             <div class="flex-auto">
-              <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
+              <p v-html="highlightSearchedText(funnel.name)" class="mb-1 text-base font-medium leading-6 text-gray-900"></p>
 
               <div class="flex gap-2">
                 <div v-if="funnel.automation_msg" class="flex items-center text-sm leading-5 text-pink-600">
@@ -162,15 +162,13 @@
       <p class="mt-1 text-gray-400">Get started by creating a funnel.</p>
     </div>
     
-    <!-- <pre>Organization: {{ organization }}</pre> -->
-
     <GenerateFunnelsModal :open="isModalOpen" @done="loadFunnels()"/>
   </LayoutWithSidebar>
 </template>
 
 <script setup>
 import moment from 'moment'
-import { ref, onMounted, provide } from 'vue'
+import { ref, watch, onMounted, provide, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
@@ -183,9 +181,6 @@ const route = useRoute()
 const router = useRouter()
 const { organization, showOrganization } = useOrganizations()
 
-const filterSearch = ref(null)
-const filterCategory = ref(null)
-
 const funnels = ref()
 const isLoading = ref(false)
 const isModalOpen = ref(false)
@@ -196,8 +191,24 @@ provide('isModalOpen', isModalOpen)
 provide('isAutomating', isAutomating)
 provide('automationError', automationError)
 
-let pollInterval = 0
+const search = ref(null)
+const category = ref(null)
+const filteredFunnels = computed(() => {
+  if (!search.value) {
+    return funnels.value
+  }
 
+  return funnels.value.filter(funnel => {
+    return funnel.name.toLowerCase().indexOf(search.value.toLowerCase()) > -1
+  })
+})
+
+function highlightSearchedText(text) {
+  if (!search.value) return text
+  return text.replaceAll(search.value, `<span style="background-color: #fde047; padding: 2px 5px; border-radius: 5px;">${search.value}</span>`)
+}
+
+let pollInterval = 0
 function poll() {
   pollInterval = setTimeout(async() => {
     console.log('Polling...')
@@ -225,10 +236,12 @@ function pollOrganization() {
 function loadFunnels() {
   isLoading.value = true
 
-  funnelApi.index(route.params.organization).then(response => {
+  funnelApi.index(route.params.organization, {
+    'filter[category.id]': category.value ? category.value.id : null,
+  }).then(response => {
     isLoading.value = false
     funnels.value = response.data.data
-    pollOrganization()
+    // pollOrganization()
   })
 }
 
@@ -256,9 +269,13 @@ function replicateFunnel(funnelId) {
     })
 }
 
-function toggleModal() { 
+function toggleModal() {
   isModalOpen.value = !isModalOpen.value 
 }
+
+watch(category, () => {
+  loadFunnels()
+})
 
 onMounted(() => {
   loadFunnels()
