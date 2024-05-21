@@ -7,9 +7,10 @@
     <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Add funnel</h3>
 
     <div>
-      <div class="flex items-center justify-between gap-3 mb-4">
-        <AppInput v-model="input" placeholder="Search funnels..." class="w-full"/>
-        <AppButton @click="attachFunnels()" class="w-56" :disabled="!selected.length">
+      <div class="flex items-center gap-3 mb-4">
+        <AppInput v-model="input" placeholder="Search" class="w-6/12"/>
+        <CategoryPicker class="w-4/12" v-model="category"/>
+        <AppButton @click="attachFunnels()" :disabled="!selected.length" class="w-2/12">
           Add {{ selected.length ? selected.length : '' }} {{ selected.length > 1 ? 'funnels' : 'funnel' }}
         </AppButton>
       </div>
@@ -25,6 +26,7 @@
               />
             </th>
             <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Funnel</th>
+            <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Category</th>
             <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Organization</th>
           </tr>
         </thead>
@@ -40,6 +42,11 @@
                 <div class="flex items-center gap-2">
                   <p class="mb-1 text-base font-medium text-gray-500">{{ funnel.name }}</p>
                   <span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">Already in use</span>
+                </div>
+              </td>
+              <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+                <div class="flex items-center text-sm mr-2">
+                  {{ funnel.category ? funnel.category.title : '' }}
                 </div>
               </td>
               <td class="whitespace-nowrap py-4 text-sm text-gray-400">
@@ -61,6 +68,11 @@
               <td class="whitespace-nowrap py-4 text-sm">
                 <div class="flex-auto">
                   <p class="text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
+                </div>
+              </td>
+              <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+                <div class="flex items-center text-sm mr-2">
+                  {{ funnel.category ? funnel.category.title : '' }}
                 </div>
               </td>
               <td class="whitespace-nowrap py-4 text-sm text-gray-400">
@@ -90,9 +102,13 @@ import { ref, inject, watch, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
+import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 
 const route = useRoute()
-const input = ref('')
+
+const input = ref(null)
+const category = ref(null)
+
 const funnels = ref([])
 const funnelsAlreadyAttachedIds = inject('funnelsAlreadyAttachedIds')
 const isModalOpen = inject('isModalOpen')
@@ -118,7 +134,9 @@ const search = debounce(() => {
   isUpdating.value = true
 
   funnelApi.search(route.params.organization, {
-    term: input.value,
+    // term: input.value,
+    'filter[name]': input.value,
+    'filter[category.id]': category.value ? category.value.id : null,
   }).then(response => {
     console.log(response)
     funnels.value = response.data.data
@@ -155,13 +173,23 @@ function attachFunnels() {
 function listOwnFunnels() {
   console.log('Listing own funnels...')
 
-  funnelApi.index(route.params.organization).then(response => {
+  funnelApi.index(route.params.organization, {
+    'filter[category.id]': category.value ? category.value.id : null,
+  }).then(response => {
     funnels.value = response.data.data
   })
 }
 
 // Watch input and search funnels
 watch(input, search)
+
+watch(category, () => {
+  if (!input.value) {
+    listOwnFunnels()
+  } else {
+    search()
+  }
+})
 
 onMounted(() => {
   listOwnFunnels()
