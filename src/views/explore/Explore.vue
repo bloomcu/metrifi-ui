@@ -12,7 +12,7 @@
         </div>
 
         <!-- Datepicker -->
-        <DatePicker />
+        <DatePicker class="w-[400px]" />
 
         <!-- Export -->
         <AppButton variant="tertiary" size="base" @click="downloadCSV()" class="inline-flex items-center">
