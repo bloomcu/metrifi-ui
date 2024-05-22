@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="flex flex-[8] gap-3 z-0">
-                    <template v-for="(step, index) in report" >
+                    <template v-for="(step, index) in report.steps" >
                         <ChartBar 
                             :value="step.users" 
                             :max="maxValue" 
@@ -90,7 +90,7 @@
             <div class="h-[10px]" />
 
             <div class="flex flex-[8] gap-3">
-                <template v-for="(step, index) in report">
+                <template v-for="(step, index) in report.steps">
                     <div @click="emit('stepSelected', step)" class="flex-1 text-sm">
                         <!-- Label: E.g., "Homepage" -->
                         <ChartLabel :name="step.name" class="mb-0.5"/>
@@ -195,7 +195,7 @@ import AppInput from '@/app/components/base/forms/AppInput.vue'
 import MetricModifier from '@/views/funnels/components/metrics/MetricModifier.vue'
 
 const props = defineProps({
-    report: Array,
+    report: Object,
     conversion_value: [Number, String],
     startDate: String,
     endDate: String,
@@ -232,10 +232,10 @@ const calculateProjectionUsers = () => {
 }
 
 const overallConversionRate = computed(() => {
-    if (!props.report.length) return 0.00
+    if (!props.report.steps.length) return 0.00
 
-    let firstStepUsers = props.report[0].users
-    let lastStepUsers = props.report[props.report.length - 1].users
+    let firstStepUsers = props.report.steps[0].users
+    let lastStepUsers = props.report.steps[props.report.steps.length - 1].users
     let rate = (lastStepUsers / firstStepUsers) * 100
 
     // if (isNaN(rate)) return "0.00%"
@@ -284,9 +284,9 @@ const projectedAssetDifference = computed(() => {
 })
 
 const revenue = computed(() => {
-    if (!props.report.length) return "$0.00"
+    if (!props.report.steps.length) return "$0.00"
 
-    let users = props.report[props.report.length - 1].users
+    let users = props.report.steps[props.report.steps.length - 1].users
     let value = props.conversion_value
     let rev = users * value
 
@@ -314,13 +314,13 @@ const projectedProfitDifference = computed(() => {
 
 const maxValue = computed(() => {
     if (projection) {
-        let funnelMax = Math.max(...props.report.map(step => step.users))
+        let funnelMax = Math.max(...props.report.steps.map(step => step.users))
         let projectionMax = Math.max(...projection.value.map(step => step.users))
 
         return Math.max(funnelMax, projectionMax)
     }
     
-    return Math.max(...props.report.map(step => step.users))
+    return Math.max(...props.report.steps.map(step => step.users))
 })
 
 const emit = defineEmits(['stepSelected'])

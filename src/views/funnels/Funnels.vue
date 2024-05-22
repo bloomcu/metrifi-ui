@@ -53,12 +53,12 @@
     <!-- Funnels -->
     <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
       <thead>
-        <tr>
-          <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Funnel</th>
-          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-semibold text-gray-900">Connection</th>
-          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-semibold text-gray-900">Category</th>
-          <!-- <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Created</th> -->
-          <th scope="col" class="py-3.5 text-left text-sm font-semibold text-gray-900">Updated</th>
+        <tr class="">
+          <th scope="col" class="py-3.5 pl-4 pr-4 sm:pl-6 text-left text-sm font-medium text-gray-900">Funnel</th>
+          <!-- <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">Conversion</th> -->
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">Category</th>
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">Connection</th>
+          <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">Updated</th>
           <th scope="col" class="py-3.5"></th>
         </tr>
       </thead>
@@ -66,7 +66,7 @@
       <tbody class="divide-y divide-gray-200">
         <tr v-for="funnel in filteredFunnels" :key="funnel.id" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" class="hover:bg-gray-50 cursor-pointer">
           <!-- Funnel -->
-          <td class="py-4 pr-4 text-sm sm:pl-6">
+          <td class="py-4 pr-4 text-sm w-[25%] sm:pl-6">
             <div class="flex-auto">
               <p v-html="highlightSearchedText(funnel.name)" class="mb-1 text-base font-medium leading-6 text-gray-900"></p>
 
@@ -75,13 +75,26 @@
                   <p>{{ funnel.automation_msg }}</p>
                 </div>
 
-                <p v-else class="text-sm leading-5 text-gray-400">{{ funnel.steps.length }} steps</p>
+                <!-- <p v-else class="text-sm leading-5 text-gray-400">{{ funnel.steps.length }} steps</p> -->
 
                 <p v-if="funnel.messages.length" class="text-sm leading-5">
                   <span class="mr-1.5 text-gray-400">•</span>
                   <span class="text-green-500">{{ funnel.messages.length }} notification</span>
                 </p>
               </div>
+            </div>
+          </td>
+
+          <!-- Conversion -->
+          <!-- <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
+            <p class="mb-0.5">{{ funnel.snapshots ? funnel.snapshots.last28Days.conversionRate + '%' : '' }}</p>
+            <p class="text-xs">last 28 days</p>
+          </td> -->
+
+          <!-- Category -->
+          <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
+            <div class="flex items-center text-sm mr-2">
+              {{ funnel.category ? funnel.category.title : '' }}
             </div>
           </td>
 
@@ -93,23 +106,9 @@
             </div>
           </td>
 
-          <!-- Category -->
-          <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
-            <div class="flex items-center text-sm mr-2">
-              {{ funnel.category ? funnel.category.title : '' }}
-            </div>
-          </td>
-
-          <!-- Created -->
-          <!-- <td class="whitespace-nowrap py-4 text-sm text-gray-400">
-            <p>{{ moment(funnel.created_at).fromNow() }}</p>
-            <p>by {{ funnel.user.name }}</p>
-          </td> -->
-
           <!-- Updated -->
           <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
-            <p class="mb-0.5">{{ moment(funnel.updated_at).fromNow() }}</p>
-            <p class="text-xs">by {{ funnel.user.name }}</p>
+            {{ moment(funnel.updated_at).fromNow() }}
           </td>
 
           <!-- Options -->
