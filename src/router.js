@@ -2,12 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import baseRoutes from '@/routes/base/routes.js'
+import benchmarks from '@/views/benchmarks/routes/index.js'
 import dashboards from '@/views/dashboards/routes/index.js'
 import explore from '@/views/explore/routes/index.js'
 import funnels from '@/views/funnels/routes/index.js'
 import connections from '@/views/connections/routes/index.js'
 import services from '@/views/services/routes/index.js'
-import sites from '@/views/sites/routes/index.js'
 import welcome from '@/views/welcome/routes/index.js'
 
 import Sandbox from '@/views/Sandbox.vue';
@@ -15,12 +15,12 @@ import Sandbox from '@/views/Sandbox.vue';
 
 const routes = [
   ...baseRoutes,
+  ...benchmarks,
   ...dashboards,
   ...explore,
   ...funnels,
   ...connections,
   ...services,
-  ...sites,
   ...welcome,
   {
     path: '/',

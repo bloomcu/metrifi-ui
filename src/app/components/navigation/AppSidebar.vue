@@ -103,13 +103,19 @@
               </Menu>
             </li> -->
 
-            <!-- Welcome -->
-            <li v-if="organization && !organization.onboarding.onboardingComplete" class="border-b pb-3">
+            <!-- Top -->
+            <li class="border-b pb-3">
               <ul role="list" class="-mx-2 space-y-1">
-                <li>
+                <li v-if="organization && !organization.onboarding.onboardingComplete" >
                   <RouterLink :to="{name: 'welcome'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
                     <HomeIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
                     Welcome
+                  </RouterLink>
+                </li>
+                <li>
+                  <RouterLink :to="{name: 'benchmarks'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
+                    <PresentationChartLineIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
+                    Benchmarks
                   </RouterLink>
                 </li>
               </ul>
@@ -203,6 +209,7 @@ import {
 
 import {
   HomeIcon,
+  PresentationChartLineIcon,
   ChartBarIcon,
   Cog6ToothIcon,
   CloudIcon,
