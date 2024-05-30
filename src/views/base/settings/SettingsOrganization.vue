@@ -23,6 +23,19 @@
 
     <AppCard class="mb-12">
       <div class="mb-6">
+        <p class="text-gray-900 font-medium mb-2">Welcome screen</p>
+        <p class="text-sm text-gray-500">Control the welcome onboarding screen</p>
+      </div>
+
+      <div class="border-t pt-4">
+        <AppButton @click="toggleOnboarding()" variant="tertiary">
+          {{ organizationStore.organization.onboarding['hideOnboarding'] == true ? 'Display welcome screen' : 'Hide welcome screen'}}
+        </AppButton>
+      </div>
+    </AppCard>
+
+    <AppCard class="mb-12">
+      <div class="mb-6">
         <p class="text-gray-900 font-medium mb-2">Danger zone</p>
         <p class="text-sm text-gray-500">Irreversible and destructive actions</p>
       </div>
@@ -43,4 +56,12 @@ import UpdateOrganizationModal from '@/views/base/settings/modals/UpdateOrganiza
 import DestroyOrganizationModal from '@/views/base/settings/modals/DestroyOrganizationModal.vue'
 
 const organizationStore = useOrganizationStore()
+
+const toggleOnboarding = () => {
+  let current = organizationStore.organization.onboarding['hideOnboarding']
+
+  organizationStore.organization.onboarding['hideOnboarding'] = !current
+
+  organizationStore.update()
+}
 </script>
