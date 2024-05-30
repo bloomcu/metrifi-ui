@@ -34,7 +34,10 @@ Sentry.init({
     Sentry.feedbackIntegration({
       // Additional SDK configuration goes in here, for example:
       colorScheme: 'light',
+      showBranding: false,
       triggerLabel: 'Help',
+      formTitle: 'Help',
+      submitButtonLabel: 'Send',
     }),
   ],
   // Performance Monitoring
