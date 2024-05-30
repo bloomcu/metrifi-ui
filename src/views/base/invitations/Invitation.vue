@@ -27,7 +27,7 @@
               <AppInput v-model="inputs.name" label="Full name" :errors="errorStore.errors.name" required autofocus />
               <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" required />
               <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Password" required />
-              <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm Password" required />
+              <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
               <div class="flex items-center py-2">
                 <input v-model="inputs.accept_terms" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
