@@ -38,6 +38,7 @@ Sentry.init({
       triggerLabel: 'Help',
       formTitle: 'Help',
       submitButtonLabel: 'Send',
+      successMessageText: 'Thank you for your message!'
     }),
   ],
   // Performance Monitoring
