@@ -10,7 +10,7 @@
     <!-- Welcome -->
     <div v-else class="mb-8">
       <h2 class="mb-2 text-3xl font-medium text-gray-900">Welcome!</h2>
-      <p class="text-lg text-gray-700">Let's get setup.</p>
+      <p class="text-lg text-gray-700">Let's get set up.</p>
     </div>
 
     <!-- Step tabs -->
