@@ -88,7 +88,7 @@ const steps = ref([
     id: 'connect-google-analytics',
     current: true,
     title: 'Connect Google Analytics',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    content: 'Connecting your Google Analytics 4 account allows MetriFi to access your GA4 data and build funnels.',
     cta: 'Connect Google Analytics',
     action: connectToGoogle
   },
@@ -96,7 +96,7 @@ const steps = ref([
     id: 'enable-enhanced-measurement',
     current: false,
     title: 'Enable enhanced measurement',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    content: 'Enhanced measurement in Google Analytics 4 enables additional event measurement such as outbound clicks and form submissions.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
@@ -107,7 +107,7 @@ const steps = ref([
     id: 'extend-data-retention-period',
     current: false,
     title: 'Extend data retention period',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    content: 'Extending the data retention period allows our app to access a longer history of your data, providing you with more comprehensive insights and enabling more accurate trend analysis.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
@@ -118,7 +118,7 @@ const steps = ref([
     id: 'setup-cross-domain-tracking',
     current: false,
     title: 'Set up cross-domain tracking',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    content: 'Setting up cross-domain tracking allows our app to track user interactions across multiple domains, giving you a complete view of user behavior and enhancing your ability to analyze their journey.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
@@ -129,7 +129,7 @@ const steps = ref([
     id: 'add-custom-dimensions',
     current: false,
     title: 'Add custom dimensions',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    content: 'Adding custom dimensions allows our app to track additional analytics specific to forms including: form destination, form id, form length and form submit text.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
@@ -140,7 +140,7 @@ const steps = ref([
     id: 'filter-out-internal-traffic',
     current: false,
     title: 'Filter out internal traffic',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    content: 'Filtering out internal traffic ensures that our app analyzes only genuine user interactions, giving you more accurate insights and a clearer picture of your external audience\'s behavior.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
