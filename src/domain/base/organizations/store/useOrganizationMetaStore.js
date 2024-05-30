@@ -22,7 +22,7 @@ export const useOrganizationMetaStore = defineStore('organizationMetaStore', {
           this.meta = []
           const auth = useAuthStore()
           
-          OrganizationMetaApi.index(auth.organization)
+          OrganizationMetaApi.index(auth.organization.slug)
             .then(response => {
               // console.log(response)
               this.metas = response.data
@@ -34,7 +34,7 @@ export const useOrganizationMetaStore = defineStore('organizationMetaStore', {
         async store(meta) {
           const auth = useAuthStore()
           
-          await OrganizationMetaApi.store(auth.organization, meta)
+          await OrganizationMetaApi.store(auth.organization.slug, meta)
             .then(response => {
               // this.metas.unshift(response.data)
             }).catch(error => {
@@ -45,7 +45,7 @@ export const useOrganizationMetaStore = defineStore('organizationMetaStore', {
         show(key) {
           const auth = useAuthStore()
           
-          OrganizationMetaApi.show(auth.organization, key)
+          OrganizationMetaApi.show(auth.organization.slug, key)
             .then(response => {
               // console.log(response.data.value)
               this.meta = response.data.value
@@ -59,7 +59,7 @@ export const useOrganizationMetaStore = defineStore('organizationMetaStore', {
           
           this.metas = this.metas.filter((m) => m.id !== meta.id)
           
-          // OrganizationMetaApi.destroy(auth.organization, meta.id)
+          // OrganizationMetaApi.destroy(auth.organization.slug, meta.id)
           //   .then(response => {
           //     console.log('Meta successfully destroyed')
           //   }).catch(error => {

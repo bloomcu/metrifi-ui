@@ -4,6 +4,7 @@ import { benchmarkApi } from '@/domain/benchmarks/api/benchmarkApi.js'
 let benchmarks = ref()
 let benchmark = ref()
 let isBenchmarksLoading = ref(false)
+let isBenchmarkCalculating = ref(false)
 
 export default function useBenchmarks() {
   async function indexBenchmarks(params) {
@@ -28,14 +29,16 @@ export default function useBenchmarks() {
     })
   }
 
-  async function updateBenchmark(benchmarkId, request) {
-    return await benchmarkApi.update(benchmarkId, request).then(response => {
+  async function updateBenchmark(id, request) {
+    return await benchmarkApi.update(id, request).then(response => {
       // update benchmark
       benchmark.value = response.data.data
       
-      // update benchmark in benchmarks array
-      const index = benchmarks.value.findIndex((benchmark) => benchmark.id === benchmarkId)
-      benchmarks.value[index] = response.data.data
+      if (benchmarks.value) {
+        // update benchmark in benchmarks array
+        const index = benchmarks.value.findIndex((benchmark) => benchmark.id === id)
+        benchmarks.value[index] = response.data.data
+      }
 
       return response.data.data
     })
@@ -48,14 +51,33 @@ export default function useBenchmarks() {
     })
   }
 
+  async function calculateBenchmark(id) {
+    isBenchmarkCalculating.value = true
+
+    await benchmarkApi.calculate(id).then(response => {
+      // update benchmark
+      benchmark.value = response.data.data
+      
+      // update benchmark in benchmarks array
+      if (benchmarks.value) {
+        const index = benchmarks.value.findIndex((benchmark) => benchmark.id === id)
+        benchmarks.value[index] = response.data.data
+      }
+
+      isBenchmarkCalculating.value = false
+    })
+  }
+
   return {
     benchmarks: computed(() => benchmarks.value),
     benchmark: computed(() => benchmark.value),
     isBenchmarksLoading: computed(() => isBenchmarksLoading.value),
+    isBenchmarkCalculating: computed(() => isBenchmarkCalculating.value),
     indexBenchmarks,
     storeBenchmark,
     showBenchmark,
     updateBenchmark,
     destroyBenchmark,
+    calculateBenchmark,
   }
 }

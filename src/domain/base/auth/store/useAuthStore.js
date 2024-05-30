@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('authStore', {
     state: () => ({
       // TODO: Rename this property as "auth"
       user: JSON.parse(localStorage.getItem('user')),
-      organization: 'bloomcu',
+      organization: null,
       loading: false,
       saving: false,
       passwordResetEmailSending: false,
@@ -31,9 +31,16 @@ export const useAuthStore = defineStore('authStore', {
           .then(response => {      
             // TODO: Do I need to do this if we set the organization in httpClient? No.
             localStorage.setItem('user', JSON.stringify(response.data.data))
-            this.organization = response.data.data.organization.slug
+            this.organization = response.data.data.organization
             this.user = response.data.data
-            this.router.push({ name: redirect, params: { organization: response.data.data.organization.slug }})
+
+            // this.router.push({ name: 'dashboards', params: { organization: this.organization.slug }})
+            if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
+              this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
+            } else {
+              this.router.push({ name: redirect, params: { organization: this.organization.slug }})
+            }
+
             this.loading = false
           })
           .catch(error => {
@@ -60,11 +67,14 @@ export const useAuthStore = defineStore('authStore', {
           .then(response => {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
-            this.organization = response.data.data.organization.slug
+            this.organization = response.data.data.organization
             
-            // TODO: The next step for user will be to setup their organization
-            // this.router.push({ name: 'onboardOrganization' })
-            this.router.push({ name: redirect, params: { organization: response.data.data.organization.slug }})
+            // this.router.push({ name: 'dashboards', params: { organization: this.organization.slug }})
+            if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
+              this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
+            } else {
+              this.router.push({ name: redirect, params: { organization: this.organization.slug }})
+            }
 
             this.loading = false
           })
@@ -78,8 +88,16 @@ export const useAuthStore = defineStore('authStore', {
           .then(response => {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
-            this.organization = response.data.data.organization.slug
-            this.router.push({ name: redirect, params: { organization: response.data.data.organization.slug }})
+            this.organization = response.data.data.organization
+
+            // this.router.push({ name: 'dashboards', params: { organization: this.organization.slug }})
+            if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
+              this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
+            } else {
+              this.router.push({ name: redirect, params: { organization: this.organization.slug }})
+            }
+
+            this.loading = false
           })
           .catch(error => {})
       },

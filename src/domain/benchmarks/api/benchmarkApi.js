@@ -51,6 +51,16 @@ const benchmarkApi = {
     destroy(id) {
         return HttpClient.delete(`/benchmarks/${id}`)
     },
+
+    /**
+     * Calculate
+     *
+     * @param Integer id [Slug of the benchmark you want to show]
+     * @return promise
+     */
+    calculate(id) {
+      return HttpClient.get(`/benchmarks/${id}/calculate`)
+    },
 }
 
 export { benchmarkApi }

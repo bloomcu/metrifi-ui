@@ -2,11 +2,9 @@
   <LayoutWithSidebar>
     <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Benchmarks</h1>
-      <div class="flex gap-2">
-        <AppButton @click="storeNewBenchmark" variant="secondary">
-          Create blank benchmark
-        </AppButton>
-      </div>
+      <!-- <AppButton @click="storeNewBenchmark" variant="secondary">
+        Create blank benchmark
+      </AppButton> -->
     </template>
 
     <!-- Filters -->
@@ -24,20 +22,16 @@
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">Bottom</th>
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">Median</th>
           <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">Top</th>
+          <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">Calculated</th>
           <th scope="col" class="py-3.5"></th>
         </tr>
       </thead>
 
       <tbody class="divide-y divide-gray-200">
-        <!-- <tr 
-          v-for="benchmark in filteredBenchmarks" 
-          :key="benchmark.id" 
-          @click="router.push({name: 'benchmark', params: {benchmark: benchmark.id}})" 
-          class="hover:bg-gray-50 cursor-pointer"
-        > -->
         <tr 
           v-for="benchmark in filteredBenchmarks" 
           :key="benchmark.id" 
+          @click="router.push({name: 'benchmark', params: {benchmark: benchmark.id}})" 
           class="hover:bg-gray-50 cursor-pointer"
         >
           <!-- Benchmark -->
@@ -67,6 +61,10 @@
           <!-- Top -->
           <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
             {{ benchmark.median }}%
+          </td>
+
+          <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
+            {{ moment(benchmark.calculated_at).fromNow() }}
           </td>
 
           <!-- Options -->
@@ -122,6 +120,7 @@
 </template>
 
 <script setup>
+import moment from 'moment'
 import { ref, watch, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
@@ -136,7 +135,6 @@ const {
   isBenchmarksLoading, 
   indexBenchmarks, 
   storeBenchmark, 
-  destroyBenchmark
 }  = useBenchmarks()
 
 const search = ref(null)

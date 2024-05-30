@@ -32,7 +32,7 @@ const organizationApi = {
     },
 
     /**
-     * Update an organization
+     * Update an organizations
      *
      * @param Integer id [Id of the organization you want to update]
      * @param Object  invitation [Properties to update organization with]

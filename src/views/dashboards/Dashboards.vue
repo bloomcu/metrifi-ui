@@ -97,17 +97,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
-import { useOrganizations } from '@/domain/organizations/composables/useOrganizations.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
 const route = useRoute()
 const router = useRouter()
-const { organization } = useOrganizations()
 
 const dashboards = ref()
 const isLoading = ref(false)
@@ -135,12 +133,6 @@ function destroyDashboard(dashboardId) {
   dashboards.value = dashboards.value.filter(dashboard => dashboard.id !== dashboardId)
   dashboardApi.destroy(route.params.organization, dashboardId)
 }
-
-watch(organization, () => {
-  if (organization.value.onboarding['onboardingComplete'] === false) {
-    router.push({ name: 'welcome' })
-  }
-})
 
 onMounted(() => {
   loadDashboards()

@@ -68,6 +68,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { CheckIcon } from '@heroicons/vue/20/solid'
 import { useConnections } from '@/domain/connections/composables/useConnections'
@@ -78,7 +79,9 @@ import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 const route = useRoute()
 const router = useRouter()
 const { listConnections, connections } = useConnections()
-const { updateOrganization, organization } = useOrganizations()
+
+const organizationStore = useOrganizations()
+const { updateOrganization, organization } = storeToRefs(organizationStore)
 
 const steps = ref([
   {
@@ -174,7 +177,7 @@ const completeStep = (id) => {
   // check if all steps are complete
   for (const property in organization.value.onboarding) {
     if (organization.value.onboarding[property] === 'incomplete') {
-      updateOrganization().then(() => {
+      organizationStore.updateOrganization().then(() => {
         selectNextIncompleteStep()
       })
       return
@@ -182,7 +185,7 @@ const completeStep = (id) => {
   }
 
   organization.value.onboarding['onboardingComplete'] = true
-  updateOrganization().then(() => {
+  organizationStore.updateOrganization().then(() => {
     router.push({ name: 'dashboards'})
   })
 }
@@ -190,7 +193,7 @@ const completeStep = (id) => {
 const markStepIncomplete = (id) => {
   organization.value.onboarding[id] = 'incomplete'
   organization.value.onboarding['onboardingComplete'] = false
-  updateOrganization()
+  organizationStore.updateOrganization()
 }
 
 function connectToGoogle() {

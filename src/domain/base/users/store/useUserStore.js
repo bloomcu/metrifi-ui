@@ -1,85 +1,41 @@
-import { defineStore, acceptHMRUpdate } from 'pinia'
-import { userApi as UserApi } from '@/domain/base/users/api/userApi'
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { useRoute } from 'vue-router'
+import { userApi } from '@/domain/base/users/api/userApi'
 
-import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
+const users = ref()
+const user = ref()
+const isLoading = ref(true)
 
-export const useUserStore = defineStore('userStore', {
-    state: () => ({
-        users: null,
-        user: null,
-        isLoading: true,
-    }),
+export const useUserStore = defineStore('users', () => {
+  let route = useRoute()
+
+  async function index(params) {
+    this.isLoading = true
+    this.users = null
     
-    getters: {},
+    userApi.index(route.params.organization, params).then(response => {
+      users.value = response.data.data
+      isLoading.value = false
+    }).catch(error => {
+      console.log('Error', error.response.data)
+    })
+  }
     
-    actions: {
-        index(params) {
-          const auth = useAuthStore()
-          this.isLoading = true
-          this.users = null
-          
-          UserApi.index(auth.organization, params)
-            .then(response => {
-              this.users = response.data.data
-              this.isLoading = false
-            }).catch(error => {
-              console.log('Error', error.response.data)
-            })
-        },
-        
-        // async store(user) {
-        //   const auth = useAuthStore()
-        //   this.isLoading = true
-        // 
-        //   await UserApi.store(auth.organization, user)
-        //     .then(response => {
-        //       this.users.push(response.data.data)
-        //     }).catch(error => {
-        //       console.log('Error', error.response.data)
-        //     })
-        // },
-        
-        // show(id) {
-        //   const auth = useAuthStore()
-        //   this.isLoading = true
-        // 
-        //   UserApi.show(auth.organization, id)
-        //     .then(response => {
-        //       this.user = response.data.data
-        //       this.isLoading = false
-        //     })
-        // },
-        
-        // update() {
-        //   const auth = useAuthStore()
-        //   this.isLoading = true
-        // 
-        //   UserApi.update(auth.organization, this.user.id, this.user)
-        //     .then(response => {
-        //       console.log('user successfully updated')
-        //       this.isLoading = false
-        //     })
-        // },
-        
-        destroy(id) {
-          const auth = useAuthStore()
-          if (auth.user.id === id) return
-          
-          this.isLoading = true
-        
-          UserApi.destroy(auth.organization, id)
-            .then(response => {
-              this.users = this.users.filter((user) => user.id !== id)
-              this.isLoading = false
-            })
-        }
-    }
+  async function destroy(id) {
+    this.isLoading = true
+  
+    userApi.destroy(route.params.organization, id).then(response => {
+      users.value = users.value.filter((user) => user.id !== id)
+      isLoading.value = false
+    })
+  }
+
+  return {
+    users,
+    user,
+    isLoading,
+    index,
+    destroy,
+  }
 })
-
-/**
- * Enable hot reload on store updates
- * https://pinia.vuejs.org/cookbook/hot-module-replacement.html
- */
-if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot))
-}

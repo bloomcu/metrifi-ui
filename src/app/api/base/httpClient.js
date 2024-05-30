@@ -73,7 +73,7 @@ httpClient.interceptors.response.use((response) => {
     // const { setServerError } = useErrorStore()
     // setServerError('This endpoint could not be found. Please refresh. Changes may be lost.')
 
-    document.location.href = '/not-found'
+    // document.location.href = '/not-found'
   }
   
   /**

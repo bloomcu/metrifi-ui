@@ -8,13 +8,13 @@ import { useRoute } from 'vue-router'
 import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
 
 const route = useRoute()
-const { showOrganization } = useOrganizations()
+const organizationStore = useOrganizations()
 
 onMounted(() => {
-  console.log('Mounting organization')
-  if (route.params.organization) {
-    showOrganization()
-  }
+  // console.log('Mounting organization...')
+  // if (route.params.organization) {
+  //   organizationStore.showOrganization()
+  // }
 })
 </script>
 

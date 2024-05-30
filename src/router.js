@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
+import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
 import baseRoutes from '@/routes/base/routes.js'
 import benchmarks from '@/views/benchmarks/routes/index.js'
 import dashboards from '@/views/dashboards/routes/index.js'
@@ -48,6 +49,23 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const { emptyErrors } = useErrorStore()
   emptyErrors()
+})
+
+/**
+* Hydrate organization
+* Perform initial hydration of organization
+* When routing, if the organization changes re-hydrate the organization
+*/
+router.beforeEach(async (to) => {
+  const organizationStore = useOrganizations()
+
+  if (
+    to.params.organization &&
+    to.params.organization !== organizationStore.organization?.slug
+  ) {
+    console.log('Re-hydrating organization...')
+    await organizationStore.showOrganization(to.params.organization)
+  }
 })
 
 /**

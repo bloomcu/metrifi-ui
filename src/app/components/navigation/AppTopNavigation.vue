@@ -8,7 +8,7 @@
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
             <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-            <RouterLink :to="{ name: 'sites', params: { organization: auth.organization}}" class="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900">Sites</RouterLink>
+            <RouterLink :to="{ name: 'sites', params: { organization: auth.organization.slug}}" class="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900">Sites</RouterLink>
           </div>
         </div>
         <div class="hidden sm:ml-6 sm:flex sm:items-center">
@@ -39,7 +39,7 @@
                   </RouterLink>
                 </MenuItem>
                 <MenuItem v-slot="{ active }">
-                  <RouterLink :to="{ name: 'settings', params: { organization: auth.organization}}" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
+                  <RouterLink :to="{ name: 'settings', params: { organization: auth.organization.slug}}" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
                     Settings
                   </RouterLink>
                 </MenuItem>
@@ -66,7 +66,7 @@
     <DisclosurePanel class="sm:hidden">
       <div class="space-y-1 pb-3 pt-2">
         <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
-        <RouterLink :to="{ name: 'sites', params: { organization: auth.organization}}" class="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700">Sites</RouterLink>
+        <RouterLink :to="{ name: 'sites', params: { organization: auth.organization.slug}}" class="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700">Sites</RouterLink>
       </div>
       <div class="border-t border-gray-200 pb-3 pt-4">
         <div class="flex items-center px-4">
@@ -85,7 +85,7 @@
         <div class="mt-3 space-y-1">
           <RouterLink v-if="auth.user.role == 'admin'" :to="{ name: 'organizations' }" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Organizations</RouterLink>
           <RouterLink :to="{ name: 'users' }" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Users</RouterLink>
-          <RouterLink :to="{ name: 'settings', params: { organization: auth.organization}}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Settings</RouterLink>
+          <RouterLink :to="{ name: 'settings', params: { organization: auth.organization.slug}}" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Settings</RouterLink>
           <RouterLink :to="{ name: 'logout' }" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Log out</RouterLink>
         </div>
       </div>

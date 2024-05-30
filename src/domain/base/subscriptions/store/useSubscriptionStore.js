@@ -17,7 +17,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
         const auth = useAuthStore()
         this.isLoading = true
       
-        SubscriptionApi.getIntent(auth.organization)
+        SubscriptionApi.getIntent(auth.organization.slug)
           .then(response => {
             this.intent = response.data.data.client_secret
             this.isLoading = false
@@ -28,10 +28,10 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
         const auth = useAuthStore()
         this.isLoading = true
       
-        SubscriptionApi.store(auth.organization, this.plan.slug, payment_method)
+        SubscriptionApi.store(auth.organization.slug, this.plan.slug, payment_method)
           .then(response => {
             this.isLoading = false
-            this.router.push({ name: 'settings', params: { organization: auth.organization } })
+            this.router.push({ name: 'settings', params: { organization: auth.organization.slug } })
           })
       },
       
@@ -39,10 +39,10 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
         const auth = useAuthStore()
         this.isLoading = true
       
-        SubscriptionApi.update(auth.organization, plan_slug)
+        SubscriptionApi.update(auth.organization.slug, plan_slug)
           .then(response => {
             this.isLoading = false
-            this.router.push({ name: 'settings', params: { organization: auth.organization } })
+            this.router.push({ name: 'settings', params: { organization: auth.organization.slug } })
           })
       },
       
@@ -53,7 +53,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
         this.isLoading = true
         this.plans = null
       
-        SubscriptionApi.indexPlans(auth.organization, params)
+        SubscriptionApi.indexPlans(auth.organization.slug, params)
           .then(response => {
             this.plans = response.data.data
             this.isLoading = false
@@ -67,7 +67,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
         this.isLoading = true
         this.planAvailability = null
       
-        SubscriptionApi.getPlanAvailability(auth.organization)
+        SubscriptionApi.getPlanAvailability(auth.organization.slug)
           .then(response => {
             this.planAvailability = response.data.data
             this.isLoading = false
@@ -80,7 +80,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       //   const auth = useAuthStore()
       //   this.isLoading = true
       // 
-      //   SubscriptionApi.show(auth.organization, plan)
+      //   SubscriptionApi.show(auth.organization.slug, plan)
       //     .then(response => {
       //       this.design = response.data.data
       //       this.isLoading = false
@@ -92,7 +92,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       //   this.isLoading = true
       //   this.designs = null
       // 
-      //   DesignApi.index(auth.organization, params)
+      //   DesignApi.index(auth.organization.slug, params)
       //     .then(response => {
       //       this.designs = response.data.data
       //       this.isLoading = false
@@ -105,7 +105,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       //   const auth = useAuthStore()
       //   this.isLoading = true
       // 
-      //   await DesignApi.store(auth.organization, design)
+      //   await DesignApi.store(auth.organization.slug, design)
       //     .then(response => {
       //       this.designs.unshift(response.data.data)
       //     }).catch(error => {
@@ -117,7 +117,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       //   const auth = useAuthStore()
       //   this.isLoading = true
       // 
-      //   DesignApi.show(auth.organization, uuid)
+      //   DesignApi.show(auth.organization.slug, uuid)
       //     .then(response => {
       //       this.design = response.data.data
       //       this.isLoading = false
@@ -128,7 +128,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       //   const auth = useAuthStore()
       //   this.isLoading = true
       // 
-      //   DesignApi.update(auth.organization, this.design.uuid, this.design)
+      //   DesignApi.update(auth.organization.slug, this.design.uuid, this.design)
       //     .then(response => {
       //       console.log('Design successfully updated')
       //       this.isLoading = false
@@ -139,7 +139,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', {
       //   const auth = useAuthStore()
       //   this.isLoading = true
       // 
-      //   DesignApi.destroy(auth.organization, uuid)
+      //   DesignApi.destroy(auth.organization.slug, uuid)
       //     .then(response => {
       //       this.designs = this.designs.filter((design) => design.uuid !== uuid)
       //       this.isLoading = false

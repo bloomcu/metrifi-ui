@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="organizationStore.organization">
     <TransitionRoot as="template" :show="open">
       <Dialog as="div" class="relative z-10 lg:hidden" @close="close()">
         <TransitionChild as="template" enter="transition-opacity ease-linear duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="transition-opacity ease-linear duration-300" leave-from="opacity-100" leave-to="opacity-0">
@@ -75,8 +75,8 @@
                 <MenuButton class="flex items-center gap-x-4 p-2 w-full rounded-md hover:bg-gray-50">
                   <img class="h-9 w-9 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
                   <div class="flex flex-col items-start">
-                    <span class="text-sm font-medium text-gray-900">{{ auth.user.name }}</span>
-                    <span class="text-xs text-gray-400">{{ auth.user.organization.title }}</span>
+                    <span class="text-sm font-medium text-gray-900">{{ authStore.user.name }}</span>
+                    <span class="text-xs text-gray-400">{{ authStore.user.organization.title }}</span>
                   </div>
                 </MenuButton>
                 <transition enter-active-class="transition ease-out duration-200" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
@@ -104,20 +104,20 @@
             </li> -->
 
             <!-- Top -->
-            <li class="border-b pb-3">
+            <li v-if="!organizationStore.organization.onboarding.onboardingComplete" class="border-b pb-3">
               <ul role="list" class="-mx-2 space-y-1">
-                <li v-if="organization && !organization.onboarding.onboardingComplete" >
+                <li>
                   <RouterLink :to="{name: 'welcome'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
                     <HomeIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
                     Welcome
                   </RouterLink>
                 </li>
-                <li>
+                <!-- <li>
                   <RouterLink :to="{name: 'benchmarks'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
                     <PresentationChartLineIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
                     Benchmarks
                   </RouterLink>
-                </li>
+                </li> -->
               </ul>
             </li>
             
@@ -137,18 +137,18 @@
             <li class="mt-auto">
               <Menu as="div" class="-mx-2 space-y-1">
                 <MenuButton class="flex items-center gap-x-4 p-2 w-full text-sm font-medium leading-6 text-gray-900 rounded-md hover:bg-gray-50">
-                  <Avatar :name="auth.user.name" size="sm"/>
-                  <span>{{ auth.user.name }}</span>
+                  <Avatar :name="authStore.user.name" size="sm"/>
+                  <span>{{ authStore.user.name }}</span>
                 </MenuButton>
                 <transition enter-active-class="transition ease-out duration-200" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                   <MenuItems class="absolute bottom-16 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <MenuItem v-if="auth.isAdmin" v-slot="{ active }">
+                    <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
                       <RouterLink :to="{ name: 'organizations' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         Organizations
                       </RouterLink>
                     </MenuItem>
 
-                    <MenuItem v-if="auth.isAdmin" v-slot="{ active }">
+                    <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
                       <RouterLink :to="{ name: 'categories' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         Categories
                       </RouterLink>
@@ -181,8 +181,9 @@ import { useOrganizations } from '@/domain/organizations/composables/useOrganiza
 
 import Avatar from '@/app/components/base/avatars/Avatar.vue'
 
-const auth = useAuthStore()
-const { organization } = useOrganizations()
+const authStore = useAuthStore()
+const organizationStore = useOrganizations()
+
 const emit = defineEmits(['close'])
 
 const props = defineProps({

@@ -24,7 +24,7 @@ export const useOrganizationCommentsStore = defineStore('organizationCommentsSto
           
           this.comments = []
           
-          OrganizationCommentsApi.index(auth.organization)
+          OrganizationCommentsApi.index(auth.organization.slug)
             .then(response => {
               // console.log(response)
               this.comments = response.data.data
@@ -36,7 +36,7 @@ export const useOrganizationCommentsStore = defineStore('organizationCommentsSto
         async store(comment) {
           const auth = useAuthStore()
           
-          await OrganizationCommentsApi.store(auth.organization, comment)
+          await OrganizationCommentsApi.store(auth.organization.slug, comment)
             .then(response => {
               this.comments.unshift(response.data.data)
             }).catch(error => {
@@ -49,7 +49,7 @@ export const useOrganizationCommentsStore = defineStore('organizationCommentsSto
           
           this.comments = this.comments.filter((m) => m.id !== comment.id)
           
-          OrganizationCommentsApi.destroy(auth.organization, comment.id)
+          OrganizationCommentsApi.destroy(auth.organization.slug, comment.id)
             .then(response => {
               console.log('Comment successfully destroyed')
             }).catch(error => {

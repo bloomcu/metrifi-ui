@@ -1,27 +1,28 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
 import { useRoute } from 'vue-router'
 import { organizationApi } from '@/domain/base/organizations/api/organizationApi.js'
 
-let organization = ref()
+const organization = ref()
 
-export const useOrganizations = () => {
+export const useOrganizations = defineStore('organizations', () => {
   let route = useRoute()
 
-  async function showOrganization() {
-    await organizationApi.show(route.params.organization).then(response => {
+  async function showOrganization(slug) {
+    await organizationApi.show(slug).then(response => {
       organization.value = response.data.data
     })
   }
 
   async function updateOrganization() {
     await organizationApi.update(route.params.organization, organization.value).then(response => {
-      // organization.value = response.data.data
+      organization.value = response.data.data
     })
   }
 
   return {
-    organization: computed(() => organization.value),
+    organization,
     showOrganization,
     updateOrganization,
   }
-}
+})
