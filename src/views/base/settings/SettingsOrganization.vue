@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import UpdateOrganizationModal from '@/views/base/settings/modals/UpdateOrganizationModal.vue'
 import DestroyOrganizationModal from '@/views/base/settings/modals/DestroyOrganizationModal.vue'
 

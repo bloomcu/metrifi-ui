@@ -177,12 +177,12 @@
 
 <script setup>
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
-import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 import Avatar from '@/app/components/base/avatars/Avatar.vue'
 
 const authStore = useAuthStore()
-const organizationStore = useOrganizations()
+const organizationStore = useOrganizationStore()
 
 const emit = defineEmits(['close'])
 

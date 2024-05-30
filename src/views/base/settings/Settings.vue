@@ -16,7 +16,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import SettingsTabs from '@/views/base/settings/components/SettingsTabs.vue'
 

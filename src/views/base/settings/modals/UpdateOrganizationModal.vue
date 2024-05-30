@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 const organizationStore = useOrganizationStore()
 

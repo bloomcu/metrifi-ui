@@ -72,7 +72,7 @@ import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { CheckIcon } from '@heroicons/vue/20/solid'
 import { useConnections } from '@/domain/connections/composables/useConnections'
-import { useOrganizations } from '@/domain/organizations/composables/useOrganizations'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
@@ -80,7 +80,7 @@ const route = useRoute()
 const router = useRouter()
 const { listConnections, connections } = useConnections()
 
-const organizationStore = useOrganizations()
+const organizationStore = useOrganizationStore()
 const { updateOrganization, organization } = storeToRefs(organizationStore)
 
 const steps = ref([

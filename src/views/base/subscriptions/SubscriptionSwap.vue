@@ -27,7 +27,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useSubscriptionStore } from '@/domain/base/subscriptions/store/useSubscriptionStore'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import PlanCard from '@/domain/base/subscriptions/components/PlanCard.vue'

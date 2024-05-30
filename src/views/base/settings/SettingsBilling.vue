@@ -107,7 +107,7 @@
 <script setup>
 import moment from "moment"
 import { ref } from 'vue'
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import AddressFieldGroup from '@/app/components/base/forms/AddressFieldGroup.vue'
 
 const organizationStore = useOrganizationStore()
