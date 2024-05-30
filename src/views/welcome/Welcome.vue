@@ -1,13 +1,20 @@
 <template>
   <LayoutWithSidebar>
+    <!-- Complete -->
+    <div v-if="organizationStore.organization.onboarding['onboardingComplete'] == true" class="rounded-md bg-indigo-50 p-4 mb-8">
+      <h2 class="mb-2 text-3xl font-medium text-gray-900">You're all done! Nice work!</h2>
+      <p class="text-lg text-gray-700 mb-4">You can unhide this Welcome screen at any time by going to Settings.</p>
+      <AppButton @click="hideOnboarding()">Hide Welcome screen</AppButton>
+    </div>
+
     <!-- Welcome -->
-    <div class="mb-8">
+    <div v-else class="mb-8">
       <h2 class="mb-2 text-3xl font-medium text-gray-900">Welcome!</h2>
-      <p class="text-lg text-gray-500">Let's get setup.</p>
+      <p class="text-lg text-gray-700">Let's get setup.</p>
     </div>
 
     <!-- Step tabs -->
-    <AppCard v-if="organization" padding="none" class="flex mb-6">
+    <AppCard v-if="organizationStore.organization" padding="none" class="flex mb-6">
       <div class="w-1/3 p-3 border-r">
         <ul role="list">
           <li 
@@ -17,7 +24,7 @@
             class="relative flex space-x-3 rounded-lg p-3 cursor-pointer"
             @click="selectStep(step.id)"
           >
-            <div v-if="organization.onboarding[step.id] === 'complete'" class="h-8 w-8 rounded-full flex items-center justify-center bg-emerald-500 text-white">
+            <div v-if="organizationStore.organization.onboarding[step.id] === 'complete'" class="h-8 w-8 rounded-full flex items-center justify-center bg-emerald-500 text-white">
               <CheckIcon class="h-5 w-5" aria-hidden="true" />
             </div>
             <div v-else class="h-8 w-8 rounded-full flex items-center justify-center bg-white border-2 border-gray-300 text-indigo-600">
@@ -25,7 +32,7 @@
             </div>
             <div class="flex items-center min-w-0 font-medium">
               <p v-if="step.current" class="text-gray-900">{{ step.title }}</p>
-              <p v-else-if="organization.onboarding[step.id] === 'complete'" class="text-gray-400 line-through">{{ step.title }}</p>
+              <p v-else-if="organizationStore.organization.onboarding[step.id] === 'complete'" class="text-gray-400 line-through">{{ step.title }}</p>
               <p v-else class="text-gray-500">{{ step.title }}</p>
             </div>
           </li>
@@ -58,7 +65,7 @@
           <h2 class="mb-2 text-2xl font-medium text-gray-900">{{ currentStep.title }}</h2>
           <p class="mb-4 text-lg text-gray-500">{{ currentStep.content }}</p>
 
-          <AppButton v-if="organization.onboarding[currentStep.id] === 'complete'" @click="markStepIncomplete(currentStep.id)" variant="tertiary">Mark as incomplete</AppButton>
+          <AppButton v-if="organizationStore.organization.onboarding[currentStep.id] === 'complete'" @click="markStepIncomplete(currentStep.id)" variant="tertiary">Mark as incomplete</AppButton>
           <AppButton v-else @click="currentStep.action">{{ currentStep.cta }}</AppButton>
         </div>
       </div>
@@ -70,7 +77,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
-import { CheckIcon } from '@heroicons/vue/20/solid'
+import { CheckIcon, CheckCircleIcon } from '@heroicons/vue/20/solid'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
@@ -81,7 +88,6 @@ const router = useRouter()
 const { listConnections, connections } = useConnections()
 
 const organizationStore = useOrganizationStore()
-const { updateOrganization, organization } = storeToRefs(organizationStore)
 
 const steps = ref([
   {
@@ -107,7 +113,7 @@ const steps = ref([
     id: 'extend-data-retention-period',
     current: false,
     title: 'Extend data retention period',
-    content: 'Set both event and user data to 14 months. Extending the data retention period allows our app to access a longer history of your data, providing you with more comprehensive insights and enabling more accurate trend analysis.',
+    content: 'Set both event and user data to 14 months. Extending the data retention period allows our app to access a longer history of your data.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
@@ -118,22 +124,11 @@ const steps = ref([
     id: 'setup-cross-domain-tracking',
     current: false,
     title: 'Set up cross-domain tracking',
-    content: 'Setting up cross-domain tracking allows our app to track user interactions across multiple domains, giving you a complete view of user behavior and enhancing your ability to analyze their journey.',
+    content: 'Set up cross-domain tracking for all third-party domains affiliated with your website, such as MeridianLink and Blend. IMPORTANT: In order for cross-domain tracking to work, the same GA must be installed on those other websites.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
       completeStep('setup-cross-domain-tracking')
-    }
-  },
-  {
-    id: 'add-custom-dimensions',
-    current: false,
-    title: 'Add custom dimensions',
-    content: 'Adding custom dimensions allows our app to track additional analytics specific to forms including: form destination, form id, form length and form submit text.',
-    video: true,
-    cta: 'Mark as complete',
-    action: () => {
-      completeStep('add-custom-dimensions')
     }
   },
   {
@@ -145,6 +140,17 @@ const steps = ref([
     cta: 'Mark as complete',
     action: () => {
       completeStep('filter-out-internal-traffic')
+    }
+  },
+  {
+    id: 'add-custom-dimensions',
+    current: false,
+    title: 'Add custom dimensions (optional)',
+    content: 'Adding custom dimensions allows our app to track additional analytics specific to forms including: form destination, form id, form length and form submit text.',
+    video: true,
+    cta: 'Mark as complete',
+    action: () => {
+      completeStep('add-custom-dimensions')
     }
   },
 ])
@@ -163,8 +169,8 @@ const selectStep = (id) => {
 }
 
 const selectNextIncompleteStep = () => {
-  for (const property in organization.value.onboarding) {
-    if (organization.value.onboarding[property] === 'incomplete') {
+  for (const property in organizationStore.organization.onboarding) {
+    if (organizationStore.organization.onboarding[property] === 'incomplete') {
       selectStep(property)
       return
     }
@@ -172,28 +178,34 @@ const selectNextIncompleteStep = () => {
 }
 
 const completeStep = (id) => {
-  organization.value.onboarding[id] = 'complete'
+  organizationStore.organization.onboarding[id] = 'complete'
 
   // check if all steps are complete
-  for (const property in organization.value.onboarding) {
-    if (organization.value.onboarding[property] === 'incomplete') {
-      organizationStore.updateOrganization().then(() => {
+  for (const property in organizationStore.organization.onboarding) {
+    if (organizationStore.organization.onboarding[property] === 'incomplete') {
+      organizationStore.update().then(() => {
         selectNextIncompleteStep()
       })
       return
     }
   }
 
-  organization.value.onboarding['onboardingComplete'] = true
-  organizationStore.updateOrganization().then(() => {
+  organizationStore.organization.onboarding['onboardingComplete'] = true
+  organizationStore.update()
+}
+
+const hideOnboarding = () => {
+  organizationStore.organization.onboarding['hideOnboarding'] = true
+
+  organizationStore.update().then(() => {
     router.push({ name: 'dashboards'})
   })
 }
 
 const markStepIncomplete = (id) => {
-  organization.value.onboarding[id] = 'incomplete'
-  organization.value.onboarding['onboardingComplete'] = false
-  organizationStore.updateOrganization()
+  organizationStore.organization.onboarding[id] = 'incomplete'
+  organizationStore.organization.onboarding['onboardingComplete'] = false
+  organizationStore.update()
 }
 
 function connectToGoogle() {
@@ -208,8 +220,9 @@ function connectToGoogle() {
 
 function checkConnections() {
   listConnections().then(() => {
+
     if (connections.value.length !== 0) {
-      organization.value.onboarding['connect-google-analytics'] = 'complete'
+      organizationStore.organization.onboarding['connect-google-analytics'] = 'complete'
     }
 
     selectNextIncompleteStep()

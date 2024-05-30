@@ -104,7 +104,7 @@
             </li> -->
 
             <!-- Top -->
-            <li v-if="!organizationStore.organization.onboarding.onboardingComplete" class="border-b pb-3">
+            <li v-if="!organizationStore.organization.onboarding.hideOnboarding" class="border-b pb-3">
               <ul role="list" class="-mx-2 space-y-1">
                 <li>
                   <RouterLink :to="{name: 'welcome'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">

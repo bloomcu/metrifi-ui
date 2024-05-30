@@ -9,15 +9,13 @@ export const useConnections = () => {
   let route = useRoute()
 
   async function listConnections() {
-    if (!connections.value) {
-        console.log('Listing connections...')
-        await connectionApi.index(
-            route.params.organization
-          ).then(response => {
-            connections.value = response.data.data
-            selectedConnection.value = response.data.data[0]
-          })
-    }
+    console.log('Listing connections...')
+    await connectionApi.index(
+        route.params.organization
+      ).then(response => {
+        connections.value = response.data.data
+        selectedConnection.value = response.data.data[0]
+      })
   }
 
   function selectConnectionById(connectionId) {
