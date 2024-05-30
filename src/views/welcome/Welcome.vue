@@ -107,7 +107,7 @@ const steps = ref([
     id: 'extend-data-retention-period',
     current: false,
     title: 'Extend data retention period',
-    content: 'Extending the data retention period allows our app to access a longer history of your data, providing you with more comprehensive insights and enabling more accurate trend analysis.',
+    content: 'Set both event and user data to 14 months. Extending the data retention period allows our app to access a longer history of your data, providing you with more comprehensive insights and enabling more accurate trend analysis.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
