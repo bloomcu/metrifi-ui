@@ -41,9 +41,13 @@
 
       <!-- Content -->
       <div v-if="currentStep" class="w-2/3 flex items-center px-3 py-10">
-        <div class="px-12">
-          <svg v-if="currentStep.id === 'connect-google-analytics'" class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+        <div v-if="currentStep.id === 'connect-google-analytics'" class="px-12">
+          <svg class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+          <h2 class="mb-2 text-2xl font-medium text-gray-900">{{ currentStep.title }}</h2>
+          <div v-html="currentStep.content" class="mb-5 text-lg text-gray-700"></div>
+        </div>
 
+        <div v-else class="px-12">
           <div v-if="currentStep.video" class="mb-8 aspect-video">
             <video v-if="currentStep.id === 'enable-enhanced-measurement'" class="h-full w-full rounded-lg" controls>
               <source src="/video/enable-enhanced-measurement.mp4" type="video/mp4">
@@ -63,7 +67,7 @@
           </div>
 
           <h2 class="mb-2 text-2xl font-medium text-gray-900">{{ currentStep.title }}</h2>
-          <p class="mb-4 text-lg text-gray-500">{{ currentStep.content }}</p>
+          <div v-html="currentStep.content" class="mb-5 text-lg text-gray-700"></div>
 
           <AppButton v-if="organizationStore.organization.onboarding[currentStep.id] === 'complete'" @click="markStepIncomplete(currentStep.id)" variant="tertiary">Mark as incomplete</AppButton>
           <AppButton v-else @click="currentStep.action">{{ currentStep.cta }}</AppButton>
@@ -135,7 +139,7 @@ const steps = ref([
     id: 'filter-out-internal-traffic',
     current: false,
     title: 'Filter out internal traffic',
-    content: 'Filtering out internal traffic ensures that our app analyzes only genuine user interactions, giving you more accurate insights and a clearer picture of your external audience\'s behavior.',
+    content: 'Filtering out internal traffic ensures that our app analyzes only genuine user interactions, giving you more accurate insights and a clearer picture of your audience\'s behavior.',
     video: true,
     cta: 'Mark as complete',
     action: () => {
@@ -146,7 +150,16 @@ const steps = ref([
     id: 'add-custom-dimensions',
     current: false,
     title: 'Add custom dimensions (optional)',
-    content: 'Adding custom dimensions allows our app to track additional analytics specific to forms including: form destination, form id, form length and form submit text.',
+    content: `
+      <p>Adding custom dimensions allows MetriFi to track additional analytics specific to forms, including form destination, form ID, form length, and form submit text.</p>
+      <p class="pt-3 font-bold">Add a custom dimension with the following user properties:</p>
+      <ul class="list-disc pl-5 pt-2">
+        <li>form_destination</li>
+        <li>form_id</li>
+        <li>form_length</li>
+        <li>form_submit_text</li>
+      </ul>
+    `,
     video: true,
     cta: 'Mark as complete',
     action: () => {
