@@ -34,7 +34,7 @@
         </div>
 
         <!-- Datepicker -->
-        <DatePicker class="w-[400px]"/>
+        <DatePicker class="w-[330px]"/>
 
         <!-- Zoom -->
         <Zoom v-model="funnel.zoom" @update:modelValue="updateFunnel"/>
