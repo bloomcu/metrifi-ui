@@ -45,7 +45,7 @@
           <svg class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
           <h2 class="mb-2 text-2xl font-medium text-gray-900">{{ currentStep.title }}</h2>
           <div v-html="currentStep.content" class="mb-5 text-lg text-gray-700"></div>
-          <AppButton @click="currentStep.action">{{ currentStep.cta }}</AppButton>
+          <AppButton v-if="organizationStore.organization.onboarding[currentStep.id] !== 'complete'" @click="currentStep.action">{{ currentStep.cta }}</AppButton>
         </div>
 
         <div v-else class="px-12">
@@ -140,7 +140,11 @@ const steps = ref([
     id: 'filter-out-internal-traffic',
     current: false,
     title: 'Filter out internal traffic',
-    content: 'Filtering out internal traffic ensures that our app analyzes only genuine user interactions, giving you more accurate insights and a clearer picture of your audience\'s behavior.',
+    content: `
+      <p>Filtering out internal traffic ensures that our app analyzes only genuine user interactions, giving you more accurate insights and a clearer picture of your audience\'s behavior.</p>
+
+      <p class="pt-4">To complete this step, you need to do two things in Google Analytics 4: (1) enter the IP addresses used by you and your coworkers and (2) enable a data filter so that traffic from those IP addresses doesn't show up in your analytics reports. Watch the video to learn how to do it.</p>
+    `,
     video: true,
     cta: 'Mark as complete',
     action: () => {
