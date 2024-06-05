@@ -9,7 +9,7 @@
         Select category...
       </button>
       <button 
-        @click="updateValue({id: 1, title: 'Uncategorized'})" 
+        @click="updateValue({id: 1, title: 'Uncategorized', slug: 'uncategorized', children: []})" 
         :class="modelValue && modelValue.id == 1 ? 'bg-gray-50 text-indigo-600' : ''" 
         class="w-full text-left rounded-md p-2 leading-6 text-gray-500 hover:bg-gray-50 hover:text-indigo-600">
         Uncategorized
