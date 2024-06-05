@@ -5,8 +5,14 @@
         <span v-else class="text-gray-400">Select category</span>
         <ChevronDownIcon class="ml-auto h-4 w-4 text-gray-400"/>
       </template>
-      <button @click="updateValue(null)" class="w-full text-left rounded-md p-2 leading-6 text-gray-500 hover:bg-gray-50 hover:text-indigo-600">
+      <button @click="updateValue(null)" class="w-full text-left rounded-md p-2 leading-6 text-gray-400 hover:bg-gray-50 hover:text-indigo-600">
         Select category...
+      </button>
+      <button 
+        @click="updateValue({id: 1, title: 'Uncategorized'})" 
+        :class="modelValue && modelValue.id == 1 ? 'bg-gray-50 text-indigo-600' : ''" 
+        class="w-full text-left rounded-md p-2 leading-6 text-gray-500 hover:bg-gray-50 hover:text-indigo-600">
+        Uncategorized
       </button>
       
       <div v-if="category" v-for="parent in category.children" class="p-2">
@@ -40,13 +46,14 @@ const { category, showCategory } = useCategories()
 const emit = defineEmits(['update:modelValue'])
 
 function updateValue(value) {
+  console.log(value)
   emit('update:modelValue', value)
 }
 
 onMounted(() => {
   // if (!category) {
     // indexCategories()
-    showCategory(1)
+    showCategory(2)
   // }
 })
 </script>
