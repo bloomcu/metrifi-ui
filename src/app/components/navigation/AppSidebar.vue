@@ -148,11 +148,11 @@
                       </RouterLink>
                     </MenuItem>
 
-                    <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
+                    <!-- <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
                       <RouterLink :to="{ name: 'categories' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         Categories
                       </RouterLink>
-                    </MenuItem>
+                    </MenuItem> -->
 
                     <MenuItem v-slot="{ active }">
                       <RouterLink :to="{ name: 'logout' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
