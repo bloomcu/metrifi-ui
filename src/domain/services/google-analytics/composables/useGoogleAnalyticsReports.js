@@ -85,7 +85,7 @@ export function useGoogleAnalyticsReports() {
   }
 
   function resetReports () {
-    console.log('Resetting reports')
+    console.log('Resetting reports...')
     
     reports.value = {
       pageUsers: null,

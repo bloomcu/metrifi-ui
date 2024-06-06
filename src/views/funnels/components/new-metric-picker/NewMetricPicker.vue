@@ -178,7 +178,7 @@ function updateMetric(updatedMetric) {
 
 const { selectedDateRange } = useDatePicker()
 const { selectedConnection } = useConnections()
-const { reports, isReportLoading, runReport } = useGoogleAnalyticsReports()
+const { reports, isReportLoading, runReport, resetReports } = useGoogleAnalyticsReports()
 
 const tabs = ref({
   pageUsers: { 
@@ -312,6 +312,8 @@ onClickOutside(picker, () => {
 
 onMounted(() => {
   console.log('Mounted...')
+
+  resetReports()
 
   // If report has already been run, don't run it again
   // if (reports.value[props.modelValue.metric]) return
