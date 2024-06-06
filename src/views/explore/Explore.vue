@@ -33,7 +33,7 @@
       </div>
 
       <!-- Search -->
-      <div v-if="selectedTab !== tabs['formUserSubmissions']" class="flex items-center gap-2 mb-3">
+      <div class="flex items-center gap-2 mb-3">
         <AppInput v-model="searchInput" placeholder="Search..." class="flex-1"></AppInput>
       </div>
 
