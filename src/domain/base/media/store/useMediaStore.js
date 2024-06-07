@@ -25,7 +25,7 @@ export const useMediaStore = defineStore('mediaStore', {
           this.isLoading = true
           this.files = []
           
-          MediaApi.index(auth.organization, params)
+          MediaApi.index(auth.organization.slug, params)
             .then(response => {
               this.isLoading = false
               this.files = response.data.data
@@ -37,7 +37,7 @@ export const useMediaStore = defineStore('mediaStore', {
         async store(file, collection, tags) {
           const auth = useAuthStore()
 
-          return await MediaApi.store(auth.organization, file, collection, tags)
+          return await MediaApi.store(auth.organization.slug, file, collection, tags)
             .then(response => {
               this.files.unshift(response.data.data)
             }).catch(error => {
@@ -56,7 +56,7 @@ export const useMediaStore = defineStore('mediaStore', {
           
           this.files = this.files.filter((f) => f.id !== file.id)
           
-          MediaApi.destroy(auth.organization, file.id)
+          MediaApi.destroy(auth.organization.slug, file.id)
             .then(response => {
               console.log('File successfully destroyed')
             }).catch(error => {

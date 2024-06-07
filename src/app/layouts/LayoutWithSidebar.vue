@@ -28,7 +28,6 @@
 import { ref } from 'vue'
 import { Bars3Icon } from '@heroicons/vue/24/outline'
 import AppSidebar from '@/app/components/navigation/AppSidebar.vue'
-import AppTopNavigation from '@/app/components/navigation/AppTopNavigation.vue'
 
 const sidebarOpen = ref(false)
 </script>

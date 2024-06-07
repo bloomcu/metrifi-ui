@@ -1,5 +1,5 @@
 <template>
-  <LayoutDefault width="xs">
+  <LayoutDefault width="xs" v-if="organizationStore.organization">
     <!-- Header -->
     <AppHeader v-if="accounts" class="pt-6">
       <h1 class="text-3xl font-medium leading-6 text-gray-900">Accounts</h1>
@@ -49,8 +49,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import { gaAdminApi } from '@/domain/services/google-analytics/api/gaAdminApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
-import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
+
+const organizationStore = useOrganizationStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -81,7 +83,11 @@ function storeConnection(accountName, property) {
     uid: property.property,
     token: code.value
   }).then(() => {
-    router.push({ name: 'connections', params: { organization: state.value } })
+    if (organizationStore.organization.onboarding['onboardingComplete'] == false) {
+      router.push({ name: 'welcome', params: { organization: state.value } })
+    } else {
+      router.push({ name: 'connections', params: { organization: state.value } })
+    }
   })
 }
 
@@ -95,6 +101,8 @@ onMounted(() => {
     code.value = response.data.data
     listAccounts()
   })
+
+  organizationStore.show(route.query.state)
 
   state.value = route.query.state
 })

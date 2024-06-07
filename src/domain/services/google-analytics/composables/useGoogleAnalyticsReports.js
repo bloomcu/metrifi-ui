@@ -28,6 +28,8 @@ const reports = ref({
 })
 
 const isReportLoading = ref(false)
+const reportError = ref(false)
+// const searchQuery = ref('')
 
 export function useGoogleAnalyticsReports() {
   // const funnels = ref([])
@@ -62,6 +64,7 @@ export function useGoogleAnalyticsReports() {
   // };
 
   function runReport (report, connectionId, startDate, endDate, contains = '') {
+    reportError.value = false
     isReportLoading.value = true
 
     gaDataApi[report](connectionId, {
@@ -71,12 +74,25 @@ export function useGoogleAnalyticsReports() {
     }).then(response => {
       if (response.data.data.error) {
         console.log(response.data.data.error)
+        reportError.value = true
+        isReportLoading.value = false
         return
       }
       // console.log(response.data.data)
       reports.value[report] = response.data.data
       isReportLoading.value = false
     })
+  }
+
+  function resetReports () {
+    console.log('Resetting reports...')
+    
+    reports.value = {
+      pageUsers: null,
+      pagePlusQueryStringUsers: null,
+      outboundLinkUsers: null,
+      formUserSubmissions: null,
+    }
   }
 
   // watch(activeFunnels, (funnel) => {
@@ -91,7 +107,10 @@ export function useGoogleAnalyticsReports() {
   return { 
     reports: computed(() => reports.value),
     isReportLoading: computed(() => isReportLoading.value),
+    reportError: computed(() => reportError.value),
     // getReport: (report) => reports.value[report],
+    // searchQuery,
     runReport,
+    resetReports,
   }
 }

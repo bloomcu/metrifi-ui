@@ -40,7 +40,7 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { ChevronRightIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import CreateOrganizationModal from '@/views/base/organizations/modals/CreateOrganizationModal.vue'

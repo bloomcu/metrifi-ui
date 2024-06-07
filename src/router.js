@@ -1,25 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import baseRoutes from '@/routes/base/routes.js'
+import benchmarks from '@/views/benchmarks/routes/index.js'
 import dashboards from '@/views/dashboards/routes/index.js'
 import explore from '@/views/explore/routes/index.js'
 import funnels from '@/views/funnels/routes/index.js'
 import connections from '@/views/connections/routes/index.js'
 import services from '@/views/services/routes/index.js'
-import sites from '@/views/sites/routes/index.js'
+import welcome from '@/views/welcome/routes/index.js'
 
 import Sandbox from '@/views/Sandbox.vue';
 // import Flowchart from '@/views/Flowchart.vue';
 
 const routes = [
   ...baseRoutes,
+  ...benchmarks,
   ...dashboards,
   ...explore,
   ...funnels,
   ...connections,
   ...services,
-  ...sites,
+  ...welcome,
   {
     path: '/',
     redirect: 'organizations'
@@ -46,6 +49,23 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const { emptyErrors } = useErrorStore()
   emptyErrors()
+})
+
+/**
+* Hydrate organization
+* Perform initial hydration of organization
+* When routing, if the organization changes re-hydrate the organization
+*/
+router.beforeEach(async (to) => {
+  const organizationStore = useOrganizationStore()
+
+  if (
+    to.params.organization &&
+    to.params.organization !== organizationStore.organization?.slug
+  ) {
+    console.log('Re-hydrating organization...')
+    await organizationStore.show(to.params.organization)
+  }
 })
 
 /**
@@ -100,7 +120,7 @@ router.beforeEach(async (to) => {
 * Get organization from url, persist in auth store for use in api requests
 */
 router.beforeEach(async (to) => {
-    // TODO: Can I just instantiate this store one in this file?
+    // TODO: Get rid of this, use the composable
     let store = useAuthStore()
     
     if (to.params.organization) {

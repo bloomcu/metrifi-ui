@@ -61,8 +61,9 @@
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Email</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Role</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Joined</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Accepted terms</th>
                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                  <span class="sr-only">Edit</span>
+                  <span class="sr-only">Remove user</span>
                 </th>
               </tr>
             </thead>
@@ -72,8 +73,9 @@
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ user.email }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ user.role }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ moment(user.created_at).fromNow() }}</td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ moment(user.accepted_terms_at).fromNow() }}</td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                  <AppButton v-if="authStore.user.id !== user.id" @click="userStore.destroy(user.id)" variant="link">Delete</AppButton>
+                  <AppButton v-if="authStore.user.id !== user.id" @click="userStore.destroy(user.id)" variant="link">Remove user</AppButton>
                 </td>
               </tr>
             </tbody>

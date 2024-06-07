@@ -1,9 +1,6 @@
 <template>
     <div class="relative" @click="toggle">
-        <button 
-            :class="`${baseClasses} ${variantClasses} ${sizeClasses}`"
-            class="flex items-center justify-between w-full cursor-pointer rounded-md px-3 py-2 text-sm active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none focus-visible:outline-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 text-gray-900 bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 shadow-sm"
-        >
+        <button class="flex items-center justify-between w-full cursor-pointer rounded-md px-2 py-1.5 bg-white shadow-sm hover:bg-gray-50 border-0 ring-1 ring-gray-300 sm:leading-6 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
             <slot name="title">{{ title }}</slot>
         </button>
 
@@ -29,33 +26,4 @@ const toggle = () => {
 };
 
 provide("isOpen", isOpen);
-
-const baseClasses = `
-  cursor-pointer
-  rounded-md
-  active:translate-y-px
-  disabled:pointer-events-none
-  disabled:opacity-50
-  disabled:shadow-none
-  focus-visible:outline-indigo-700
-  focus-visible:outline 
-  focus-visible:outline-2 
-  focus-visible:outline-offset-2
-`
-
-const variantClasses = `
-    text-gray-900 
-    bg-white 
-    hover:bg-gray-50 
-    ring-1 
-    ring-inset 
-    ring-gray-300 
-    shadow-sm
-`
-
-const sizeClasses = `
-    px-3 
-    py-2 
-    text-sm
-`
 </script>

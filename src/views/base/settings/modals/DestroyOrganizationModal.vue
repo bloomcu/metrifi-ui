@@ -25,7 +25,7 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 const route = useRoute()
 const router = useRouter()

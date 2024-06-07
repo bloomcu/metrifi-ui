@@ -16,6 +16,8 @@ const baseClasses = 'bg-white shadow-sm ring-1 ring-gray-200 rounded-xl overflow
 
 const paddingClasses = {
   none: '',
+  '2xs': 'p-1 sm:p-2',
+  xs: 'p-2 sm:p-4',
   sm: 'p-4 sm:p-6',
   md: 'p-6 sm:p-8',
 }

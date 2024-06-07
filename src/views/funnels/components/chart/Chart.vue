@@ -22,12 +22,12 @@
                 <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
                     <!-- <p>Projected</p> -->
                     <p>Projected assets</p>
-                    <!-- <p class="flex items-center gap-1 text-2xl font-medium">
+                    <p class="flex items-center gap-1 text-2xl font-medium">
                         {{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
                         <span class="text-sm">({{ projectedAssetDifference }})</span>
-                    </p> -->
-                    <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</p>
-                    <p class="text-sm">Difference: {{ projectedAssetDifference }}</p>
+                    </p>
+                    <!-- <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</p>
+                    <p class="text-sm">{{ projectedAssetDifference }}</p> -->
 
                     <!-- <p class="text-sm">Projected profit</p>
                     <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
@@ -45,12 +45,12 @@
                 <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
                     <!-- <p>Projected</p> -->
                     <p>Projected conversion</p>
-                    <!-- <p class="flex items-center gap-1 text-2xl font-medium">
+                    <p class="flex items-center gap-1 text-2xl font-medium">
                         {{ projectedOverallConversionRate }}%
                         <span class="text-sm">({{ projectedOverallConversionRateDifference }}%)</span>
-                    </p> -->
-                    <p class="text-2xl font-medium">{{ projectedOverallConversionRate }}%</p>
-                    <p class="text-sm">Difference: {{ projectedOverallConversionRateDifference }}%</p>
+                    </p>
+                    <!-- <p class="text-2xl font-medium">{{ projectedOverallConversionRate }}%</p>
+                    <p class="text-sm">{{ projectedOverallConversionRateDifference }}%</p> -->
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="flex flex-[8] gap-3 z-0">
-                    <template v-for="(step, index) in report" >
+                    <template v-for="(step, index) in report.steps" >
                         <ChartBar 
                             :value="step.users" 
                             :max="maxValue" 
@@ -90,13 +90,15 @@
             <div class="h-[10px]" />
 
             <div class="flex flex-[8] gap-3">
-                <template v-for="(step, index) in report">
+                <template v-for="(step, index) in report.steps">
                     <div @click="emit('stepSelected', step)" class="flex-1 text-sm">
                         <!-- Label: E.g., "Homepage" -->
                         <ChartLabel :name="step.name" class="mb-0.5"/>
 
                         <!-- Metric: E.g., "1,000 users" -->
-                        <p class="pt-0.5 pb-1">{{ Number(step.users).toLocaleString() }} users</p>
+                        <!-- <p class="pt-0.5 pb-1">{{ Number(step.users).toLocaleString() }} users</p> -->
+                        <p class="pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p>
+                        
 
                         <!-- Conversion rate: E.g., "100%" -->
                         <p v-if="index != 0">
@@ -117,7 +119,7 @@
                         <MetricModifier v-if="index == 0">
                             <template #title>
                                 <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                                    {{ Number(projection[index].users).toLocaleString() }} users
+                                    {{ Number(projection[index].users).toFixed() }} users
                                     <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
                                 </p>
                             </template>
@@ -125,7 +127,7 @@
                         </MetricModifier>
 
                         <p v-else class="py-0.5">
-                            {{ Number(projection[index].users).toLocaleString() }} users
+                            {{ Number(projection[index].users).toFixed() }} users
                         </p>
 
                         <!-- Conversion rate: E.g., "100%" -->
@@ -193,7 +195,7 @@ import AppInput from '@/app/components/base/forms/AppInput.vue'
 import MetricModifier from '@/views/funnels/components/metrics/MetricModifier.vue'
 
 const props = defineProps({
-    report: Array,
+    report: Object,
     conversion_value: [Number, String],
     startDate: String,
     endDate: String,
@@ -223,15 +225,17 @@ const calculateProjectionUsers = () => {
         
         let users = (step.conversionRate * projection.value[index - 1].users) / 100
 
-        step.users = Math.round(users)
+        // step.users = Math.round(users)
+        // step.users = users.toFixed(2)
+        step.users = users
     })
 }
 
 const overallConversionRate = computed(() => {
-    if (!props.report.length) return 0.00
+    if (!props.report.steps.length) return 0.00
 
-    let firstStepUsers = props.report[0].users
-    let lastStepUsers = props.report[props.report.length - 1].users
+    let firstStepUsers = props.report.steps[0].users
+    let lastStepUsers = props.report.steps[props.report.steps.length - 1].users
     let rate = (lastStepUsers / firstStepUsers) * 100
 
     // if (isNaN(rate)) return "0.00%"
@@ -244,17 +248,19 @@ const overallConversionRate = computed(() => {
 const projectedOverallConversionRate = computed(() => {
     let firstStepUsers = projection.value[0].users
     let lastStepUsers = projection.value[projection.value.length - 1].users
-    let rate = (lastStepUsers / firstStepUsers) * 100
+    let rate = (Math.round(lastStepUsers) / firstStepUsers) * 100
 
     // if (isNaN(rate)) return "0.00%"
     // return rate.toFixed(2) + "%"
 
     if (isNaN(rate)) return 0.00
     return rate.toFixed(2)
+    // return rate
 })
 
 const projectedOverallConversionRateDifference = computed(() => {
-    let diff = projectedOverallConversionRate.value - overallConversionRate.value
+    let diff = (projectedOverallConversionRate.value - overallConversionRate.value) / overallConversionRate.value * 100
+    // let diff = projectedOverallConversionRate.value - overallConversionRate.value
     
     let direction = diff > 0 ? "+" : ""
 
@@ -278,9 +284,9 @@ const projectedAssetDifference = computed(() => {
 })
 
 const revenue = computed(() => {
-    if (!props.report.length) return "$0.00"
+    if (!props.report.steps.length) return "$0.00"
 
-    let users = props.report[props.report.length - 1].users
+    let users = props.report.steps[props.report.steps.length - 1].users
     let value = props.conversion_value
     let rev = users * value
 
@@ -308,13 +314,13 @@ const projectedProfitDifference = computed(() => {
 
 const maxValue = computed(() => {
     if (projection) {
-        let funnelMax = Math.max(...props.report.map(step => step.users))
+        let funnelMax = Math.max(...props.report.steps.map(step => step.users))
         let projectionMax = Math.max(...projection.value.map(step => step.users))
 
         return Math.max(funnelMax, projectionMax)
     }
     
-    return Math.max(...props.report.map(step => step.users))
+    return Math.max(...props.report.steps.map(step => step.users))
 })
 
 const emit = defineEmits(['stepSelected'])

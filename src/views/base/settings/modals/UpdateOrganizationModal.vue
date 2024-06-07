@@ -6,14 +6,14 @@
   >
     <form action="#" @submit.prevent="update()" class="flex flex-col gap-3">
       <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Update organization</h3>
-      <AppInput v-model="organizationStore.organization.title" label="Title" required />
+      <AppInput v-model="organizationStore.organization.title" label="Organization Name" required />
       <AppButton :loading="organizationStore.loading" class="w-full">Update</AppButton>
     </form>
   </AppModal>
 </template>
 
 <script setup>
-import { useOrganizationStore } from '@/domain/base/organizations/store/useOrganizationStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 const organizationStore = useOrganizationStore()
 

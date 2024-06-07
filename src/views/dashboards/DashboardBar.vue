@@ -17,13 +17,13 @@
         </svg>
       </div>
 
-      <div class="flex items-center gap-3">
+      <!-- <div class="flex items-center gap-3"> -->
         <!-- Datepicker -->
-        <DatePicker/>
+        <DatePicker class="w-[400px]"/>
 
         <!-- Zoom -->
         <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
-      </div>
+      <!-- </div> -->
     </header>
 
     <!-- <pre>

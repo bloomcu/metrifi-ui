@@ -33,13 +33,14 @@ const authApi = {
    * @param String password_confirmation [repeated password]
    * @return promise
    */
-  register(name, email, organization_title, password, password_confirmation) {
+  register(name, email, organization_title, password, password_confirmation, accept_terms) {
     return HttpClient.post(`/auth/register`, {
       name: name,
       email: email,
       organization_title: organization_title,
       password: password,
       password_confirmation: password_confirmation, 
+      accept_terms: accept_terms,
     })
   },
   
@@ -53,12 +54,13 @@ const authApi = {
    * @param String password_confirmation [repeated password]
    * @return promise
    */
-  registerWithInvitation(invitation_uuid, name, email, password, password_confirmation) {
+  registerWithInvitation(invitation_uuid, name, email, password, password_confirmation, accept_terms) {
     return HttpClient.post(`/auth/register/invitation/${invitation_uuid}`, {
       name: name,
       email: email,
       password: password,
       password_confirmation: password_confirmation, 
+      accept_terms: accept_terms,
     })
   },
   

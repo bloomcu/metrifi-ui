@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
@@ -8,8 +9,11 @@ export default defineConfig({
           '@': `${path.resolve(__dirname, 'src')}`,
       }
   },
-  
-  plugins: [vue()],
+
+  plugins: [vue(), sentryVitePlugin({
+    org: "metrifi",
+    project: "javascript-vue"
+  })],
 
   // Compile time flags - https://vuejs.org/api/compile-time-flags
   define: {
@@ -19,5 +23,9 @@ export default defineConfig({
     // Enable / disable Options API support. Disabling this will result in smaller bundles, 
     // but may affect compatibility with 3rd party libraries if they rely on Options API.
     __VUE_OPTIONS_API__: 'true',
+  },
+
+  build: {
+    sourcemap: true
   }
 })
