@@ -23,11 +23,19 @@
                   {{ organization.title }}
                 </a>
               </p>
-              <!-- <p class="mt-1 text-sm leading-5 text-gray-500">{{ organization.plan.title }}</p> -->
             </div>
           </div>
           
           <div class="flex items-center gap-x-4">
+            <span v-if="organization.onboarding.onboardingComplete" class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs text-gray-900 bg-green-50 ring-1 ring-inset ring-gray-200">
+              <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3" /></svg>
+              Onboarding complete
+            </span>
+            <span v-else class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs text-gray-900 bg-red-50 ring-1 ring-inset ring-gray-200">
+              <svg class="h-1.5 w-1.5 fill-red-500" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3" /></svg>
+              Onboarding incomplete
+            </span>
+
             <ChevronRightIcon class="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
           </div>
         </li>
