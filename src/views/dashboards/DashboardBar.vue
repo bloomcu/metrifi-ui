@@ -17,13 +17,21 @@
         </svg>
       </div>
 
-      <!-- <div class="flex items-center gap-3"> -->
+      <div class="flex items-center gap-3">
+        <!-- Show/hide organizations -->
+        <div class="flex items-center py-2">
+          <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+          <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
+            Show organizations
+          </label>
+        </div>
+        
         <!-- Datepicker -->
         <DatePicker class="w-[400px]"/>
 
         <!-- Zoom -->
         <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
-      <!-- </div> -->
+      </div>
     </header>
 
     <!-- <pre>
@@ -36,7 +44,7 @@
       <div v-for="(funnel, index) in funnels" class="p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
         <div class="flex items-center justify-between mb-4">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
-          <p class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
+          <p v-if="isShowingOrganizations" class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
         </div>
 
         <!-- Chart -->
@@ -103,6 +111,7 @@ const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
 const isModalOpen = ref(false)
+const isShowingOrganizations = ref(false)
 
 const funnelsAlreadyAttachedIds = computed(() => {
   return funnels.value.map(funnel => funnel.id)
