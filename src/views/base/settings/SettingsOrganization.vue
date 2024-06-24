@@ -103,12 +103,13 @@ const toggleOnboarding = () => {
 }
 
 organizationStore.$subscribe((mutation, state) => {
-  if (mutation.events.key === 'is_private') {
-    isUpdatingPrivacy.value = true
+  console.log(mutation)
+  // if (mutation.events.key === 'is_private') {
+  //   isUpdatingPrivacy.value = true
 
-    organizationStore.update().then(() => {
-      setTimeout(() => isUpdatingPrivacy.value = false, 1000);
-    })
-  }
+  //   organizationStore.update().then(() => {
+  //     setTimeout(() => isUpdatingPrivacy.value = false, 1000);
+  //   })
+  // }
 })
 </script>
