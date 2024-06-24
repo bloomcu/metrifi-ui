@@ -14,7 +14,10 @@
         </AppButton> -->
 
         <!-- Funnel name -->
-        <AppInput v-model="funnel.name" @update:modelValue="updateFunnel" class="w-6/12"/>
+        <AppTooltipWrapper class="w-6/12">
+          <AppInput v-model="funnel.name" @update:modelValue="updateFunnel"/>
+          <AppTooltip v-if="organizationStore.organization.is_private" text="Funnel name will be visible to other orgs in MetriFi" />
+        </AppTooltipWrapper>
 
         <!-- Category -->
         <CategoryPicker v-model="funnel.category" @update:modelValue="updateFunnel"/>
@@ -114,13 +117,16 @@
 
         <!-- Step metrics -->
         <div class="flex flex-col gap-4 p-3">
-          <AppInput 
-            v-model="activeStep.name" 
-            @update:modelValue="updateStepName(activeStep)"
-            :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''" 
-            label="Step name" 
-            placeholder="Step name" 
-          />
+          <AppTooltipWrapper>
+            <AppInput 
+              v-model="activeStep.name" 
+              @update:modelValue="updateStepName(activeStep)"
+              :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''" 
+              label="Step name" 
+              placeholder="Step name" 
+            />
+            <AppTooltip v-if="organizationStore.organization.is_private" text="Step name will be visible to other orgs in MetriFi" />
+          </AppTooltipWrapper>
 
           <div>
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
@@ -299,10 +305,13 @@ import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
+import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
+import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import GenerateStepsModal from '@/views/funnels/modals/GenerateStepsModal.vue'
 import EditFunnelModal from '@/views/funnels/modals/EditFunnelModal.vue'
@@ -315,6 +324,7 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 // import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
 
 const route = useRoute()
+const organizationStore = useOrganizationStore()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
 const { funnel, addFunnel, addFunnelJob, isReportLoading } = useFunnels()

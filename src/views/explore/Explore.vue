@@ -75,8 +75,10 @@
               })" 
               class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
             >
-                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Page path + query string -->
-                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
+                <!-- Page path + query string -->
+                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> 
+                <!-- Users -->
+                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
             </tr>
 
             <tr 
@@ -89,9 +91,12 @@
               })"
               class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
             >
-                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Link -->
-                <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td> <!-- Page path -->
-                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
+                <!-- Link -->
+                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                <!-- Page path -->
+                <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td>
+                <!-- Users -->
+                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
             </tr>
 
             <tr 
