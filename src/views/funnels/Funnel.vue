@@ -16,7 +16,7 @@
         <!-- Funnel name -->
         <AppTooltipWrapper class="w-6/12">
           <AppInput v-model="funnel.name" @update:modelValue="updateFunnel"/>
-          <AppTooltip v-if="organizationStore.organization.is_private" text="Funnel name will be visible to other orgs in MetriFi" />
+          <AppTooltip v-if="!organizationStore.organization.is_private" text="Funnel name will be visible to other orgs in MetriFi" />
         </AppTooltipWrapper>
 
         <!-- Category -->
@@ -125,7 +125,7 @@
               label="Step name" 
               placeholder="Step name" 
             />
-            <AppTooltip v-if="organizationStore.organization.is_private" text="Step name will be visible to other orgs in MetriFi" />
+            <AppTooltip v-if="!organizationStore.organization.is_private" text="Step name will be visible to other orgs in MetriFi" />
           </AppTooltipWrapper>
 
           <div>
