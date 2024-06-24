@@ -80,7 +80,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { RadioGroup, RadioGroupOption } from '@headlessui/vue'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import UpdateOrganizationModal from '@/views/base/settings/modals/UpdateOrganizationModal.vue'
@@ -102,14 +102,15 @@ const toggleOnboarding = () => {
   organizationStore.update()
 }
 
-organizationStore.$subscribe((mutation, state) => {
-  console.log(mutation)
-  // if (mutation.events.key === 'is_private') {
-  //   isUpdatingPrivacy.value = true
+watch(
+  () => organizationStore.organization?.is_private,
+  () => {
+    isUpdatingPrivacy.value = true
 
-  //   organizationStore.update().then(() => {
-  //     setTimeout(() => isUpdatingPrivacy.value = false, 1000);
-  //   })
-  // }
-})
+    organizationStore.update().then(() => {
+      setTimeout(() => isUpdatingPrivacy.value = false, 1000);
+    })
+  },
+  { deep: true }
+)
 </script>
