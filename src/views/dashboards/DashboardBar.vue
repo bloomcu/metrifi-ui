@@ -19,7 +19,7 @@
 
       <div class="flex items-center gap-3">
         <!-- Show/hide organizations -->
-        <div class="flex items-center py-2">
+        <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2">
           <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
           <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
             Show organizations
@@ -76,7 +76,7 @@
 
     <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
 
-    <StepDetailsTray/>
+    <StepDetailsTray v-if="authStore.user.role === 'admin'"/>
   </LayoutDefault>
 </template>
 
