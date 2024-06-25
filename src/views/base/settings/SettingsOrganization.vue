@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-xl">
+    <!-- Organization settings -->
     <AppCard class="mb-12">
       <div class="flex items-center justify-between mb-6">
         <div>
@@ -21,6 +22,7 @@
       </dl>
     </AppCard>
 
+    <!-- Funnel Privacy -->
     <AppCard class="mb-12">
       <div class="mb-6 flex justify-between">
         <div>
@@ -40,9 +42,10 @@
               <span :class="[checked ? 'border-transparent bg-indigo-600' : 'border-gray-300 bg-white', active ? 'ring-2 ring-indigo-600 ring-offset-2' : '', 'mt-0.5 flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded-full border']" aria-hidden="true">
                 <span class="h-1.5 w-1.5 rounded-full bg-white" />
               </span>
-              <span class="ml-3 flex flex-col">
-                <span :class="[checked ? 'text-indigo-900' : 'text-gray-900', 'block text-sm font-medium']">{{ setting.name }}</span>
-                <span :class="[checked ? 'text-indigo-700' : 'text-gray-500', 'block text-sm']">{{ setting.description }}</span>
+              <span class="ml-4 flex flex-col">
+                <component :is="setting.icon" :class="[checked ? 'text-indigo-700' : 'text-gray-500']" class="-ml-0.5 mb-2 h-5 w-5" aria-hidden="true" />
+                <span :class="[checked ? 'text-indigo-900' : 'text-gray-900']" class="block text-sm font-medium">{{ setting.name }}</span>
+                <span :class="[checked ? 'text-indigo-700' : 'text-gray-500']" class="block text-sm">{{ setting.description }}</span>
               </span>
             </div>
           </RadioGroupOption>
@@ -50,6 +53,7 @@
       </fieldset>
     </AppCard>
 
+    <!-- Welcome screen -->
     <AppCard class="mb-12">
       <div class="mb-6">
         <p class="text-gray-900 font-medium mb-2">Welcome screen</p>
@@ -63,6 +67,7 @@
       </div>
     </AppCard>
 
+    <!-- Danger zone -->
     <AppCard class="mb-12">
       <div class="mb-6">
         <p class="text-gray-900 font-medium mb-2">Danger zone</p>
@@ -74,6 +79,7 @@
       </div>
     </AppCard>
 
+    <!-- Modals -->
     <UpdateOrganizationModal/>
     <DestroyOrganizationModal/>
   </div>
@@ -82,6 +88,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { RadioGroup, RadioGroupOption } from '@headlessui/vue'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import UpdateOrganizationModal from '@/views/base/settings/modals/UpdateOrganizationModal.vue'
 import DestroyOrganizationModal from '@/views/base/settings/modals/DestroyOrganizationModal.vue'
@@ -90,8 +97,18 @@ const organizationStore = useOrganizationStore()
 
 const isUpdatingPrivacy = ref(false)
 const privacySettings = [
-  { name: 'Private', value: 1, description: 'Other orgs can\'t add your funnels to their dashboards and you can\'t add their funnels to your dashboards.' },  
-  { name: 'Anonymous', value: 0, description: 'Other orgs can add your funnels to their dashboards and you can add their funnels to your dashboards.' },
+  { 
+    name: 'Private', 
+    value: 1, 
+    description: 'Other orgs can\'t add your funnels to their dashboards and you can\'t add their funnels to your dashboards.',
+    icon: EyeSlashIcon,
+  },  
+  { 
+    name: 'Anonymous', 
+    value: 0, 
+    description: 'Other orgs can add your funnels to their dashboards and you can add their funnels to your dashboards.',
+    icon: EyeIcon,
+  },
 ]
 
 const toggleOnboarding = () => {
