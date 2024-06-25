@@ -118,6 +118,7 @@ const funnelsAlreadyAttachedIds = computed(() => {
 })
 
 provide('isModalOpen', isModalOpen)
+provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
 function handleStepSelected(step) {
