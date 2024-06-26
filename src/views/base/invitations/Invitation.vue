@@ -25,7 +25,7 @@
             
             <div class="flex flex-col gap-3">
               <AppInput v-model="inputs.name" label="Full name" :errors="errorStore.errors.name" required autofocus />
-              <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" required />
+              <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" disabled />
               <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Password" required />
               <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>

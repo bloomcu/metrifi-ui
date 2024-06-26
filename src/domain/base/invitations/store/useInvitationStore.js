@@ -37,7 +37,7 @@ export const useInvitationStore = defineStore('invitations', () => {
   async function show(uuid) {
     isLoading.value = true
   
-    await invitationApi.show(route.params.organization, uuid)
+    await invitationApi.show(uuid)
       .then(response => {
         invitation.value = response.data.data
         
