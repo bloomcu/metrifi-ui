@@ -22,12 +22,12 @@
       </dl>
     </AppCard>
 
-    <!-- Funnel Privacy -->
+    <!-- Analytics sharing -->
     <AppCard class="mb-12">
       <div class="mb-6 flex justify-between">
         <div>
-          <p class="text-gray-900 font-medium mb-2">Funnel privacy</p>
-          <p class="text-sm text-gray-500">Control the visibility of your funnels.</p>
+          <p class="text-gray-900 font-medium mb-2">Analytics sharing</p>
+          <p class="text-sm text-gray-500">Choose how to share your analytics data with others.</p>
         </div>
         <svg v-if="isUpdatingPrivacy" class="inline w-6 h-6 ml-2 text-indigo-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
@@ -44,7 +44,7 @@
               </span>
               <span class="ml-4 flex flex-col">
                 <component :is="setting.icon" :class="[checked ? 'text-indigo-700' : 'text-gray-500']" class="-ml-0.5 mb-2 h-5 w-5" aria-hidden="true" />
-                <span :class="[checked ? 'text-indigo-900' : 'text-gray-900']" class="block text-sm font-medium">{{ setting.name }}</span>
+                <span :class="[checked ? 'text-indigo-900' : 'text-gray-900']" class="block text-sm font-medium mb-2">{{ setting.name }}</span>
                 <span :class="[checked ? 'text-indigo-700' : 'text-gray-500']" class="block text-sm">{{ setting.description }}</span>
               </span>
             </div>
@@ -98,15 +98,15 @@ const organizationStore = useOrganizationStore()
 const isUpdatingPrivacy = ref(false)
 const privacySettings = [
   { 
-    name: 'Private', 
+    name: 'Private (no sharing)', 
     value: 1, 
-    description: 'Other orgs can\'t add your funnels to their dashboards and you can\'t add their funnels to your dashboards.',
+    description: 'Your analytics data is not shared with anyone outside of your organization. Data from other organizations is not shared with you.',
     icon: EyeSlashIcon,
   },  
   { 
-    name: 'Anonymous', 
+    name: 'Share anonymously', 
     value: 0, 
-    description: 'Other orgs can add your funnels to their dashboards and you can add their funnels to your dashboards.',
+    description: 'Your analytics data is anonymously shared with people outside of your organization. Anonymous data from other organizations is shared with you.',
     icon: EyeIcon,
   },
 ]
