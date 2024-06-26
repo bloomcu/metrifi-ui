@@ -12,6 +12,10 @@
     "@heroicons/vue": "^2.0.17",
     "@sentry/vite-plugin": "^2.16.1",
     "@sentry/vue": "^8.2.1",
+    "@tiptap/extension-bullet-list": "^2.4.0",
+    "@tiptap/extension-heading": "^2.4.0",
+    "@tiptap/extension-list-item": "^2.4.0",
+    "@tiptap/extension-ordered-list": "^2.4.0",
     "@tiptap/pm": "^2.0.0-beta.217",
     "@tiptap/starter-kit": "^2.0.0-beta.191",
     "@tiptap/vue-3": "^2.0.0-beta.96",
@@ -39,6 +43,7 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.6",
+    "@tailwindcss/typography": "^0.5.13",
     "@vitejs/plugin-vue": "^2.3.1",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.23",

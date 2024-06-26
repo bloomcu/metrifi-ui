@@ -2,10 +2,10 @@
   <div v-if="editor" class="md-editor">
     <label v-if="label" class="inline-block text-sm font-medium leading-6 text-gray-900" :for="label">{{ label }}</label>
     
-    <div class="bg-gray-100 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
+    <div class="bg-white border border-gray-300 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
       <menu class="flex flex-wrap">    
         <li>
-          <button @click="editor.chain().focus().toggleBold().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-200 active:translate-y-px" type="button" title="Bold">
+          <button @click="editor.chain().focus().toggleBold().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Bold">
             <svg class="relative block m-auto w-[16px] h-[16px]" viewBox="0 0 16 16">
               <title>Bold</title>
               <g fill="currentColor">
@@ -16,13 +16,21 @@
         </li>
         
         <li>
-          <button @click="editor.chain().focus().toggleItalic().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-200 active:translate-y-px" type="button" title="Italic">
-            <svg class="relative block m-auto w-[16px] h-[16px]" viewBox="0 0 16 16">
-              <title>Italic</title>
-              <g fill="currentColor">
-                <path d="M6 15h3a1 1 0 0 0 0-2H7.388l3.333-10H13a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1.612L5.279 13H3a1 1 0 0 0 0 2h3z"></path>
-              </g>
+          <button @click="editor.chain().focus().toggleItalic().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
+            <svg class="relative block m-auto w-[16px] h-[16px]" viewBox="0 0 16 16"><title>Italic</title><g fill="currentColor"><path d="M6 15h3a1 1 0 0 0 0-2H7.388l3.333-10H13a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1.612L5.279 13H3a1 1 0 0 0 0 2h3z"></path></g>
             </svg>
+          </button>
+        </li>
+
+        <li>
+          <button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
+            <span class="relative block m-auto">H1</span>
+          </button>
+        </li>
+
+        <li>
+          <button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
+            <span class="relative block m-auto">H2</span>
           </button>
         </li>
       </menu>
@@ -49,7 +57,7 @@ const editor = useEditor({
   content: props.modelValue,
   editorProps: {
     attributes: {
-      class: 'h-40 bg-white border border-gray-300 py-2 px-3 rounded-md text-[1em] leading-tight transition duration-200 placeholder:opacity-100 placeholder:text-gray-400 w-full'
+      class: 'prose prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 !max-w-none focus:outline-none bg-gray-100 rounded-md border border-gray-300 py-4 px-6 h-full min-h-40 w-full'
     }
   },
   onUpdate: ({ editor }) => {
