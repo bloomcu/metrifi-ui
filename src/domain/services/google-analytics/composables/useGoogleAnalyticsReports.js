@@ -78,7 +78,7 @@ export function useGoogleAnalyticsReports() {
         isReportLoading.value = false
         return
       }
-      // console.log(response.data.data)
+      console.log(response.data.data)
       reports.value[report] = response.data.data
       isReportLoading.value = false
     })
