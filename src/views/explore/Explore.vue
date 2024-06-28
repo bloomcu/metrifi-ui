@@ -213,7 +213,7 @@ const tabs = ref({
     icon: EyeIcon,
     columns: [
       { name: 'pagePath', displayName: 'Page path' },
-      { name: 'hostname', displayName: 'Host name' },
+      { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },
@@ -223,7 +223,7 @@ const tabs = ref({
     icon: EyeIcon,
     columns: [
       { name: 'pagePathPlusQueryString', displayName: 'Page path + query string' },
-      { name: 'hostname', displayName: 'Host name' },
+      { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },  
