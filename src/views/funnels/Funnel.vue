@@ -221,6 +221,7 @@
           :endDate="selectedDateRange.endDate" 
           :zoom="funnel.zoom"
           :updating="isReportLoading"
+          @stepSelected="handleStepSelected"
         />
 
         <!-- <ChartLine/> -->
@@ -305,6 +306,7 @@ import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
@@ -324,6 +326,7 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 // import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
 
 const route = useRoute()
+const authStore = useAuthStore()
 const organizationStore = useOrganizationStore()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
@@ -515,6 +518,11 @@ function loadFunnel() {
       addFunnel(response.data.data)
       setTimeout(() => isLoading.value = false, 500)
     })
+}
+
+function handleStepSelected(step) {
+  if (authStore.user.role !== 'admin') return
+  activeStepId.value = step.id
 }
 
 watch(selectedDateRange, () => {

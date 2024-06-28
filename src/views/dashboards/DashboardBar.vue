@@ -55,7 +55,6 @@
       </div>
     </div>
     
-
     <!-- <pre>
       Pending: {{ pending.length }}
       Completed: {{ completed.length }}

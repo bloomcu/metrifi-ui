@@ -69,7 +69,7 @@
                             :max="maxValue" 
                             :zoom="zoom"
                             :updating="updating"
-                            color="bg-indigo-600 hover:bg-indigo-700"
+                            :class="authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-600'"
                             @click="emit('stepSelected', step)"
                         />
 
@@ -79,7 +79,7 @@
                             :max="maxValue" 
                             :zoom="zoom"
                             :updating="updating"
-                            color="bg-indigo-400 hover:bg-indigo-500"
+                            :class="authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-400 hover:bg-indigo-500' : 'bg-indigo-400'"
                             @click="emit('stepSelected', step)"
                         />
                     </template>
@@ -91,7 +91,7 @@
 
             <div class="flex flex-[8] gap-3">
                 <template v-for="(step, index) in report.steps">
-                    <div @click="emit('stepSelected', step)" class="flex-1 text-sm">
+                    <div class="flex-1 text-sm">
                         <!-- Label: E.g., "Homepage" -->
                         <ChartLabel :name="step.name" class="mb-0.5"/>
 
@@ -187,6 +187,7 @@
 <script setup>
 import { ref, computed, inject, onMounted } from 'vue'
 // import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { PencilIcon } from '@heroicons/vue/24/solid'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
 import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
@@ -210,6 +211,7 @@ const props = defineProps({
     // }
 })
 
+const authStore = useAuthStore()
 const projection = inject('projection', null)
 const isEditConversionValueModalOpen = inject('isEditConversionValueModalOpen', null)
 
