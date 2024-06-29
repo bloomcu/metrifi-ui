@@ -4,7 +4,18 @@
     @closed="isModalOpen = false" 
     :open="isModalOpen"
   >
-    <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Add funnel</h3>
+    <div class="flex items-center justify-between mb-6">
+      <!-- Modal title -->
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Add funnel</h3>
+
+      <!-- Show/hide organizations -->
+      <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2">
+        <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+        <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
+          Show organizations
+        </label>
+      </div>
+    </div>
 
     <div>
       <div class="flex items-center gap-3 mb-4">
@@ -27,7 +38,7 @@
             </th>
             <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Funnel</th>
             <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Category</th>
-            <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Organization</th>
+            <th v-if="isShowingOrganizations" scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Organization</th>
           </tr>
         </thead>
 
@@ -49,7 +60,7 @@
                   {{ funnel.category ? funnel.category.title : '' }}
                 </div>
               </td>
-              <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+              <td v-if="isShowingOrganizations" class="whitespace-nowrap py-4 text-sm text-gray-400">
                 <div class="flex items-center text-sm mr-2">
                   {{ funnel.organization.title }}
                 </div>
@@ -75,7 +86,7 @@
                   {{ funnel.category ? funnel.category.title : '' }}
                 </div>
               </td>
-              <td class="whitespace-nowrap py-4 text-sm text-gray-400">
+              <td v-if="isShowingOrganizations" class="whitespace-nowrap py-4 text-sm text-gray-400">
                 <div class="flex items-center text-sm mr-2">
                   {{ funnel.organization.title }}
                 </div>
@@ -100,11 +111,14 @@
 import debounce from 'lodash.debounce'
 import { ref, inject, watch, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
 import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 
+
 const route = useRoute()
+const authStore = useAuthStore()
 
 const input = ref(null)
 const category = ref(null)
@@ -113,6 +127,7 @@ const funnels = ref([])
 const funnelsAlreadyAttachedIds = inject('funnelsAlreadyAttachedIds')
 const isModalOpen = inject('isModalOpen')
 const isUpdating = ref(false)
+const isShowingOrganizations = inject('isShowingOrganizations')
 const selected = ref([])
 
 // const filteredFunnels = computed(() => {

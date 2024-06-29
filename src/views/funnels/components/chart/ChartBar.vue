@@ -2,11 +2,8 @@
   <!-- <div :style="`height: ${height}%;`" class="bg-indigo-600 flex-1 rounded-lg" /> -->
   <div 
     :style="`transform: scaleY(${height});`" 
-    :class="[
-      updating ? 'animate-pulse' : '',
-      color,
-    ]"
-    class="flex-1 h-full cursor-pointer origin-bottom transition duration-300"
+    :class="updating ? 'animate-pulse' : ''"
+    class="flex-1 h-full origin-bottom transition duration-300"
   />
 </template>
 
@@ -18,7 +15,6 @@ const props = defineProps({
   max: 0,
   zoom: 0,
   updating: false,
-  color: ''
 })
 
 const height = computed(() => {

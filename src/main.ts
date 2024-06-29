@@ -10,6 +10,7 @@ import AppButton from '@/app/components/base/buttons/AppButton.vue'
 import AppCard from '@/app/components/base/cards/AppCard.vue'
 import AppInput from '@/app/components/base/forms/AppInput.vue'
 import AppSelect from '@/app/components/base/forms/AppSelect.vue'
+import AppToggle from '@/app/components/base/forms/AppToggle.vue'
 import AppHeader from '@/app/components/base/header/AppHeader.vue'
 import AppModal from '@/app/components/base/modals/AppModal.vue'
 
@@ -20,6 +21,7 @@ const app = createApp(App)
   .component('AppCard', AppCard)
   .component('AppInput', AppInput)
   .component('AppSelect', AppSelect)
+  .component('AppToggle', AppToggle)
   .component('AppHeader', AppHeader)
   .component('AppModal', AppModal)
 

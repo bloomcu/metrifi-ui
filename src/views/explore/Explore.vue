@@ -53,6 +53,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
+            <!-- Page users -->
             <tr 
               v-if="selectedTab.metric === 'pageUsers'" 
               v-for="row in reports[selectedTab.metric].rows" 
@@ -62,10 +63,15 @@
               })" 
               class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
             >
-                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Page path -->
-                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
+                <!-- Page path -->
+                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                <!-- Hostname -->
+                <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[1].value }}</td>
+                <!-- Users -->
+                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
             </tr>
             
+            <!-- Page + query string users -->
             <tr 
               v-if="selectedTab.metric === 'pagePlusQueryStringUsers'" 
               v-for="row in reports[selectedTab.metric].rows" 
@@ -75,10 +81,15 @@
               })" 
               class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
             >
-                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Page path + query string -->
-                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
+                <!-- Page path + query string -->
+                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> 
+                <!-- Hostname -->
+                <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[1].value }}</td>
+                <!-- Users -->
+                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
             </tr>
 
+            <!-- Outbound link users -->
             <tr 
               v-if="selectedTab.metric === 'outboundLinkUsers'" 
               v-for="row in reports[selectedTab.metric].rows" 
@@ -89,11 +100,15 @@
               })"
               class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
             >
-                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Link -->
-                <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td> <!-- Page path -->
-                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
+                <!-- Link -->
+                <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                <!-- Page path -->
+                <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td>
+                <!-- Users -->
+                <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
             </tr>
 
+            <!-- Form submission users -->
             <tr 
               v-if="selectedTab.metric === 'formUserSubmissions'" 
               v-for="row in reports[selectedTab.metric].rows" 
@@ -198,6 +213,7 @@ const tabs = ref({
     icon: EyeIcon,
     columns: [
       { name: 'pagePath', displayName: 'Page path' },
+      { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },
@@ -207,6 +223,7 @@ const tabs = ref({
     icon: EyeIcon,
     columns: [
       { name: 'pagePathPlusQueryString', displayName: 'Page path + query string' },
+      { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },  

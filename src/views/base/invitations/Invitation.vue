@@ -25,16 +25,16 @@
             
             <div class="flex flex-col gap-3">
               <AppInput v-model="inputs.name" label="Full name" :errors="errorStore.errors.name" required autofocus />
-              <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" required />
+              <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" disabled />
               <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Password" required />
               <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
-              <!-- <div class="flex items-center py-2">
+              <div class="flex items-center py-2">
                 <input v-model="inputs.accept_terms" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
                 <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
-                  I agree to MetriFi's <a href="#" target="_blank" class="text-indigo-600 hover:underline">Terms of Service</a> and <a href="#" target="_blank" class="text-indigo-600 hover:underline">Privacy Policy</a>
+                  I agree to MetriFi's <a href="https://metrifi.com/legal/terms-of-service/" target="_blank" class="text-indigo-600 hover:underline">Terms of Service</a> and <a href="https://metrifi.com/legal/privacy-policy/" target="_blank" class="text-indigo-600 hover:underline">Privacy Policy</a>
                 </label>
-              </div> -->
+              </div>
               
               <AppButton :loading="authStore.loading" class="w-full">Join</AppButton>
             </div>

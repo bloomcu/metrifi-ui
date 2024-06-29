@@ -20,6 +20,7 @@ const organizationStore = useOrganizationStore()
 
 const newOrganization = ref({
   title: '',
+  is_private: 1,
 })
 
 function create() {
@@ -29,6 +30,7 @@ function create() {
       
       newOrganization.value = {
         title: '',
+        is_private: 1,
       }
     })
 }

@@ -27,8 +27,8 @@ const invitationApi = {
      * @param Integer uuid [Uuid of the invitation you want to show]
      * @return promise
      */
-    show(organization, uuid) {
-      return HttpClient.get(`/${organization}/invitations/${uuid}`)
+    show(uuid) {
+      return HttpClient.get(`/invitations/${uuid}`)
     },
     
     // /**
