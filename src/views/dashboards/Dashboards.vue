@@ -2,7 +2,15 @@
   <LayoutWithSidebar>
     <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
-      <div class="flex gap-2">
+      <div class="flex gap-4">
+        <!-- Show/hide organizations -->
+        <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2">
+          <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+          <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
+            Show organizations
+          </label>
+        </div>
+
         <AppButton @click="storeNewDashboard">
           Create dashboard
         </AppButton>
@@ -34,7 +42,7 @@
                 </div>
 
               <div class="flex items-center gap-2 divide-x">
-                <p class="text-sm text-gray-500">{{ funnel.organization.title }}</p>
+                <p v-if="isShowingOrganizations" class="text-sm text-gray-500">{{ funnel.organization.title }}</p>
 
                 <!-- <div class="flex items-center gap-1 pl-2">
                   <p :class="funnel.winning ? 'text-emerald-400' : 'text-gray-500'" class="text-base font-medium">{{ funnel.overall_conversion_rate }}%</p>
@@ -99,6 +107,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
@@ -107,8 +116,11 @@ import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 const route = useRoute()
 const router = useRouter()
 
+const authStore = useAuthStore()
+
 const dashboards = ref()
 const isLoading = ref(false)
+const isShowingOrganizations = ref(false)
 
 function loadDashboards() {
   isLoading.value = true

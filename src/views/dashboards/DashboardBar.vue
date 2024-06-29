@@ -19,7 +19,7 @@
 
       <div class="flex items-center gap-3">
         <!-- Show/hide organizations -->
-        <div class="flex items-center py-2">
+        <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2">
           <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
           <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
             Show organizations
@@ -34,6 +34,27 @@
       </div>
     </header>
 
+    <!-- Notes -->
+    <div class="p-2">
+      <div v-if="isEditingNotes">
+        <AppRichtext v-model="dashboard.notes" class="mb-2"/>
+        <div class="flex items-center gap-2">
+          <AppButton @click="updateDashboard()">Update notes</AppButton>
+          <AppButton @click="isEditingNotes = false" variant="secondary">Cancel</AppButton>
+        </div>
+      </div>
+
+      <div v-else class="relative ">
+        <AppButton @click="isEditingNotes = true" variant="link" class="flex items-center gap-2 absolute right-1">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+          </svg>
+          Edit notes
+        </AppButton>
+        <div v-html="dashboard.notes" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 py-4 px-6"></div>
+      </div>
+    </div>
+    
     <!-- <pre>
       Pending: {{ pending.length }}
       Completed: {{ completed.length }}
@@ -41,7 +62,7 @@
 
     <!-- Funnels -->
     <div class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-2 xl:gap-y-3 p-2">
-      <div v-for="(funnel, index) in funnels" class="p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
+      <div v-for="(funnel, index) in funnels" class="p-6 border border-gray-200 rounded-xl shadow-md bg-white">
         <div class="flex items-center justify-between mb-4">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
           <p v-if="isShowingOrganizations" class="text-gray-400">Organization: {{ funnel.organization.title }}</p>
@@ -76,7 +97,7 @@
 
     <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
 
-    <StepDetailsTray/>
+    <StepDetailsTray v-if="authStore.user.role === 'admin'"/>
   </LayoutDefault>
 </template>
 
@@ -94,6 +115,7 @@ import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import AddFunnelModal from '@/views/dashboards/modals/AddFunnelModal.vue'
 import StepDetailsTray from '@/domain/funnels/components/step-details/StepDetailsTray.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
+import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 // import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
@@ -112,12 +134,14 @@ const isUpdating = ref(false)
 const isReporting = ref(false)
 const isModalOpen = ref(false)
 const isShowingOrganizations = ref(false)
+const isEditingNotes = ref(false)
 
 const funnelsAlreadyAttachedIds = computed(() => {
   return funnels.value.map(funnel => funnel.id)
 })
 
 provide('isModalOpen', isModalOpen)
+provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
 function handleStepSelected(step) {
@@ -128,10 +152,11 @@ function handleStepSelected(step) {
 const updateDashboard = debounce(() => {
   console.log('Updating dashboard...')
   isUpdating.value = true
+  isEditingNotes.value = false
 
   dashboardApi.update(route.params.organization, route.params.dashboard, {
     name: dashboard.value.name,
-    description: dashboard.value.description,
+    notes: dashboard.value.notes,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
