@@ -57,7 +57,7 @@ const editor = useEditor({
   content: props.modelValue,
   editorProps: {
     attributes: {
-      class: 'prose prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 !max-w-none focus:outline-none bg-gray-100 rounded-md border border-gray-300 py-4 px-6 h-full min-h-40 w-full'
+      class: 'prose prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 !max-w-none focus:outline-none py-4 px-2 h-full min-h-40 w-full'
     }
   },
   onUpdate: ({ editor }) => {

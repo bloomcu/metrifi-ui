@@ -11,7 +11,7 @@
           </label>
         </div>
 
-        <AppButton @click="storeNewDashboard">
+        <AppButton @click="storeNewDashboard()">
           Create dashboard
         </AppButton>
       </div>
@@ -59,9 +59,9 @@
       </div>
 
       <!-- Add dashboard -->
-      <div @click="router.push({name: 'dashboard', params: {dashboard: 4}})" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-indigo-50">
+      <!-- <div @click="storeNewDashboard()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-indigo-50">
         <h2 class="text-lg font-medium text-indigo-600">Add a dashboard</h2>
-      </div>
+      </div> -->
     </div>
 
     <!-- State: Loading -->
@@ -97,7 +97,7 @@
     </div>
 
     <!-- Empty state: No dashboards -->
-    <div v-else @click="storeNewDashboard" class="flex flex-col items-center justify-center border border-indigo-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-indigo-50">
+    <div v-else @click="storeNewDashboard()" class="flex flex-col items-center justify-center border border-indigo-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-indigo-50">
       <Squares2X2Icon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-indigo-600">Create a dashboard</h2>
     </div>
@@ -132,10 +132,12 @@ function loadDashboards() {
 }
 
 function storeNewDashboard() {
+  console.log(route.params.organization)
   dashboardApi.store(route.params.organization, {
     name: 'New dashboard',
     description: 'This is the dashboard description',
   }).then(response => {
+    console.log(response.data.data)
     let dashboard = response.data.data
     router.push({ name: 'dashboard', params: { dashboard: dashboard.id } })
   })
