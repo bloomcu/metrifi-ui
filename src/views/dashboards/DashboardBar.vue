@@ -127,10 +127,10 @@
           Loading analysis
         </p>
 
-        <div v-if="analysisStore.analysis" v-html="analysisStore.analysis.content" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 py-2 px-4"></div>
+        <div v-if="analysisStore.analysis" v-html="analysisStore.analysis.content" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 py-2"></div>
 
         <div class="border-t pt-4 text-sm text-gray-400">
-          Analysis created on {{ moment(analysisStore.analysis.created_at).fromNow() }}
+          Analysis created {{ moment(analysisStore.analysis.created_at).fromNow() }}
         </div>
       </div>
     </div>
