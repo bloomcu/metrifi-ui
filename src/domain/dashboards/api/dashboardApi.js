@@ -84,6 +84,22 @@ const dashboardApi = {
             funnel_id: funnelId
         })
     },
+
+    /**
+     * Reorder a dashboard funnel
+     *
+     * @param Integer organization [Id of the dashboard's organization]
+     * @param Integer dashboardId [Id of the dashboard to detach from]
+     * @param Array params.funnelId [Id of the funnel to detach]
+     * @param Integer params.order [order of the funnel in the dashboard]
+     * @return promise
+     */
+    async reorderFunnel(organization, dashboardId, params) {
+        return await HttpClient.post(`/${organization}/dashboards/${dashboardId}/funnels/reorder`, {
+            funnel_id: params.funnelId,
+            order: params.order
+        })
+    },
 }
 
 export { dashboardApi }
