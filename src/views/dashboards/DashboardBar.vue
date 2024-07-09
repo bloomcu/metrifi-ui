@@ -13,8 +13,8 @@
         </AppButton>
 
         <!-- Dashboard name -->
-        <!-- <AppInput v-model="dashboard.name" @update:modelValue="updateDashboard" class="w-7/12"/> -->
-        <p class="text-base font-semibold leading-6 text-gray-900">{{ dashboard.name  }}</p>
+        <AppInput v-model="dashboard.name" @update:modelValue="updateDashboard" class="w-7/12"/>
+        <!-- <p class="text-base font-semibold leading-6 text-gray-900">{{ dashboard.name  }}</p> -->
 
         <!-- Loading/Updating/Reporting indicator -->
         <svg v-if="isLoading || isReporting || isUpdating" class="inline w-6 h-6 ml-2 text-indigo-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,7 +72,7 @@
       </div>
 
       <div v-else class="relative p-6 border-2 border-gray-200 rounded-2xl bg-white">
-        <AppButton @click="isEditingNotes = true" variant="link" class="flex items-center gap-2 absolute right-6">
+        <AppButton @click="isEditingNotes = true" variant="link" class="flex items-center gap-2 absolute right-6 top-3">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
           </svg>
@@ -93,7 +93,9 @@
       </div>
 
       <div v-else class="relative p-6 border-2 border-gray-200 rounded-2xl bg-white">
-        <div class="absolute right-6 flex items-center gap-2">
+        <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">Analysis</p>
+
+        <div class="absolute right-6 top-3 flex items-center gap-2">
           <!-- Edit analysis -->
           <!-- <AppButton @click="isEditingAnalysis = true" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
@@ -136,14 +138,20 @@
     </div>
 
     <div v-if="analysisStore.analysis && !isShowingAnalysis" @click="showAnalysis()" class="mb-4 px-6 py-4 border-2 border-gray-200 rounded-2xl bg-white cursor-pointer hover:bg-gray-50">
-      <p class="text-base font-semibold leading-6 text-gray-900">
+      <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">
         Show analysis
         <span class="text-gray-400 text-sm font-normal">(Created on {{ moment(analysisStore.analysis.created_at).fromNow() }})</span>
       </p>
     </div>
 
     <!-- Funnels -->
-    <div class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4">
+    <!-- <div class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"> -->
+    <VueDraggableNext 
+      :list="funnels" 
+      :animation="150"
+      @change="handleDragEvent($event)"
+      class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"
+    >
       <div v-for="(funnel, index) in funnels" class="p-6 border-2 border-gray-200 rounded-2xl bg-white">
         <!-- Funnel and organization name -->
         <div class="flex items-center justify-between">
@@ -176,7 +184,8 @@
       <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-2xl py-8 px-2 cursor-pointer hover:bg-indigo-50">
         <h2 class="text-lg font-medium text-indigo-600">Add a funnel</h2>
       </div>
-    </div>
+    </VueDraggableNext>
+    <!-- </div> -->
 
     <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
 
@@ -187,6 +196,7 @@
 <script setup>
 import moment from "moment"
 import debounce from 'lodash.debounce'
+import { VueDraggableNext } from 'vue-draggable-next'
 import { ref, onMounted, computed, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -235,6 +245,23 @@ const funnelsAlreadyAttachedIds = computed(() => {
 provide('isModalOpen', isModalOpen)
 provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
+
+function handleDragEvent(e) {
+  isUpdating.value = true
+  let event = e.moved || e.added
+
+  dashboardApi.reorder(route.params.organization, route.params.dashboard, event.element.id, {
+    order: event.newIndex + 1
+  }).then(() => {
+    setTimeout(() => isUpdating.value = false, 500)
+  })
+
+  dashboardApi.update(route.params.organization, event.element.id, {
+    order: event.newIndex + 1
+  }).then(() => {
+    setTimeout(() => isLoading.value = false, 500)
+  })
+}
 
 function showNotes() {
   isShowingNotes.value = !isShowingNotes.value
