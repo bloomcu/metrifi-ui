@@ -96,7 +96,7 @@ const dashboardApi = {
      */
     async reorderFunnel(organization, dashboardId, params) {
         return await HttpClient.post(`/${organization}/dashboards/${dashboardId}/funnels/reorder`, {
-            funnel_id: params.funnelId,
+            funnel_id: params.funnel_id,
             order: params.order
         })
     },

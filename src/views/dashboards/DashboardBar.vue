@@ -247,18 +247,18 @@ provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
 function handleDragEvent(e) {
-  // isUpdating.value = true
-  // let event = e.moved || e.added
-  // console.log("Funnel Id: ", event.element.id)
-  // console.log("Order: ", event.newIndex + 1)
+  isUpdating.value = true
+  let event = e.moved || e.added
+  console.log("Funnel Id: ", event.element.id)
+  console.log("Order: ", event.newIndex + 1)
 
-  // dashboardApi.reorderFunnel(route.params.organization, route.params.dashboard, {
-  //   funnelId: event.element.id,
-  //   order: event.newIndex + 1
-  // }).then((response) => {
-  //   console.log(response)
-  //   setTimeout(() => isUpdating.value = false, 500)
-  // })
+  dashboardApi.reorderFunnel(route.params.organization, route.params.dashboard, {
+    funnel_id: event.element.id,
+    order: event.newIndex + 1
+  }).then((response) => {
+    console.log(response)
+    setTimeout(() => isUpdating.value = false, 500)
+  })
 }
 
 function showNotes() {
@@ -313,8 +313,7 @@ function attachFunnels(funnelIds) {
     route.params.organization, 
     route.params.dashboard, 
     funnelIds,
-  ).then(() => {
-    // loadDashboard()
+  ).then((response) => {
     location.reload()
     isUpdating.value = false
   })
