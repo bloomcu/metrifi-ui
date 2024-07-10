@@ -42,8 +42,8 @@ const dashboardApi = {
      * @param Object  dashboard [Properties to update dashboard with]
      * @return promise
      */
-    async update(organization, id, dashboard) {
-      return await HttpClient.put(`/${organization}/dashboards/${id}`, dashboard)
+    async update(organization, id, params) {
+      return await HttpClient.put(`/${organization}/dashboards/${id}`, params)
     },
     
     /**
@@ -82,6 +82,22 @@ const dashboardApi = {
     async detachFunnel(organization, dashboardId, funnelId) {
         return await HttpClient.post(`/${organization}/dashboards/${dashboardId}/funnels/detach`, {
             funnel_id: funnelId
+        })
+    },
+
+    /**
+     * Reorder a dashboard funnel
+     *
+     * @param Integer organization [Id of the dashboard's organization]
+     * @param Integer dashboardId [Id of the dashboard to detach from]
+     * @param Array params.funnelId [Id of the funnel to detach]
+     * @param Integer params.order [order of the funnel in the dashboard]
+     * @return promise
+     */
+    async reorderFunnel(organization, dashboardId, params) {
+        return await HttpClient.post(`/${organization}/dashboards/${dashboardId}/funnels/reorder`, {
+            funnel_id: params.funnel_id,
+            order: params.order
         })
     },
 }

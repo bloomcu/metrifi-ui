@@ -16,6 +16,7 @@ const widthClasses = {
   xs: 'max-w-3xl',
   sm: 'max-w-5xl',
   base: 'max-w-7xl',
+  lg: 'max-w-screen-2xl',
   full: 'max-w-full'
 }
 </script>
