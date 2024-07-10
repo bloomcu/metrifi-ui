@@ -49,14 +49,20 @@
               </button>
             </div>
 
-            <!-- <div 
+            <div 
               v-if="dashboard.latest_analysis" 
               v-html="dashboard.latest_analysis.content" 
-              class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 py-4 space-y-3"
-            ></div> -->
+              class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 pt-4 space-y-3"
+            ></div>
 
-            <div class="flex flex-col py-4 space-y-3">
-              <p><strong>Conversion rate:</strong> {{ dashboard.subject_funnel_performance }}% {{ dashboard.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons</p>
+            <div v-if="dashboard.latest_analysis" class="py-4 space-y-3">
+              <span class="font-normal text-gray-500 text-base border-r border-gray-300 pr-3 mr-3">
+                {{ dashboard.latest_analysis.subject_funnel_performance }}% {{ dashboard.latest_analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
+              </span>
+              <span class="font-normal text-gray-500 text-base">
+                {{ moment(dashboard.latest_analysis.start_date).format('MMM DD') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD') }}
+              </span>
+              <!-- <p><strong>Conversion rate:</strong> {{ dashboard.subject_funnel_performance }}% {{ dashboard.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons</p> -->
             </div>
 
             <!-- <div class="py-4">
@@ -113,6 +119,7 @@
 </template>
 
 <script setup>
+import moment from "moment"
 import { ref, onMounted } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useRoute, useRouter } from 'vue-router'
