@@ -60,7 +60,7 @@
                 {{ dashboard.latest_analysis.subject_funnel_performance }}% {{ dashboard.latest_analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
               </span>
               <span class="font-normal text-gray-500 text-base">
-                {{ moment(dashboard.latest_analysis.start_date).format('MMM DD') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD') }}
+                {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}
               </span>
               <!-- <p><strong>Conversion rate:</strong> {{ dashboard.subject_funnel_performance }}% {{ dashboard.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons</p> -->
             </div>

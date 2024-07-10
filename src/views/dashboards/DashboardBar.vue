@@ -99,7 +99,7 @@
             {{ analysisStore.analysis.subject_funnel_performance }}% {{ analysisStore.analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
           </span>
           <span class="font-normal text-gray-500 text-base">
-            {{ moment(analysisStore.analysis.start_date).format('MMM DD') }} - {{ moment(analysisStore.analysis.end_date).format('MMM DD') }}
+            {{ moment(analysisStore.analysis.start_date).format('MMM DD, Y') }} - {{ moment(analysisStore.analysis.end_date).format('MMM DD, Y') }}
           </span>
         </p>
 
