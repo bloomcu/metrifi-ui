@@ -95,10 +95,10 @@
       <div v-else class="relative p-6 border-2 border-gray-200 rounded-2xl bg-white">
         <p class="mb-3 flex items-center text-xl font-medium leading-6 text-gray-900 tracking-tight">
           Analysis
-          <span class="font-normal text-gray-500 text-base border-r border-l border-gray-300 px-3 mx-3">
+          <!-- <span class="font-normal text-gray-500 text-base border-r border-l border-gray-300 px-3 mx-3">
             {{ analysisStore.analysis.subject_funnel_performance }}% {{ analysisStore.analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
-          </span>
-          <span class="font-normal text-gray-500 text-base">
+          </span> -->
+          <span class="font-normal text-gray-500 text-base pl-3">
             {{ moment(analysisStore.analysis.start_date).format('MMM DD, Y') }} - {{ moment(analysisStore.analysis.end_date).format('MMM DD, Y') }}
           </span>
         </p>

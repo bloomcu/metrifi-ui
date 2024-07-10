@@ -56,9 +56,9 @@
             ></div>
 
             <div v-if="dashboard.latest_analysis" class="space-y-3 border-t pt-4">
-              <span class="font-normal text-gray-500 text-base border-r border-gray-300 pr-3 mr-3">
+              <!-- <span class="font-normal text-gray-500 text-base border-r border-gray-300 pr-3 mr-3">
                 {{ dashboard.latest_analysis.subject_funnel_performance }}% {{ dashboard.latest_analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
-              </span>
+              </span> -->
               <span class="font-normal text-gray-500 text-base">
                 {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}
               </span>
