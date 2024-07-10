@@ -56,7 +56,7 @@
             ></div> -->
 
             <div class="flex flex-col py-4 space-y-3">
-              <p><strong>Conversion rate:</strong> {{ dashboard.subject_funnel_performance }}% lower than comparisons</p>
+              <p><strong>Conversion rate:</strong> {{ dashboard.subject_funnel_performance }}% {{ dashboard.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons</p>
             </div>
 
             <!-- <div class="py-4">

@@ -42,7 +42,7 @@
         </AppButton>
 
         <!-- Run analysis -->
-        <AppButton v-if="!analysisStore.analysis" @click="createAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
+        <AppButton v-if="!analysisStore.analysis" @click="storeAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
           <!-- <ChatBubbleBottomCenterIcon class="h-5 w-5 shrink-0" /> -->
           Analyze with AI
         </AppButton>
@@ -97,17 +97,17 @@
 
         <div class="absolute right-6 top-3 flex items-center gap-2">
           <!-- Edit analysis -->
-          <!-- <AppButton @click="isEditingAnalysis = true" variant="link" class="flex items-center gap-1">
+          <AppButton @click="isEditingAnalysis = true" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
             </svg>
             Edit analysis
-          </AppButton> -->
+          </AppButton>
 
           <!-- Re-run analysis -->
           <AppButton @click="reRunAnalysis()" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
             </svg>
             Re-analyze with AI
           </AppButton>
@@ -249,8 +249,8 @@ provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 function handleDragEvent(e) {
   isUpdating.value = true
   let event = e.moved || e.added
-  console.log("Funnel Id: ", event.element.id)
-  console.log("Order: ", event.newIndex + 1)
+  // console.log("Funnel Id: ", event.element.id)
+  // console.log("Order: ", event.newIndex + 1)
 
   dashboardApi.reorderFunnel(route.params.organization, route.params.dashboard, {
     funnel_id: event.element.id,
@@ -276,7 +276,7 @@ function handleStepSelected(step) {
   openTray()
 }
 
-function createAnalysis() {
+function storeAnalysis() {
   analysisStore.store(route.params.organization, route.params.dashboard, {
     subjectFunnelId: dashboard.value.funnels[0].id,
   }).then(() => {
@@ -289,6 +289,16 @@ function reRunAnalysis() {
 
   analysisStore.store(route.params.organization, route.params.dashboard, {
     subjectFunnelId: dashboard.value.funnels[0].id,
+  })
+}
+
+function updateAnalysis() {
+  console.log('Updating analysis...')
+
+  analysisStore.update(route.params.organization, route.params.dashboard, analysisStore.analysis.id, {
+    content: analysisStore.analysis.content,
+  }).then(() => {
+    isEditingAnalysis.value = false
   })
 }
 
