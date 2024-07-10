@@ -35,7 +35,7 @@
             <img :src="product.imageSrc" :alt="product.imageAlt" class="h-full w-full object-cover object-center sm:h-full sm:w-full" />
           </div> -->
           
-          <div class="flex flex-col divide-y space-y-4 px-4 pt-4">
+          <div class="flex flex-col divide-y space-y-4 px-4 py-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <ChartBarIcon class="w-5 text-indigo-600"/>
@@ -55,7 +55,7 @@
               class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 pt-4 space-y-3"
             ></div>
 
-            <div v-if="dashboard.latest_analysis" class="py-4 space-y-3">
+            <div v-if="dashboard.latest_analysis" class="pt-4 space-y-3">
               <span class="font-normal text-gray-500 text-base border-r border-gray-300 pr-3 mr-3">
                 {{ dashboard.latest_analysis.subject_funnel_performance }}% {{ dashboard.latest_analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
               </span>
