@@ -3,12 +3,12 @@ import Benchmark from '@/views/benchmarks/Benchmark.vue'
 
 export default [
   {
-    path: "/:organization/benchmarks",
+    path: "/benchmarks",
     name: "benchmarks",
     component: Benchmarks,
   },
   {
-    path: "/:organization/benchmarks/:benchmark",
+    path: "/benchmarks/:benchmark",
     name: "benchmark",
     component: Benchmark,
   },

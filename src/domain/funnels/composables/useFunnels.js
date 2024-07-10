@@ -42,7 +42,7 @@ export function useFunnels() {
   };
 
   const getReport = debounce((funnel) => {
-    console.log('Running report...')
+    console.log('Running report on funnel: ', funnel)
     isReportLoading.value = true
   
     gaDataApi.funnelReport(funnel.connection_id, {
@@ -52,7 +52,8 @@ export function useFunnels() {
     }).then(response => {
       if (response.data.data.error) console.log(response.data.data.error)
       funnel.report = response.data.data
-      console.log('Reported steps:', funnel.report.steps)
+      // console.log('Reported steps:', funnel.report.steps)
+      console.log('Report:', funnel.report)
       calculateConversions(funnel, funnel.report.steps)
       isReportLoading.value = false
     })

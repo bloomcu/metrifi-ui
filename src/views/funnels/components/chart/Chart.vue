@@ -3,54 +3,44 @@
         <!-- Top -->
         <div class="flex flex-row gap-3">
             <!-- Assets card -->
-            <div class="flex flex-1 overflow-hidden rounded-md bg-white border shadow p-3">
-                <!-- TODO: Add edit icon here. Opens modal. Can choose type: Total deposited vs Total loaned -->
-                <!-- TODO: Next is calculate value of user at each step by dividing the value by users at each step. -->
+            <div class="flex flex-1 overflow-hidden rounded-md bg-white py-3">
+                
+                <!-- Assets -->
                 <div class="flex flex-1 flex-col gap-0.5 -pl-2">
                     <div v-if="projection" @click="isEditConversionValueModalOpen = true" class="flex items-center gap-0.5 group cursor-pointer hover:text-indigo-600">
                         <p>Assets</p>
                         <PencilIcon class="inline h-5 w-5 text-indigo-600 p-1 rounded-md group-hover:bg-indigo-50"/>
                     </div>
                     <p v-else>Assets</p>
-
                     <span class="text-2xl font-medium">{{ revenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
-                    <!-- <p class="text-sm">Profit (0.5% ROA)</p>
-                    <span class="font-medium">{{ profit.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span> -->
-                    <!-- <p>conversion rate</p> -->
                 </div>
 
+                <!-- Projected assets -->
                 <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
-                    <!-- <p>Projected</p> -->
                     <p>Projected assets</p>
                     <p class="flex items-center gap-1 text-2xl font-medium">
                         {{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
                         <span class="text-sm">({{ projectedAssetDifference }})</span>
                     </p>
-                    <!-- <p class="text-2xl font-medium">{{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</p>
-                    <p class="text-sm">{{ projectedAssetDifference }}</p> -->
-
-                    <!-- <p class="text-sm">Projected profit</p>
-                    <span v-if="projectedProfit" class="font-medium">{{ projectedProfit.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
-                    <p v-if="projectedProfitDifference" class="text-sm">(+ {{ projectedProfitDifference.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</p> -->
                 </div>
             </div>
 
             <!-- Conversion card -->
-            <div class="flex flex-1 overflow-hidden rounded-md bg-white border shadow p-3">
+            <div class="flex flex-1 overflow-hidden rounded-md bg-white p-3">
+
+                <!-- Conversion -->
                 <div class="flex flex-1 flex-col gap-0.5">
                     <p>Conversion</p>
                     <span class="text-2xl font-medium">{{ overallConversionRate }}%</span>
                 </div>
 
+                <!-- Projected conversion -->
                 <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
-                    <!-- <p>Projected</p> -->
                     <p>Projected conversion</p>
                     <p class="flex items-center gap-1 text-2xl font-medium">
                         {{ projectedOverallConversionRate }}%
                         <span class="text-sm">({{ projectedOverallConversionRateDifference }}%)</span>
                     </p>
-                    <!-- <p class="text-2xl font-medium">{{ projectedOverallConversionRate }}%</p>
-                    <p class="text-sm">{{ projectedOverallConversionRateDifference }}%</p> -->
                 </div>
             </div>
         </div>
@@ -96,7 +86,6 @@
                         <ChartLabel :name="step.name" class="mb-0.5"/>
 
                         <!-- Metric: E.g., "1,000 users" -->
-                        <!-- <p class="pt-0.5 pb-1">{{ Number(step.users).toLocaleString() }} users</p> -->
                         <p class="pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p>
                         
 
@@ -112,10 +101,6 @@
                         <ChartLabel :name="projection[index].name" class="mb-0.5"/>
 
                         <!-- Metric: E.g., "1,000 users" -->
-                        <!-- <p v-if="index == 0" class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-indigo-600 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                            {{ Number(projection[index].users).toLocaleString() }} users
-                            <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
-                        </p> -->
                         <MetricModifier v-if="index == 0">
                             <template #title>
                                 <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
@@ -125,17 +110,11 @@
                             </template>
                             <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
                         </MetricModifier>
-
                         <p v-else class="py-0.5">
                             {{ Number(projection[index].users).toFixed() }} users
                         </p>
 
                         <!-- Conversion rate: E.g., "100%" -->
-                        <!-- <p v-if="index != 0" class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                            {{ projection[index].conversionRate }}%
-                            <span class="_text-xs">conversion rate</span>
-                            <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
-                        </p> -->
                         <MetricModifier v-if="index != 0">
                             <template #title>
                                 <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
@@ -148,7 +127,6 @@
                         </MetricModifier>
                     </div>
                 </template>
-                
             </div>
         </div>
     </div>
@@ -179,9 +157,6 @@
             <div class="animate-pulse bg-gray-200 flex-1 h-32 rounded-xl"></div>
         </div>
     </div>
-
-    <!-- <pre>{{ funnel.steps }}</pre> -->
-    <!-- <pre>{{ projection }}</pre> -->
 </template>
 
 <script setup>

@@ -1,6 +1,6 @@
 <template>
     <div class="relative" @click="toggle">
-        <button class="flex items-center justify-between w-full cursor-pointer rounded-md px-2 py-1.5 bg-white shadow-sm hover:bg-gray-50 border-0 ring-1 ring-gray-300 sm:leading-6 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+        <button class="flex items-center justify-between w-full cursor-pointer rounded-md px-2 py-2 bg-white shadow-sm hover:bg-gray-50 border-0 ring-1 ring-gray-300 sm:leading-6 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
             <slot name="title">{{ title }}</slot>
         </button>
 

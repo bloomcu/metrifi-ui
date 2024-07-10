@@ -19,7 +19,7 @@
         disabled ? 'bg-gray-100 cursor-not-allowed' : 'hover:ring-indigo-600 focus:ring-indigo-600 hover:ring-2 focus:ring-2'
       ]"
       ref="inputRef"
-      class="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 sm:leading-6"
+      class="block w-full rounded-md border-0 px-2 py-2 text-gray-900 shadow-sm ring-1 sm:leading-6"
     >
     <span v-if="hint" class="text-sm text-gray-400">{{ hint }}</span>
     <div v-if="errors" class="mt-2 text-sm text-red-600" role="alert">
