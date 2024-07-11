@@ -264,7 +264,7 @@ function handleDragEvent(e) {
     funnel_id: event.element.id,
     order: event.newIndex + 1
   }).then((response) => {
-    console.log(response)
+    // console.log(response)
     setTimeout(() => isUpdating.value = false, 500)
   })
 }
@@ -286,7 +286,7 @@ function handleStepSelected(step) {
 
 function storeAnalysis() {
   analysisStore.store(route.params.organization, route.params.dashboard, {
-    subjectFunnelId: dashboard.value.funnels[0].id,
+    subjectFunnelId: funnels.value[0].id,
   }).then(() => {
     showAnalysis()
   })
@@ -296,7 +296,7 @@ function reRunAnalysis() {
   analysisStore.analysis.content = ''
 
   analysisStore.store(route.params.organization, route.params.dashboard, {
-    subjectFunnelId: dashboard.value.funnels[0].id,
+    subjectFunnelId: funnels.value[0].id,
   })
 }
 
