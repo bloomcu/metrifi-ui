@@ -155,12 +155,12 @@
     <!-- Funnels -->
     <!-- <div class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"> -->
     <VueDraggableNext 
-      :list="funnelStore.funnels"
+      :list="funnels" 
       :animation="150"
       @change="handleDragEvent($event)"
       class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"
     >
-      <div v-for="(funnel, index) in funnelStore.funnels" class="p-6 border-2 border-gray-200 rounded-2xl bg-white">
+      <div v-for="(funnel, index) in funnels" class="p-6 border-2 border-gray-200 rounded-2xl bg-white">
         <!-- Funnel and organization name -->
         <div class="flex items-center justify-between">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
@@ -173,7 +173,7 @@
           :conversion_value="funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
-          :updating="funnelStore.isLoading"
+          :updating="isReportLoading"
           @stepSelected="handleStepSelected"
         />
 
@@ -249,7 +249,7 @@ const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
 
 const funnelsAlreadyAttachedIds = computed(() => {
-  return funnelStore.funnels.map(funnel => funnel.id)
+  return funnels.value.map(funnel => funnel.id)
 })
 
 provide('isModalOpen', isModalOpen)
@@ -288,7 +288,7 @@ function handleStepSelected(step) {
 
 function storeAnalysis() {
   analysisStore.store(route.params.organization, route.params.dashboard, {
-    subjectFunnelId: funnelStore.funnels[0].id,
+    subjectFunnelId: funnels.value[0].id,
   }).then(() => {
     showAnalysis()
   })
@@ -298,7 +298,7 @@ function reRunAnalysis() {
   analysisStore.analysis.content = ''
 
   analysisStore.store(route.params.organization, route.params.dashboard, {
-    subjectFunnelId: funnelStore.funnels[0].id,
+    subjectFunnelId: funnels.value[0].id,
   })
 }
 
@@ -348,7 +348,7 @@ function detachFunnel(index, funnelId) {
     route.params.dashboard, 
     funnelId,
   ).then(() => {
-    funnelStore.funnels.splice(index, 1)
+    funnels.value.splice(index, 1)
     isUpdating.value = false
   })
 }
@@ -375,7 +375,7 @@ function loadDashboard() {
       dashboard.value = response.data.data
 
       dashboard.value.funnels.forEach(funnel => {
-        funnelStore.addFunnel(funnel)
+        addFunnel(funnel)
       })
 
       if (dashboard.value.latest_analysis) {
@@ -399,7 +399,7 @@ watch(selectedDateRange, () => {
   console.log('Date range has changed...')
 
   dashboard.value.funnels.forEach(funnel => {
-    funnelStore.addFunnelJob(funnel)
+    addFunnelJob(funnel)
   })
 })
 

@@ -328,10 +328,10 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const route = useRoute()
 const authStore = useAuthStore()
 const organizationStore = useOrganizationStore()
+const funnelStore = useFunnelStore()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
-const funnelStore = useFunnelStore()
-const { resetReports } = useGoogleAnalyticsReports()
+const { resetReports } = useGoogleAnalyticsReports() // rename to useGoogleAnalyticsData
 
 const isLoading = ref(true)
 const isUpdating = ref(false)
@@ -415,7 +415,7 @@ const updateStepName = debounce((step) => {
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     name: step.name,
   }).then(() => {
-    addFunnelJob(funnelStore.funnel)
+    funnelStore.addFunnelJob(funnelStore.funnel)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
@@ -448,7 +448,7 @@ const updateStepMetrics = debounce((step) => {
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     metrics: step.metrics,
   }).then(() => {
-    addFunnelJob(funnelStore.funnel)
+    funnelStore.addFunnelJob(funnelStore.funnel)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
@@ -461,7 +461,7 @@ function handleDragEvent(e) {
   funnelApi.updateStep(route.params.organization, route.params.funnel, event.element.id, {
     order: event.newIndex + 1
   }).then(() => {
-    addFunnelJob(funnelStore.funnel)
+    funnelStore.addFunnelJob(funnelStore.funnel)
     setTimeout(() => isUpdating.value = false, 500)
   })
 }
@@ -494,7 +494,7 @@ function deleteMetric(index) {
 
   activeStep.value.metrics.splice(index, 1)
   updateStepMetrics(activeStep.value)
-  addFunnelJob(funnelStore.funnel)
+  funnelStore.addFunnelJob(funnelStore.funnel)
 }
 
 function deleteStep(index, id) {
@@ -502,7 +502,7 @@ function deleteStep(index, id) {
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
       funnelStore.funnel.steps.splice(index, 1)
-      addFunnelJob(funnelStore.funnel)
+      funnelStore.addFunnelJob(funnelStore.funnel)
     })
 }
 
@@ -522,7 +522,7 @@ function handleStepSelected(step) {
 
 watch(selectedDateRange, () => {
   console.log('Date range has changed...')
-  addFunnelJob(funnelStore.funnel)
+  funnelStore.addFunnelJob(funnelStore.funnel)
   resetReports()
 })
 

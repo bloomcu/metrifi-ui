@@ -49,7 +49,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         await funnelApi.show(organization_id, funnel_id)
             .then(response => {
                 funnel.value = response.data.data
-                addFunnelJob(funnel.value)
+                addFunnel(funnel.value)
                 // setTimeout(() => isLoading.value = false, 500)
             })
     }
@@ -64,15 +64,20 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             })
     }
 
+    const addFunnel = (funnel) => {
+        funnels.value.push(funnel)
+        addFunnelJob(funnel)
+    }
+
     function addFunnelJob(funnel) {
         console.log('Adding funnel job...')
 
-        // Add funnel to queue
+        // Add funnel to reporting queue
         if (funnel.steps.length > 0) {
             pendingFunnels.value.push(funnel)
         }
 
-        // If not active funnel, start next funnel job
+        // If no active funnel job, start next funnel job
         if (!activeFunnel.value) {
             startNextFunnelJob()
         }
@@ -166,6 +171,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         store,
         show,
         update,
+        addFunnel,
         addFunnelJob,
         calculateConversions,
     }
