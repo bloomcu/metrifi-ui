@@ -9,7 +9,7 @@ export const useConnections = () => {
   let route = useRoute()
 
   async function listConnections() {
-    console.log('Listing connections...')
+    // console.log('Listing connections...')
     await connectionApi.index(
         route.params.organization
       ).then(response => {

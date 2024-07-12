@@ -96,7 +96,7 @@
                         </p>
                     </div>
                     
-                    <div v-if="projection && projection.length && projection[index]" @click="emit('stepSelected', step)" class="flex-1 text-sm">
+                    <div v-if="projection && projection.length && projection[index]" class="flex-1 text-sm">
                         <!-- Label: E.g., "Homepage" -->
                         <ChartLabel :name="projection[index].name" class="mb-0.5"/>
 
