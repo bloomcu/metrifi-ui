@@ -35,7 +35,6 @@ export const useFunnelStore = defineStore('funnelStore', () => {
 
         await funnelApi.store(organization, dashboard, params)
             .then(response => {
-                console.log("Funnel: ", response.data.data)
                 this.funnel = response.data.data
                 this.isLoading = false
             }).catch(error => {
@@ -70,8 +69,6 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     }
 
     function addFunnelJob(funnel) {
-        console.log('Adding funnel job...')
-
         // Add funnel to reporting queue
         if (funnel.steps.length > 0) {
             pendingFunnels.value.push(funnel)
@@ -84,25 +81,17 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     }
 
     function startNextFunnelJob() {
-        console.log('Starting next funnel job...')
-        // Push last active funnel to completed
-        // if (activeFunnel.value) {
-        //     completedFunnels.value.push(activeFunnel.value)
-        // }
-
         // Make next pending funnel active
         if (pendingFunnels.value.length > 0) {
             activeFunnel.value = pendingFunnels.value[0]
             pendingFunnels.value.shift()
             getReport(activeFunnel.value)
         } else {
-            console.log('Queue is empty, we are done...')
             activeFunnel.value = null
         }
     }
 
     const getReport = debounce((funnel) => {
-        console.log('Running report on funnel...')
         isLoading.value = true
 
         gaDataApi.funnelReport(funnel.connection_id, {
@@ -112,16 +101,26 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         }).then(response => {
             if (response.data.data.error) console.log(response.data.data.error)
             funnel.report = response.data.data
-            calculateConversions(funnel, funnel.report.steps)
+            removeDisabledStepsFromReport(funnel)
+            calculateReportConversions(funnel, funnel.report.steps)
             isLoading.value = false
         })
 
         startNextFunnelJob()
     }, 500)
 
-    const calculateConversions = (funnel, steps) => {
-        console.log('Calculating conversions...')
+    function removeDisabledStepsFromReport(funnel) {
+        let disabled_steps = funnel.pivot.disabled_steps
+        if (!disabled_steps) return
 
+        funnel.steps.forEach((step, index) => {
+            if (disabled_steps.includes(step.id)) {
+                funnel.report.steps.splice(index, 1)
+            }
+        })
+    }
+
+    function calculateReportConversions(funnel, steps) {
         steps.forEach((step, index) => {
             // Update user count
             funnel.report.steps[index].users = step.users
@@ -148,18 +147,6 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         })
     }
 
-    // watch(activeFunnel, (funnel) => {
-    //     console.log('Watcher hit')
-    //     if (!funnel) {
-    //         console.log('No active funnel, starting next funnel job...')
-    //         startNextFunnelJob()
-    //         return
-    //     }
-
-    //     console.log('Watcher sees active funnel, getting its report...')
-    //     getReport(funnel)
-    // });
-
     return {
         funnels,
         funnel,
@@ -173,7 +160,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         update,
         addFunnel,
         addFunnelJob,
-        calculateConversions,
+        calculateReportConversions,
     }
 })
 

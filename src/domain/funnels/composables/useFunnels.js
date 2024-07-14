@@ -54,14 +54,14 @@ export function useFunnels() {
       funnel.report = response.data.data
       // console.log('Reported steps:', funnel.report.steps)
       console.log('Report:', funnel.report)
-      calculateConversions(funnel, funnel.report.steps)
+      calculateReportConversions(funnel, funnel.report.steps)
       isReportLoading.value = false
     })
 
     startNextFunnelJob()
   }, 500)
 
-  const calculateConversions = (funnel, steps) => {
+  const calculateReportConversions = (funnel, steps) => {
     console.log('Calculating conversions...')
 
     steps.forEach((step, index) => {
@@ -90,7 +90,7 @@ export function useFunnels() {
     })
   }
 
-  // const calculateConversions = (funnel, steps) => {
+  // const calculateReportConversions = (funnel, steps) => {
   //   console.log('Calculating funnel conversions...')
 
   //   funnel.steps = steps
@@ -150,6 +150,6 @@ export function useFunnels() {
     addFunnel, 
     addFunnelJob, 
     startNextFunnelJob,
-    calculateConversions,
+    calculateReportConversions,
   }
 }

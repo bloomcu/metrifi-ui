@@ -145,7 +145,6 @@ const search = debounce(() => {
     return
   }
 
-  console.log('Searching all funnels...')
   isUpdating.value = true
 
   funnelApi.search(route.params.organization, {
@@ -153,7 +152,6 @@ const search = debounce(() => {
     'filter[name]': input.value,
     'filter[category.id]': category.value ? category.value.id : null,
   }).then(response => {
-    console.log(response)
     funnels.value = response.data.data
     setTimeout(() => isUpdating.value = false, 800);
   })
@@ -186,8 +184,6 @@ function attachFunnels() {
 }
 
 function listOwnFunnels() {
-  console.log('Listing own funnels...')
-
   funnelApi.index(route.params.organization, {
     'filter[category.id]': category.value ? category.value.id : null,
   }).then(response => {
