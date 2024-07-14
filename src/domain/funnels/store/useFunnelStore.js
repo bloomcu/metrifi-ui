@@ -92,6 +92,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     }
 
     const getReport = debounce((funnel) => {
+        console.log('getReport...')
         isLoading.value = true
 
         gaDataApi.funnelReport(funnel.connection_id, {
@@ -110,6 +111,9 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     }, 500)
 
     function removeDisabledStepsFromReport(funnel) {
+        if (!funnel.pivot) return
+        console.log('removeDisabledStepsFromReport...')
+
         let disabled_steps = funnel.pivot.disabled_steps
         if (!disabled_steps) return
 
@@ -121,6 +125,8 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     }
 
     function calculateReportConversions(funnel, steps) {
+        console.log('calculateReportConversions...')
+        
         steps.forEach((step, index) => {
             // Update user count
             funnel.report.steps[index].users = step.users

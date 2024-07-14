@@ -214,7 +214,7 @@
 
         <!-- Chart -->
         <Chart 
-          :report="funnelStore.funnel.report"
+          :funnel="funnelStore.funnel"
           :conversion_value="funnelStore.funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
@@ -515,7 +515,7 @@ function showFunnel() {
   funnelStore.show(route.params.organization, route.params.funnel)
 }
 
-function handleStepSelected(step) {
+function handleStepSelected(funnel, step) {
   if (authStore.user.role !== 'admin') return
   activeStepId.value = step.id
 }

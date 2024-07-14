@@ -208,25 +208,12 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    // showProjection: {
-    //     type: Boolean,
-    //     default: false
-    // }
 })
 
 const authStore = useAuthStore()
 const funnelStore = useFunnelStore()
 const projection = inject('projection', null)
 const isEditConversionValueModalOpen = inject('isEditConversionValueModalOpen', null)
-
-// function handleStepSelected(step) {
-//   // funnelStore.funnels[0].report.steps[1].disabled = !funnelStore.funnels[0].report.steps[1].disabled
-//   // funnelStore.calculateReportConversions(funnelStore.funnels[0], funnelStore.funnels[0].report.steps)
-//   console.log(step)
-//   step.disabled = !step.disabled
-//   console.log(funnelStore.funnels[0].steps)
-//   funnelStore.addFunnelJob(funnelStore.funnels[0])
-// }
 
 const calculateProjectionUsers = () => {
     console.log('Calculating projection users...')
