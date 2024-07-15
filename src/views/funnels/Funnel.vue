@@ -357,7 +357,7 @@ provide('isEditConversionValueModalOpen', isEditConversionValueModalOpen)
 provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
 function showProjection() {
-  console.log('Showing projection...')
+  // console.log('Showing projection...')
 
   if (funnelStore.funnel.projections.length) {
     projection.value = funnelStore.funnel.projections[0]
@@ -374,14 +374,14 @@ function showProjection() {
 }
 
 function saveProjection() {
-  console.log('Saving projection...')
+  // console.log('Saving projection...')
 
   funnelStore.funnel.projections.push(projection.value)
   updateFunnel()
 }
 
 function deleteProjection() {
-  console.log('Deleting projection...')
+  // console.log('Deleting projection...')
 
   funnelStore.funnel.projections = []
   projection.value = []
@@ -389,7 +389,7 @@ function deleteProjection() {
 }
 
 const updateFunnel = debounce(() => {
-  console.log('Updating funnel...')
+  // console.log('Updating funnel...')
   isUpdating.value = true
 
   funnelApi.update(route.params.organization, route.params.funnel, {
@@ -406,7 +406,7 @@ const updateFunnel = debounce(() => {
 }, 800)
 
 const updateStepName = debounce((step) => {
-  console.log('Updating step name...')
+  // console.log('Updating step name...')
   isUpdating.value = true
   
   let steps = funnelStore.funnel.steps.filter(s => s.id !== step.id)
@@ -434,7 +434,7 @@ function getUniqueStepName(steps, name, index = 1) {
 }
 
 const updateStepMetrics = debounce((step) => {
-  console.log('Updating step measurables...')
+  // console.log('Updating step measurables...')
   isUpdating.value = true
 
   // Iterate over metrics and delete any that don't have the metric property set
@@ -454,7 +454,7 @@ const updateStepMetrics = debounce((step) => {
 }, 800)
 
 function handleDragEvent(e) {
-  console.log('Handing drag event...')
+  // console.log('Handing drag event...')
   isUpdating.value = true
   let event = e.moved || e.added
 
@@ -467,7 +467,7 @@ function handleDragEvent(e) {
 }
 
 function addStep() {
-  console.log('Adding step...')
+  // console.log('Adding step...')
 
   let name = getUniqueStepName(funnelStore.funnel.steps, 'New step') 
   // console.log('name; ', name)
@@ -480,7 +480,7 @@ function addStep() {
 }
 
 function addMetric() {
-  console.log('Adding new metric to step...')
+  // console.log('Adding new metric to step...')
 
   activeStep.value.metrics.push({
     connection_id: funnelStore.funnel.connection.id,
@@ -490,7 +490,7 @@ function addMetric() {
 }
 
 function deleteMetric(index) {
-  console.log('Deleting metric...')
+  // console.log('Deleting metric...')
 
   activeStep.value.metrics.splice(index, 1)
   updateStepMetrics(activeStep.value)
@@ -498,7 +498,7 @@ function deleteMetric(index) {
 }
 
 function deleteStep(index, id) {
-  console.log('Deleting step...')
+  // console.log('Deleting step...')
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
       funnelStore.funnel.steps.splice(index, 1)
@@ -521,7 +521,7 @@ function handleStepSelected(funnel, step) {
 }
 
 watch(selectedDateRange, () => {
-  console.log('Date range has changed...')
+  // console.log('Date range has changed...')
   funnelStore.addFunnelJob(funnelStore.funnel)
   resetReports()
 })

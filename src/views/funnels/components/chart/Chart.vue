@@ -216,7 +216,7 @@ const projection = inject('projection', null)
 const isEditConversionValueModalOpen = inject('isEditConversionValueModalOpen', null)
 
 const calculateProjectionUsers = () => {
-    console.log('Calculating projection users...')
+    // console.log('Calculating projection users...')
     
     projection.value.forEach((step, index) => {
         // Skip first step in funnel

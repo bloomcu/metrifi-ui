@@ -92,7 +92,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     }
 
     const getReport = debounce((funnel) => {
-        console.log('getReport...')
+        // console.log('getReport...')
         isLoading.value = true
 
         gaDataApi.funnelReport(funnel.connection_id, {
@@ -112,21 +112,25 @@ export const useFunnelStore = defineStore('funnelStore', () => {
 
     function removeDisabledStepsFromReport(funnel) {
         if (!funnel.pivot) return
-        console.log('removeDisabledStepsFromReport...')
 
         let disabled_steps = funnel.pivot.disabled_steps
         if (!disabled_steps) return
 
-        funnel.steps.forEach((step, index) => {
+        funnel.steps.forEach((step) => {
+            // console.log(`Step ${step.id} disabled: ${disabled_steps.includes(step.id)}`)
             if (disabled_steps.includes(step.id)) {
+                // Find the index of the step in the report by it's id
+                let index = funnel.report.steps.findIndex(s => s.id === step.id)
+
+                // Remove the step from the report
                 funnel.report.steps.splice(index, 1)
             }
         })
     }
 
     function calculateReportConversions(funnel, steps) {
-        console.log('calculateReportConversions...')
-        
+        // console.log('calculateReportConversions...')
+
         steps.forEach((step, index) => {
             // Update user count
             funnel.report.steps[index].users = step.users
