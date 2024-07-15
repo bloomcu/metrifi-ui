@@ -36,7 +36,7 @@
         <DatePicker class="w-[400px]"/>
 
         <!-- Show notes -->
-        <AppButton @click="showNotes()" variant="tertiary" size="base" class="flex items-center gap-2">
+        <AppButton @click="toggleNotes()" variant="tertiary" size="base" class="flex items-center gap-2">
           <!-- <ChatBubbleBottomCenterIcon class="h-5 w-5 shrink-0" /> -->
           Notes
         </AppButton>
@@ -121,7 +121,7 @@
           </AppButton>
 
           <!-- Close analysis -->
-          <AppButton @click="showAnalysis()" variant="link" class="flex items-center gap-1">
+          <AppButton @click="closeAnalysis()" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
@@ -257,14 +257,18 @@ provide('isModalOpen', isModalOpen)
 provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
-function showNotes() {
+function toggleNotes() {
   isShowingNotes.value = !isShowingNotes.value
   isShowingAnalysis.value = false
 }
 
 function showAnalysis() {
-  isShowingAnalysis.value = !isShowingAnalysis.value
+  isShowingAnalysis.value = true
   isShowingNotes.value = false
+}
+
+function closeAnalysis() {
+  isShowingAnalysis.value = false
 }
 
 // function handleStepSelected(step) {
@@ -273,8 +277,15 @@ function showAnalysis() {
 // }
 
 function storeAnalysis() {
+  let subjectFunnel = funnelStore.funnels[0]
+  let comparisonFunnels = funnelStore.funnels.filter((funnel, index) => index !== 0)
+
+  // console.log(subjectFunnel)
+
   analysisStore.store(route.params.organization, route.params.dashboard, {
     subjectFunnelId: funnelStore.funnels[0].id,
+    subjectFunnel: subjectFunnel,
+    comparisonFunnels: comparisonFunnels,
   }).then(() => {
     showAnalysis()
   })
@@ -283,9 +294,7 @@ function storeAnalysis() {
 function reRunAnalysis() {
   analysisStore.analysis.content = ''
 
-  analysisStore.store(route.params.organization, route.params.dashboard, {
-    subjectFunnelId: funnelStore.funnels[0].id,
-  })
+  storeAnalysis()
 }
 
 function updateAnalysis() {

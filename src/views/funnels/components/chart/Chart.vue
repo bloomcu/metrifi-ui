@@ -66,7 +66,6 @@
                                 ]"
                                 @click="emit('stepSelected', funnel, step)"
                             />
-
                             <ChartBar 
                                 v-if="projection && projection.length && projection[index]"
                                 :value="projection[index].users" 
