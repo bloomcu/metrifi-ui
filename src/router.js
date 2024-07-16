@@ -63,7 +63,7 @@ router.beforeEach(async (to) => {
     to.params.organization &&
     to.params.organization !== organizationStore.organization?.slug
   ) {
-    console.log('Re-hydrating organization...')
+    // console.log('Re-hydrating organization...')
     await organizationStore.show(to.params.organization)
   }
 })

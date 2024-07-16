@@ -1,5 +1,5 @@
 <template>
-  <LayoutDefault v-if="funnel"  width="full" class="min-h-screen flex flex-col">
+  <LayoutDefault v-if="funnelStore.funnel"  width="full" class="min-h-screen flex flex-col">
     <!-- Header -->
     <header class="border-b p-3 flex items-center gap-3 justify-between">
       <div class="flex items-center gap-2 grow">
@@ -15,15 +15,15 @@
 
         <!-- Funnel name -->
         <AppTooltipWrapper class="w-6/12">
-          <AppInput v-model="funnel.name" @update:modelValue="updateFunnel"/>
+          <AppInput v-model="funnelStore.funnel.name" @update:modelValue="updateFunnel"/>
           <AppTooltip v-if="!organizationStore.organization.is_private" text="Funnel name will be visible to people outside of your organization" />
         </AppTooltipWrapper>
 
         <!-- Category -->
-        <CategoryPicker v-model="funnel.category" @update:modelValue="updateFunnel"/>
+        <CategoryPicker v-model="funnelStore.funnel.category" @update:modelValue="updateFunnel"/>
 
         <!-- Loading/Updating/Reporting indicator -->
-        <svg v-if="isLoading || isUpdating" class="inline w-6 h-6 ml-2 text-indigo-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg v-if="funnelStore.isLoading || isUpdating" class="inline w-6 h-6 ml-2 text-indigo-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
           <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
         </svg>
@@ -33,14 +33,14 @@
         <!-- Connection -->
         <div class="flex items-center mr-1">
           <svg class="w-4 h-4 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
-          <span class="text-sm">{{ funnel.connection.name }}</span>
+          <span class="text-sm">{{ funnelStore.funnel.connection.name }}</span>
         </div>
 
         <!-- Datepicker -->
         <DatePicker class="w-[330px]"/>
 
         <!-- Zoom -->
-        <Zoom v-model="funnel.zoom" @update:modelValue="updateFunnel"/>
+        <Zoom v-model="funnelStore.funnel.zoom" @update:modelValue="updateFunnel"/>
       </div>
     </header>
 
@@ -67,15 +67,15 @@
         </div>
 
         <!-- Steps -->
-        <div v-if="funnel.steps.length" class="p-3">
+        <div v-if="funnelStore.funnel.steps.length" class="p-3">
           <VueDraggableNext 
-            :list="funnel.steps" 
+            :list="funnelStore.funnel.steps" 
             :animation="150"
             @change="handleDragEvent($event)"
             class="flex flex-col gap-3"
           >
             <div 
-              v-for="(step, index) in funnel.steps" 
+              v-for="(step, index) in funnelStore.funnel.steps" 
               @click="activeStepId = step.id" 
               :class="activeStepId == step.id ? 'border-indigo-500 border-2 bg-indigo-50' : 'border-gray-200 bg-white hover:bg-gray-50'"
               class="group flex items-center justify-between rounded-lg px-2 py-3 text-sm leading-6 font-medium cursor-pointer border shadow text-gray-700 hover:text-indigo-600"
@@ -203,7 +203,7 @@
       <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
         <div class="ml-auto mb-2 z-0">
           <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary">
-            {{ funnel.projections.length ? 'Show projection' : 'Create projection' }}
+            {{ funnelStore.funnel.projections.length ? 'Show projection' : 'Create projection' }}
           </AppButton>
           <div v-else class="flex gap-2 ml-auto">
             <AppButton @click="deleteProjection()" variant="link">Delete projection</AppButton>
@@ -211,16 +211,15 @@
             <AppButton @click="saveProjection()" variant="secondary">Save projection</AppButton>
           </div>
         </div>
-        
 
         <!-- Chart -->
         <Chart 
-          :report="funnel.report"
-          :conversion_value="funnel.conversion_value"
+          :funnel="funnelStore.funnel"
+          :conversion_value="funnelStore.funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
-          :zoom="funnel.zoom"
-          :updating="isReportLoading"
+          :zoom="funnelStore.funnel.zoom"
+          :updating="funnelStore.isLoading"
           @stepSelected="handleStepSelected"
         />
 
@@ -251,11 +250,11 @@
         </div>
 
         <!-- Messages -->
-        <div v-if="funnel.messages && funnel.messages.length" class="pt-10">
+        <div v-if="funnelStore.funnel.messages && funnelStore.funnel.messages.length" class="pt-10">
           <p class="text-lg font-medium mb-3">Notifications</p>
 
           <div class="flex flex-col gap-2">
-            <div v-for="message in funnel.messages" class="rounded-md bg-white border shadow overflow-hidden">
+            <div v-for="message in funnelStore.funnel.messages" class="rounded-md bg-white border shadow overflow-hidden">
               <div @click="message.show = !message.show" class="flex items-center cursor-pointer p-4 hover:bg-emerald-50">
                 <div class="flex-shrink-0">
                   <CursorArrowRippleIcon class="h-6 w-6 text-emerald-500" aria-hidden="true" />
@@ -291,7 +290,7 @@
       </div>      
     </div>
 
-    <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="loadFunnel()"/>
+    <GenerateStepsModal :open="isGenerateStepsModalOpen" @done="showFunnel()"/>
     <EditFunnelModal :open="isEditFunnelModalOpen" />
     <EditConversionValueModal :open="isEditConversionValueModalOpen" />
   </LayoutDefault>
@@ -305,9 +304,10 @@ import { ref, computed, onMounted, watch, provide } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
-import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+// import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
+import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
@@ -328,10 +328,10 @@ import Chart from '@/views/funnels/components/chart/Chart.vue'
 const route = useRoute()
 const authStore = useAuthStore()
 const organizationStore = useOrganizationStore()
+const funnelStore = useFunnelStore()
 const { selectedDateRange } = useDatePicker()
 const { listConnections } = useConnections()
-const { funnel, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
-const { resetReports } = useGoogleAnalyticsReports()
+const { resetReports } = useGoogleAnalyticsReports() // rename to useGoogleAnalyticsData
 
 const isLoading = ref(true)
 const isUpdating = ref(false)
@@ -345,9 +345,9 @@ const projection = ref([])
 // const showProjection = ref(false)
 
 const activeStepId = ref()
-const activeStep = computed(() => funnel.value.steps.find(step => step.id === activeStepId.value))
+const activeStep = computed(() => funnelStore.funnel.steps.find(step => step.id === activeStepId.value))
 
-provide('funnel', funnel)
+// provide('funnel', funnel)
 provide('projection', projection)
 provide('isUpdating', isUpdating)
 provide('isGeneratingSteps', isGeneratingSteps)
@@ -357,14 +357,14 @@ provide('isEditConversionValueModalOpen', isEditConversionValueModalOpen)
 provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
 function showProjection() {
-  console.log('Showing projection...')
+  // console.log('Showing projection...')
 
-  if (funnel.value.projections.length) {
-    projection.value = funnel.value.projections[0]
+  if (funnelStore.funnel.projections.length) {
+    projection.value = funnelStore.funnel.projections[0]
     return
   }
 
-  funnel.value.report.steps.forEach((step, index) => {
+  funnelStore.funnel.report.steps.forEach((step, index) => {
     projection.value.push({
       name: step.name,
       users: step.users,
@@ -374,49 +374,48 @@ function showProjection() {
 }
 
 function saveProjection() {
-  console.log('Saving projection...')
+  // console.log('Saving projection...')
 
-  funnel.value.projections.push(projection.value)
+  funnelStore.funnel.projections.push(projection.value)
   updateFunnel()
 }
 
 function deleteProjection() {
-  console.log('Deleting projection...')
+  // console.log('Deleting projection...')
 
-  funnel.value.projections = []
+  funnelStore.funnel.projections = []
   projection.value = []
   updateFunnel()
 }
 
 const updateFunnel = debounce(() => {
-  console.log('Updating funnel...')
+  // console.log('Updating funnel...')
   isUpdating.value = true
 
   funnelApi.update(route.params.organization, route.params.funnel, {
-    connection_id: funnel.value.connection_id,
-    category_id: funnel.value.category.id,
-    name: funnel.value.name,
-    description: funnel.value.description,
-    zoom: funnel.value.zoom,
-    conversion_value: funnel.value.conversion_value,
-    projections: funnel.value.projections,
+    connection_id: funnelStore.funnel.connection_id,
+    category_id: funnelStore.funnel.category.id,
+    name: funnelStore.funnel.name,
+    description: funnelStore.funnel.description,
+    zoom: funnelStore.funnel.zoom,
+    conversion_value: funnelStore.funnel.conversion_value,
+    projections: funnelStore.funnel.projections,
   }).then(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
 
 const updateStepName = debounce((step) => {
-  console.log('Updating step name...')
+  // console.log('Updating step name...')
   isUpdating.value = true
   
-  let steps = funnel.value.steps.filter(s => s.id !== step.id)
+  let steps = funnelStore.funnel.steps.filter(s => s.id !== step.id)
   step.name = getUniqueStepName(steps, step.name)
   
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     name: step.name,
   }).then(() => {
-    // console.log('funnel.value: ', funnel.value)
-    addFunnelJob(funnel.value)
+    funnelStore.addFunnelJob(funnelStore.funnel)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
@@ -435,7 +434,7 @@ function getUniqueStepName(steps, name, index = 1) {
 }
 
 const updateStepMetrics = debounce((step) => {
-  console.log('Updating step measurables...')
+  // console.log('Updating step measurables...')
   isUpdating.value = true
 
   // Iterate over metrics and delete any that don't have the metric property set
@@ -449,61 +448,61 @@ const updateStepMetrics = debounce((step) => {
   funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
     metrics: step.metrics,
   }).then(() => {
-    addFunnelJob(funnel.value)
+    funnelStore.addFunnelJob(funnelStore.funnel)
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
 
 function handleDragEvent(e) {
-  console.log('Handing drag event...')
+  // console.log('Handing drag event...')
   isUpdating.value = true
   let event = e.moved || e.added
 
   funnelApi.updateStep(route.params.organization, route.params.funnel, event.element.id, {
     order: event.newIndex + 1
   }).then(() => {
-    addFunnelJob(funnel.value)
+    funnelStore.addFunnelJob(funnelStore.funnel)
     setTimeout(() => isUpdating.value = false, 500)
   })
 }
 
 function addStep() {
-  console.log('Adding step...')
+  // console.log('Adding step...')
 
-  let name = getUniqueStepName(funnel.value.steps, 'New step') 
+  let name = getUniqueStepName(funnelStore.funnel.steps, 'New step') 
   // console.log('name; ', name)
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: name,
     description: null,
   }).then(response => {
-    funnel.value.steps.push(response.data.data)
+    funnelStore.funnel.steps.push(response.data.data)
   })
 }
 
 function addMetric() {
-  console.log('Adding new metric to step...')
+  // console.log('Adding new metric to step...')
 
   activeStep.value.metrics.push({
-    connection_id: funnel.value.connection.id,
+    connection_id: funnelStore.funnel.connection.id,
     metric: '',
     showPicker: true,
   })
 }
 
 function deleteMetric(index) {
-  console.log('Deleting metric...')
+  // console.log('Deleting metric...')
 
   activeStep.value.metrics.splice(index, 1)
   updateStepMetrics(activeStep.value)
-  addFunnelJob(funnel.value)
+  funnelStore.addFunnelJob(funnelStore.funnel)
 }
 
 function deleteStep(index, id) {
-  console.log('Deleting step...')
+  // console.log('Deleting step...')
   funnelApi.destroyStep(route.params.organization, route.params.funnel, id)
     .then(() => {
-      funnel.value.steps.splice(index, 1)
-      addFunnelJob(funnel.value)
+      funnelStore.funnel.steps.splice(index, 1)
+      funnelStore.addFunnelJob(funnelStore.funnel)
     })
 }
 
@@ -511,28 +510,24 @@ function toggleModal() {
   isGenerateStepsModalOpen.value = !isGenerateStepsModalOpen.value 
 }
 
-function loadFunnel() {
-  console.log('Loading funnel...')
-  funnelApi.show(route.params.organization, route.params.funnel)
-    .then(response => {
-      addFunnel(response.data.data)
-      setTimeout(() => isLoading.value = false, 500)
-    })
+function showFunnel() {
+  // console.log('Loading funnel...')
+  funnelStore.show(route.params.organization, route.params.funnel)
 }
 
-function handleStepSelected(step) {
+function handleStepSelected(funnel, step) {
   if (authStore.user.role !== 'admin') return
   activeStepId.value = step.id
 }
 
 watch(selectedDateRange, () => {
-  console.log('Date range has changed...')
-  addFunnelJob(funnel.value)
+  // console.log('Date range has changed...')
+  funnelStore.addFunnelJob(funnelStore.funnel)
   resetReports()
 })
 
 onMounted(() => {
-  loadFunnel()
+  showFunnel()
   listConnections()
 })
 </script>

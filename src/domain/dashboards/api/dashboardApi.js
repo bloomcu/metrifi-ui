@@ -42,8 +42,8 @@ const dashboardApi = {
      * @param Object  dashboard [Properties to update dashboard with]
      * @return promise
      */
-    async update(organization, id, params) {
-      return await HttpClient.put(`/${organization}/dashboards/${id}`, params)
+    async update(organization_id, dashboard_id, funnel_id, params) {
+      return await HttpClient.put(`/${organization_id}/dashboards/${dashboard_id}/funnels/${funnel_id}`, params)
     },
     
     /**
@@ -99,6 +99,31 @@ const dashboardApi = {
             funnel_id: params.funnel_id,
             order: params.order
         })
+    },
+
+    /**
+     * Disable/Enable a funnel step
+     *
+     * @param Integer organization_id
+     * @param Integer dashboard_id
+     * @param Integer funnel_id
+     * @param Object  params.step_id [id of the funnel step to toggle]
+     * @return promise
+     */
+    async toggleFunnelStep(organization_id, dashboard_id, funnel_id, params) {
+        return await HttpClient.post(`/${organization_id}/dashboards/${dashboard_id}/funnels/${funnel_id}/toggle-step`, params)
+    },
+
+    /**
+     * Enable all funnel steps
+     *
+     * @param Integer organization_id
+     * @param Integer dashboard_id
+     * @param Integer funnel_id
+     * @return promise
+     */
+    async enableFunnelSteps(organization_id, dashboard_id, funnel_id) {
+        return await HttpClient.post(`/${organization_id}/dashboards/${dashboard_id}/funnels/${funnel_id}/enable-steps`)
     },
 }
 
