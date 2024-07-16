@@ -2,11 +2,11 @@
   <div @click="emit('stepSelected')" :class="enableCursorPointer ? 'cursor-pointer' : ''" class="group relative flex flex-1 h-full items-end p-1.5 rounded-lg transition-colors duration-200 hover:bg-gray-200/60">
     <!-- Controls -->
     <div v-if="enableControls" class="absolute left-4 top-4 flex gap-2 invisible group-hover:visible">
-      <button @click="emit('stepExpanded')" class="flex items-center gap-1 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
+      <button @click="emit('stepExpanded')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
         <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
         <span class="text-sm">Details</span>
       </button>
-      <button @click="emit('stepDisabled')" class="flex items-center gap-1 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
+      <button @click="emit('stepDisabled')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
         <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
         <span class="text-sm">Disable</span>
       </button>
