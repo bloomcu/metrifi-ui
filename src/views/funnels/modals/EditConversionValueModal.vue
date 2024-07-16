@@ -17,18 +17,19 @@
 import { ref, computed, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
+import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 
 const route = useRoute()
 const loading = ref(false)
-
-const funnel = inject('funnel')
+const funnelStore = useFunnelStore()
+// const funnel = inject('funnel')
 const isUpdating = inject('isUpdating')
 const isOpen = inject('isEditConversionValueModalOpen')
 
 const computedValue = computed({
   get: () => {
     // Convert to dollars
-    let value = funnel.value.conversion_value / 100
+    let value = funnelStorefunnel.value.conversion_value / 100
 
     // Format to dollars
     return value.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
@@ -51,11 +52,11 @@ const computedValue = computed({
 
     // Handle edge cases
     if (isNaN(value)) {
-      funnel.value.conversion_value = 0;
+      funnelStore.funnel.value.conversion_value = 0;
     }
 
     // Convert to cents
-    funnel.value.conversion_value = value * 100;
+    funnelStore.funnel.value.conversion_value = value * 100;
   }
 })
 
@@ -64,7 +65,7 @@ function updateFunnel() {
   isUpdating.value = true
 
   funnelApi.update(route.params.organization, route.params.funnel, {
-    conversion_value: funnel.value.conversion_value,
+    conversion_value: funnelStore.funnel.value.conversion_value,
   }).then(() => {
     isOpen.value = false
     setTimeout(() => isUpdating.value = false, 500);

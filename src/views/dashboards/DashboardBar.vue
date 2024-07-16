@@ -36,7 +36,7 @@
         <DatePicker class="w-[400px]"/>
 
         <!-- Show notes -->
-        <AppButton @click="showNotes()" variant="tertiary" size="base" class="flex items-center gap-2">
+        <AppButton @click="toggleNotes()" variant="tertiary" size="base" class="flex items-center gap-2">
           <!-- <ChatBubbleBottomCenterIcon class="h-5 w-5 shrink-0" /> -->
           Notes
         </AppButton>
@@ -121,7 +121,7 @@
           </AppButton>
 
           <!-- Close analysis -->
-          <AppButton @click="showAnalysis()" variant="link" class="flex items-center gap-1">
+          <AppButton @click="closeAnalysis()" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
@@ -153,14 +153,13 @@
     </div>
 
     <!-- Funnels -->
-    <!-- <div class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"> -->
     <VueDraggableNext 
-      :list="funnels" 
+      :list="funnelStore.funnels"
       :animation="150"
-      @change="handleDragEvent($event)"
+      @change="reorderFunnel($event)"
       class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"
     >
-      <div v-for="(funnel, index) in funnels" class="p-6 border-2 border-gray-200 rounded-2xl bg-white">
+      <div v-for="(funnel, index) in funnelStore.funnels" class="p-6 border-2 border-gray-200 rounded-2xl bg-white">
         <!-- Funnel and organization name -->
         <div class="flex items-center justify-between">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
@@ -169,31 +168,34 @@
 
         <!-- Chart -->
         <Chart 
-          :report="funnel.report" 
+          :funnel="funnel" 
           :conversion_value="funnel.conversion_value"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
-          :updating="isReportLoading"
-          @stepSelected="handleStepSelected"
+          :updating="funnelStore.isLoading"
+          @stepSelected="disableFunnelStep"
         />
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
+
         <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
+
         <AppButton 
           v-if="authStore.user.role === 'admin' || authStore.user.organization.slug === funnel.organization.slug"
           @click="openFunnel(funnel)" 
           variant="secondary" 
-          class="mt-2 text-xs"
+          class="mt-4 mr-2 text-xs"
         >
           Edit
         </AppButton>
+
+        <AppButton v-if="funnel.pivot.disabled_steps.length" @click="enableFunnelSteps(funnel)" variant="secondary" class="mt-4 text-xs">Enable steps ({{ funnel.pivot.disabled_steps.length }})</AppButton>
       </div>
 
       <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-2xl py-8 px-2 cursor-pointer hover:bg-indigo-50">
         <h2 class="text-lg font-medium text-indigo-600">Add a funnel</h2>
       </div>
     </VueDraggableNext>
-    <!-- </div> -->
 
     <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
 
@@ -210,7 +212,7 @@ import { useRouter, useRoute } from 'vue-router'
 
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useAnalysisStore } from '@/domain/analyses/store/useAnalysisStore'
-import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { useStepDetailsTray } from '@/domain/funnels/components/step-details/useStepDetailsTray'
 
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
@@ -230,8 +232,9 @@ const route = useRoute()
 
 const authStore = useAuthStore()
 const analysisStore = useAnalysisStore()
+const funnelStore = useFunnelStore()
 
-const { funnels, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
+// const { funnels, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 const { selectStep, openTray } = useStepDetailsTray()
 const { selectedDateRange } = useDatePicker()
 
@@ -247,46 +250,42 @@ const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
 
 const funnelsAlreadyAttachedIds = computed(() => {
-  return funnels.value.map(funnel => funnel.id)
+  return funnelStore.funnels.map(funnel => funnel.id)
 })
 
 provide('isModalOpen', isModalOpen)
 provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
-function handleDragEvent(e) {
-  isUpdating.value = true
-  let event = e.moved || e.added
-  // console.log("Funnel Id: ", event.element.id)
-  // console.log("Order: ", event.newIndex + 1)
-
-  dashboardApi.reorderFunnel(route.params.organization, route.params.dashboard, {
-    funnel_id: event.element.id,
-    order: event.newIndex + 1
-  }).then((response) => {
-    console.log(response)
-    setTimeout(() => isUpdating.value = false, 500)
-  })
-}
-
-function showNotes() {
+function toggleNotes() {
   isShowingNotes.value = !isShowingNotes.value
   isShowingAnalysis.value = false
 }
 
 function showAnalysis() {
-  isShowingAnalysis.value = !isShowingAnalysis.value
+  isShowingAnalysis.value = true
   isShowingNotes.value = false
 }
 
-function handleStepSelected(step) {
-  selectStep(step)
-  openTray()
+function closeAnalysis() {
+  isShowingAnalysis.value = false
 }
 
+// function handleStepSelected(step) {
+//   selectStep(step)
+//   openTray()
+// }
+
 function storeAnalysis() {
+  let subjectFunnel = funnelStore.funnels[0]
+  let comparisonFunnels = funnelStore.funnels.filter((funnel, index) => index !== 0)
+
+  // console.log(subjectFunnel)
+
   analysisStore.store(route.params.organization, route.params.dashboard, {
-    subjectFunnelId: dashboard.value.funnels[0].id,
+    subjectFunnelId: funnelStore.funnels[0].id,
+    subjectFunnel: subjectFunnel,
+    comparisonFunnels: comparisonFunnels,
   }).then(() => {
     showAnalysis()
   })
@@ -295,14 +294,10 @@ function storeAnalysis() {
 function reRunAnalysis() {
   analysisStore.analysis.content = ''
 
-  analysisStore.store(route.params.organization, route.params.dashboard, {
-    subjectFunnelId: dashboard.value.funnels[0].id,
-  })
+  storeAnalysis()
 }
 
 function updateAnalysis() {
-  console.log('Updating analysis...')
-
   analysisStore.update(route.params.organization, route.params.dashboard, analysisStore.analysis.id, {
     content: analysisStore.analysis.content,
   }).then(() => {
@@ -311,7 +306,6 @@ function updateAnalysis() {
 }
 
 const updateDashboard = debounce(() => {
-  console.log('Updating dashboard...')
   isUpdating.value = true
   isEditingNotes.value = false
 
@@ -324,7 +318,6 @@ const updateDashboard = debounce(() => {
 }, 800)
 
 function attachFunnels(funnelIds) {
-  console.log('Attaching funnel...')
   isUpdating.value = true
 
   dashboardApi.attachFunnels(
@@ -338,7 +331,6 @@ function attachFunnels(funnelIds) {
 }
 
 function detachFunnel(index, funnelId) {
-  console.log('Detaching funnel...')
   isUpdating.value = true
 
   dashboardApi.detachFunnel(
@@ -346,9 +338,54 @@ function detachFunnel(index, funnelId) {
     route.params.dashboard, 
     funnelId,
   ).then(() => {
-    funnels.value.splice(index, 1)
+    funnelStore.funnels.splice(index, 1)
     isUpdating.value = false
   })
+}
+
+function reorderFunnel(e) {
+  isUpdating.value = true
+  let event = e.moved || e.added
+
+  dashboardApi.reorderFunnel(route.params.organization, route.params.dashboard, {
+    funnel_id: event.element.id,
+    order: event.newIndex + 1
+  }).then((response) => {
+    setTimeout(() => isUpdating.value = false, 500)
+  })
+}
+
+function disableFunnelStep(funnel, step) {
+  // TODO: Do this in the funnel store
+
+  // Disable step
+  funnel.pivot.disabled_steps.push(step.id)
+
+  // Re-calculate funnel report
+  funnelStore.addFunnelJob(funnel)
+  
+  // Update dashboard funnel pivot
+  dashboardApi.toggleFunnelStep(route.params.organization, route.params.dashboard, funnel.id, {
+    step_id: step.id,
+  }).then((response) => {
+    setTimeout(() => isUpdating.value = false, 500)
+  })
+}
+
+function enableFunnelSteps(funnel) {
+  // TODO: Do this in the funnel store
+
+  // Disable step
+  funnel.pivot.disabled_steps = []
+
+  // Re-calculate funnel report
+  funnelStore.addFunnelJob(funnel)
+  
+  // Update dashboard funnel pivot
+  dashboardApi.enableFunnelSteps(route.params.organization, route.params.dashboard, funnel.id)
+    .then((response) => {
+      setTimeout(() => isUpdating.value = false, 500)
+    })
 }
 
 // function duplicateFunnel(duplicatedFunnel) {
@@ -361,19 +398,15 @@ function toggleModal() {
   isModalOpen.value = !isModalOpen.value 
 }
 
-// function runReport() {
-//   console.log('Running report...')
-// }
-
 function loadDashboard() {
-  console.log('Loading dashboard...')
+  funnelStore.funnels = []
   
   dashboardApi.show(route.params.organization, route.params.dashboard)
     .then(response => {
       dashboard.value = response.data.data
 
       dashboard.value.funnels.forEach(funnel => {
-        addFunnel(funnel)
+        funnelStore.addFunnel(funnel)
       })
 
       if (dashboard.value.latest_analysis) {
@@ -394,10 +427,8 @@ function openFunnel(funnel) {
 }
 
 watch(selectedDateRange, () => {
-  console.log('Date range has changed...')
-
   dashboard.value.funnels.forEach(funnel => {
-    addFunnelJob(funnel)
+    funnelStore.addFunnelJob(funnel)
   })
 })
 
