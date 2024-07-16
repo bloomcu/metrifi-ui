@@ -53,18 +53,18 @@
                         <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
                     </div>
 
-                    <div class="flex flex-[8] gap-3 z-0">
-                        <template v-for="(step, index) in funnel.report.steps" >
+                    <div class="flex flex-[8] z-0">
+                        <template v-for="(step, index) in funnel.report.steps">
                             <ChartBar 
                                 :value="step.users" 
                                 :max="maxValue" 
                                 :zoom="zoom"
                                 :updating="updating"
                                 :class="[
-                                    authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-600',
+                                    authStore.user.role === 'admin' ? 'cursor-pointer' : '',
                                     step.disabled ? 'bg-slate-300 hover:bg-slate-200' : ''
                                 ]"
-                                @click="emit('stepSelected', funnel, step)"
+                                @stepSelected="emit('stepSelected', funnel, step)"
                             />
                             <ChartBar 
                                 v-if="projection && projection.length && projection[index]"
@@ -73,32 +73,9 @@
                                 :zoom="zoom"
                                 :updating="updating"
                                 :class="authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-400 hover:bg-indigo-500' : 'bg-indigo-400'"
-                                @click="emit('stepSelected', funnel, step)"
+                                @stepSelected="emit('stepSelected', funnel, step)"
                             />
-
-                            <!-- <ChartBar 
-                                :value="step.users" 
-                                :max="maxValue" 
-                                :zoom="zoom"
-                                :updating="updating"
-                                :class="[
-                                    authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-600',
-                                    step.disabled ? 'bg-slate-300 hover:bg-slate-200' : ''
-                                ]"
-                                @click="handleStepSelected(step)"
-                            />
-
-                            <ChartBar 
-                                v-if="projection && projection.length && projection[index]"
-                                :value="projection[index].users" 
-                                :max="maxValue" 
-                                :zoom="zoom"
-                                :updating="updating"
-                                :class="authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-400 hover:bg-indigo-500' : 'bg-indigo-400'"
-                                @click="handleStepSelected(step)"
-                            /> -->
                         </template>
-                        
                     </div>
                 </div>
 
@@ -111,11 +88,10 @@
                             <ChartLabel :name="step.name" class="mb-0.5"/>
 
                             <!-- Metric: E.g., "1,000 users" -->
-                            <p class="pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p>
-                            
+                            <p class="px-1.5 pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p>
 
                             <!-- Conversion rate: E.g., "100%" -->
-                            <p v-if="index != 0">
+                            <p v-if="index != 0" class="px-1.5">
                                 {{ step.conversionRate }}%
                                 <span>conversion</span>
                             </p>
