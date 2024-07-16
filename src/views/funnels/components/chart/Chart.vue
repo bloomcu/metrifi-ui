@@ -72,7 +72,7 @@
                                 :max="maxValue" 
                                 :zoom="zoom"
                                 :updating="updating"
-                                :class="authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-400 hover:bg-indigo-500' : 'bg-indigo-400'"
+                                :class="authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-100/60' : ''"
                                 @stepSelected="emit('stepSelected', funnel, step)"
                             />
                         </template>
