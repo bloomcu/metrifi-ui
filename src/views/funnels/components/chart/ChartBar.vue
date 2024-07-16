@@ -1,9 +1,12 @@
 <template>
-  <div @click="emit('stepSelected')" class="flex flex-1 h-full items-end p-1.5 rounded-lg transition-colors duration-200 hover:bg-gray-200/60">
+  <div @click="emit('stepSelected')" class="flex flex-1 h-full items-end p-1.5 cursor-pointer rounded-lg transition-colors duration-200 hover:bg-gray-200/60">
     <div 
       :style="`height: ${height}%;`"
-      :class="updating ? 'animate-pulse' : ''"
-      class="flex-1 rounded-lg transition duration-300 bg-gradient-to-b from-indigo-600 to-indigo-700" 
+      :class="[
+        updating ? 'animate-pulse' : '',
+        isProjection ? 'from-indigo-400 to-indigo-500' : 'from-indigo-600 to-indigo-700'
+      ]"
+      class="flex-1 rounded-lg transition duration-300 bg-gradient-to-b " 
     />
   </div>
 </template>
@@ -16,6 +19,7 @@ const props = defineProps({
   max: 0,
   zoom: 0,
   updating: false,
+  isProjection: false,
 })
 
 const emit = defineEmits(['stepSelected'])
