@@ -50,6 +50,16 @@ export const useAnalysisStore = defineStore('analysisStore', {
             })
         },
 
+        async update(organization, dashboard, id, params) {
+          this.isLoading = true
+          
+          await AnalysisApi.update(organization, dashboard, id, params)
+            .then(response => {
+              this.analysis = response.data.data
+              this.isLoading = false
+            })
+        },
+
         toggleShowModal() {
           this.showModalOpen = !this.showModalOpen
         },

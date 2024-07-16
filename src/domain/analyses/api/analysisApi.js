@@ -30,6 +30,19 @@ const analysisApi = {
     show(organization, dashboard, id) {
       return HttpClient.get(`/${organization}/dashboards/${dashboard}/analyses/${id}`)
     },
+
+    /**
+     * Update an anlysis
+     *
+     * @param Integer organization [slug of the dashboard's organization]
+     * @param Integer dashboard [Id of the dashboard you want to update]
+     * @param Integer id [Id of the analysis you want to update]
+     * @param Object  params [Properties to update analysis with]
+     * @return promise
+     */
+    async update(organization, dashboard, id, params) {
+        return await HttpClient.put(`/${organization}/dashboards/${dashboard}/analyses/${id}`, params)
+    },
 }
 
 export { analysisApi }
