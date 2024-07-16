@@ -3,7 +3,7 @@
     <!-- Controls -->
     <div v-if="enableControls" class="absolute left-4 top-4 flex gap-2 invisible group-hover:visible">
       <button @click="emit('stepExpanded')" class="p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
-        <ArrowsPointingOutIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
+        <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
       </button>
       <button @click="emit('stepDisabled')" class="p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
         <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
@@ -37,7 +37,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { EyeSlashIcon,  ArrowsPointingOutIcon} from '@heroicons/vue/24/solid'
+import { EyeSlashIcon,  ArrowLeftEndOnRectangleIcon} from '@heroicons/vue/24/outline'
 import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
 import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
 
