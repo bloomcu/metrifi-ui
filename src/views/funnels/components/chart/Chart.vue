@@ -60,7 +60,11 @@
                                 :max="maxValue" 
                                 :zoom="zoom"
                                 :updating="updating"
-                                @stepSelected="emit('stepSelected', funnel, step)"
+                                :enableControls="enableControls"
+                                :enableCursorPointer="enableCursorPointer"
+                                @stepSelected="emit('stepSelected', step)"
+                                @stepDisabled="emit('stepDisabled', funnel, step)"
+                                @stepExpanded="emit('stepExpanded', step)"
                             />
                             <ChartBar 
                                 v-if="projection && projection.length && projection[index]"
@@ -69,7 +73,8 @@
                                 :zoom="zoom"
                                 :updating="updating"
                                 :isProjection="true"
-                                @stepSelected="emit('stepSelected', funnel, step)"
+                                :enableCursorPointer="enableCursorPointer"
+                                @stepSelected="emit('stepSelected', step)"
                             />
                         </template>
                     </div>
@@ -175,6 +180,8 @@ const props = defineProps({
     startDate: String,
     endDate: String,
     zoom: Number,
+    enableControls: false,
+    enableCursorPointer: false,
     updating: {
         type: Boolean,
         default: false
@@ -185,6 +192,8 @@ const authStore = useAuthStore()
 const funnelStore = useFunnelStore()
 const projection = inject('projection', null)
 const isEditConversionValueModalOpen = inject('isEditConversionValueModalOpen', null)
+
+const emit = defineEmits(['stepSelected', 'stepDisabled', 'stepExpanded'])
 
 const calculateProjectionUsers = () => {
     // console.log('Calculating projection users...')
@@ -295,6 +304,4 @@ const maxValue = computed(() => {
     
     return Math.max(...props.funnel.report.steps.map(step => step.users))
 })
-
-const emit = defineEmits(['stepSelected'])
 </script>

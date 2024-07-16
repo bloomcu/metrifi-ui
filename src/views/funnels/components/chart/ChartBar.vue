@@ -1,5 +1,18 @@
 <template>
-  <div @click="emit('stepSelected')" class="flex flex-1 h-full items-end p-1.5 cursor-pointer rounded-lg transition-colors duration-200 hover:bg-gray-200/60">
+  <div @click="emit('stepSelected')" :class="enableCursorPointer ? 'cursor-pointer' : ''" class="group relative flex flex-1 h-full items-end p-1.5 rounded-lg transition-colors duration-200 hover:bg-gray-200/60">
+    <!-- Controls -->
+    <div v-if="enableControls" class="absolute left-4 top-4 flex gap-2 invisible group-hover:visible">
+      <button @click="emit('stepExpanded')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
+        <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
+        <span class="text-sm">Details</span>
+      </button>
+      <button @click="emit('stepDisabled')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
+        <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
+        <span class="text-sm">Disable</span>
+      </button>
+    </div>
+
+    <!-- Chart bar -->
     <div 
       :style="`height: ${height}%;`"
       :class="[
@@ -7,12 +20,16 @@
         isProjection ? 'from-indigo-400 to-indigo-500' : 'from-indigo-600 to-indigo-700'
       ]"
       class="flex-1 rounded-lg transition duration-300 bg-gradient-to-b " 
-    />
+    >
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { EyeSlashIcon,  ArrowLeftEndOnRectangleIcon} from '@heroicons/vue/24/outline'
+import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
+import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
 
 const props = defineProps({
   value: 0,
@@ -20,9 +37,23 @@ const props = defineProps({
   zoom: 0,
   updating: false,
   isProjection: false,
+  enableControls: false,
+  enableCursorPointer: false,
 })
 
-const emit = defineEmits(['stepSelected'])
+const emit = defineEmits(['stepSelected', 'stepExpanded', 'stepDisabled'])
+
+// function onStepSelected() {
+//   emit('stepSelected')
+// }
+
+// function onExpandStep() {
+//   emit('stepExpanded')
+// }
+
+// function onDisableStep() {
+//   emit('stepDisabled')
+// }
 
 const height = computed(() => {
   let value = props.value
