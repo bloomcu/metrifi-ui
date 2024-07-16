@@ -60,10 +60,6 @@
                                 :max="maxValue" 
                                 :zoom="zoom"
                                 :updating="updating"
-                                :class="[
-                                    authStore.user.role === 'admin' ? 'cursor-pointer' : '',
-                                    step.disabled ? 'bg-slate-300 hover:bg-slate-200' : ''
-                                ]"
                                 @stepSelected="emit('stepSelected', funnel, step)"
                             />
                             <ChartBar 
@@ -72,7 +68,7 @@
                                 :max="maxValue" 
                                 :zoom="zoom"
                                 :updating="updating"
-                                :class="authStore.user.role === 'admin' ? 'cursor-pointer bg-indigo-400 hover:bg-indigo-500' : 'bg-indigo-400'"
+                                :isProjection="true"
                                 @stepSelected="emit('stepSelected', funnel, step)"
                             />
                         </template>
