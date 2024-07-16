@@ -61,6 +61,7 @@
                                 :zoom="zoom"
                                 :updating="updating"
                                 :enableControls="enableControls"
+                                :enableStepExpansion="enableStepExpansion"
                                 :enableCursorPointer="enableCursorPointer"
                                 @stepSelected="emit('stepSelected', step)"
                                 @stepDisabled="emit('stepDisabled', funnel, step)"
@@ -181,6 +182,7 @@ const props = defineProps({
     endDate: String,
     zoom: Number,
     enableControls: false,
+    enableStepExpansion: false,
     enableCursorPointer: false,
     updating: {
         type: Boolean,
