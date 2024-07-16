@@ -173,7 +173,9 @@
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
           :updating="funnelStore.isLoading"
-          @stepSelected="disableFunnelStep"
+          :enableControls="true"
+          @stepDisabled="disableFunnelStep"
+          @stepExpanded="expandFunnelStep"
         />
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
@@ -271,10 +273,10 @@ function closeAnalysis() {
   isShowingAnalysis.value = false
 }
 
-// function handleStepSelected(step) {
-//   selectStep(step)
-//   openTray()
-// }
+function expandFunnelStep(step) {
+  selectStep(step)
+  openTray()
+}
 
 function storeAnalysis() {
   let subjectFunnel = funnelStore.funnels[0]

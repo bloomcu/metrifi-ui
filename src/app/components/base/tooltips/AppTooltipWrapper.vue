@@ -1,5 +1,5 @@
 <template>
-  <div class="group relative">
+  <div class="group/tooltip relative">
     <slot/>
   </div>
 </template>

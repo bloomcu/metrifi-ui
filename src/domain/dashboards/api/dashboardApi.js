@@ -42,8 +42,8 @@ const dashboardApi = {
      * @param Object  dashboard [Properties to update dashboard with]
      * @return promise
      */
-    async update(organization_id, dashboard_id, funnel_id, params) {
-      return await HttpClient.put(`/${organization_id}/dashboards/${dashboard_id}/funnels/${funnel_id}`, params)
+    async update(organization_id, dashboard_id, params) {
+      return await HttpClient.put(`/${organization_id}/dashboards/${dashboard_id}`, params)
     },
     
     /**
