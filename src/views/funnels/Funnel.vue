@@ -220,7 +220,8 @@
           :endDate="selectedDateRange.endDate" 
           :zoom="funnelStore.funnel.zoom"
           :updating="funnelStore.isLoading"
-          @stepSelected="handleStepSelected"
+          :enableCursorPointer="true"
+          @stepSelected="selectStep"
         />
 
         <!-- <ChartLine/> -->
@@ -515,7 +516,7 @@ function showFunnel() {
   funnelStore.show(route.params.organization, route.params.funnel)
 }
 
-function handleStepSelected(funnel, step) {
+function selectStep(step) {
   if (authStore.user.role !== 'admin') return
   activeStepId.value = step.id
 }
