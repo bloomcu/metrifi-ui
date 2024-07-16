@@ -10,18 +10,6 @@
         <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
         <span class="text-sm">Disable</span>
       </button>
-      <!-- <AppTooltipWrapper>
-        <button @click="emit('stepExpanded')" class="p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
-          <ArrowsPointingOutIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
-        </button>
-        <AppTooltip text="Show details" />
-      </AppTooltipWrapper>
-      <AppTooltipWrapper>
-        <button @click="emit('stepDisabled')" class="p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
-          <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
-        </button>
-        <AppTooltip text="Disable step" />
-      </AppTooltipWrapper> -->
     </div>
 
     <!-- Chart bar -->
