@@ -174,6 +174,7 @@
           :endDate="selectedDateRange.endDate" 
           :updating="funnelStore.isLoading"
           :enableControls="true"
+          :enableStepExpansion="authStore.user.role === 'admin'"
           @stepDisabled="disableFunnelStep"
           @stepExpanded="expandFunnelStep"
         />
