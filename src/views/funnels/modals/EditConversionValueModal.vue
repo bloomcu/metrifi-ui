@@ -7,7 +7,7 @@
     <!-- <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Edit</h3> -->
 
     <form action="#" @submit.prevent="updateFunnel()" class="flex flex-col gap-4">
-      <AppInput v-model="computedValue" label="Assets per conversion" maxlength="18"/>
+      <AppInput v-model="computedValue" label="Assets per conversion" :maxlength="18"/>
       <AppButton :loading="loading" class="w-full">Update</AppButton>
     </form>
   </AppModal>
@@ -29,7 +29,7 @@ const isOpen = inject('isEditConversionValueModalOpen')
 const computedValue = computed({
   get: () => {
     // Convert to dollars
-    let value = funnelStorefunnel.value.conversion_value / 100
+    let value = funnelStore.funnel.conversion_value / 100
 
     // Format to dollars
     return value.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
@@ -52,11 +52,11 @@ const computedValue = computed({
 
     // Handle edge cases
     if (isNaN(value)) {
-      funnelStore.funnel.value.conversion_value = 0;
+      funnelStore.funnel.conversion_value = 0;
     }
 
     // Convert to cents
-    funnelStore.funnel.value.conversion_value = value * 100;
+    funnelStore.funnel.conversion_value = value * 100;
   }
 })
 
@@ -65,7 +65,7 @@ function updateFunnel() {
   isUpdating.value = true
 
   funnelApi.update(route.params.organization, route.params.funnel, {
-    conversion_value: funnelStore.funnel.value.conversion_value,
+    conversion_value: funnelStore.funnel.conversion_value,
   }).then(() => {
     isOpen.value = false
     setTimeout(() => isUpdating.value = false, 500);
