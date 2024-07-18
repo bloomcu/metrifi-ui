@@ -127,34 +127,34 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     //     })
     // }
 
-    // function calculateReportConversions(funnel, steps) {
-    //     // console.log('calculateReportConversions...')
+    function calculateReportConversions(funnel, steps) {
+        // console.log('calculateReportConversions...')
 
-    //     steps.forEach((step, index) => {
-    //         // Update user count
-    //         funnel.report.steps[index].users = step.users
+        steps.forEach((step, index) => {
+            // Update user count
+            funnel.report.steps[index].users = step.users
 
-    //         // First conversion rate is always 100%
-    //         if (index === 0) {
-    //             funnel.report.steps[0].conversionRate = '100'
-    //             return
-    //         }
+            // First conversion rate is always 100%
+            if (index === 0) {
+                funnel.report.steps[0].conversionRate = '100'
+                return
+            }
 
-    //         let cr = (step.users / steps[index - 1]?.users)
+            let cr = (step.users / steps[index - 1]?.users)
 
-    //         if (cr === Infinity || isNaN(cr)) {
-    //             funnel.report.steps[index].conversionRate = '0.00'
-    //             return
-    //         }
+            if (cr === Infinity || isNaN(cr)) {
+                funnel.report.steps[index].conversionRate = '0.00'
+                return
+            }
 
-    //         let formatted = cr * 100 // Get a percentage
-    //         formatted = formatted.toFixed(2) // Round to 2 decimal places
-    //         formatted = formatted.substring(0, 4) // Truncate to 4 characters
+            let formatted = cr * 100 // Get a percentage
+            formatted = formatted.toFixed(2) // Round to 2 decimal places
+            formatted = formatted.substring(0, 4) // Truncate to 4 characters
 
-    //         // Update conversion rate
-    //         funnel.report.steps[index].conversionRate = formatted
-    //     })
-    // }
+            // Update conversion rate
+            funnel.report.steps[index].conversionRate = formatted
+        })
+    }
 
     return {
         funnels,
