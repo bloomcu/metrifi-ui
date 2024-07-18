@@ -120,6 +120,8 @@
             Re-analyze with AI
           </AppButton>
 
+          
+
           <!-- Close analysis -->
           <AppButton @click="closeAnalysis()" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
@@ -137,7 +139,16 @@
           Loading analysis
         </p>
 
-        <div v-if="analysisStore.analysis" v-html="analysisStore.analysis.content" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 py-2"></div>
+        <!-- The analysis -->
+        <div v-if="analysisStore.analysis">
+          <div v-html="analysisStore.analysis.content" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 pt-2"></div>
+
+          <!-- Toggle meta -->
+          <AppButton @click="isShowingMeta = !isShowingMeta" variant="link" class="-ml-3">
+            Toggle meta
+          </AppButton>
+          <div v-if="isShowingMeta" v-html="analysisStore.analysis.meta" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 py-2"></div>
+        </div>
 
         <div class="border-t pt-4 text-sm text-gray-400">
           Analysis created {{ moment(analysisStore.analysis.created_at).fromNow() }}
@@ -251,6 +262,7 @@ const isShowingNotes = ref(false)
 const isEditingNotes = ref(false)
 const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
+const isShowingMeta = ref(false)
 
 const funnelsAlreadyAttachedIds = computed(() => {
   return funnelStore.funnels.map(funnel => funnel.id)
