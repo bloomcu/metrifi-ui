@@ -84,34 +84,15 @@
 
     <!-- Analysis -->
     <div v-if="analysisStore.analysis && isShowingAnalysis" class="mb-4">
-      <div v-if="isEditingAnalysis" class="p-6 border-2 border-gray-200 rounded-2xl bg-gray-50">
-        <AppRichtext v-model="analysisStore.analysis.content" class="mb-2"/>
-        <div class="flex items-center gap-2">
-          <AppButton @click="updateAnalysis()">Update analysis</AppButton>
-          <AppButton @click="isEditingAnalysis = false" variant="tertiary">Cancel</AppButton>
-        </div>
-      </div>
-
-      <div v-else class="relative p-6 border-2 border-gray-200 rounded-2xl bg-white">
+      <div v-if="!isEditingAnalysis" class="relative p-6 border-2 border-gray-200 rounded-2xl bg-white">
         <p class="mb-3 flex items-center text-xl font-medium leading-6 text-gray-900 tracking-tight">
           <span class="mr-3">Analysis</span>
           <span v-if="analysisStore.analysis.subject_funnel_performance" class="font-normal text-gray-500 text-base border-r border-l border-gray-300 px-3 mr-3">
             {{ analysisStore.analysis.subject_funnel_performance }}% {{ analysisStore.analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
           </span>
-          <span class="font-normal text-gray-500 text-base">
-            {{ moment(analysisStore.analysis.start_date).format('MMM DD, Y') }} - {{ moment(analysisStore.analysis.end_date).format('MMM DD, Y') }}
-          </span>
         </p>
 
-        <div class="absolute right-6 top-3 flex items-center gap-2">
-          <!-- Edit analysis -->
-          <AppButton @click="isEditingAnalysis = true" variant="link" class="flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-            </svg>
-            Edit analysis
-          </AppButton>
-
+        <div class="absolute right-4 top-3 flex items-center">
           <!-- Re-run analysis -->
           <AppButton @click="reRunAnalysis()" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
@@ -119,15 +100,21 @@
             </svg>
             Re-analyze with AI
           </AppButton>
-
           
+          <!-- Edit analysis -->
+          <AppButton @click="isEditingAnalysis = true" variant="link" class="flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+            Edit
+          </AppButton>
 
           <!-- Close analysis -->
           <AppButton @click="closeAnalysis()" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
-            Close analysis
+            Close
           </AppButton>
         </div>
         
@@ -139,28 +126,37 @@
           Loading analysis
         </p>
 
-        <!-- The analysis -->
         <div v-if="analysisStore.analysis">
+          <!-- The analysis -->
           <div v-html="analysisStore.analysis.content" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 pt-2"></div>
 
           <!-- Toggle meta -->
-          <AppButton @click="isShowingMeta = !isShowingMeta" variant="link" class="-ml-3">
+          <AppButton @click="isShowingMeta = !isShowingMeta" variant="link" class="-ml-3 mb-1">
             Toggle meta
           </AppButton>
-          <div v-if="isShowingMeta" v-html="analysisStore.analysis.meta" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 py-2"></div>
+
+          <!-- Meta -->
+          <div v-if="isShowingMeta" v-html="analysisStore.analysis.meta" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 text-sm px-4 py-2 bg-gray-50 border rounded-lg mb-3"></div>
         </div>
 
-        <div class="border-t pt-4 text-sm text-gray-400">
-          Analysis created {{ moment(analysisStore.analysis.created_at).fromNow() }}
+        <div class="divide-x divide-gray-300 border-t pt-4 text-sm text-gray-400">
+          <span class="pr-2">Analysis created {{ moment(analysisStore.analysis.created_at).fromNow() }}</span> 
+          <span class="pl-2">28 day period {{ moment(analysisStore.analysis.start_date).format('MMM DD, Y') }} - {{ moment(analysisStore.analysis.end_date).format('MMM DD, Y') }}</span>
+        </div>
+      </div>
+
+      <div v-else class="p-6 border-2 border-gray-200 rounded-2xl bg-gray-50">
+        <AppRichtext v-model="analysisStore.analysis.content" class="mb-2"/>
+        <div class="flex items-center gap-2">
+          <AppButton @click="updateAnalysis()">Update analysis</AppButton>
+          <AppButton @click="isEditingAnalysis = false" variant="tertiary">Cancel</AppButton>
         </div>
       </div>
     </div>
 
-    <div v-if="analysisStore.analysis && !isShowingAnalysis" @click="showAnalysis()" class="mb-4 px-6 py-4 border-2 border-gray-200 rounded-2xl bg-white cursor-pointer hover:bg-gray-50">
-      <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">
-        Show AI analysis
-        <span class="text-gray-400 text-sm font-normal">(Created on {{ moment(analysisStore.analysis.created_at).fromNow() }})</span>
-      </p>
+    <div v-if="analysisStore.analysis && !isShowingAnalysis" @click="showAnalysis()" class="flex items-center gap-2 mb-4 px-6 py-4 border-2 border-gray-200 rounded-2xl bg-white cursor-pointer hover:bg-gray-50">
+      <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">Show AI analysis</p>
+      <span class="text-gray-400 text-sm font-normal">Created on {{ moment(analysisStore.analysis.created_at).fromNow() }}</span>
     </div>
 
     <!-- Funnels -->
