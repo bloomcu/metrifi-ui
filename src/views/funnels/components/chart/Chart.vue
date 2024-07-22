@@ -226,8 +226,8 @@ const overallConversionRate = computed(() => {
     // return rate.toFixed(2) + "%"
 
     if (isNaN(rate)) return 0.00
-    // return rate.toFixed(2)
-    return rate
+    return rate.toFixed(2)
+    // return rate
 })
 
 const projectedOverallConversionRate = computed(() => {
