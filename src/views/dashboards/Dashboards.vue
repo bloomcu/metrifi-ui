@@ -51,20 +51,11 @@
             </div>
 
             <!-- Card body: analysis -->
-            <div 
-              v-if="dashboard.latest_analysis" 
-              v-html="dashboard.latest_analysis.content" 
-              class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 space-y-3"
-            ></div>
+            <AnalysisExcerpt v-if="dashboard.latest_analysis"  :analysis="dashboard.latest_analysis" class="space-y-3"/>
 
-            <div v-if="dashboard.latest_analysis" class="space-y-3 border-t pt-4">
-              <span v-if="dashboard.latest_analysis.subject_funnel_performance" class="font-normal text-gray-500 text-base border-r border-gray-300 pr-3 mr-3">
-                {{ dashboard.latest_analysis.subject_funnel_performance }}% {{ dashboard.latest_analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
-              </span>
-              <span class="font-normal text-gray-500 text-base">
-                {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}
-              </span>
-              <!-- <p><strong>Conversion rate:</strong> {{ dashboard.subject_funnel_performance }}% {{ dashboard.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons</p> -->
+            <div v-if="dashboard.latest_analysis" class="divide-x divide-gray-300 border-t pt-3 text-sm text-gray-400">
+              <span class="pr-2">Analysis created {{ moment(dashboard.latest_analysis.created_at).fromNow() }}</span> 
+              <span class="pl-2">28 day period {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}</span>
             </div>
 
             <!-- <div class="py-4">
@@ -130,6 +121,7 @@ import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
+import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
 
 const route = useRoute()
 const router = useRouter()
