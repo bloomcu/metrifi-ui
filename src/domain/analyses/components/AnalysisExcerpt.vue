@@ -15,7 +15,7 @@
     </div>
 
     <div v-else>
-        <p class="mb-3">
+        <p>
             <span class="font-semibold">Conversion rate:</span>
             {{ analysis.subject_funnel_performance }}% higher than comparisons. Consider comparing it the highest performing funnels, or drive more traffic.
         </p>
