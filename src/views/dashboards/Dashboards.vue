@@ -51,11 +51,14 @@
             </div>
 
             <!-- Card body: analysis -->
-            <AnalysisExcerpt v-if="dashboard.latest_analysis"  :analysis="dashboard.latest_analysis" class="space-y-3"/>
+            <div v-if="dashboard.latest_analysis" class="pb-3">
+              <AnalysisIssue v-if="dashboard.latest_analysis.issue" :issue="dashboard.latest_analysis.issue"/>
+              <AnalysisExcerpt v-else :analysis="dashboard.latest_analysis"/>
 
-            <div v-if="dashboard.latest_analysis" class="divide-x divide-gray-300 border-t pt-3 text-sm text-gray-400">
-              <span class="pr-2">Analysis created {{ moment(dashboard.latest_analysis.created_at).fromNow() }}</span> 
-              <span class="pl-2">28 day period {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}</span>
+              <div  class="divide-x divide-gray-300 border-t pt-3 text-sm text-gray-400">
+                <span class="pr-2">Analysis created {{ moment(dashboard.latest_analysis.created_at).fromNow() }}</span> 
+                <span class="pl-2">28 day period {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}</span>
+              </div>
             </div>
 
             <!-- <div class="py-4">
@@ -122,6 +125,7 @@ import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
+import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
 
 const route = useRoute()
 const router = useRouter()

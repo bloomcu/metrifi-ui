@@ -130,7 +130,8 @@
           <!-- The analysis -->
           <!-- <div v-html="analysisStore.analysis.content" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 pt-2"></div> -->
           <div clas="pt-2">
-            <AnalysisExcerpt :analysis="analysisStore.analysis"/>
+            <AnalysisIssue v-if="analysisStore.analysis.issue" :issue="analysisStore.analysis.issue"/>
+            <AnalysisExcerpt v-else :analysis="analysisStore.analysis"/>
             <!-- <p class="mb-3"><span class="font-semibold">Conversion rate:</span> {{ analysisStore.analysis.subject_funnel_performance }}% {{ analysisStore.analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons</p>
             <p class="mb-3"><span class="font-semibold">Biggest opportunity:</span> Step {{ analysisStore.analysis.bofi_step_index + 1 }} of your funnel is {{ analysisStore.analysis.bofi_performance }}% {{ analysisStore.analysis.bofi_performance <= 0 ? 'lower' : 'higher' }} than comparisons</p>
             <p class="mb-4"><span class="font-semibold">Potential assets:</span> +{{ Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(analysisStore.analysis.bofi_asset_change) }} every {{ analysisStore.analysis.period }} if you get Step {{ analysisStore.analysis.bofi_step_index + 1 }} on par with comparisons</p> -->
@@ -237,6 +238,7 @@ import { ArrowLeftIcon } from '@heroicons/vue/24/solid'
 import { ChatBubbleBottomCenterIcon } from '@heroicons/vue/24/outline'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
+import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
 import AddFunnelModal from '@/views/dashboards/modals/AddFunnelModal.vue'
 import StepDetailsTray from '@/domain/funnels/components/step-details/StepDetailsTray.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
