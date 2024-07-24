@@ -90,11 +90,13 @@
                             <ChartLabel :name="step.name" class="mb-0.5"/>
 
                             <!-- Metric: E.g., "1,000 users" -->
+                            <!-- <p class="px-1.5 pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p> -->
                             <p class="px-1.5 pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p>
 
                             <!-- Conversion rate: E.g., "100%" -->
                             <p v-if="index != 0" class="px-1.5">
-                                {{ step.conversionRate }}%
+                                <!-- {{ step.conversionRate }}% -->
+                                {{ Number(step.conversionRate).toFixed(2) }}%
                                 <span>conversion</span>
                             </p>
                         </div>
@@ -121,7 +123,8 @@
                             <MetricModifier v-if="index != 0">
                                 <template #title>
                                     <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                                        {{ projection[index].conversionRate }}%
+                                        <!-- {{ projection[index].conversionRate }}% -->
+                                        {{ Number(projection[index].conversionRate).toFixed(2) }}%
                                         <span>conversion</span>
                                         <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
                                     </p>
@@ -233,24 +236,26 @@ const overallConversionRate = computed(() => {
 const projectedOverallConversionRate = computed(() => {
     let firstStepUsers = projection.value[0].users
     let lastStepUsers = projection.value[projection.value.length - 1].users
-    let rate = (Math.round(lastStepUsers) / firstStepUsers) * 100
+    // let rate = (Math.round(lastStepUsers) / firstStepUsers) * 100
+    let rate = (lastStepUsers / firstStepUsers) * 100
 
     // if (isNaN(rate)) return "0.00%"
     // return rate.toFixed(2) + "%"
 
     if (isNaN(rate)) return 0.00
-    // return rate.toFixed(2)
-    return rate
+    return rate.toFixed(2)
+    // return rate
 })
 
 const projectedOverallConversionRateDifference = computed(() => {
     let diff = (projectedOverallConversionRate.value - overallConversionRate.value) / overallConversionRate.value * 100
-    // let diff = projectedOverallConversionRate.value - overallConversionRate.value
+        // diff = diff.toFixed(2) // Trim decimals to 2 place
     
     let direction = diff > 0 ? "+" : ""
 
+    return direction + diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) // Format with commas
     // return direction + diff.toFixed(2)
-    return direction + diff
+    // return direction + diff
 })
 
 const projectedAssets = computed(() => {
@@ -269,8 +274,8 @@ const projectedAssetDifference = computed(() => {
 
     let direction = diff > 0 ? "+" : ""
 
-    // return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
-    return direction + diff
+    return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
+    // return direction + diff
 })
 
 const assets = computed(() => {

@@ -101,6 +101,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             endDate: selectedDateRange.value.endDate,
         }).then(response => {
             if (response.data.data.error) console.log(response.data.data.error)
+            // console.log(response.data.data)
             funnel.report = response.data.data.report
             // removeDisabledStepsFromReport(funnel)
             // calculateReportConversions(funnel, funnel.report.steps)
@@ -147,12 +148,12 @@ export const useFunnelStore = defineStore('funnelStore', () => {
                 return
             }
 
-            let formatted = cr * 100 // Get a percentage
-            formatted = formatted.toFixed(2) // Round to 2 decimal places
-            formatted = formatted.substring(0, 4) // Truncate to 4 characters
+            let percentage = cr * 100 // Get a percentage
+            // percentage = percentage.toFixed(2) // Round to 2 decimal places
+            // percentage = percentage.substring(0, 4) // Truncate to 4 characters
 
             // Update conversion rate
-            funnel.report.steps[index].conversionRate = formatted
+            funnel.report.steps[index].conversionRate = percentage
         })
     }
 
