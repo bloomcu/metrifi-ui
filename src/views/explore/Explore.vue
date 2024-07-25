@@ -34,7 +34,7 @@
 
       <!-- Search -->
       <div class="flex items-center gap-2 mb-3">
-        <AppInput v-model="searchInput" placeholder="Search..." class="flex-1"></AppInput>
+        <AppInput v-model="searchQuery" placeholder="Search..." class="flex-1"></AppInput>
       </div>
 
       <!-- Report -->
@@ -259,7 +259,7 @@ const selectTab = (tab) => {
   selectedTab.value = tab
 }
 
-const searchInput = ref('')
+const searchQuery = ref('')
 // const filterInput = ref('')
 
 // const filteredReportRows = computed(() => {
@@ -270,28 +270,36 @@ const searchInput = ref('')
 //   })
 // })
 
-const run = debounce(() => {
+function run() {
   runReport(
-    selectedTab.value.metric, 
-    selectedConnection.value.id,
-    selectedDateRange.value.startDate,
-    selectedDateRange.value.endDate,
-    searchInput.value,
+    selectedTab.value.metric, // Report type by metric
+    selectedConnection.value.id, // Connection ID
+    selectedDateRange.value.startDate, // Start date
+    selectedDateRange.value.endDate, // End date
+    searchQuery.value, // Query
   )
+}
+
+const debounceRun = debounce(() => {
+  run()
 }, 500)
 
 watch(selectedTab, () => {
   console.log('Selected tab changed...')
 
-  // If report has already been run, don't run it again
-  if (reports.value[selectedTab.value.metric]) return
+  // If report has already been run, 
+  // and query hasn't changed, don't run report again
+  if (
+    reports.value[selectedTab.value.metric] && 
+    reports.value[selectedTab.value.metric].query === searchQuery.value
+  ) return
 
   run()
 })
 
-watch(searchInput, () => {
+watch(searchQuery, () => {
   console.log('Search input changed...')
-  run()
+  debounceRun()
 })
 
 watch(selectedDateRange, () => {
