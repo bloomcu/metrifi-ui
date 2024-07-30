@@ -21,6 +21,7 @@ import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 // })
 
 const reports = ref({
+  query: null,
   pageUsers: null,
   pagePlusQueryStringUsers: null,
   outboundLinkUsers: null,
@@ -63,14 +64,14 @@ export function useGoogleAnalyticsReports() {
   //   }
   // };
 
-  function runReport (report, connectionId, startDate, endDate, contains = '') {
+  function runReport (report, connectionId, startDate, endDate, query = '') {
     reportError.value = false
     isReportLoading.value = true
 
     gaDataApi[report](connectionId, {
       startDate: startDate,
       endDate: endDate,
-      contains: contains
+      contains: query
     }).then(response => {
       if (response.data.data.error) {
         console.log(response.data.data.error)
@@ -78,8 +79,12 @@ export function useGoogleAnalyticsReports() {
         isReportLoading.value = false
         return
       }
-      console.log(response.data.data)
-      reports.value[report] = response.data.data
+      
+      let gaReport = response.data.data
+          gaReport['query'] = query
+
+      reports.value[report] = gaReport
+
       isReportLoading.value = false
     })
   }
@@ -88,6 +93,7 @@ export function useGoogleAnalyticsReports() {
     console.log('Resetting reports...')
     
     reports.value = {
+      query: null,
       pageUsers: null,
       pagePlusQueryStringUsers: null,
       outboundLinkUsers: null,
