@@ -244,55 +244,14 @@ const selectTab = (tab) => {
 const picker = ref(null)
 const searchQuery = ref('')
 const searchElement = ref()
-// const loading = ref(true)
-// const report = ref()
-
-// const filteredReportRows = computed(() => {
-//   return reports.value[measurablePickerTab.value].rows.filter(row => {
-//     if (JSON.stringify(row.dimensionValues).includes(searchQuery.value)) {
-//       return row
-//     }
-//   })
-// })
-
-// const filteredReportRows = computed(() => {
-//   return reports.value[selectedTab.value.metric].rows.filter(row => {
-//     if (JSON.stringify(row.dimensionValues).includes(searchQuery.value)) {
-//       return row
-//     }
-//   })
-// })
-
-// function runReport() {
-//   loading.value = true
-
-//   gaDataApi[selectedTab.value.report](selectedConnection.value.id, {
-//     startDate: selectedDateRange.value.startDate,
-//     endDate: selectedDateRange.value.endDate,
-//     // contains: containsFilters.value.map(filter => filter)
-//     // contains: containsFilters.value
-//   }).then(response => {
-//     if (response.data.data.error) {
-//       console.log(response.data.data.error)
-//       return
-//     }
-//     loading.value = false
-//     report.value = response.data.data
-//   })
-// }
-
-// function updateMeasurable(measurable) {
-//   emit('update:modelValue', measurable)
-//   closeMeasurablePicker()
-// }
 
 function run() {
   runReport(
-    selectedTab.value.metric, 
-    selectedConnection.value.id,
-    selectedDateRange.value.startDate,
-    selectedDateRange.value.endDate,
-    searchQuery.value,
+    selectedTab.value.metric, // Report type by metric
+    selectedConnection.value.id, // Connection ID
+    selectedDateRange.value.startDate, // Start date
+    selectedDateRange.value.endDate, // End date
+    searchQuery.value, // Query
   )
 }
 
@@ -302,9 +261,13 @@ const debounceRun = debounce(() => {
 
 watch(selectedTab, () => {
   console.log('Selected tab changed...')
-
-  // If report has already been run, don't run it again
-  if (reports.value[selectedTab.value.metric]) return
+  
+  // If report has already been run, 
+  // and query hasn't changed, don't run report again
+  if (
+    reports.value[selectedTab.value.metric] && 
+    reports.value[selectedTab.value.metric].query === searchQuery.value
+  ) return
 
   run()
 })
@@ -324,17 +287,7 @@ onMounted(() => {
   console.log('Mounted...')
 
   resetReports()
-
-  // If report has already been run, don't run it again
-  // if (reports.value[props.modelValue.metric]) return
-
-  // Set selected tab
-
   run()
-
-  // nextTick(() => {
-  //  searchElement.value.focus()
-  // })
 })
 
 const emit = defineEmits(['update:modelValue'])

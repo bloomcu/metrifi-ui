@@ -30,12 +30,9 @@
           v-for="dashboard in dashboards" 
           @click="router.push({name: 'dashboard', params: {dashboard: dashboard.id}})" 
           class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-md border border-gray-200 bg-white hover:shadow-lg"
-        >
-          <!-- <div class="aspect-h-4 aspect-w-3 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-38">
-            <img :src="product.imageSrc" :alt="product.imageAlt" class="h-full w-full object-cover object-center sm:h-full sm:w-full" />
-          </div> -->
-          
+        >          
           <div class="flex flex-col space-y-4 px-4 py-4">
+            <!-- Card top -->
             <div :class="dashboard.latest_analysis ? 'border-b pb-4' : ''" class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <ChartBarIcon class="w-5 text-indigo-600"/>
@@ -53,20 +50,15 @@
               </div>
             </div>
 
-            <div 
-              v-if="dashboard.latest_analysis" 
-              v-html="dashboard.latest_analysis.content" 
-              class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 space-y-3"
-            ></div>
+            <!-- Card body: analysis -->
+            <div v-if="dashboard.latest_analysis" class="pb-3">
+              <AnalysisIssue v-if="dashboard.latest_analysis.issue" :issue="dashboard.latest_analysis.issue"/>
+              <AnalysisExcerpt v-else :analysis="dashboard.latest_analysis"/>
 
-            <div v-if="dashboard.latest_analysis" class="space-y-3 border-t pt-4">
-              <!-- <span class="font-normal text-gray-500 text-base border-r border-gray-300 pr-3 mr-3">
-                {{ dashboard.latest_analysis.subject_funnel_performance }}% {{ dashboard.latest_analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons
-              </span> -->
-              <span class="font-normal text-gray-500 text-base">
-                {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}
-              </span>
-              <!-- <p><strong>Conversion rate:</strong> {{ dashboard.subject_funnel_performance }}% {{ dashboard.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than comparisons</p> -->
+              <div  class="divide-x divide-gray-300 border-t pt-3 text-sm text-gray-400">
+                <span class="pr-2">Analysis created {{ moment(dashboard.latest_analysis.created_at).fromNow() }}</span> 
+                <span class="pl-2">28 day period {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}</span>
+              </div>
             </div>
 
             <!-- <div class="py-4">
@@ -132,6 +124,8 @@ import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
+import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
+import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
 
 const route = useRoute()
 const router = useRouter()

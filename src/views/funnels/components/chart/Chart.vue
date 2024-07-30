@@ -13,14 +13,14 @@
                             <PencilIcon class="inline h-5 w-5 text-indigo-600 p-1 rounded-md group-hover:bg-indigo-50"/>
                         </div>
                         <p v-else>Assets</p>
-                        <span class="text-2xl font-medium">{{ revenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
+                        <span class="text-2xl font-medium">{{ assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
                     </div>
 
                     <!-- Projected assets -->
                     <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l ml-4 pl-4">
                         <p>Projected assets</p>
                         <p class="flex items-center gap-1 text-2xl font-medium">
-                            {{ projectedRevenue.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
+                            {{ projectedAssets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
                             <span class="text-sm">({{ projectedAssetDifference }})</span>
                         </p>
                     </div>
@@ -90,11 +90,13 @@
                             <ChartLabel :name="step.name" class="mb-0.5"/>
 
                             <!-- Metric: E.g., "1,000 users" -->
+                            <!-- <p class="px-1.5 pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p> -->
                             <p class="px-1.5 pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p>
 
                             <!-- Conversion rate: E.g., "100%" -->
                             <p v-if="index != 0" class="px-1.5">
-                                {{ step.conversionRate }}%
+                                <!-- {{ step.conversionRate }}% -->
+                                {{ Number(step.conversionRate).toFixed(2) }}%
                                 <span>conversion</span>
                             </p>
                         </div>
@@ -121,7 +123,8 @@
                             <MetricModifier v-if="index != 0">
                                 <template #title>
                                     <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-indigo-50 hover:ring-2 focus:ring-2 hover:ring-indigo-600 focus:ring-indigo-600">
-                                        {{ projection[index].conversionRate }}%
+                                        <!-- {{ projection[index].conversionRate }}% -->
+                                        {{ Number(projection[index].conversionRate).toFixed(2) }}%
                                         <span>conversion</span>
                                         <PencilIcon class="inline ml-1 h-3 w-3 text-indigo-600"/>
                                     </p>
@@ -227,12 +230,14 @@ const overallConversionRate = computed(() => {
 
     if (isNaN(rate)) return 0.00
     return rate.toFixed(2)
+    // return rate
 })
 
 const projectedOverallConversionRate = computed(() => {
     let firstStepUsers = projection.value[0].users
     let lastStepUsers = projection.value[projection.value.length - 1].users
-    let rate = (Math.round(lastStepUsers) / firstStepUsers) * 100
+    // let rate = (Math.round(lastStepUsers) / firstStepUsers) * 100
+    let rate = (lastStepUsers / firstStepUsers) * 100
 
     // if (isNaN(rate)) return "0.00%"
     // return rate.toFixed(2) + "%"
@@ -244,57 +249,63 @@ const projectedOverallConversionRate = computed(() => {
 
 const projectedOverallConversionRateDifference = computed(() => {
     let diff = (projectedOverallConversionRate.value - overallConversionRate.value) / overallConversionRate.value * 100
-    // let diff = projectedOverallConversionRate.value - overallConversionRate.value
+        // diff = diff.toFixed(2) // Trim decimals to 2 place
     
     let direction = diff > 0 ? "+" : ""
 
-    return direction + diff.toFixed(2)
+    return direction + diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) // Format with commas
+    // return direction + diff.toFixed(2)
+    // return direction + diff
 })
 
-const projectedRevenue = computed(() => {
+const projectedAssets = computed(() => {
+    // projected assets = number of projected users at eof * assets per conversion
+    // But to do this you need to know the number of users at the end of the funnel real users not rounded
+
     let users = projection.value[projection.value.length - 1].users
     let value = props.conversion_value
-    let rev = users * value
+    let assets = users * value
 
-    return (rev / 100)
+    return (assets / 100)
 })
 
 const projectedAssetDifference = computed(() => {
-    let diff = projectedRevenue.value - revenue.value
+    let diff = projectedAssets.value - assets.value
 
     let direction = diff > 0 ? "+" : ""
 
     return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
+    // return direction + diff
 })
 
-const revenue = computed(() => {
+const assets = computed(() => {
     if (!props.funnel.report.steps.length) return "$0.00"
 
     let users = props.funnel.report.steps[props.funnel.report.steps.length - 1].users
     let value = props.conversion_value
-    let rev = users * value
+    let assets = users * value
 
-    return (rev / 100)
+    return (assets / 100)
 })
 
-const profit = computed(() => {
-    let rev = revenue.value
-    let profit = rev * (0.5 / 100)
+// const profit = computed(() => {
+//     let assets = assets.value
+//     let profit = assets * (0.5 / 100)
 
-    return profit
-})  
+//     return profit
+// })  
 
-const projectedProfit = computed(() => {
-    let projectedRevenue = projectedRevenue.value
-    let profit = projectedRevenue * (0.5 / 100)
+// const projectedProfit = computed(() => {
+//     let projectedAssets = projectedAssets.value
+//     let profit = projectedAssets * (0.5 / 100)
 
-    return profit
-})
+//     return profit
+// })
 
-const projectedProfitDifference = computed(() => {
-    let diff = projectedProfit.value - profit.value
-    return diff
-})
+// const projectedProfitDifference = computed(() => {
+//     let diff = projectedProfit.value - profit.value
+//     return diff
+// })
 
 const maxValue = computed(() => {
     if (projection) {

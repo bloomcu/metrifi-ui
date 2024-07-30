@@ -95,38 +95,38 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         // console.log('getReport...')
         isLoading.value = true
 
-        gaDataApi.funnelReport(funnel.connection_id, {
+        gaDataApi.funnelReport(funnel.id, {
+            disabledSteps: funnel.pivot?.disabled_steps,
             startDate: selectedDateRange.value.startDate,
             endDate: selectedDateRange.value.endDate,
-            steps: funnel.steps,
         }).then(response => {
             if (response.data.data.error) console.log(response.data.data.error)
-            funnel.report = response.data.data
-            removeDisabledStepsFromReport(funnel)
-            calculateReportConversions(funnel, funnel.report.steps)
+            // console.log(response.data.data)
+            funnel.report = response.data.data.report
+            // removeDisabledStepsFromReport(funnel)
+            // calculateReportConversions(funnel, funnel.report.steps)
             isLoading.value = false
         })
 
         startNextFunnelJob()
     }, 500)
 
-    function removeDisabledStepsFromReport(funnel) {
-        if (!funnel.pivot) return
+    // function removeDisabledStepsFromReport(funnel) {
+    //     if (!funnel.pivot) return
 
-        let disabled_steps = funnel.pivot.disabled_steps
-        if (!disabled_steps) return
+    //     let disabled_steps = funnel.pivot.disabled_steps
+    //     if (!disabled_steps) return
 
-        funnel.steps.forEach((step) => {
-            // console.log(`Step ${step.id} disabled: ${disabled_steps.includes(step.id)}`)
-            if (disabled_steps.includes(step.id)) {
-                // Find the index of the step in the report by it's id
-                let index = funnel.report.steps.findIndex(s => s.id === step.id)
+    //     funnel.steps.forEach((step) => {
+    //         if (disabled_steps.includes(step.id)) {
+    //             // Find the index of the step in the report by it's id
+    //             let index = funnel.report.steps.findIndex(s => s.id === step.id)
 
-                // Remove the step from the report
-                funnel.report.steps.splice(index, 1)
-            }
-        })
-    }
+    //             // Remove the step from the report
+    //             funnel.report.steps.splice(index, 1)
+    //         }
+    //     })
+    // }
 
     function calculateReportConversions(funnel, steps) {
         // console.log('calculateReportConversions...')
@@ -148,12 +148,12 @@ export const useFunnelStore = defineStore('funnelStore', () => {
                 return
             }
 
-            let formatted = cr * 100 // Get a percentage
-            formatted = formatted.toFixed(2) // Round to 2 decimal places
-            formatted = formatted.substring(0, 4) // Trim to 2 decimal places
+            let percentage = cr * 100 // Get a percentage
+            // percentage = percentage.toFixed(2) // Round to 2 decimal places
+            // percentage = percentage.substring(0, 4) // Truncate to 4 characters
 
             // Update conversion rate
-            funnel.report.steps[index].conversionRate = formatted
+            funnel.report.steps[index].conversionRate = percentage
         })
     }
 
@@ -170,7 +170,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         update,
         addFunnel,
         addFunnelJob,
-        calculateReportConversions,
+        // calculateReportConversions,
     }
 })
 
