@@ -137,13 +137,13 @@
             <p class="mb-4"><span class="font-semibold">Potential assets:</span> +{{ Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(analysisStore.analysis.bofi_asset_change) }} every {{ analysisStore.analysis.period }} if you get Step {{ analysisStore.analysis.bofi_step_index + 1 }} on par with comparisons</p> -->
           </div>
 
-          <!-- Toggle meta -->
-          <AppButton @click="isShowingMeta = !isShowingMeta" variant="link" class="-ml-3 mb-1">
-            Toggle meta
+          <!-- Toggle reference -->
+          <AppButton @click="isShowingReference = !isShowingReference" variant="link" class="-ml-3 mb-1">
+            Toggle reference
           </AppButton>
 
-          <!-- Meta -->
-          <div v-if="isShowingMeta" v-html="analysisStore.analysis.meta" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 text-sm px-4 py-2 bg-gray-50 border rounded-lg mb-3"></div>
+          <!-- Reference -->
+          <div v-if="isShowingReference" v-html="analysisStore.analysis.reference" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 text-sm px-4 py-2 bg-gray-50 border rounded-lg mb-3"></div>
         </div>
 
         <div class="divide-x divide-gray-300 border-t pt-4 text-sm text-gray-400">
@@ -267,7 +267,7 @@ const isShowingNotes = ref(false)
 const isEditingNotes = ref(false)
 const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
-const isShowingMeta = ref(false)
+const isShowingReference = ref(false)
 
 const funnelsAlreadyAttachedIds = computed(() => {
   return funnelStore.funnels.map(funnel => funnel.id)
