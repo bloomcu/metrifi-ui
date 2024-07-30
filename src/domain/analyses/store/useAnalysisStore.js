@@ -31,7 +31,7 @@ export const useAnalysisStore = defineStore('analysisStore', {
           
           await AnalysisApi.store(organization, dashboard, params)
             .then(response => {
-              console.log(response)
+              // console.log(response)
               // console.log("Analysis: ", response.data.data)
               this.analysis = response.data.data
               this.isLoading = false
