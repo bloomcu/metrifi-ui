@@ -1,8 +1,10 @@
 <template>
   <LayoutWithSidebar>
     <template #topbar>
-      <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Connection</h1>
-      <AppButton v-if="!connection" @click="connectToGoogle()">Connect Google Analytics</AppButton>
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Connection</h1>
+        <AppButton v-if="!connection" @click="connectToGoogle()">Connect Google Analytics</AppButton>
+      </div>
     </template>
 
     <!-- <table v-if="connections && connections.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg"> -->

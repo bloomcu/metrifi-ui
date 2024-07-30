@@ -1,19 +1,67 @@
 <template>
   <LayoutWithSidebar>
-    <template #topbar>
+    <!-- <template #topbar>
       <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
       <div class="flex gap-4">
-        <!-- Show/hide organizations -->
-        <!-- <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2">
-          <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
-          <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
-            Show organizations
-          </label>
-        </div> -->
-
         <AppButton @click="storeNewDashboard()">
           Create dashboard
         </AppButton>
+      </div>
+    </template> -->
+
+    <template #topbar>
+      <div class="relative border-b border-gray-200 pb-5 sm:pb-0">
+        <div class="md:flex md:items-center md:justify-between">
+          <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
+          <div class="flex gap-3 md:absolute md:right-0">
+            <!-- <AppButton variant="tertiary">
+              Analyze all dashboards
+            </AppButton> -->
+            <AppButton @click="storeNewDashboard()">
+              Create dashboard
+            </AppButton>
+          </div>
+        </div>
+        <div class="mt-4">
+          <!-- <div class="sm:hidden">
+            <label for="current-tab" class="sr-only">Select a tab</label>
+            <select id="current-tab" name="current-tab" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600">
+              <option v-for="tab in tabs" :key="tab.name" :selected="tab.current">{{ tab.name }}</option>
+            </select>
+          </div> -->
+          <pre>{{ sorts }}</pre>
+          <div class="hidden sm:block">
+            <nav class="-mb-px flex space-x-8">
+              <button @click="toggleSort('users')" :class="[sorts['users'] ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pr-1 py-4 text-sm font-medium']">
+                Users
+                <span v-if="sorts['users']" class="group inline-flex ml-2 rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200">
+                  <ChevronUpIcon :class="sorts['users'] == 'asc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                </span>
+              </button>
+
+              <button @click="toggleSort('performance')" :class="[sorts['performance'] ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
+                Conversion rate
+                <span v-if="sorts['performance']" class="group inline-flex ml-2 rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200">
+                  <ChevronUpIcon :class="sorts['performance'] == 'asc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                </span>
+              </button>
+
+              <button @click="toggleSort('bofiPerformance')" :class="[sorts['bofiPerformance'] ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
+                Bofi performance
+                <span v-if="sorts['bofiPerformance']" class="group inline-flex ml-2 rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200">
+                  <ChevronUpIcon :class="sorts['bofiPerformance'] == 'asc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                </span>
+              </button>
+
+              <button @click="toggleSort('assetChange')" :class="[sorts['assetChange'] ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
+                Potential assets
+                <span v-if="sorts['assetChange']" class="group inline-flex ml-2 rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200">
+                  <ChevronUpIcon :class="sorts['assetChange'] == 'asc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                </span>
+              </button>
+            </nav>
+          </div>
+        </div>
       </div>
     </template>
 
@@ -27,9 +75,9 @@
         class="flex flex-col gap-4"
       >
         <div 
-          v-for="dashboard in dashboards" 
+          v-for="dashboard in sortedDashboards" 
           @click="router.push({name: 'dashboard', params: {dashboard: dashboard.id}})" 
-          class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-md border border-gray-200 bg-white hover:shadow-lg"
+          class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
         >          
           <div class="flex flex-col space-y-4 px-4 py-4">
             <!-- Card header -->
@@ -121,13 +169,14 @@
 
 <script setup>
 import moment from "moment"
-import { ref, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
+import { ChevronUpIcon } from '@heroicons/vue/20/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
 import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
@@ -140,6 +189,82 @@ const authStore = useAuthStore()
 const dashboards = ref()
 const isLoading = ref(false)
 const isShowingOrganizations = ref(false)
+
+const sortOptions = ref({
+  users: {asc: 'subject_funnel_users', desc: '-subject_funnel_users'},
+  performance: {asc: 'subject_funnel_performance', desc: '-subject_funnel_performance'},
+  bofiPerformance: {asc: 'bofi_performance', desc: '-bofi_performance'},
+  assetChange: {asc: 'bofi_asset_change', desc: '-bofi_asset_change'},
+})
+
+const sorts = reactive({
+  users: null,
+  performance: 'desc',
+  bofiPerformance: null,
+  assetChange: null,
+})
+
+const activeSorts = ref(['-subject_funnel_performance'])
+
+const sortedDashboards = computed(() => {
+  if (activeSorts.value.length === 0) {
+    return dashboards.value
+  }
+
+  return [...dashboards.value].sort(fieldSorter(activeSorts.value))
+})
+
+function toggleSort(property) {
+  if (sorts[property] == null) {
+    sorts[property] = 'desc'
+    activeSorts.value.push(sortOptions.value[property].desc)
+    return
+  }
+
+  if (sorts[property] == 'desc') {
+    activeSorts.value.splice(activeSorts.value.indexOf(sorts[property]), 1)
+    sorts[property] = 'asc'
+    activeSorts.value.push(sortOptions.value[property].asc)
+    return
+  }
+
+  if (sorts[property] == 'asc') {
+    activeSorts.value.splice(activeSorts.value.indexOf(sorts[property]), 1)
+    sorts[property] = null
+    return
+  }
+}
+
+function fieldSorter(fields) {
+    return function (a, b) {
+        return fields
+            .map(function (o) {
+                var dir = 1;
+                if (o[0] === '-') {
+                   dir = -1
+                   o=o.substring(1)
+                }
+                if (!a['latest_analysis']) return
+                if (!b['latest_analysis']) return
+
+                if (a['latest_analysis'][o] > b['latest_analysis'][o]) return dir
+                if (a['latest_analysis'][o] < b['latest_analysis'][o]) return -(dir)
+                return 0;
+            })
+            .reduce(function firstNonZeroValue (p, n) {
+                return p ? p : n
+            }, 0)
+    };
+}
+
+// function fieldSorter(fields) {
+//   return (a, b) => fields.map(o => {
+//       let dir = 1;
+//       if (o[0] === '-') { dir = -1; o = o.substring(1); }
+//       return a[o] > b[o] ? dir : a[o] < b[o] ? -(dir) : 0;
+//   })
+//     .reduce((p, n) => p ? p : n, 0)
+// }
 
 function loadDashboards() {
   isLoading.value = true
