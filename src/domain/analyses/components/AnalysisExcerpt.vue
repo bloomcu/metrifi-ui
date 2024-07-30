@@ -15,7 +15,7 @@
     <!-- Funnel is better on all steps, so the BOFI is to compare with higher performing funnels -->
     <p v-if="analysis.bofi_performance >= 0" class="mb-3">
         <span class="font-semibold">Biggest opportunity:</span>
-        Compare with higher performing funnels. Or, if you funnel is optimized, drive more traffic to it.
+        All your funnel steps are above average. Compare with higher-performing funnels or drive more traffic to your funnel.
     </p>
 
     <!-- Potential assets -->
