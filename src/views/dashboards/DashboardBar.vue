@@ -94,7 +94,7 @@
 
         <div class="absolute right-4 top-3 flex items-center">
           <!-- Re-run analysis -->
-          <AppButton @click="reRunAnalysis()" variant="link" class="flex items-center gap-1">
+          <AppButton @click="storeAnalysis()" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
             </svg>
@@ -137,13 +137,13 @@
             <p class="mb-4"><span class="font-semibold">Potential assets:</span> +{{ Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(analysisStore.analysis.bofi_asset_change) }} every {{ analysisStore.analysis.period }} if you get Step {{ analysisStore.analysis.bofi_step_index + 1 }} on par with comparisons</p> -->
           </div>
 
-          <!-- Toggle meta -->
-          <AppButton @click="isShowingMeta = !isShowingMeta" variant="link" class="-ml-3 mb-1">
-            Toggle meta
+          <!-- Toggle reference -->
+          <AppButton @click="isShowingReference = !isShowingReference" variant="link" class="-ml-3 mb-1">
+            Toggle reference
           </AppButton>
 
-          <!-- Meta -->
-          <div v-if="isShowingMeta" v-html="analysisStore.analysis.meta" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 text-sm px-4 py-2 bg-gray-50 border rounded-lg mb-3"></div>
+          <!-- Reference -->
+          <div v-if="isShowingReference" v-html="analysisStore.analysis.reference" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 text-sm px-4 py-2 bg-gray-50 border rounded-lg mb-3"></div>
         </div>
 
         <div class="divide-x divide-gray-300 border-t pt-4 text-sm text-gray-400">
@@ -267,7 +267,7 @@ const isShowingNotes = ref(false)
 const isEditingNotes = ref(false)
 const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
-const isShowingMeta = ref(false)
+const isShowingReference = ref(false)
 
 const funnelsAlreadyAttachedIds = computed(() => {
   return funnelStore.funnels.map(funnel => funnel.id)
@@ -311,19 +311,19 @@ function storeAnalysis() {
   })
 }
 
-function reRunAnalysis() {
-  analysisStore.analysis.content = ''
+// function reRunAnalysis() {
+//   analysisStore.analysis.content = ''
 
-  storeAnalysis()
-}
+//   storeAnalysis()
+// }
 
-function updateAnalysis() {
-  analysisStore.update(route.params.organization, route.params.dashboard, analysisStore.analysis.id, {
-    content: analysisStore.analysis.content,
-  }).then(() => {
-    isEditingAnalysis.value = false
-  })
-}
+// function updateAnalysis() {
+//   analysisStore.update(route.params.organization, route.params.dashboard, analysisStore.analysis.id, {
+//     content: analysisStore.analysis.content,
+//   }).then(() => {
+//     isEditingAnalysis.value = false
+//   })
+// }
 
 const updateDashboard = debounce(() => {
   isUpdating.value = true
