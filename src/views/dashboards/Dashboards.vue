@@ -10,7 +10,7 @@
     </template> -->
 
     <template #topbar>
-      <div class="relative border-b border-gray-200 pb-5 sm:pb-0">
+      <div class="relative __border-b __border-gray-200 pb-5 sm:pb-0">
         <div class="md:flex md:items-center md:justify-between">
           <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
           <div class="flex gap-3 md:absolute md:right-0">
@@ -22,14 +22,9 @@
             </AppButton>
           </div>
         </div>
-        <div class="mt-4">
-          <!-- <div class="sm:hidden">
-            <label for="current-tab" class="sr-only">Select a tab</label>
-            <select id="current-tab" name="current-tab" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600">
-              <option v-for="tab in tabs" :key="tab.name" :selected="tab.current">{{ tab.name }}</option>
-            </select>
-          </div> -->
-          <pre>{{ sorts }}</pre>
+
+        <!-- Sorting -->
+        <!-- <div class="mt-4">
           <div class="hidden sm:block">
             <nav class="-mb-px flex space-x-8">
               <button @click="toggleSort('users')" :class="[sorts['users'] ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pr-1 py-4 text-sm font-medium']">
@@ -61,7 +56,7 @@
               </button>
             </nav>
           </div>
-        </div>
+        </div> -->
       </div>
     </template>
 
@@ -75,7 +70,7 @@
         class="flex flex-col gap-4"
       >
         <div 
-          v-for="dashboard in sortedDashboards" 
+          v-for="dashboard in dashboards" 
           @click="router.push({name: 'dashboard', params: {dashboard: dashboard.id}})" 
           class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
         >          
