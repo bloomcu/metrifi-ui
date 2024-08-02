@@ -1,11 +1,4 @@
 <template>
-    <!-- Overall conversion rate -->
-    <p v-if="analysis.subject_funnel_performance != 0" class="mb-3">
-        <span class="font-semibold">Conversion rate:</span>
-        {{ Number(analysis.subject_funnel_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
-        {{ analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than the average
-    </p>
-
     <!-- Biggest opportunity -->
     <p v-if="analysis.bofi_performance < 0" class="mb-3">
         <span class="font-semibold">Biggest opportunity:</span>
@@ -16,6 +9,19 @@
     <p v-if="analysis.bofi_performance >= 0" class="mb-3">
         <span class="font-semibold">Biggest opportunity:</span>
         All your funnel steps are above average. Compare with higher-performing funnels or drive more traffic to your funnel.
+    </p>
+
+    <!-- Overall conversion rate -->
+    <p v-if="analysis.subject_funnel_performance != 0" class="mb-3">
+        <span class="font-semibold">Conversion rate:</span>
+        {{ Number(analysis.subject_funnel_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
+        {{ analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than the average
+    </p>
+
+    <!-- Users -->
+    <p class="mb-3">
+        <span class="font-semibold">Users:</span>
+        {{ analysis.subject_funnel_users ? analysis.subject_funnel_users.toLocaleString() : 0 }}
     </p>
 
     <!-- Potential assets -->

@@ -108,7 +108,7 @@
               
               <div class="flex items-center gap-3">
                 <!-- Users count -->
-                <span v-if="dashboard.latest_analysis && dashboard.latest_analysis.subject_funnel_users" class="text-sm text-gray-500 border-r border-gray-300 pr-3">{{ dashboard.latest_analysis.subject_funnel_users }} users</span>
+                <!-- <span v-if="dashboard.latest_analysis && dashboard.latest_analysis.subject_funnel_users" class="text-sm text-gray-500 border-r border-gray-300 pr-3">{{ dashboard.latest_analysis.subject_funnel_users }} users</span> -->
 
                 <!-- Funnels count -->
                 <span class="text-sm text-gray-500 border-r border-gray-300 pr-3">{{ dashboard.funnels.length }} funnels</span>
