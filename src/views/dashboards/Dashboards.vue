@@ -26,46 +26,52 @@
         <!-- Sorting -->
         <div class="mt-4">
           <div class="hidden sm:block">
-            <nav class="-mb-px flex space-x-8">
+            <nav class="-mb-px flex space-x-4">
               <button @click="setActiveSort('subject_funnel_users')" :class="[activeSort == 'subject_funnel_users' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pr-1 py-4 text-sm font-medium']">
                 Users
-                <span v-if="activeSort == 'subject_funnel_users'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
-                  <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                <span @click.stop="toggleActiveSortDirection('subject_funnel_users')" class="inline-flex ml-2 rounded bg-gray-100 hover:bg-gray-200">
+                  <ChevronUpIcon v-if="activeSort == 'subject_funnel_users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-gray-900 h-5 w-5" aria-hidden="true" />
+                  <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
 
               <button @click="setActiveSort('subject_funnel_performance')" :class="[activeSort == 'subject_funnel_performance' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
                 Conversion rate
-                <span v-if="activeSort == 'subject_funnel_performance'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
-                  <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                <span @click.stop="toggleActiveSortDirection('subject_funnel_performance')" class="inline-flex ml-2 rounded bg-gray-100 hover:bg-gray-200">
+                  <ChevronUpIcon v-if="activeSort == 'subject_funnel_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-gray-900 h-5 w-5" aria-hidden="true" />
+                  <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
 
               <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
                 Biggest opportunity
-                <span v-if="activeSort == 'bofi_performance'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
-                  <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                <span @click.stop="toggleActiveSortDirection('bofi_performance')" class="inline-flex ml-2 rounded bg-gray-100 hover:bg-gray-200">
+                  <ChevronUpIcon v-if="activeSort == 'bofi_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-gray-900 h-5 w-5" aria-hidden="true" />
+                  <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
 
               <button @click="setActiveSort('bofi_asset_change')" :class="[activeSort == 'bofi_asset_change' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
                 Potential assets
-                <span v-if="activeSort == 'bofi_asset_change'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
-                  <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                <span @click.stop="toggleActiveSortDirection('bofi_asset_change')" class="inline-flex ml-2 rounded bg-gray-100 hover:bg-gray-200">
+                  <ChevronUpIcon v-if="activeSort == 'bofi_asset_change'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-gray-900 h-5 w-5" aria-hidden="true" />
+                  <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
 
               <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
                 Name
-                <span v-if="activeSort == 'name'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
-                  <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                <span @click.stop="toggleActiveSortDirection('name')" class="inline-flex ml-2 rounded bg-gray-100 hover:bg-gray-200">
+                  <ChevronUpIcon v-if="activeSort == 'name' " :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-gray-900 h-5 w-5" aria-hidden="true" />
+                  <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
 
               <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
                 Last modified
-                <span v-if="activeSort == 'updated_at'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
-                  <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                <span @click.stop="toggleActiveSortDirection('updated_at')" class="inline-flex ml-2 rounded bg-gray-100 hover:bg-gray-200">
+                  <ChevronUpIcon v-if="activeSort == 'updated_at'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-gray-900 h-5 w-5" aria-hidden="true" />
+                  <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
             </nav>
@@ -101,7 +107,10 @@
                 <span v-if="dashboard.latest_analysis && dashboard.latest_analysis.subject_funnel_users" class="text-sm text-gray-500 border-r border-gray-300 pr-3">{{ dashboard.latest_analysis.subject_funnel_users }} users</span>
 
                 <!-- Funnels count -->
-                <span class="text-sm text-gray-500 pr-3">{{ dashboard.funnels.length }} funnels</span>
+                <span class="text-sm text-gray-500 border-r border-gray-300 pr-3">{{ dashboard.funnels.length }} funnels</span>
+
+                <!-- Dashbaord updated at -->
+                <span class="text-sm text-gray-500 pr-3">Modified {{ moment(dashboard.updated_at).fromNow() }}</span>
 
                 <!-- Delete -->
                 <button @click.stop="destroyDashboard(dashboard.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300">
@@ -185,7 +194,7 @@ import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
-import { ChevronUpIcon } from '@heroicons/vue/20/solid'
+import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
 import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
@@ -250,23 +259,12 @@ const sortedDashboards = computed(() => {
       }
     })
   }
-
-  // sort by analysis created_at
-  // if (activeSort.value === 'created_at') {
-  //   return [...dashboards.value].sort(function (a, b) {
-  //     if (activeSortDirection.value === 'asc') {
-  //       return a['latest_analysis'].created_at.localeCompare(b['latest_analysis'].created_at)
-  //     } else if (activeSortDirection.value === 'desc') {
-  //       return b['latest_analysis'].created_at.localeCompare(a['latest_analysis'].created_at)
-  //     }
-  //   })
-  // }
-
 })
 
 function setActiveSort(sort) {
   // Toggle current sort off
   if (activeSort.value == sort) {
+    toggleActiveSortDirection()
     return
   }
 
@@ -275,7 +273,12 @@ function setActiveSort(sort) {
   activeSortDirection.value = 'desc'
 }
 
-function toggleActiveSortDirection() {
+function toggleActiveSortDirection(sort) {
+  // if (activeSort.value !== sort) {
+  //   setActiveSort(sort)
+  //   return
+  // }
+
   activeSortDirection.value = activeSortDirection.value == 'desc' ? 'asc' : 'desc'
 }
 
