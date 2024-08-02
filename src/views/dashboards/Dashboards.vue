@@ -213,7 +213,7 @@ const isLoading = ref(false)
 const isShowingOrganizations = ref(false)
 
 const activeSort = ref('bofi_performance')
-const activeSortDirection = ref('desc')
+const activeSortDirection = ref('asc')
 
 const sortedDashboards = computed(() => {
   if (!activeSort.value) {
@@ -274,7 +274,7 @@ function setActiveSort(sort) {
 
   // Set new sort
   activeSort.value = sort
-  activeSortDirection.value = 'desc'
+  activeSortDirection.value = 'asc'
 }
 
 function toggleActiveSortDirection(sort) {
