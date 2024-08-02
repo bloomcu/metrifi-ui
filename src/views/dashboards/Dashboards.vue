@@ -272,17 +272,19 @@ function setActiveSort(sort) {
     return
   }
 
+  // Default Users and Potential assets to desc
+  if (['subject_funnel_users', 'bofi_asset_change'].includes(sort)) {
+    activeSortDirection.value = 'desc'
+    activeSort.value = sort
+    return
+  }
+
   // Set new sort
-  activeSort.value = sort
   activeSortDirection.value = 'asc'
+  activeSort.value = sort
 }
 
 function toggleActiveSortDirection(sort) {
-  // if (activeSort.value !== sort) {
-  //   setActiveSort(sort)
-  //   return
-  // }
-
   activeSortDirection.value = activeSortDirection.value == 'desc' ? 'asc' : 'desc'
 }
 
