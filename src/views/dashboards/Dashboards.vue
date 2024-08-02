@@ -257,9 +257,9 @@ const sortedDashboards = computed(() => {
   if (activeSort.value === 'updated_at') {
     return [...dashboards.value].sort(function (a, b) {
       if (activeSortDirection.value === 'asc') {
-        return a.updated_at.localeCompare(b.updated_at)
-      } else if (activeSortDirection.value === 'desc') {
         return b.updated_at.localeCompare(a.updated_at)
+      } else if (activeSortDirection.value === 'desc') {
+        return a.updated_at.localeCompare(b.updated_at)
       }
     })
   }
