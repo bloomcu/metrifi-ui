@@ -77,7 +77,7 @@
     <!-- Dashboards -->
     <!-- <div v-if="dashboards && dashboards.length" class="flex flex-col gap-4"> -->
       <VueDraggableNext 
-        v-if="dashboards && dashboards.length"
+        v-if="dashboards && sortedDashboards.length"
         :list="dashboards" 
         :animation="150"
         @change="handleDragEvent($event)"
