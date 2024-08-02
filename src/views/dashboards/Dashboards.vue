@@ -54,6 +54,20 @@
                   <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
+
+              <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
+                Name
+                <span v-if="activeSort == 'name'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
+                  <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                </span>
+              </button>
+
+              <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
+                Modified date
+                <span v-if="activeSort == 'updated_at'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
+                  <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
+                </span>
+              </button>
             </nav>
           </div>
         </div>
@@ -193,20 +207,57 @@ const sortedDashboards = computed(() => {
     return dashboards.value
   }
 
-  return [...dashboards.value].sort(function (a, b) {
-    var x = parseInt(a['latest_analysis'][activeSort.value], 10);
-    var y = parseInt(b['latest_analysis'][activeSort.value], 10);
+  // sort by analysis numerical columns
+  if (['subject_funnel_users', 'subject_funnel_performance', 'bofi_performance', 'bofi_asset_change'].includes(activeSort.value)) {
+    return [...dashboards.value].sort(function (a, b) {
+      var x = parseInt(a['latest_analysis'][activeSort.value], 10)
+      var y = parseInt(b['latest_analysis'][activeSort.value], 10)
 
-    if (x === 0 && y === 0) {
-      return 1 / x - 1 / y || 0;
-    }
-    
-    if (activeSortDirection.value === 'asc') {
-        return x - y;
-    } else if (activeSortDirection.value === 'desc') {
-        return y - x;
-    }
-  });
+      if (x === 0 && y === 0) {
+        return 1 / x - 1 / y || 0
+      }
+      
+      if (activeSortDirection.value === 'asc') {
+          return x - y
+      } else if (activeSortDirection.value === 'desc') {
+          return y - x
+      }
+    })
+  }
+
+  // sort by name
+  if (activeSort.value === 'name') {
+    return [...dashboards.value].sort(function (a, b) {
+      if (activeSortDirection.value === 'asc') {
+        return a.name.localeCompare(b.name)
+      } else if (activeSortDirection.value === 'desc') {
+        return b.name.localeCompare(a.name)
+      }
+    })
+  }
+
+  // sort by dashboard updated_at
+  if (activeSort.value === 'updated_at') {
+    return [...dashboards.value].sort(function (a, b) {
+      if (activeSortDirection.value === 'asc') {
+        return a.updated_at.localeCompare(b.updated_at)
+      } else if (activeSortDirection.value === 'desc') {
+        return b.updated_at.localeCompare(a.updated_at)
+      }
+    })
+  }
+
+  // sort by analysis created_at
+  // if (activeSort.value === 'created_at') {
+  //   return [...dashboards.value].sort(function (a, b) {
+  //     if (activeSortDirection.value === 'asc') {
+  //       return a['latest_analysis'].created_at.localeCompare(b['latest_analysis'].created_at)
+  //     } else if (activeSortDirection.value === 'desc') {
+  //       return b['latest_analysis'].created_at.localeCompare(a['latest_analysis'].created_at)
+  //     }
+  //   })
+  // }
+
 })
 
 function setActiveSort(sort) {
