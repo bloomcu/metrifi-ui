@@ -63,7 +63,7 @@
               </button>
 
               <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
-                Modified date
+                Last modified
                 <span v-if="activeSort == 'updated_at'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
                   <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
                 </span>
@@ -210,6 +210,10 @@ const sortedDashboards = computed(() => {
   // sort by analysis numerical columns
   if (['subject_funnel_users', 'subject_funnel_performance', 'bofi_performance', 'bofi_asset_change'].includes(activeSort.value)) {
     return [...dashboards.value].sort(function (a, b) {
+      if (!a['latest_analysis'] || !b['latest_analysis']) {
+        return 0
+      }
+
       var x = parseInt(a['latest_analysis'][activeSort.value], 10)
       var y = parseInt(b['latest_analysis'][activeSort.value], 10)
 
@@ -263,7 +267,6 @@ const sortedDashboards = computed(() => {
 function setActiveSort(sort) {
   // Toggle current sort off
   if (activeSort.value == sort) {
-    activeSort.value = null
     return
   }
 
