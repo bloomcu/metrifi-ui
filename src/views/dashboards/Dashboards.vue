@@ -42,7 +42,7 @@
               </button>
 
               <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']">
-                Bofi performance
+                Biggest opportunity
                 <span v-if="activeSort == 'bofi_performance'" @click.stop="toggleActiveSortDirection()" class="inline-flex ml-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200">
                   <ChevronUpIcon v-if="activeSortDirection" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="h-5 w-5" aria-hidden="true" />
                 </span>
