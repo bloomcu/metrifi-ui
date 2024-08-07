@@ -25,10 +25,10 @@ const routes = [
   ...connections,
   ...services,
   ...welcome,
-  {
-    path: '/',
-    redirect: 'organizations'
-  },
+  // {
+  //   path: '/',
+  //   redirect: '/admin/organizations'
+  // },
   { 
     path: '/sandbox', 
     component: Sandbox 
