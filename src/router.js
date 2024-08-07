@@ -3,6 +3,7 @@ import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import baseRoutes from '@/routes/base/routes.js'
+import admin from '@/views/admin/routes/index.js'
 import benchmarks from '@/views/benchmarks/routes/index.js'
 import dashboards from '@/views/dashboards/routes/index.js'
 import explore from '@/views/explore/routes/index.js'
@@ -16,6 +17,7 @@ import Sandbox from '@/views/Sandbox.vue';
 
 const routes = [
   ...baseRoutes,
+  ...admin,
   ...benchmarks,
   ...dashboards,
   ...explore,

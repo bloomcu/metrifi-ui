@@ -16,67 +16,48 @@ export const useOrganizationStore = defineStore('organizationStore', {
     getters: {},
     
     actions: {
-        index(params) {
-          this.organizations = []
-          OrganizationApi.index(params)
-            .then(response => {
-              this.organizations = response.data.data
-            }).catch(error => {
-              console.log('Error', error.response.data)
-            })
-        },
+      async show(slug) {
+        this.isLoading = true
+        this.organization = null
         
-        async store(organization) {
-          await OrganizationApi.store(organization)
-            .then(response => {
-              this.organizations.unshift(response.data.data)
-            }).catch(error => {
-              console.log('Error', error.response.data)
-            })
-        },
+        await OrganizationApi.show(slug)
+          .then(response => {
+            this.organization = response.data.data
+            this.isLoading = false
+          })
+      },
+      
+      async update() {
+        this.isLoading = true
         
-        async show(slug) {
-          this.isLoading = true
-          this.organization = null
-          
-          await OrganizationApi.show(slug)
-            .then(response => {
-              this.organization = response.data.data
-              this.isLoading = false
-            })
-        },
+        await OrganizationApi.update(this.organization.slug, this.organization)
+          .then(response => {
+            console.log('Site successfully updated')
+            this.isLoading = false
+          })
+      },
+      
+      async destroy(slug) {
+        this.isLoading = true
         
-        async update() {
-          this.isLoading = true
-          
-          await OrganizationApi.update(this.organization.slug, this.organization)
-            .then(response => {
-              console.log('Site successfully updated')
-              this.isLoading = false
-            })
-        },
-        
-        async destroy(slug) {
-          this.isLoading = true
-          
-          await OrganizationApi.destroy(slug)
-            .then(response => {
-              this.organizations = this.organizations.filter((organization) => organization.slug !== slug)
-              this.isLoading = false
-            })
-        },
-        
-        toggleCreateModal() {
-          this.createModalOpen = !this.createModalOpen
-        },
+        await OrganizationApi.destroy(slug)
+          .then(response => {
+            this.organizations = this.organizations.filter((organization) => organization.slug !== slug)
+            this.isLoading = false
+          })
+      },
+      
+      toggleCreateModal() {
+        this.createModalOpen = !this.createModalOpen
+      },
 
-        toggleUpdateModal() {
-          this.updateModalOpen = !this.updateModalOpen
-        },
+      toggleUpdateModal() {
+        this.updateModalOpen = !this.updateModalOpen
+      },
 
-        toggleDestroyModal() {
-          this.destroyModalOpen = !this.destroyModalOpen
-        }
+      toggleDestroyModal() {
+        this.destroyModalOpen = !this.destroyModalOpen
+      }
     }
 })
 
