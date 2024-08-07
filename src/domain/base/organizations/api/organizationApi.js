@@ -1,26 +1,6 @@
 import { httpClient as HttpClient } from '@/app/api/base/httpClient'
 
-const organizationApi = {    
-    /**
-     * List organizations
-     *
-     * @param Object params [Key/value params to query by]
-     * @return promise
-     */
-    index(params) {
-        return HttpClient.get(`/admin/organizations`, { params: params })
-    },
-    
-    /**
-     * Store an organization
-     *
-     * @param Object organization [Properties to create file from]
-     * @return promise
-     */
-    store(organization) {
-        return HttpClient.post('/admin/organizations', organization)
-    },
-    
+const organizationApi = {        
     /**
      * Show an organization
      *
@@ -28,7 +8,7 @@ const organizationApi = {
      * @return promise
      */
     show(slug) {
-      return HttpClient.get(`/admin/organizations/${slug}`)
+      return HttpClient.get(`/organizations/${slug}`)
     },
 
     /**
@@ -39,7 +19,7 @@ const organizationApi = {
      * @return promise
      */
     update(slug, organization) {
-      return HttpClient.put(`/admin/organizations/${slug}`, organization)
+      return HttpClient.put(`/organizations/${slug}`, organization)
     },
 
     /**
@@ -49,7 +29,7 @@ const organizationApi = {
      * @return promise
      */
     destroy(slug) {
-        return HttpClient.delete(`/admin/organizations/${slug}`)
+        return HttpClient.delete(`/organizations/${slug}`)
     },
 }
 

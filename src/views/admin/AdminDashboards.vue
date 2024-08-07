@@ -1,14 +1,10 @@
 <template>
-  <LayoutDefault>
+  <LayoutAdmin>
     <template #topbar>
       <div class="relative border-b border-gray-200 pb-5 sm:pb-0">
+        <!-- Title -->
         <div class="md:flex md:items-center md:justify-between">
-          <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">All dashboards</h1>
-          <!-- <div class="flex gap-3 md:absolute md:right-0">
-            <AppButton @click="storeNewDashboard()">
-              Create dashboard
-            </AppButton>
-          </div> -->
+          <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
         </div>
 
         <!-- Sorting -->
@@ -74,9 +70,9 @@
 
     <!-- Dashboards -->
     <div v-if="dashboards && sortedDashboards.length" class="flex flex-col gap-4">
-      <div 
+      <RouterLink 
         v-for="dashboard in sortedDashboards" 
-        @click="router.push({name: 'dashboard', params: {dashboard: dashboard.id}})" 
+        :to="{name: 'dashboard', params: {organization: dashboard.organization.slug, dashboard: dashboard.id}}"
         class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
       >          
         <div class="flex flex-col space-y-4 px-4 py-4">
@@ -110,7 +106,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </RouterLink>
     </div>
 
     <!-- State: Loading -->
@@ -150,18 +146,18 @@
       <Squares2X2Icon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-indigo-600">No dashboards to show</h2>
     </div>
-  </LayoutDefault>
+  </LayoutAdmin>
 </template>
 
 <script setup>
 import moment from "moment"
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
+import { adminDashboardApi } from '@/domain/admin/api/adminDashboardApi.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
 import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
-import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
+import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
 import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
 
@@ -251,7 +247,7 @@ function toggleActiveSortDirection(sort) {
 function loadDashboards() {
   isLoading.value = true
 
-  dashboardApi.index(route.params.organization).then(response => {
+  adminDashboardApi.index().then(response => {
     isLoading.value = false
     dashboards.value = response.data.data
   })

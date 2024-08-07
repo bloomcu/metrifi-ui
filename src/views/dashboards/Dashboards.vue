@@ -11,6 +11,7 @@
 
     <template #topbar>
       <div class="relative border-b border-gray-200 pb-5 sm:pb-0">
+        <!-- Title -->
         <div class="md:flex md:items-center md:justify-between">
           <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
           <div class="flex gap-3 md:absolute md:right-0">
@@ -93,9 +94,9 @@
         @change="handleDragEvent($event)"
         class="flex flex-col gap-4"
       >
-        <div 
+        <RouterLink
           v-for="dashboard in sortedDashboards" 
-          @click="router.push({name: 'dashboard', params: {dashboard: dashboard.id}})" 
+          :to="{name: 'dashboard', params: {dashboard: dashboard.id}}"
           class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
         >          
           <div class="flex flex-col space-y-4 px-4 py-4">
@@ -140,7 +141,7 @@
               <span class="text-gray-400">No analysis</span>
             </div> -->
           </div>
-        </div>
+        </RouterLink>
       </VueDraggableNext>
 
       <!-- Add dashboard -->
