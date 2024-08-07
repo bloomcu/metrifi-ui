@@ -8,7 +8,7 @@ const organizationApi = {
      * @return promise
      */
     index(params) {
-        return HttpClient.get(`/organizations`, { params: params })
+        return HttpClient.get(`/admin/organizations`, { params: params })
     },
     
     /**
@@ -18,7 +18,7 @@ const organizationApi = {
      * @return promise
      */
     store(organization) {
-        return HttpClient.post('/organizations', organization)
+        return HttpClient.post('/admin/organizations', organization)
     },
     
     /**
@@ -28,7 +28,7 @@ const organizationApi = {
      * @return promise
      */
     show(slug) {
-      return HttpClient.get(`/organizations/${slug}`)
+      return HttpClient.get(`/admin/organizations/${slug}`)
     },
 
     /**
@@ -39,7 +39,7 @@ const organizationApi = {
      * @return promise
      */
     update(slug, organization) {
-      return HttpClient.put(`/organizations/${slug}`, organization)
+      return HttpClient.put(`/admin/organizations/${slug}`, organization)
     },
 
     /**
@@ -49,7 +49,7 @@ const organizationApi = {
      * @return promise
      */
     destroy(slug) {
-        return HttpClient.delete(`/organizations/${slug}`)
+        return HttpClient.delete(`/admin/organizations/${slug}`)
     },
 }
 
