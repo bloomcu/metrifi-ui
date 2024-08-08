@@ -73,6 +73,7 @@
       <RouterLink 
         v-for="dashboard in sortedDashboards" 
         :to="{name: 'dashboard', params: {organization: dashboard.organization.slug, dashboard: dashboard.id}}"
+        target="_blank"
         class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
       >          
         <div class="flex flex-col space-y-4 px-4 py-4">
