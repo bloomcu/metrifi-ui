@@ -303,7 +303,7 @@ function storeAnalysis() {
   // console.log(subjectFunnel)
 
   analysisStore.store(route.params.organization, route.params.dashboard, {
-    subjectFunnelId: funnelStore.funnels[0].id,
+    subjectFunnelId: funnelStore.funnels.length ? funnelStore.funnels[0].id : null,
     subjectFunnel: subjectFunnel,
     comparisonFunnels: comparisonFunnels,
   }).then(() => {
