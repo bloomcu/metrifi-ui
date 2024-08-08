@@ -75,7 +75,7 @@
                   <MenuItems class="absolute bottom-16 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
                       <RouterLink :to="{ name: 'adminDashboards' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        All dashboards
+                        Super Dashboard
                       </RouterLink>
                     </MenuItem>
                     <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
@@ -137,7 +137,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
-  { name: 'All dashboards', to: { name: 'adminDashboards'}, icon: Squares2X2Icon},
+  { name: 'Super Dashboard', to: { name: 'adminDashboards'}, icon: Squares2X2Icon},
   { name: 'Organizations', to: { name: 'adminOrganizations'}, icon: HomeModernIcon},
 ]
 </script>
