@@ -10,6 +10,15 @@ const adminDashboardApi = {
     index(params) {
         return HttpClient.get(`/admin/dashboards`, { params: params })
     },
+
+    /**
+     * Analyze all dashboards
+     *
+     * @return promise
+     */
+    analyzeAll() {
+        return HttpClient.get(`/admin/dashboards/analyze`)
+    },
 }
 
 export { adminDashboardApi }
