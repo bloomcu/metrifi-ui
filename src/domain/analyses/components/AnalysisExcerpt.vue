@@ -2,16 +2,24 @@
     <!-- 
      Biggest opportunity 
      -->
-    <p v-if="analysis.bofi_performance < 0" class="mb-3">
+     <!-- Focus funnel is not converting at all. BOFI becomes last step even if another step was identified as BOFI. -->
+    <p v-if="analysis.subject_funnel_performance == 0" class="mb-3">
+        <span class="font-semibold">Biggest opportunity:</span>
+        The last step of your funnel is not converting
+    </p>
+    <!-- Focus funnel is worse on a step, so the BOFI is to compare with lower performing funnels -->
+    <p v-else-if="analysis.bofi_performance < 0" class="mb-3">
         <span class="font-semibold">Biggest opportunity:</span>
         Step {{ analysis.bofi_step_index + 1 }} of your funnel is {{ Number(analysis.bofi_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
         {{ analysis.bofi_performance <= 0 ? 'lower' : 'higher' }} than the average
     </p>
-    <!-- Funnel is better on all steps, so the BOFI is to compare with higher performing funnels -->
-    <p v-if="analysis.bofi_performance >= 0" class="mb-3">
+    <!-- Focus funnel is better on all steps, so the BOFI is to compare with higher performing funnels -->
+    <p v-else-if="analysis.bofi_performance >= 0" class="mb-3">
         <span class="font-semibold">Biggest opportunity:</span>
         All your funnel steps are above average. Compare with higher-performing funnels or drive more traffic to your funnel.
     </p>
+    
+    
 
     <!-- 
     Overall conversion rate 
@@ -21,7 +29,12 @@
         {{ Number(analysis.subject_funnel_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
         {{ analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than the average
     </p>
-    <!-- Overall conversion rate is equal to the average of comparisons -->
+    <!-- Subject funnel is not converting -->
+    <p v-else-if="analysis.subject_funnel_performance == 0" class="mb-3">
+        <span class="font-semibold">Conversion rate:</span>
+        No conversions ({{ Number(analysis.subject_funnel_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)
+    </p>
+    <!-- Subject funnel conversion rate is equal to the average of comparisons -->
     <p v-else class="mb-3">
         <span class="font-semibold">Conversion rate:</span>
         Equal to the average ({{ Number(analysis.subject_funnel_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)
