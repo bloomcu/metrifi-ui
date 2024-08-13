@@ -2,10 +2,10 @@
     <!-- 
      Biggest opportunity 
      -->
-     <!-- Focus funnel is not converting at all. BOFI becomes last step even if another step was identified as BOFI. -->
+     <!-- No funnels are converting -->
     <p v-if="analysis.subject_funnel_performance == 0" class="mb-3">
         <span class="font-semibold">Biggest opportunity:</span>
-        The last step of your funnel is not converting
+        None of the funnels are converting. Compare with funnels that are converting.
     </p>
     <!-- Focus funnel is worse on a step, so the BOFI is to compare with lower performing funnels -->
     <p v-else-if="analysis.bofi_performance < 0" class="mb-3">
@@ -51,8 +51,13 @@
     <!-- 
     Potential assets 
     -->
+    <!-- Funnel is better on all steps, so the asset change would be negative, thus not applicable -->
+    <p v-if="analysis.bofi_performance >= 0" class="mb-4">
+        <span class="font-semibold">Potential assets: </span>
+        <span>n/a</span>
+    </p>
     <!-- Assets not configured on the funnel -->
-    <p v-if="!analysis.subject_funnel_conversion_value" class="mb-4">
+    <p v-else-if="!analysis.subject_funnel_conversion_value" class="mb-4">
         <span class="font-semibold">Potential assets: </span>
         <span>Assets not configured at time of last analysis</span>
     </p>
@@ -60,11 +65,6 @@
     <p v-else-if="analysis.bofi_asset_change > 0" class="mb-4">
         <span class="font-semibold">Potential assets: </span>
         <span>{{ Number(analysis.bofi_asset_change).toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }} every {{ analysis.period }} if you get Step {{ analysis.bofi_step_index + 1 }} on par with the average ({{ Number(analysis.bofi_median_of_comparisons).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)</span>
-    </p>
-    <!-- Funnel is better on all steps, so the asset change would be negative, thus not applicable -->
-    <p v-else-if="analysis.bofi_performance >= 0" class="mb-4">
-        <span class="font-semibold">Potential assets: </span>
-        <span>n/a</span>
     </p>
     <!-- Asset change is effectively $0 -->
     <p v-else class="mb-4">
