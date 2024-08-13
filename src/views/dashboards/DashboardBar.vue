@@ -378,6 +378,11 @@ function reorderFunnel(e) {
 function disableFunnelStep(funnel, step) {
   // TODO: Do this in the funnel store
 
+  // You can't disable all steps, so check to make sure at least 1 step is always enabled
+  if (funnel.pivot.disabled_steps.length === funnel.steps.length - 1) {
+    return
+  }
+  
   // Disable step
   funnel.pivot.disabled_steps.push(step.id)
 
