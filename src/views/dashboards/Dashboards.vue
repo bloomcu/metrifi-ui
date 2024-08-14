@@ -94,12 +94,12 @@
         @change="handleDragEvent($event)"
         class="flex flex-col gap-4"
       >
-        <RouterLink
+        <Button
           v-for="dashboard in sortedDashboards" 
-          :to="{name: 'dashboard', params: {dashboard: dashboard.id}}"
+          @click="showDashboard(dashboard.id)"
           class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
         >          
-          <div class="flex flex-col space-y-4 px-4 py-4">
+          <div class="flex flex-col space-y-4 w-full px-4 py-4">
             <!-- Card header -->
             <div :class="dashboard.latest_analysis ? 'border-b pb-4' : ''" class="flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -150,7 +150,7 @@
               <span class="text-gray-400">No analysis</span>
             </div> -->
           </div>
-        </RouterLink>
+        </Button>
       </VueDraggableNext>
 
       <!-- Add dashboard -->
@@ -333,6 +333,10 @@ function handleDragEvent(e) {
   }).then(() => {
     setTimeout(() => isLoading.value = false, 500)
   })
+}
+
+function showDashboard(dashboardId) {
+  router.push({ name: 'dashboard', params: { dashboard: dashboardId } })
 }
 
 onMounted(() => {
