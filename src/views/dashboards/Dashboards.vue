@@ -94,7 +94,7 @@
         @change="handleDragEvent($event)"
         class="flex flex-col gap-4"
       >
-        <Button
+        <div
           v-for="dashboard in sortedDashboards" 
           @click="showDashboard(dashboard.id)"
           class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
@@ -140,7 +140,7 @@
               <AnalysisIssue v-if="dashboard.latest_analysis.issue" :issue="dashboard.latest_analysis.issue"/>
               <AnalysisExcerpt v-else :analysis="dashboard.latest_analysis"/>
 
-              <div  class="divide-x divide-gray-300 border-t pt-3 text-sm text-gray-400">
+              <div class="divide-x divide-gray-300 border-t pt-3 text-sm text-gray-400">
                 <span class="pr-2">Analysis created {{ moment(dashboard.latest_analysis.created_at).fromNow() }}</span> 
                 <span class="pl-2">28 day period {{ moment(dashboard.latest_analysis.start_date).format('MMM DD, Y') }} - {{ moment(dashboard.latest_analysis.end_date).format('MMM DD, Y') }}</span>
               </div>
@@ -150,7 +150,7 @@
               <span class="text-gray-400">No analysis</span>
             </div> -->
           </div>
-        </Button>
+        </div>
       </VueDraggableNext>
 
       <!-- Add dashboard -->
