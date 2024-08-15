@@ -1,15 +1,21 @@
 <template>
-  <LayoutDefault>
-    <!-- Header -->
-    <AppHeader class="pt-6">
-      <h1 class="text-3xl font-medium leading-6 text-gray-900">Organizations</h1>
-      <AppButton @click="organizationStore.toggleCreateModal">Create organization</AppButton>
-    </AppHeader>
+  <LayoutAdmin>
+    <template #topbar>
+      <div class="relative pb-5 sm:pb-0">
+        <!-- Title -->
+        <div class="md:flex md:items-center md:justify-between">
+          <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Organizations</h1>
+          <div class="flex gap-3 md:absolute md:right-0">
+            <AppButton @click="adminOrganizationStore.toggleCreateModal">Create organization</AppButton>
+          </div>
+        </div>
+      </div>
+    </template>
 
     <!-- Organizations -->
     <AppCard padding="none">
       <ul role="list" class="divide-y divide-gray-100">
-        <li v-for="organization in organizationStore.organizations" :key="organization.slug" class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6">
+        <li v-for="organization in adminOrganizationStore.organizations" :key="organization.slug" class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6">
           <!-- Organization title -->
           <div class="flex gap-x-4">
             <div class="min-w-0 flex-auto">
@@ -50,20 +56,20 @@
     </AppCard>
     
     <CreateOrganizationModal/>
-  </LayoutDefault>
+  </LayoutAdmin>
 </template>
 
 <script setup>
 import { onMounted } from 'vue'
-import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
+import { useAdminOrganizationStore } from '@/domain/admin/store/useAdminOrganizationStore'
 import { ChevronRightIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
-import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
-import CreateOrganizationModal from '@/views/base/organizations/modals/CreateOrganizationModal.vue'
+import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
+import CreateOrganizationModal from '@/views/admin/modals/CreateOrganizationModal.vue'
 
-const organizationStore = useOrganizationStore()
+const adminOrganizationStore = useAdminOrganizationStore()
 const redirectRoute = import.meta.env.VITE_REDIRECT_FROM_ORGANIZATIONS_ROUTE
 
 onMounted(() => {
-    organizationStore.index()
+    adminOrganizationStore.index()
 })
 </script>
