@@ -11,7 +11,7 @@
     <p v-else-if="analysis.bofi_performance < 0" class="mb-3">
         <span class="font-semibold">Biggest opportunity:</span>
         Step {{ analysis.bofi_step_index + 1 }} of your funnel is {{ Number(analysis.bofi_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
-        {{ analysis.bofi_performance <= 0 ? 'lower' : 'higher' }} than the average
+        {{ analysis.bofi_performance <= 0 ? 'lower' : 'higher' }} ({{ Number(analysis.bofi_conversion_rate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%) than the average
     </p>
     <!-- Focus funnel is better on all steps, so the BOFI is to compare with higher performing funnels -->
     <p v-else-if="analysis.bofi_performance >= 0" class="mb-3">
