@@ -29,6 +29,7 @@
         <span class="font-semibold">Conversion rate:</span>
         {{ Number(analysis.subject_funnel_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
         {{ analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than the average
+        ({{ Number(analysis.subject_funnel_conversion_rate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% vs {{ Number(analysis.median_of_comparison_conversion_rates).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)
     </p>
     <!-- Subject funnel is not converting -->
     <p v-else-if="analysis.subject_funnel_performance == 0" class="mb-3">
