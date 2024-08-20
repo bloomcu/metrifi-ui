@@ -51,8 +51,13 @@
     <!-- 
     Potential assets 
     -->
+    <!-- No funnels are converting -->
+    <p v-if="analysis.subject_funnel_performance == 0" class="mb-3">
+        <span class="font-semibold">Potential assets: </span>
+        Since none of the funnels are converting, we can't calculate potential assets.
+    </p>
     <!-- Funnel is better on all steps, so the asset change would be negative, thus not applicable -->
-    <p v-if="analysis.bofi_performance >= 0" class="mb-4">
+    <p v-else-if="analysis.bofi_performance >= 0" class="mb-4">
         <span class="font-semibold">Potential assets: </span>
         <span>Since all your funnel steps are above average, we can't calculate potential assets.</span>
     </p>
