@@ -34,11 +34,14 @@ export const useAuthStore = defineStore('authStore', {
             this.organization = response.data.data.organization
             this.user = response.data.data
 
-            // this.router.push({ name: 'dashboards', params: { organization: this.organization.slug }})
-            if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
-              this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
+            if (this.isAdmin) {
+              this.router.push({ name: 'adminDashboards'})  
             } else {
-              this.router.push({ name: redirect, params: { organization: this.organization.slug }})
+              if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
+                this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
+              } else {
+                this.router.push({ name: redirect, params: { organization: this.organization.slug }})
+              }
             }
 
             this.loading = false

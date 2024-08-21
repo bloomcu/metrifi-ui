@@ -1,5 +1,5 @@
 <template>
-  <div v-if="organizationStore.organization">
+  <div>
     <TransitionRoot as="template" :show="open">
       <Dialog as="div" class="relative z-10 lg:hidden" @close="close()">
         <TransitionChild as="template" enter="transition-opacity ease-linear duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="transition-opacity ease-linear duration-300" leave-from="opacity-100" leave-to="opacity-0">
@@ -34,23 +34,6 @@
                         </li>
                       </ul>
                     </li>
-                    <li>
-                      <div class="text-xs font-medium leading-6 text-gray-400">Your teams</div>
-                      <ul role="list" class="-mx-2 mt-2 space-y-1">
-                        <li v-for="team in teams" :key="team.name">
-                          <a :href="team.href" :class="[team.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium']">
-                            <span :class="[team.current ? 'text-indigo-600 border-indigo-600' : 'text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{ team.initial }}</span>
-                            <span class="truncate">{{ team.name }}</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="mt-auto">
-                      <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-medium leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
-                        <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
-                        Settings
-                      </a>
-                    </li>
                   </ul>
                 </nav>
               </div>
@@ -69,58 +52,6 @@
         </div>
         <nav class="flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-3">
-            <!-- User / organization -->
-            <!-- <li>
-              <Menu as="div" class="-mx-2">
-                <MenuButton class="flex items-center gap-x-4 p-2 w-full rounded-md hover:bg-gray-50">
-                  <img class="h-9 w-9 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                  <div class="flex flex-col items-start">
-                    <span class="text-sm font-medium text-gray-900">{{ authStore.user.name }}</span>
-                    <span class="text-xs text-gray-400">{{ authStore.user.organization.title }}</span>
-                  </div>
-                </MenuButton>
-                <transition enter-active-class="transition ease-out duration-200" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-                  <MenuItems class="absolute left-4 z-10 mt-2 w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white pt-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div class="px-1 py-1">
-                      <div class="px-4 text-xs leading-6 text-gray-400">Organizations</div>
-                      <MenuItem v-slot="{ active }" v-for="team in teams" :key="team.name">
-                        <a :href="team.href" class="flex gap-x-3 px-4 py-2 rounded-md text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
-                          <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600">{{ team.initial }}</span>
-                          <span class="truncate">{{ team.name }}</span>
-                        </a>
-                      </MenuItem>
-                    </div>
-
-                    <div class="px-1 py-1">
-                      <MenuItem v-slot="{ active }">
-                        <RouterLink :to="{ name: 'logout' }" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 rounded-md text-sm text-gray-700']">
-                          Log out
-                        </RouterLink>
-                      </MenuItem>
-                    </div>
-                  </MenuItems>
-                </transition>
-              </Menu>
-            </li> -->
-
-            <!-- Top -->
-            <li v-if="!organizationStore.organization.onboarding.hideOnboarding" class="border-b pb-3">
-              <ul role="list" class="-mx-2 space-y-1">
-                <li>
-                  <RouterLink :to="{name: 'welcome'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
-                    <HomeIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
-                    Welcome
-                  </RouterLink>
-                </li>
-                <!-- <li>
-                  <RouterLink :to="{name: 'benchmarks'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
-                    <PresentationChartLineIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
-                    Benchmarks
-                  </RouterLink>
-                </li> -->
-              </ul>
-            </li>
-            
             <!-- Main menu -->
             <li>
               <ul role="list" class="-mx-2 space-y-1">
@@ -152,13 +83,6 @@
                         Organizations
                       </RouterLink>
                     </MenuItem>
-
-                    <!-- <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
-                      <RouterLink :to="{ name: 'categories' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Categories
-                      </RouterLink>
-                    </MenuItem> -->
-
                     <MenuItem v-slot="{ active }">
                       <RouterLink :to="{ name: 'logout' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         Log out
@@ -167,11 +91,6 @@
                   </MenuItems>
                 </transition>
               </Menu>
-
-              <!-- <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-medium leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
-                <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
-                Settings
-              </a> -->
             </li>
           </ul>
         </nav>
@@ -182,12 +101,10 @@
 
 <script setup>
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
-import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 import Avatar from '@/app/components/base/avatars/Avatar.vue'
 
 const authStore = useAuthStore()
-const organizationStore = useOrganizationStore()
 
 const emit = defineEmits(['close'])
 
@@ -214,28 +131,14 @@ import {
 } from '@headlessui/vue'
 
 import {
-  HomeIcon,
-  PresentationChartLineIcon,
-  ChartBarIcon,
-  Cog6ToothIcon,
-  CloudIcon,
+  HomeModernIcon,
   Squares2X2Icon,
   XMarkIcon,
-  MagnifyingGlassIcon
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
-  { name: 'Dashboards', to: { name: 'dashboards'}, icon: Squares2X2Icon},
-  { name: 'Funnels', to: { name: 'funnels'}, icon: ChartBarIcon},
-  { name: 'Reports', to: { name: 'explore' }, icon: MagnifyingGlassIcon},
-  { name: 'Connection', to: { name: 'connections'}, icon: CloudIcon},
-  { name: 'Settings', to: { name: 'settings'}, icon: Cog6ToothIcon},
-]
-
-const teams = [
-  { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
-  { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
-  { id: 3, name: 'Workcation', href: '#', initial: 'W', current: false },
+  { name: 'Super Dashboard', to: { name: 'adminDashboards'}, icon: Squares2X2Icon},
+  { name: 'Organizations', to: { name: 'adminOrganizations'}, icon: HomeModernIcon},
 ]
 </script>
 
