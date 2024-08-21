@@ -63,7 +63,7 @@
 
     <!-- Notes -->
     <div v-if="isShowingNotes" class="mb-4">
-      <div v-if="isEditingNotes" class="p-6 border-2 border-gray-200 rounded-2xl bg-gray-50">
+      <div v-if="isEditingNotes" class="p-6 border-2 border-gray-200 rounded-xl bg-gray-50">
         <AppRichtext v-model="dashboard.notes" class="mb-2"/>
         <div class="flex items-center gap-2">
           <AppButton @click="updateDashboard()">Update notes</AppButton>
@@ -71,7 +71,7 @@
         </div>
       </div>
 
-      <div v-else class="relative p-6 border-2 border-gray-200 rounded-2xl bg-white">
+      <div v-else class="relative p-6 border-2 border-gray-200 rounded-xl bg-white">
         <AppButton @click="isEditingNotes = true" variant="link" class="flex items-center gap-2 absolute right-6 top-3">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
@@ -84,7 +84,7 @@
 
     <!-- Analysis -->
     <div v-if="analysisStore.analysis && isShowingAnalysis" class="mb-4">
-      <div v-if="!isEditingAnalysis" class="relative p-6 border-2 border-gray-200 rounded-2xl bg-white">
+      <div v-if="!isEditingAnalysis" class="relative p-6 border-2 border-gray-200 rounded-xl bg-white">
         <p class="mb-5 flex items-center text-xl font-medium leading-6 text-gray-900 tracking-tight">
           <span class="mr-3">Analysis</span>
           <!-- <span v-if="analysisStore.analysis.subject_funnel_performance" class="font-normal text-gray-500 text-base border-r border-l border-gray-300 px-3 mr-3">
@@ -152,7 +152,7 @@
         </div>
       </div>
 
-      <!-- <div v-else class="p-6 border-2 border-gray-200 rounded-2xl bg-gray-50">
+      <!-- <div v-else class="p-6 border-2 border-gray-200 rounded-xl bg-gray-50">
         <AppRichtext v-model="analysisStore.analysis.content" class="mb-2"/>
         <div class="flex items-center gap-2">
           <AppButton @click="updateAnalysis()">Update analysis</AppButton>
@@ -161,7 +161,7 @@
       </div> -->
     </div>
 
-    <div v-if="analysisStore.analysis && !isShowingAnalysis" @click="showAnalysis()" class="flex items-center gap-2 mb-4 px-6 py-4 border-2 border-gray-200 rounded-2xl bg-white cursor-pointer hover:bg-gray-50">
+    <div v-if="analysisStore.analysis && !isShowingAnalysis" @click="showAnalysis()" class="flex items-center gap-2 mb-4 px-6 py-4 border-2 border-gray-200 rounded-xl bg-white cursor-pointer hover:bg-gray-50">
       <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">Show analysis</p>
       <span class="text-gray-400 text-sm font-normal">Created on {{ moment(analysisStore.analysis.created_at).fromNow() }}</span>
     </div>
@@ -173,7 +173,7 @@
       @change="reorderFunnel($event)"
       class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"
     >
-      <div v-for="(funnel, index) in funnelStore.funnels" class="p-6 border-2 border-gray-200 rounded-2xl bg-white">
+      <div v-for="(funnel, index) in funnelStore.funnels" class="p-6 border-2 border-gray-200 rounded-xl bg-white">
         <!-- Funnel and organization name -->
         <div class="flex items-center justify-between">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
@@ -209,7 +209,7 @@
         <AppButton v-if="funnel.pivot.disabled_steps.length" @click="enableFunnelSteps(funnel)" variant="secondary" class="mt-4 text-xs">Enable steps ({{ funnel.pivot.disabled_steps.length }})</AppButton>
       </div>
 
-      <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-2xl py-8 px-2 cursor-pointer hover:bg-indigo-50">
+      <div @click="toggleModal()" class="flex items-center justify-center border border-indigo-400 border-dashed rounded-xl py-8 px-2 cursor-pointer hover:bg-indigo-50">
         <h2 class="text-lg font-medium text-indigo-600">Add a funnel</h2>
       </div>
     </VueDraggableNext>

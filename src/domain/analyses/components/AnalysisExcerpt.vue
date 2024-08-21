@@ -10,8 +10,9 @@
     <!-- Focus funnel is worse on a step, so the BOFI is to compare with lower performing funnels -->
     <p v-else-if="analysis.bofi_performance < 0" class="mb-3">
         <span class="font-semibold">Biggest opportunity:</span>
-        Step {{ analysis.bofi_step_index + 1 }} of your funnel is {{ Number(analysis.bofi_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
-        {{ analysis.bofi_performance <= 0 ? 'lower' : 'higher' }} than the average
+        Step {{ analysis.bofi_step_index + 1 }} is converting {{ Number(analysis.bofi_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
+        {{ analysis.bofi_performance <= 0 ? 'lower' : 'higher' }} than the average 
+        ({{ Number(analysis.bofi_conversion_rate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% vs {{ Number(analysis.bofi_median_of_comparisons).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)
     </p>
     <!-- Focus funnel is better on all steps, so the BOFI is to compare with higher performing funnels -->
     <p v-else-if="analysis.bofi_performance >= 0" class="mb-3">
@@ -28,6 +29,7 @@
         <span class="font-semibold">Conversion rate:</span>
         {{ Number(analysis.subject_funnel_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
         {{ analysis.subject_funnel_performance <= 0 ? 'lower' : 'higher' }} than the average
+        ({{ Number(analysis.subject_funnel_conversion_rate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% vs {{ Number(analysis.median_of_comparison_conversion_rates).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)
     </p>
     <!-- Subject funnel is not converting -->
     <p v-else-if="analysis.subject_funnel_performance == 0" class="mb-3">
@@ -51,8 +53,13 @@
     <!-- 
     Potential assets 
     -->
+    <!-- No funnels are converting -->
+    <p v-if="analysis.subject_funnel_performance == 0" class="mb-3">
+        <span class="font-semibold">Potential assets: </span>
+        Since none of the funnels are converting, we can't calculate potential assets.
+    </p>
     <!-- Funnel is better on all steps, so the asset change would be negative, thus not applicable -->
-    <p v-if="analysis.bofi_performance >= 0" class="mb-4">
+    <p v-else-if="analysis.bofi_performance >= 0" class="mb-4">
         <span class="font-semibold">Potential assets: </span>
         <span>Since all your funnel steps are above average, we can't calculate potential assets.</span>
     </p>

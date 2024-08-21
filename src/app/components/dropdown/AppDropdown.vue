@@ -4,7 +4,7 @@
             <slot name="title">{{ title }}</slot>
         </button>
 
-        <div v-show="isOpen" class="absolute left-0 right-0 z-50 mt-2 w-full p-1 rounded-md bg-white border-0 text-gray-900 shadow-md ring-1 ring-gray-300">
+        <div v-show="isOpen" class="absolute inline-block right-0 z-50 mt-2 p-1 rounded-md bg-white border-0 text-gray-900 shadow-md ring-1 ring-gray-300">
             <slot />
         </div>
     </div>
