@@ -146,6 +146,7 @@
             </div>
           </div>
 
+          <!-- Issue -->
           <AnalysisIssue v-else-if="dashboard.issue" :issue="dashboard.issue"/>
         </div>
       </RouterLink>
