@@ -4,7 +4,7 @@ import { analysisApi as AnalysisApi } from '@/domain/analyses/api/analysisApi'
 export const useAnalysisStore = defineStore('analysisStore', {
     state: () => ({
         analyses: [],
-        active_analysis: 'median_analysis',
+        // active_analysis: 'median_analysis',
         median_analysis: null,
         max_analysis: null,
         isLoading: false,
@@ -14,17 +14,11 @@ export const useAnalysisStore = defineStore('analysisStore', {
         destroyModalOpen: false,
     }),
     
-    getters: {
-      activeAnalysis: (state) => {
-        return state[state.active_analysis]
-
-        // if (state.active_analysis === 'median') {
-        //   return state.median_analysis
-        // } else if (state.active_analysis === 'max') {
-        //   return state.max_analysis
-        // }
-      },
-    },
+    // getters: {
+    //   activeAnalysis: (state) => {
+    //     return state[state.active_analysis]
+    //   },
+    // },
     
     actions: {
         index(organization, dashboard, params) {

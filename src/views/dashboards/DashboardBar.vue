@@ -42,7 +42,7 @@
         </AppButton>
 
         <!-- Run analysis -->
-        <AppButton v-if="!analysisStore.analysis" @click="storeAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
+        <AppButton v-if="!dashboard[activeAnalysisType]" @click="storeAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
           <!-- <ChatBubbleBottomCenterIcon class="h-5 w-5 shrink-0" /> -->
           Run analysis
         </AppButton>
@@ -73,15 +73,13 @@
       </div>
     </div>
 
-    <!-- <pre>{{ analysisStore.activeAnalysis }}</pre> -->
-
     <!-- Analysis -->
-    <div v-if="analysisStore.activeAnalysis && !isShowingAnalysis" @click="showAnalysis()" class="flex items-center gap-2 mb-4 px-6 py-4 border-2 border-gray-200 rounded-xl bg-white cursor-pointer hover:bg-gray-50">
+    <div v-if="dashboard[activeAnalysisType] && !isShowingAnalysis" @click="showAnalysis()" class="flex items-center gap-2 mb-4 px-6 py-4 border-2 border-gray-200 rounded-xl bg-white cursor-pointer hover:bg-gray-50">
       <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">Show analysis</p>
-      <span class="text-gray-400 text-sm font-normal">Created on {{ moment(analysisStore.activeAnalysis.created_at).fromNow() }}</span>
+      <span class="text-gray-400 text-sm font-normal">Created on {{ moment(dashboard[activeAnalysisType].created_at).fromNow() }}</span>
     </div>
 
-    <div v-if="analysisStore.activeAnalysis && isShowingAnalysis" class="mb-4">
+    <div v-if="dashboard[activeAnalysisType] && isShowingAnalysis" class="mb-4">
       <div v-if="!isEditingAnalysis" class="relative p-6 border-2 border-gray-200 rounded-xl bg-white">
         <p class="flex items-center text-xl font-medium leading-6 text-gray-900 tracking-tight">
           <span class="mr-3">Analysis</span>
@@ -105,7 +103,7 @@
           </AppButton>
         </div>
         
-        <p v-if="analysisStore.isLoading" class="flex items-center gap-3 text-base font-semibold leading-6 text-gray-900">
+        <p v-if="analysisStore.isLoading" class="py-4 flex items-center gap-3 text-base font-semibold leading-6 text-gray-900">
           <svg aria-hidden="true" role="status" class="inline w-4 h-4 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
             <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
@@ -113,20 +111,17 @@
           Loading analysis
         </p>
 
-        <div v-if="!analysisStore.isLoading && analysisStore.activeAnalysis">
+        <div v-if="!analysisStore.isLoading && dashboard[activeAnalysisType]">
           <!-- Tabs -->
           <nav class="flex justify-between border-b mb-6">
             <div class="flex space-x-6">
-              <button @click="analysisStore.active_analysis = 'median_analysis'" :class="[analysisStore.active_analysis == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-3 text-sm font-medium']">Average analysis</button>
-              <button @click="analysisStore.active_analysis = 'max_analysis'" :class="[analysisStore.active_analysis == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-3 text-sm font-medium']">Max analysis</button>
+              <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-3 text-sm font-medium']">Average analysis</button>
+              <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-3 text-sm font-medium']">Max analysis</button>
             </div>
           </nav>
 
           <!-- The analysis -->
-          <div class="pt-2">
-            <AnalysisIssue v-if="dashboard.issue" :issue="dashboard.issue"/>
-            <AnalysisExcerpt v-else :analysis="analysisStore.activeAnalysis"/>
-          </div>
+          <AnalysisExcerpt :analysis="dashboard[activeAnalysisType]" class="pt-2"/>
 
           <!-- Toggle reference -->
           <button @click="isShowingReference = !isShowingReference" variant="link" class="py-2 mb-2 text-sm font-medium text-gray-500 hover:text-gray-600">
@@ -134,15 +129,18 @@
           </button>
 
           <!-- Reference -->
-          <div v-if="isShowingReference" v-html="analysisStore.activeAnalysis.reference" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 text-sm px-4 py-2 bg-gray-50 border rounded-lg mb-3"></div>
+          <div v-if="isShowingReference" v-html="dashboard[activeAnalysisType].reference" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 text-sm px-4 py-2 bg-gray-50 border rounded-lg mb-3"></div>
         </div>
 
         <div class="divide-x divide-gray-300 border-t pt-4 text-sm text-gray-400">
-          <span class="pr-2">Analysis created {{ moment(analysisStore.activeAnalysis.created_at).fromNow() }}</span> 
-          <span class="pl-2">28 day period {{ moment(analysisStore.activeAnalysis.start_date).format('MMM DD, Y') }} - {{ moment(analysisStore.activeAnalysis.end_date).format('MMM DD, Y') }}</span>
+          <span class="pr-2">Analysis created {{ moment(dashboard[activeAnalysisType].created_at).fromNow() }}</span> 
+          <span class="pl-2">28 day period {{ moment(dashboard[activeAnalysisType].start_date).format('MMM DD, Y') }} - {{ moment(dashboard[activeAnalysisType].end_date).format('MMM DD, Y') }}</span>
         </div>
       </div>
     </div>
+
+    <!-- Analysis issue -->
+    <AnalysisIssue v-else-if="dashboard.issue" :issue="dashboard.issue" class="py-2"/>
 
     <!-- Funnels -->
     <VueDraggableNext 
@@ -246,6 +244,8 @@ const isEditingNotes = ref(false)
 const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
 const isShowingReference = ref(false)
+
+const activeAnalysisType = ref('median_analysis')
 
 const funnelsAlreadyAttachedIds = computed(() => {
   return funnelStore.funnels.map(funnel => funnel.id)

@@ -137,15 +137,16 @@
           </div>
 
           <!-- Analysis -->
-          <div v-else-if="dashboard.median_analysis && dashboard.max_analysis">
-            <AnalysisIssue v-if="dashboard.issue" :issue="dashboard.issue"/>
-            <AnalysisExcerpt v-else :analysis="dashboard[activeAnalysisType]"/>
+          <div v-else-if="dashboard[activeAnalysisType]">
+            <AnalysisExcerpt :analysis="dashboard[activeAnalysisType]"/>
 
             <div class="divide-x divide-gray-300 border-t pt-3 text-sm text-gray-400">
               <span class="pr-2">Analysis created {{ moment(dashboard[activeAnalysisType].created_at).fromNow() }}</span> 
               <span class="pl-2">28 day period {{ moment(dashboard[activeAnalysisType].start_date).format('MMM DD, Y') }} - {{ moment(dashboard[activeAnalysisType].end_date).format('MMM DD, Y') }}</span>
             </div>
           </div>
+
+          <AnalysisIssue v-else-if="dashboard.issue" :issue="dashboard.issue"/>
         </div>
       </RouterLink>
     </VueDraggableNext>
