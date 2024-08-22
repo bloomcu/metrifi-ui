@@ -115,8 +115,8 @@
           <!-- Tabs -->
           <nav class="flex justify-between border-b mb-6">
             <div class="flex space-x-6">
-              <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-3 text-sm font-medium']">Average analysis</button>
-              <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-3 text-sm font-medium']">Max analysis</button>
+              <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-3 text-sm font-medium']">Average</button>
+              <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-3 text-sm font-medium']">Maximum</button>
             </div>
           </nav>
 
@@ -284,8 +284,10 @@ function storeAnalysis() {
     subjectFunnelId: funnelStore.funnels.length ? funnelStore.funnels[0].id : null,
     subjectFunnel: subjectFunnel,
     comparisonFunnels: comparisonFunnels,
-  }).then(() => {
+  }).then((response) => {
     // showAnalysis()
+    // analysisStore.median_analysis = dashboard.value.median_analysis
+    // analysisStore.max_analysis = dashboard.value.max_analysis
     loadDashboard()
   })
 }
