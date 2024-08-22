@@ -285,7 +285,8 @@ function storeAnalysis() {
     subjectFunnel: subjectFunnel,
     comparisonFunnels: comparisonFunnels,
   }).then(() => {
-    showAnalysis()
+    // showAnalysis()
+    loadDashboard()
   })
 }
 
