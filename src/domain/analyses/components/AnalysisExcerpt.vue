@@ -19,18 +19,18 @@
         <!-- There is not an opportunity in your steps -->
         <p v-else-if="analysis.bofi_performance > 0" class="mb-3">
             <span class="font-semibold">Biggest opportunity:</span>
-            All your funnel steps are better than comparisons. Compare with higher-performing funnels.
+            All your funnel steps are better than the comparisons. Compare with higher-performing funnels.
         </p>
 
         <!-- All funnels are performing the same -->
         <p v-else-if="analysis.bofi_performance == 0" class="mb-3">
             <span class="font-semibold">Biggest opportunity:</span>
-            All of your funnel steps are on par with comparisons. Compare with higher-performing funnels.
+            All of your funnel steps are on par with the comparisons. Compare with higher-performing funnels.
         </p>
         <!-- Focus funnel is better on all steps, so the BOFI is to compare with higher performing funnels
         <p v-else-if="analysis.bofi_performance == 0" class="mb-3">
             <span class="font-semibold">Biggest opportunity:</span>
-            All your funnel steps are better than comparisons. Compare with higher-performing funnels or drive more traffic to your funnel.
+            All your funnel steps are better than the comparisons. Compare with higher-performing funnels or drive more traffic to your funnel.
         </p> -->
         
         
@@ -86,19 +86,19 @@
         <!-- There is not an opportunity in your steps -->
         <p v-else-if="analysis.bofi_performance > 0" class="mb-4">
             <span class="font-semibold">Potential assets: </span>
-            <span>Since all your funnel steps are better than comparisons, we can't calculate potential assets.</span>
+            <span>Since all your funnel steps are better than the comparisons, we can't calculate potential assets.</span>
         </p>
 
         <!-- Funnel is better on all steps, so the asset change would be negative, thus not applicable -->
         <p v-else-if="analysis.bofi_performance == 0" class="mb-4">
             <span class="font-semibold">Potential assets: </span>
-            <span>Since all your funnel steps are on par with comparisons, we can't calculate potential assets.</span>
+            <span>Since all your funnel steps are on par with the comparisons, we can't calculate potential assets.</span>
         </p>
 
         <!-- No funnels are converting -->
         <!-- <p v-else-if="analysis.subject_funnel_performance == 0" class="mb-3">
             <span class="font-semibold">Potential assets: </span>
-            <span>Since all your funnel steps are on par with comparisons, we can't calculate potential assets.</span>
+            <span>Since all your funnel steps are on par with the comparisons, we can't calculate potential assets.</span>
         </p> -->
         
         <!-- Asset change is effectively $0 -->
