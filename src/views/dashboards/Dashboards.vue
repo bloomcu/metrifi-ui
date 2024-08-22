@@ -19,8 +19,8 @@
         <div class="mt-4">
           <nav class="flex justify-between">
             <div class="flex space-x-6">
-              <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-1 text-lg font-medium']">Average analysis</button>
-              <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-1 text-lg font-medium']">Max analysis</button>
+              <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-1 text-lg font-medium']">Average</button>
+              <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-1 text-lg font-medium']">Maximum</button>
             </div>
           </nav>
         </div>
@@ -34,7 +34,7 @@
                   Biggest opportunity
                   <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
                     <ChevronUpIcon v-if="activeSort == 'bofi_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
 
@@ -42,7 +42,7 @@
                   Conversion rate
                   <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
                     <ChevronUpIcon v-if="activeSort == 'subject_funnel_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
 
@@ -50,7 +50,7 @@
                   Users
                   <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
                     <ChevronUpIcon v-if="activeSort == 'subject_funnel_users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
 
@@ -58,7 +58,7 @@
                   Potential assets
                   <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
                     <ChevronUpIcon v-if="activeSort == 'bofi_asset_change'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
               </div>
@@ -68,7 +68,7 @@
                   Name
                   <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
                     <ChevronUpIcon v-if="activeSort == 'name' " :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
 
@@ -76,7 +76,7 @@
                   Last modified
                   <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
                     <ChevronUpIcon v-if="activeSort == 'updated_at'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-gray-300 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
               </div>
