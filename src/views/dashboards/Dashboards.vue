@@ -62,7 +62,7 @@
             <nav class="-mb-px flex justify-between">
               <div class="flex space-x-4">
                 <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
-                  Biggest opportunity
+                  Step opportunity
                   <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
                     <ChevronUpIcon v-if="activeSort == 'bofi_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
