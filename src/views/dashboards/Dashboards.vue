@@ -26,7 +26,7 @@
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <span class="text-sm">({{ calculatePercentageDifference(organizationStore.organization.assets.median.assets, organizationStore.organization.assets.median.potential) }})</span>
+                    <span class="text-sm">({{ calculateAssetDifference(organizationStore.organization.assets.median.assets, organizationStore.organization.assets.median.potential) }})</span>
                 </p>
             </div>
           </div>
@@ -40,7 +40,7 @@
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.max.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <span class="text-sm">({{ calculatePercentageDifference(organizationStore.organization.assets.max.assets, organizationStore.organization.assets.max.potential) }})</span>
+                    <span class="text-sm">({{ calculateAssetDifference(organizationStore.organization.assets.max.assets, organizationStore.organization.assets.max.potential) }})</span>
                 </p>
             </div>
           </div>
@@ -249,12 +249,12 @@ const activeAnalysisType = ref('median_analysis')
 const activeSort = ref('bofi_performance')
 const activeSortDirection = ref('asc')
 
-function calculatePercentageDifference(before, after) {
-    let diff = (after - before) / before * 100
+function calculateAssetDifference(before, after) {
+    let diff = after - before
 
     let direction = diff > 0 ? "+" : ""
 
-    return direction + diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) // Format with 2 decimal places
+    return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
 }
 
 const sortedDashboards = computed(() => {
