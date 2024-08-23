@@ -16,34 +16,36 @@
         </div>
 
         <!-- Total assets -->
-        <div v-if="organizationStore.organization && organizationStore.organization.assets" class="flex flex-1 w-1/2 mb-4 border rounded-lg overflow-hidden">
-          <template v-if="activeAnalysisType === 'median_analysis'">
-            <div class="flex flex-1 flex-col gap-0.5 bg-gray-50 px-4 py-3">
+        <div v-if="organizationStore.organization && organizationStore.organization.assets" class=" w-1/2 mb-4 border rounded-lg overflow-hidden">
+          <div v-if="activeAnalysisType === 'median_analysis'" class="flex flex-1">
+            <div class="flex flex-1 flex-col gap-0.5 px-4 py-3">
                 <p>Total assets</p>
                 <span class="text-2xl font-medium">{{ organizationStore.organization.assets.median.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
             </div>
             <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
-                <p>Potential assets</p>
+                <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <!-- <span class="text-sm">({{ projectedAssetDifference }})</span> -->
+                    <span class="text-sm">({{ calculatePercentageDifference(organizationStore.organization.assets.median.assets, organizationStore.organization.assets.median.potential) }})</span>
                 </p>
             </div>
-          </template>
+          </div>
 
-          <template v-if="activeAnalysisType === 'max_analysis'">
-            <div class="flex flex-1 flex-col gap-0.5 bg-gray-50 px-4 py-3">
+          <div v-if="activeAnalysisType === 'max_analysis'" class="flex flex-1">
+            <div class="flex flex-1 flex-col gap-0.5 px-4 py-3">
                 <p>Total assets</p>
                 <span class="text-2xl font-medium">{{ organizationStore.organization.assets.max.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
             </div>
             <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
-                <p>Potential assets</p>
+                <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.max.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <!-- <span class="text-sm">({{ projectedAssetDifference }})</span> -->
+                    <span class="text-sm">({{ calculatePercentageDifference(organizationStore.organization.assets.max.assets, organizationStore.organization.assets.max.potential) }})</span>
                 </p>
             </div>
-          </template>
+          </div>
+
+          <div class="px-4 py-2 text-sm text-gray-400 border-t">28 day period {{ moment().subtract(28, 'days').format('MMM DD, Y') }} - {{ moment().subtract(1, 'days').format('MMM DD, Y') }}</div>
         </div>
 
         <!-- <pre>{{ organizationStore.organization }}</pre> -->
@@ -246,6 +248,14 @@ const isLoading = ref(false)
 const activeAnalysisType = ref('median_analysis')
 const activeSort = ref('bofi_performance')
 const activeSortDirection = ref('asc')
+
+function calculatePercentageDifference(before, after) {
+    let diff = (after - before) / before * 100
+
+    let direction = diff > 0 ? "+" : ""
+
+    return direction + diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) // Format with 2 decimal places
+}
 
 const sortedDashboards = computed(() => {
   if (!activeSort.value) {
