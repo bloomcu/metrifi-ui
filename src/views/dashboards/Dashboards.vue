@@ -3,7 +3,7 @@
     <template #topbar>
       <div class="relative border-b border-gray-200 pb-5 sm:pb-0">
         <!-- Title -->
-        <div class="md:flex md:items-center md:justify-between">
+        <div class="mb-5 md:flex md:items-center md:justify-between">
           <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
           <div class="flex gap-3 md:absolute md:right-0">
             <!-- <AppButton variant="tertiary">
@@ -15,15 +15,48 @@
           </div>
         </div>
 
-        <!-- Analysis type tabs -->
-        <div class="mt-4">
-          <nav class="flex justify-between">
-            <div class="flex space-x-6">
-              <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-1 text-lg font-medium']">Average</button>
-              <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-5 pb-1 text-lg font-medium']">Maximum</button>
+        <!-- Total assets -->
+        <div v-if="organizationStore.organization && organizationStore.organization.assets" class=" w-1/2 mb-4 border rounded-lg overflow-hidden">
+          <div v-if="activeAnalysisType === 'median_analysis'" class="flex flex-1">
+            <div class="flex flex-1 flex-col gap-0.5 px-4 py-3">
+                <p>Total assets</p>
+                <span class="text-2xl font-medium">{{ organizationStore.organization.assets.median.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
             </div>
-          </nav>
+            <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
+                <p>Total potential assets</p>
+                <p class="flex items-center gap-1 text-2xl font-medium">
+                    {{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
+                    <span class="text-sm">({{ calculateAssetDifference(organizationStore.organization.assets.median.assets, organizationStore.organization.assets.median.potential) }})</span>
+                </p>
+            </div>
+          </div>
+
+          <div v-if="activeAnalysisType === 'max_analysis'" class="flex flex-1">
+            <div class="flex flex-1 flex-col gap-0.5 px-4 py-3">
+                <p>Total assets</p>
+                <span class="text-2xl font-medium">{{ organizationStore.organization.assets.max.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
+            </div>
+            <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
+                <p>Total potential assets</p>
+                <p class="flex items-center gap-1 text-2xl font-medium">
+                    {{ organizationStore.organization.assets.max.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
+                    <span class="text-sm">({{ calculateAssetDifference(organizationStore.organization.assets.max.assets, organizationStore.organization.assets.max.potential) }})</span>
+                </p>
+            </div>
+          </div>
+
+          <div class="px-4 py-2 text-sm text-gray-400 border-t">28 day period {{ moment().subtract(28, 'days').format('MMM DD, Y') }} - {{ moment().subtract(1, 'days').format('MMM DD, Y') }}</div>
         </div>
+
+        <!-- <pre>{{ organizationStore.organization }}</pre> -->
+
+        <!-- Analysis type tabs -->
+        <nav class="flex justify-between">
+          <div class="flex space-x-6">
+            <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Average</button>
+            <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Maximum</button>
+          </div>
+        </nav>
 
         <!-- Sorting tabs -->
         <div class="mt-2">
@@ -196,7 +229,7 @@ import moment from "moment"
 import { ref, computed, onMounted } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
@@ -208,13 +241,21 @@ import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
 const route = useRoute()
 const router = useRouter()
 
+const organizationStore = useOrganizationStore()
 const dashboards = ref()
 const isLoading = ref(false)
 
 const activeAnalysisType = ref('median_analysis')
-
 const activeSort = ref('bofi_performance')
 const activeSortDirection = ref('asc')
+
+function calculateAssetDifference(before, after) {
+    let diff = after - before
+
+    let direction = diff > 0 ? "+" : ""
+
+    return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
+}
 
 const sortedDashboards = computed(() => {
   if (!activeSort.value) {

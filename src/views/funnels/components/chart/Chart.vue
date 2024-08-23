@@ -253,7 +253,7 @@ const projectedOverallConversionRateDifference = computed(() => {
     
     let direction = diff > 0 ? "+" : ""
 
-    return direction + diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) // Format with commas
+    return direction + diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) // Format with 2 decimal places
     // return direction + diff.toFixed(2)
     // return direction + diff
 })
