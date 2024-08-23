@@ -24,7 +24,7 @@
         </nav>
 
         <!-- Total assets -->
-        <div v-if="organizationStore.organization && organizationStore.organization.assets" class=" w-1/2 border rounded-lg overflow-hidden">
+        <div v-if="organizationStore.organization && organizationStore.organization.assets" class=" w-2/3 border rounded-lg overflow-hidden">
           <div v-if="activeAnalysisType === 'median_analysis'" class="flex flex-1">
             <div class="flex flex-1 flex-col gap-0.5 px-4 py-3">
                 <p>Total assets</p>
