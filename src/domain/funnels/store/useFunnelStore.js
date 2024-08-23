@@ -101,7 +101,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             endDate: selectedDateRange.value.endDate,
         }).then(response => {
             if (response.data.data.error) console.log(response.data.data.error)
-            console.log(response.data.data)
+            // console.log(response.data.data)
             funnel.report = response.data.data.report
             // removeDisabledStepsFromReport(funnel)
             // calculateReportConversions(funnel, funnel.report.steps)
