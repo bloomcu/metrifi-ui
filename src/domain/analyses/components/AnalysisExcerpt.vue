@@ -1,16 +1,16 @@
 <template>
     <div>
         <!-- 
-        Biggest opportunity 
+        Step opportunity 
         -->
         <!-- No funnels are converting -->
         <!-- <p v-if="analysis.subject_funnel_performance == 0" class="mb-3">
-            <span class="font-semibold">Biggest opportunity:</span>
+            <span class="font-semibold">Step opportunity:</span>
             None of the funnels are converting. Compare with funnels that are converting.
         </p> -->
         <!-- There's an opportunity in your steps -->
         <p v-if="analysis.bofi_performance < 0" class="mb-3">
-            <span class="font-semibold">Biggest opportunity:</span>
+            <span class="font-semibold">Step opportunity:</span>
             Step {{ analysis.bofi_step_index + 1 }} is converting {{ Number(analysis.bofi_performance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% 
             {{ analysis.bofi_performance <= 0 ? 'lower' : 'higher' }} than the comparisons 
             ({{ Number(analysis.bofi_conversion_rate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}% vs {{ Number(analysis.bofi_median_of_comparisons).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)
@@ -18,18 +18,18 @@
 
         <!-- There is not an opportunity in your steps -->
         <p v-else-if="analysis.bofi_performance > 0" class="mb-3">
-            <span class="font-semibold">Biggest opportunity:</span>
+            <span class="font-semibold">Step opportunity:</span>
             All your funnel steps are better than the comparisons. Compare with higher-performing funnels.
         </p>
 
         <!-- All funnels are performing the same -->
         <p v-else-if="analysis.bofi_performance == 0" class="mb-3">
-            <span class="font-semibold">Biggest opportunity:</span>
+            <span class="font-semibold">Step opportunity:</span>
             All of your funnel steps are on par with the comparisons. Compare with higher-performing funnels.
         </p>
         <!-- Focus funnel is better on all steps, so the BOFI is to compare with higher performing funnels
         <p v-else-if="analysis.bofi_performance == 0" class="mb-3">
-            <span class="font-semibold">Biggest opportunity:</span>
+            <span class="font-semibold">Step opportunity:</span>
             All your funnel steps are better than the comparisons. Compare with higher-performing funnels or drive more traffic to your funnel.
         </p> -->
         
