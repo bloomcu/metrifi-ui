@@ -260,7 +260,7 @@ const projectedOverallConversionRateDifference = computed(() => {
 
 const projectedAssets = computed(() => {
     // projected assets = number of projected users at eof * assets per conversion
-    // But to do this you need to know the number of users at the end of the funnel real users not rounded
+    // But to do this you need to know the number of users at the end of the funnel, real users not rounded
 
     let users = projection.value[projection.value.length - 1].users
     let value = props.conversion_value
