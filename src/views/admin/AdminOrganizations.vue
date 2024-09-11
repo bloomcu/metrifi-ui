@@ -13,7 +13,7 @@
     </template>
 
     <!-- Organizations -->
-    <AppCard padding="none">
+    <AppCard padding="none" class="mb-20">
       <ul role="list" class="divide-y divide-gray-100">
         <li v-for="organization in adminOrganizationStore.organizations" :key="organization.slug" class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6">
           <!-- Organization title -->

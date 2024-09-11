@@ -123,7 +123,7 @@
       :list="dashboards" 
       :animation="150"
       @change="handleDragEvent($event)"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-4 mb-20"
     >
       <div
         v-for="dashboard in sortedDashboards" 
