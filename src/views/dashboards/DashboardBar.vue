@@ -4,7 +4,7 @@
       Pending: {{ pending.length }}
       Completed: {{ completed.length }}
     </pre> -->
-
+    
     <!-- Header -->
     <header class="pt-3 pb-4 flex items-center justify-between">
       <div class="flex items-center gap-3 grow">
@@ -37,13 +37,11 @@
 
         <!-- Show notes -->
         <AppButton @click="toggleNotes()" variant="tertiary" size="base" class="flex items-center gap-2">
-          <!-- <ChatBubbleBottomCenterIcon class="h-5 w-5 shrink-0" /> -->
           Notes
         </AppButton>
 
         <!-- Run analysis -->
-        <AppButton v-if="!dashboard[activeAnalysisType]" @click="storeAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
-          <!-- <ChatBubbleBottomCenterIcon class="h-5 w-5 shrink-0" /> -->
+        <AppButton @click="storeAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
           Run analysis
         </AppButton>
 
@@ -51,6 +49,8 @@
         <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
       </div>
     </header>
+
+    <!-- <pre>{{ dashboard }}</pre> -->
 
     <!-- Notes -->
     <div v-if="isShowingNotes" class="mb-4">
@@ -73,13 +73,16 @@
       </div>
     </div>
 
+    <!-- Analysis issue -->
+    <AnalysisIssue v-if="dashboard.issue" :issue="dashboard.issue" class="py-2"/>
+
     <!-- Analysis -->
-    <div v-if="dashboard[activeAnalysisType] && !isShowingAnalysis" @click="showAnalysis()" class="flex items-center gap-2 mb-4 px-6 py-4 border-2 border-gray-200 rounded-xl bg-white cursor-pointer hover:bg-gray-50">
+    <div v-else-if="dashboard[activeAnalysisType] && !isShowingAnalysis" @click="showAnalysis()" class="flex items-center gap-2 mb-4 px-6 py-4 border-2 border-gray-200 rounded-xl bg-white cursor-pointer hover:bg-gray-50">
       <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">Show analysis</p>
       <span class="text-gray-400 text-sm font-normal">Created on {{ moment(dashboard[activeAnalysisType].created_at).fromNow() }}</span>
     </div>
 
-    <div v-if="dashboard[activeAnalysisType] && isShowingAnalysis" class="mb-4">
+    <div v-else-if="dashboard[activeAnalysisType] && isShowingAnalysis" class="mb-4">
       <div v-if="!isEditingAnalysis" class="relative p-6 border-2 border-gray-200 rounded-xl bg-white">
         <p class="flex items-center text-xl font-medium leading-6 text-gray-900 tracking-tight">
           <span class="mr-3">Analysis</span>
@@ -138,9 +141,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Analysis issue -->
-    <AnalysisIssue v-else-if="dashboard.issue" :issue="dashboard.issue" class="py-2"/>
 
     <!-- Funnels -->
     <VueDraggableNext 

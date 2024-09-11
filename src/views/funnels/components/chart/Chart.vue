@@ -13,7 +13,7 @@
                             <PencilIcon class="inline h-5 w-5 text-indigo-600 p-1 rounded-md group-hover:bg-indigo-50"/>
                         </div>
                         <p v-else>Assets</p>
-                        <span class="text-2xl font-medium">{{ assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
+                        <span class="text-2xl font-medium">{{ funnel.report.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
                     </div>
 
                     <!-- Projected assets -->
@@ -270,7 +270,7 @@ const projectedAssets = computed(() => {
 })
 
 const projectedAssetDifference = computed(() => {
-    let diff = projectedAssets.value - assets.value
+    let diff = projectedAssets.value - props.funnel.report.assets
 
     let direction = diff > 0 ? "+" : ""
 
@@ -278,15 +278,15 @@ const projectedAssetDifference = computed(() => {
     // return direction + diff
 })
 
-const assets = computed(() => {
-    if (!props.funnel.report.steps.length) return "$0.00"
+// const assets = computed(() => {
+//     if (!props.funnel.report.steps.length) return "$0.00"
 
-    let users = props.funnel.report.steps[props.funnel.report.steps.length - 1].users
-    let value = props.conversion_value
-    let assets = users * value
+//     let users = props.funnel.report.steps[props.funnel.report.steps.length - 1].users
+//     let value = props.conversion_value
+//     let assets = users * value
 
-    return (assets / 100)
-})
+//     return (assets / 100)
+// })
 
 // const profit = computed(() => {
 //     let assets = assets.value

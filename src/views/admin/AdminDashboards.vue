@@ -118,6 +118,9 @@
             Analysis in progress...
           </div>
 
+          <!-- Issue -->
+          <AnalysisIssue v-else-if="dashboard.issue" :issue="dashboard.issue"/>
+
           <!-- Analysis -->
           <div v-else-if="dashboard[activeAnalysisType]">
             <AnalysisExcerpt :analysis="dashboard[activeAnalysisType]"/>
@@ -127,9 +130,6 @@
               <span class="pl-2">28 day period {{ moment(dashboard[activeAnalysisType].start_date).format('MMM DD, Y') }} - {{ moment(dashboard[activeAnalysisType].end_date).format('MMM DD, Y') }}</span>
             </div>
           </div>
-
-          <!-- Issue -->
-          <AnalysisIssue v-else-if="dashboard.issue" :issue="dashboard.issue"/>
         </div>
       </RouterLink>
     </div>
