@@ -127,9 +127,9 @@
     >
       <div
         v-for="dashboard in sortedDashboards" 
-        @click="router.push({name: 'dashboard', params: {organization: dashboard.organization.slug, dashboard: dashboard.id}})"
+        @click="openDashboardInNewTab(dashboard.organization.slug, dashboard.id)"
         class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
-      >          
+      >
         <div class="flex flex-col space-y-4 w-full px-4 py-4">
           <!-- Card header -->
           <div :class="dashboard.median_analysis && dashboard.max_analysis ? 'border-b pb-4' : ''" class="flex items-center justify-between">
@@ -246,6 +246,11 @@ const isLoading = ref(false)
 const activeAnalysisType = ref('median_analysis')
 const activeSort = ref('bofi_performance')
 const activeSortDirection = ref('asc')
+
+function openDashboardInNewTab(organizationSlug, dashboardId) {
+  window.open(`/${organizationSlug}/${dashboardId}`, '_blank')
+  // router.push({name: 'dashboard', params: {organization: dashboard.organization.slug, dashboard: dashboard.id}})
+}
 
 function calculateAssetDifference(before, after) {
     let diff = after - before
