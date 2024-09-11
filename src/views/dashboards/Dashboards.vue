@@ -15,8 +15,16 @@
           </div>
         </div>
 
+        <!-- Analysis type tabs -->
+        <nav class="flex justify-between mb-4">
+          <div class="flex space-x-6">
+            <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Average</button>
+            <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Maximum</button>
+          </div>
+        </nav>
+
         <!-- Total assets -->
-        <div v-if="organizationStore.organization && organizationStore.organization.assets" class=" w-1/2 mb-4 border rounded-lg overflow-hidden">
+        <div v-if="organizationStore.organization && organizationStore.organization.assets" class=" w-2/3 border rounded-lg overflow-hidden">
           <div v-if="activeAnalysisType === 'median_analysis'" class="flex flex-1">
             <div class="flex flex-1 flex-col gap-0.5 px-4 py-3">
                 <p>Total assets</p>
@@ -48,23 +56,13 @@
           <div class="px-4 py-2 text-sm text-gray-400 border-t">28 day period {{ moment().subtract(28, 'days').format('MMM DD, Y') }} - {{ moment().subtract(1, 'days').format('MMM DD, Y') }}</div>
         </div>
 
-        <!-- <pre>{{ organizationStore.organization }}</pre> -->
-
-        <!-- Analysis type tabs -->
-        <nav class="flex justify-between">
-          <div class="flex space-x-6">
-            <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Average</button>
-            <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Maximum</button>
-          </div>
-        </nav>
-
         <!-- Sorting tabs -->
         <div class="mt-2">
           <div class="hidden sm:block">
             <nav class="-mb-px flex justify-between">
               <div class="flex space-x-4">
                 <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
-                  Biggest opportunity
+                  Step opportunity
                   <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
                     <ChevronUpIcon v-if="activeSort == 'bofi_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
