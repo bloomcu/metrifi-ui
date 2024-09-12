@@ -33,8 +33,8 @@
             <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
-                    {{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <span class="text-sm">({{ calculateAssetDifference(organizationStore.organization.assets.median.assets, organizationStore.organization.assets.median.potential) }})</span>
+                    {{ organizationStore.organization.assets.median.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
+                    <span class="text-sm">(+{{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</span>
                 </p>
             </div>
           </div>
@@ -47,8 +47,8 @@
             <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
-                    {{ organizationStore.organization.assets.max.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <span class="text-sm">({{ calculateAssetDifference(organizationStore.organization.assets.max.assets, organizationStore.organization.assets.max.potential) }})</span>
+                    {{ organizationStore.organization.assets.max.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
+                    <span class="text-sm">(+{{ organizationStore.organization.assets.max.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</span>
                 </p>
             </div>
           </div>
@@ -250,14 +250,6 @@ const activeSortDirection = ref('asc')
 function openDashboardInNewTab(organizationSlug, dashboardId) {
   window.open(`/${organizationSlug}/${dashboardId}`, '_blank')
   // router.push({name: 'dashboard', params: {organization: dashboard.organization.slug, dashboard: dashboard.id}})
-}
-
-function calculateAssetDifference(before, after) {
-    let diff = after - before
-
-    let direction = diff > 0 ? "+" : ""
-
-    return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
 }
 
 const sortedDashboards = computed(() => {
