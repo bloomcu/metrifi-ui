@@ -127,7 +127,7 @@
     >
       <div
         v-for="dashboard in sortedDashboards" 
-        @click="openDashboardInNewTab(dashboard.organization.slug, dashboard.id)"
+        @click="router.push({ name: 'dashboard', params: { organization: dashboard.organization.slug, dashboard: dashboard.id }})"
         class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
       >
         <div class="flex flex-col space-y-4 w-full px-4 py-4">
@@ -246,11 +246,6 @@ const isLoading = ref(false)
 const activeAnalysisType = ref('median_analysis')
 const activeSort = ref('bofi_performance')
 const activeSortDirection = ref('asc')
-
-function openDashboardInNewTab(organizationSlug, dashboardId) {
-  window.open(`/${organizationSlug}/${dashboardId}`, '_blank')
-  // router.push({name: 'dashboard', params: {organization: dashboard.organization.slug, dashboard: dashboard.id}})
-}
 
 const sortedDashboards = computed(() => {
   if (!activeSort.value) {
