@@ -104,12 +104,10 @@
             </li> -->
 
             <!-- Organization -->
-            <li v-if="organizationStore.organization" class="pb-3">
+            <li v-if="organizationStore.organization && authStore.isAdmin" class="pb-3">
               <ul role="list" class="-mx-2 space-y-1 mb-2">
-                <li class="rounded-md border px-2 py-1">
-                  <p class="text-sm font-medium leading-6 text-gray-700 truncate">
-                    {{ organizationStore.organization.title }}
-                  </p>
+                <li @click="router.push({ name: 'adminOrganizations'})" class="rounded-md border px-2 py-1 text-sm font-medium leading-6 text-gray-700 truncate cursor-pointer hover:bg-gray-100">
+                  {{ organizationStore.organization.title }}
                 </li>
               </ul>
             </li>
@@ -186,11 +184,13 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 import Avatar from '@/app/components/base/avatars/Avatar.vue'
 
+const router = useRouter()
 const authStore = useAuthStore()
 const organizationStore = useOrganizationStore()
 
