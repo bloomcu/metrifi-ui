@@ -82,7 +82,7 @@
     </template>
 
     <!-- Dashboards -->
-    <div v-if="dashboards && sortedDashboards.length" class="flex flex-col gap-4">
+    <div v-if="dashboards && sortedDashboards.length" class="flex flex-col gap-4 mb-20">
       <RouterLink 
         v-for="dashboard in sortedDashboards" 
         :to="{name: 'dashboard', params: {organization: dashboard.organization.slug, dashboard: dashboard.id}}"

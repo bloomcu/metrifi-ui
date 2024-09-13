@@ -34,7 +34,7 @@
                         </li>
                       </ul>
                     </li>
-                    <li>
+                    <!-- <li>
                       <div class="text-xs font-medium leading-6 text-gray-400">Your teams</div>
                       <ul role="list" class="-mx-2 mt-2 space-y-1">
                         <li v-for="team in teams" :key="team.name">
@@ -44,13 +44,13 @@
                           </a>
                         </li>
                       </ul>
-                    </li>
-                    <li class="mt-auto">
+                    </li> -->
+                    <!-- <li class="mt-auto">
                       <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-medium leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
                         <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
                         Settings
                       </a>
-                    </li>
+                    </li> -->
                   </ul>
                 </nav>
               </div>
@@ -68,7 +68,7 @@
           <img width="120" src="/logo.svg" alt="MetriFi" />
         </div>
         <nav class="flex flex-1 flex-col">
-          <ul role="list" class="flex flex-1 flex-col gap-y-3">
+          <ul role="list" class="flex flex-1 flex-col">
             <!-- User / organization -->
             <!-- <li>
               <Menu as="div" class="-mx-2">
@@ -103,8 +103,17 @@
               </Menu>
             </li> -->
 
-            <!-- Top -->
-            <li v-if="!organizationStore.organization.onboarding.hideOnboarding" class="border-b pb-3">
+            <!-- Organization -->
+            <li v-if="organizationStore.organization && authStore.isAdmin" class="pb-3">
+              <ul role="list" class="-mx-2 space-y-1 mb-2">
+                <li @click="router.push({ name: 'adminOrganizations'})" class="rounded-md border px-2 py-1 text-sm font-medium leading-6 text-gray-700 truncate cursor-pointer hover:bg-gray-100">
+                  {{ organizationStore.organization.title }}
+                </li>
+              </ul>
+            </li>
+
+            <!-- Onboarding -->
+            <!-- <li v-if="!organizationStore.organization.onboarding.hideOnboarding" class="border-b pb-3">
               <ul role="list" class="-mx-2 space-y-1">
                 <li>
                   <RouterLink :to="{name: 'welcome'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
@@ -112,14 +121,8 @@
                     Welcome
                   </RouterLink>
                 </li>
-                <!-- <li>
-                  <RouterLink :to="{name: 'benchmarks'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
-                    <PresentationChartLineIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
-                    Benchmarks
-                  </RouterLink>
-                </li> -->
               </ul>
-            </li>
+            </li> -->
             
             <!-- Main menu -->
             <li>
@@ -181,11 +184,13 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 import Avatar from '@/app/components/base/avatars/Avatar.vue'
 
+const router = useRouter()
 const authStore = useAuthStore()
 const organizationStore = useOrganizationStore()
 
@@ -216,6 +221,7 @@ import {
 import {
   HomeIcon,
   PresentationChartLineIcon,
+  HomeModernIcon,
   ChartBarIcon,
   Cog6ToothIcon,
   CloudIcon,
