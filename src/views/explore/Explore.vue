@@ -41,7 +41,7 @@
 
       <!-- Report -->
       <div v-if="reports[selectedTab.metric] && reports[selectedTab.metric].rows">
-        <table v-if="!isReportLoading && reports[selectedTab.metric]" class="min-w-full max-w-full divide-y divide-gray-300">
+        <table v-if="!isReportLoading && reports[selectedTab.metric]" class="min-w-full max-w-full divide-y divide-gray-300 mb-20">
           <thead>
             <tr class="divide-x divide-gray-200">
               <th v-for="column in selectedTab.columns" scope="col" class="py-3 px-3 text-left">

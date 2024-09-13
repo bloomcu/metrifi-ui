@@ -33,8 +33,8 @@
             <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
-                    {{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <span class="text-sm">({{ calculateAssetDifference(organizationStore.organization.assets.median.assets, organizationStore.organization.assets.median.potential) }})</span>
+                    {{ organizationStore.organization.assets.median.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
+                    <span v-if="organizationStore.organization.assets.max.potential !== 0" class="text-sm">(+{{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</span>
                 </p>
             </div>
           </div>
@@ -47,8 +47,8 @@
             <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
-                    {{ organizationStore.organization.assets.max.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <span class="text-sm">({{ calculateAssetDifference(organizationStore.organization.assets.max.assets, organizationStore.organization.assets.max.potential) }})</span>
+                    {{ organizationStore.organization.assets.max.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
+                    <span v-if="organizationStore.organization.assets.max.potential !== 0" class="text-sm">(+{{ organizationStore.organization.assets.max.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</span>
                 </p>
             </div>
           </div>
@@ -123,13 +123,13 @@
       :list="dashboards" 
       :animation="150"
       @change="handleDragEvent($event)"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-4 mb-20"
     >
       <div
         v-for="dashboard in sortedDashboards" 
-        @click="router.push({name: 'dashboard', params: {organization: dashboard.organization.slug, dashboard: dashboard.id}})"
+        @click="router.push({ name: 'dashboard', params: { organization: dashboard.organization.slug, dashboard: dashboard.id }})"
         class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
-      >          
+      >
         <div class="flex flex-col space-y-4 w-full px-4 py-4">
           <!-- Card header -->
           <div :class="dashboard.median_analysis && dashboard.max_analysis ? 'border-b pb-4' : ''" class="flex items-center justify-between">
@@ -246,14 +246,6 @@ const isLoading = ref(false)
 const activeAnalysisType = ref('median_analysis')
 const activeSort = ref('bofi_performance')
 const activeSortDirection = ref('asc')
-
-function calculateAssetDifference(before, after) {
-    let diff = after - before
-
-    let direction = diff > 0 ? "+" : ""
-
-    return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
-}
 
 const sortedDashboards = computed(() => {
   if (!activeSort.value) {
