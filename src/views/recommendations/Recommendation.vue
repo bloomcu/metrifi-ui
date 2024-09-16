@@ -20,7 +20,7 @@
     <!-- Container -->
     <div class="flex flex-grow">
       <!-- Left Side (Collapsible) -->
-      <div id="left-panel" :class="toggled ? 'w-1/3' : ''" class="bg-white min-w-[40px] max-w-[520px]">
+      <div id="left-panel" :class="toggled ? 'w-1/3' : ''" class="bg-white min-w-[36px] max-w-[520px]">
         <div v-if="toggled" class="p-8">
           <h1 class="mb-6 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">Recommendation</h1>
           <p class="mb-6 text-xl leading-8 text-gray-600">Aliquet nec orci mattis amet quisque ullamcorper neque, nibh sem. At arcu, sit dui mi, nibh dui, diam eget aliquam. Quisque id at vitae feugiat egestas ac. Diam nulla orci at in viverra scelerisque eget. Eleifend egestas fringilla sapien.</p>
