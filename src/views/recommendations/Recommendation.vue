@@ -7,7 +7,7 @@
           <ArrowLeftIcon class="h-4 w-4 shrink-0" />
         </AppButton>
         <p class="text-base font-semibold leading-6 text-gray-900">Webpage recommendation</p>
-        <span class="text-gray-400 text-sm font-normal">Created on {{ moment('2024-09-13 20:20:57').fromNow() }}</span>
+        <span class="text-gray-400 text-sm font-normal">Created {{ moment('2024-09-13 20:20:57').fromNow() }}</span>
       </div>
 
       <div class="flex items-center gap-3">
