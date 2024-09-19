@@ -47,10 +47,12 @@
       <!-- Right Side (2/3 of the screen) -->
       <div class="flex-1 overflow-y-auto px-12 pt-5 pb-24 bg-gray-100">
         <p class="text-xl font-semibold mb-4">Prototype</p>
-        <div class="relative overflow-hidden rounded-xl shadow">
-          <!-- Prototype -->
+
+        <div v-if="recommendationStore.recommendation.prototype" class="relative overflow-hidden rounded-xl shadow">
           <div v-html="recommendationStore.recommendation.prototype" class="bg-white block"></div>
         </div>
+
+        <p v-else>The complete HTML was not generated</p>
       </div>
     </div>
   </div>
@@ -111,6 +113,7 @@ function generateRecommendation() {
     title: 'Webpage recommendation',
   }).then(() => {
     router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
+    location.reload()
   })
 }
 
