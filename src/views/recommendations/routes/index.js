@@ -2,8 +2,7 @@ import Recommendation from '@/views/recommendations/Recommendation.vue'
 
 export default [
   {
-    // path: "/:organization/:recommendation",
-    path: "/:organization/recommendation",
+    path: "/:organization/:dashboard/recommendation/:recommendation",
     name: "recommendation",
     component: Recommendation,
   },

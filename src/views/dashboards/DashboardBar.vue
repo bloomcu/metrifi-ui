@@ -45,12 +45,20 @@
           Run analysis
         </AppButton>
 
+        <AppButton v-if="dashboard.recommendation" @click="router.push({name: 'recommendation', params:{ recommendation: dashboard.recommendation.id }})" variant="tertiary" size="base" class="flex items-center gap-2">
+          View recommendation
+        </AppButton>
+
+        <AppButton v-if="!dashboard.recommendation" @click="generateRecommendation()" variant="tertiary" size="base" class="flex items-center gap-2">
+          Generate recommendation
+        </AppButton>
+
         <!-- Zoom -->
         <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
       </div>
     </header>
 
-    <!-- <pre>{{ dashboard }}</pre> -->
+    <pre>{{ dashboard }}</pre>
 
     <!-- Notes -->
     <div v-if="isShowingNotes" class="mb-4">
@@ -205,6 +213,7 @@ import { useRouter, useRoute } from 'vue-router'
 
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useAnalysisStore } from '@/domain/analyses/store/useAnalysisStore'
+import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { useStepDetailsTray } from '@/domain/funnels/components/step-details/useStepDetailsTray'
 
@@ -227,6 +236,7 @@ const route = useRoute()
 
 const authStore = useAuthStore()
 const analysisStore = useAnalysisStore()
+const recommendationStore = useRecommendationStore()
 const funnelStore = useFunnelStore()
 
 // const { funnels, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
@@ -289,6 +299,14 @@ function storeAnalysis() {
     // analysisStore.median_analysis = dashboard.value.median_analysis
     // analysisStore.max_analysis = dashboard.value.max_analysis
     loadDashboard()
+  })
+}
+
+function generateRecommendation() {
+  recommendationStore.store(route.params.organization, route.params.dashboard, {
+    title: 'Webpage recommendation',
+  }).then(() => {
+    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
   })
 }
 
