@@ -498,11 +498,38 @@
       </div>
     </div>
   </div>
+
+  <div v-else class="flex flex-col items-center justify-center min-h-screen">
+    <div class="w-96 p-6">
+      <div class="flex items-center justify-center mb-10">
+        <div class="w-24 h-24 border-2 border-indigo-300 rounded-full border-t-transparent spin"/>
+      </div>
+
+      <p class="text-xl text-center text-gray-700 mb-10">{{ currentStep.text }}</p>
+
+      <div class="relative h-2 bg-gray-200 rounded">
+        <div :style="{ width: progressWidth, transition: 'width 0.5s ease' }" class="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-indigo-300 rounded"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div v-else class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-64 p-6 bg-white rounded-lg shadow-lg">
+      <div class="flex items-center gap-2 mb-10">
+        <div class="w-5 h-5 border-2 border-indigo-500 rounded-full border-t-transparent spin"/>
+        <p class="text-center text-gray-700">{{ currentStep.text }}</p>
+      </div>
+
+      <div class="relative h-2 bg-gray-200 rounded">
+        <div :style="{ width: progressWidth, transition: 'width 0.5s ease' }" class="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-indigo-300 rounded"/>
+      </div>
+    </div>
+  </div> -->
 </template>
 
 <script setup>
 import moment from "moment"
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ArrowLeftIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
@@ -510,10 +537,54 @@ import LayoutDefault from '@/app/layouts/LayoutDefault.vue'
 const router = useRouter()
 const route = useRoute()
 
-const recommendation = ref(true)
+const recommendation = ref(false)
 const toggled = ref(true)
 
-onMounted(() => {
+const steps = [
+  { id: 1, text: 'Initializing application', completed: false },
+  { id: 2, text: 'Loading user data', completed: false },
+  { id: 3, text: 'Preparing workspace', completed: false },
+  { id: 4, text: 'Finalizing setup', completed: false },
+]
 
+let interval = null
+const currentStepIndex = ref(0)
+const currentStep = computed(() => steps[currentStepIndex.value])
+
+const progressWidth = computed(() => {
+  return `${((currentStepIndex.value + 1) / steps.length) * 100}%`
+})
+
+onMounted(() => {
+  if (steps.length === 0) return
+
+  interval = setInterval(() => {
+    const prevIndex = currentStepIndex.value
+    const nextIncompleteIndex = steps.findIndex(
+      (step, index) => index > prevIndex && !step.completed
+    )
+    currentStepIndex.value = nextIncompleteIndex !== -1 ? nextIncompleteIndex : 0
+  }, 3000)
+})
+
+onUnmounted(() => {
+  if (interval) {
+    clearInterval(interval)
+  }
 })
 </script>
+
+<style>
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 2s linear infinite;
+}
+</style>
