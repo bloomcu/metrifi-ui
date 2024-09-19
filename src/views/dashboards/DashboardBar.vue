@@ -58,8 +58,6 @@
       </div>
     </header>
 
-    <pre>{{ dashboard }}</pre>
-
     <!-- Notes -->
     <div v-if="isShowingNotes" class="mb-4">
       <div v-if="isEditingNotes" class="p-6 border-2 border-gray-200 rounded-xl bg-gray-50">
