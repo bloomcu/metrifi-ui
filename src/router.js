@@ -8,6 +8,7 @@ import benchmarks from '@/views/benchmarks/routes/index.js'
 import dashboards from '@/views/dashboards/routes/index.js'
 import explore from '@/views/explore/routes/index.js'
 import funnels from '@/views/funnels/routes/index.js'
+import recommendations from '@/views/recommendations/routes/index.js'
 import connections from '@/views/connections/routes/index.js'
 import services from '@/views/services/routes/index.js'
 import welcome from '@/views/welcome/routes/index.js'
@@ -22,6 +23,7 @@ const routes = [
   ...dashboards,
   ...explore,
   ...funnels,
+  ...recommendations,
   ...connections,
   ...services,
   ...welcome,
