@@ -49,9 +49,9 @@
           View recommendation
         </AppButton>
 
-        <AppButton v-if="!dashboard.recommendation" @click="generateRecommendation()" variant="tertiary" size="base" class="flex items-center gap-2">
+        <!-- <AppButton v-if="!dashboard.recommendation" @click="generateRecommendation()" variant="tertiary" size="base" class="flex items-center gap-2">
           Generate recommendation
-        </AppButton>
+        </AppButton> -->
 
         <!-- Zoom -->
         <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
