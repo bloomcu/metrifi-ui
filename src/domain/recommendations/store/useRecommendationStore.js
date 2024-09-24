@@ -23,7 +23,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         async show(organization, dashboard, id) {
           // console.log('Show recommendation', organization, dashboard, id)
           this.isLoading = true
-          this.recommendation = null
+          // this.recommendation = null
           
           await RecommendationsApi.show(organization, dashboard, id)
             .then(response => {

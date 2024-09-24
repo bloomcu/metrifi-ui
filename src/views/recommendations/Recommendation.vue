@@ -13,7 +13,7 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'page_builder_completed'" @click="generateRecommendation()" variant="tertiary" size="base">
+        <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="generateRecommendation()" variant="tertiary" size="base">
           Regenerate recommendation
         </AppButton>
       </div>
@@ -29,7 +29,7 @@
       </div>
     </div>
     
-    <div v-else-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'page_builder_completed'" class="min-h-screen flex flex-col">
+    <div v-else-if="recommendationStore.recommendation" class="min-h-screen flex flex-col">
       <!-- Container -->
       <div class="flex flex-grow">
         <!-- Left Side (Collapsible) -->
@@ -49,18 +49,29 @@
 
         <!-- Right Side (2/3 of the screen) -->
         <div class="flex-1 overflow-y-auto px-12 pt-5 pb-24 bg-gray-100">
-          <p class="text-xl font-semibold mb-4">Prototype</p>
-
-          <div v-if="recommendationStore.recommendation.prototype" class="relative overflow-hidden rounded-xl shadow">
-            <div v-html="recommendationStore.recommendation.prototype" class="bg-white block"></div>
+          <div v-if="recommendationStore.recommendation.status != 'done'" class="p-6">
+            <div class="flex items-center justify-center mb-6">
+              <!-- <div class="w-24 h-24 border-2 border-indigo-300 rounded-full border-t-transparent spin"/> -->
+              <div class="w-12 h-12 border-2 border-indigo-300 rounded-full border-t-transparent spin"/>
+            </div>
+            <p class="text-xl text-center text-gray-700 mb-6">{{ currentStep.text }}</p>
+            <div class="w-96 m-auto relative h-2 bg-gray-200 rounded">
+              <div :style="{ width: progressWidth, transition: 'width 0.5s ease' }" class="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-indigo-300 rounded"/>
+            </div>
           </div>
 
-          <p v-else>The complete HTML was not generated</p>
+          <div v-if="recommendationStore.recommendation.prototype">
+            <p class="text-xl font-semibold mb-4">Prototype</p>
+            <Prototype :html="recommendationStore.recommendation.prototype"/>
+            <!-- <div v-html="recommendationStore.recommendation.prototype" class="relative overflow-hidden rounded-xl shadow"></div> -->
+          </div>
+
+          <!-- <p v-else>The complete HTML was not generated</p> -->
         </div>
       </div>
     </div>
 
-    <div v-else class="flex flex-col items-center justify-center min-h-screen">
+    <!-- <div v-else class="flex flex-col items-center justify-center min-h-screen">
       <div class="w-96 p-6">
         <div class="flex items-center justify-center mb-10">
           <div class="w-24 h-24 border-2 border-indigo-300 rounded-full border-t-transparent spin"/>
@@ -72,7 +83,7 @@
           <div :style="{ width: progressWidth, transition: 'width 0.5s ease' }" class="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-indigo-300 rounded"/>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- <div v-else class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div class="w-64 p-6 bg-white rounded-lg shadow-lg">
@@ -96,6 +107,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { ArrowLeftIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
+import Prototype from '@/views/recommendations/components/Prototype.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -107,17 +119,21 @@ const steps = [
   { status: 'ui_analyzer_in_progress', text: 'Analyzing UI', completed: false },
   { status: 'confidentiality_rule_qa_in_progress', text: 'Protecting confidential information', completed: false },
   { status: 'content_writer_in_progress', text: 'Writing new content', completed: false },
+  { status: 'section_counter_in_progress', text: 'Counting sections', completed: false },
+  { status: 'section_categorizer_in_progress', text: 'Categorizing sections', completed: false },
   { status: 'component_picker_in_progress', text: 'Picking webpage components', completed: false },
-  { status: 'page_builder_in_progress', text: 'Building the page', completed: false },
-  { status: 'page_builder_completed', text: 'Finished!', completed: false },
+  { status: 'page_builder_in_progress', text: 'Building component', completed: false },
+  { status: 'page_builder_completed', text: 'Queuing next component', completed: false },
+  { status: 'done', text: 'All done', completed: false },
 ]
 
 function generateRecommendation() {
   recommendationStore.store(route.params.organization, route.params.dashboard, {
     title: 'Webpage recommendation',
   }).then(() => {
-    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
-    location.reload()
+    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } }).then(() => {
+      window.location.reload()
+    })
   })
 }
 
@@ -142,12 +158,12 @@ function fetchRecommendation() {
       }
       
       // Stop polling if the recommendation process is completed
-      if (recommendation.status === 'page_builder_completed') {
+      if (recommendation.status === 'done') {
         clearInterval(interval);
       }
 
       // Stop polling if the recommendation process is completed
-      if (['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(status => recommendation.status.includes(status))) {
+      if (['requires_action', 'cancelled', 'failed', 'expired'].some(status => recommendation.status.includes(status))) {
         clearInterval(interval);
         issue.value = recommendation.status;
       }
@@ -168,8 +184,8 @@ onMounted(() => {
   interval = setInterval(fetchRecommendation, 3000)
 
   // Load Tailwind play css
-  // tailwindScript = document.createElement('script')
-  // tailwindScript.src = 'https://cdn.tailwindcss.com'
+  tailwindScript = document.createElement('script')
+  tailwindScript.src = 'https://cdn.tailwindcss.com'
   tailwind.value.appendChild(tailwindScript)
 })
 
@@ -180,9 +196,9 @@ onUnmounted(() => {
   }
 
   // Unload Tailwind play css
-  if (tailwindScript && tailwindScript.parentNode) {
-    document.head.removeChild(tailwindScript)
-  }
+  // if (tailwindScript && tailwindScript.parentNode) {
+  //   document.head.removeChild(tailwindScript)
+  // }
 })
 </script>
 
