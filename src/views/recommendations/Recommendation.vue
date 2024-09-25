@@ -17,6 +17,8 @@
           Regenerate recommendation
         </AppButton>
       </div>
+
+      <p v-if="isLoading">Loading...</p>
     </header>
 
     <div v-if="issue" class="flex flex-col items-center justify-center min-h-screen">
@@ -29,7 +31,7 @@
       </div>
     </div>
     
-    <div v-else-if="recommendationStore.recommendation" class="min-h-screen flex flex-col">
+    <div v-if="recommendationStore.recommendation" class="min-h-screen flex flex-col">
       <!-- Container -->
       <div class="flex flex-grow">
         <!-- Left Side (Collapsible) -->
@@ -113,7 +115,8 @@ const router = useRouter()
 const route = useRoute()
 
 const recommendationStore = useRecommendationStore()
-const toggled = ref(true)
+const isLoading = ref(false)
+const toggled = ref(false)
 
 const steps = [
   { status: 'ui_analyzer_in_progress', text: 'Analyzing UI', completed: false },
@@ -147,25 +150,35 @@ const progressWidth = computed(() => {
 })
 
 function fetchRecommendation() {
+  isLoading.value = true;
+
   recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
     .then(response => {
       const recommendation = recommendationStore.recommendation;
+      setTimeout(() => isLoading.value = false, 800)
+      
+      if (recommendation.content) {
+        toggled.value = true;
+      } 
 
       // Update the current step based on the recommendation status
       const currentStepIdx = steps.findIndex(step => step.status === recommendation.status);
       if (currentStepIdx !== -1) {
         currentStepIndex.value = currentStepIdx;
+        setTimeout(() => isLoading.value = false, 800) // move into store
       }
       
       // Stop polling if the recommendation process is completed
       if (recommendation.status === 'done') {
         clearInterval(interval);
+        setTimeout(() => isLoading.value = false, 800)
       }
 
       // Stop polling if the recommendation process is completed
       if (['requires_action', 'cancelled', 'failed', 'expired'].some(status => recommendation.status.includes(status))) {
         clearInterval(interval);
         issue.value = recommendation.status;
+        setTimeout(() => isLoading.value = false, 800)
       }
     })
     .catch(error => {
