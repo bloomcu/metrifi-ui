@@ -43,7 +43,7 @@
         </div>
 
         <!-- Divider with Toggle Button -->
-        <div class="w-0.5 relative flex items-center">
+        <div v-if="recommendationStore.recommendation.content" class="w-0.5 relative flex items-center">
           <button @click="toggled = !toggled" :class="toggled ? '' : 'rotate-180'" class="absolute -right-4 top-8 transform -translate-y-1/2 flex items-center justify-center border bg-white text-gray-400 w-8 h-8 rounded-full">
             <ChevronLeftIcon class="h-5 w-5 shrink-0 -ml-[3px]" />
           </button>
