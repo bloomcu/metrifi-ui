@@ -8,7 +8,7 @@
         <AppButton @click="router.push({name: 'dashboard'})" variant="primary" size="base">
           <ArrowLeftIcon class="h-4 w-4 shrink-0" />
         </AppButton>
-        <p class="text-base font-semibold leading-6 text-gray-900">Webpage recommendation</p>
+        <p v-if="recommendationStore.recommendation" class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }} recommendation</p>
         <span v-if="recommendationStore.recommendation" class="text-gray-400 text-sm font-normal">Created {{ moment(recommendationStore.recommendation.created_at).fromNow() }}</span>
       </div>
 
