@@ -1,9 +1,13 @@
 <template>
   <LayoutDefault v-if="dashboard" width="lg" class="min-h-screen flex flex-col px-4">
-    <!-- <pre>
-      Pending: {{ pending.length }}
-      Completed: {{ completed.length }}
-    </pre> -->
+    <!-- Model: Generating recommendation -->
+    <div v-if="isGeneratingRecommendation" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div class="flex flex-col items-center justify-center rounded-lg shadow-lg p-6 w-full max-w-lg bg-white ">
+          <div class="w-12 h-12 mb-4 border-2 border-indigo-300 rounded-full border-t-transparent spin"/>
+          <h3 class="text-2xl font-medium">Generating recommendation</h3>
+          <p class="text-base">Loading funnel reports</p>
+      </div>
+    </div>
     
     <!-- Header -->
     <header class="pt-3 pb-4 flex items-center justify-between">
@@ -252,6 +256,7 @@ const isEditingNotes = ref(false)
 const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
 const isShowingReference = ref(false)
+const isGeneratingRecommendation = ref(false)
 
 const activeAnalysisType = ref('median_analysis')
 
@@ -282,6 +287,60 @@ function expandFunnelStep(step) {
   openTray()
 }
 
+function getMetadataForRecommendations() {
+  let stepIndex = dashboard.value.median_analysis.bofi_step_index
+
+  let focusName = funnelStore.funnels[0].report.steps[stepIndex].name
+  let focusDomain = funnelStore.funnels[0].organization.domain
+  let focusUrl = focusDomain + funnelStore.funnels[0].report.steps[stepIndex].metrics[0].pagePath
+  let conversion = funnelStore.funnels[0].report.steps[stepIndex + 1].conversionRate
+
+  let focus = {
+    name: focusName,
+    domain: focusDomain,
+    url: focusUrl,
+    conversion: conversion,
+  }
+
+  let comparisons = funnelStore.funnels
+    .filter((funnel, index) => index !== 0)
+    .map((funnel) => {
+      console.log(funnel)
+      let name = funnel.report.steps[stepIndex].name
+      let domain = funnel.organization.domain
+      let url = domain + funnel.report.steps[stepIndex].metrics[0].pagePath
+      let conversion = funnel.report.steps[stepIndex + 1].conversionRate
+
+      return {
+        name: name,
+        domain: domain,
+        url: url,
+        conversion: conversion,
+      };
+    });
+
+  // Sort the comparisons by the step conversion rate
+  comparisons.sort((a, b) => b.conversion - a.conversion)
+
+  // Get the top two comparisons
+  comparisons = comparisons.slice(0, 2)
+
+  return {
+    focus: focus,
+    comparisons: comparisons,
+  }
+}
+
+function generateRecommendation() {
+  let metadata = getMetadataForRecommendations()
+
+  recommendationStore.store(route.params.organization, route.params.dashboard, {
+    metadata: metadata,
+  }).then(() => {
+    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
+  })
+}
+
 function storeAnalysis() {
   let subjectFunnel = funnelStore.funnels[0]
   let comparisonFunnels = funnelStore.funnels.filter((funnel, index) => index !== 0)
@@ -297,14 +356,6 @@ function storeAnalysis() {
     // analysisStore.median_analysis = dashboard.value.median_analysis
     // analysisStore.max_analysis = dashboard.value.max_analysis
     loadDashboard()
-  })
-}
-
-function generateRecommendation() {
-  recommendationStore.store(route.params.organization, route.params.dashboard, {
-    title: 'Webpage recommendation',
-  }).then(() => {
-    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
   })
 }
 
@@ -450,6 +501,39 @@ function openFunnel(funnel) {
   window.open(routeData.href, '_blank');
 }
 
+// Check for `generate-recommendation` param and initialize `isGeneratingRecommendation`
+function checkIsGeneratingRecommendation() {
+  if (route.query['generate-recommendation'] === 'true') {
+    isGeneratingRecommendation.value = true;
+
+    // Remove the `generate-recommendation` parameter from the URL
+    removeGenerateRecommendationParam();
+  }
+}
+
+// Remove the `generate-recommendation` parameter from the URL
+function removeGenerateRecommendationParam() {
+  const query = { ...route.query }; // Copy the existing query parameters
+  delete query['generate-recommendation']; // Remove the specific parameter
+
+  // Use router.replace to update the URL without reloading the page
+  router.replace({ query });
+}
+
+watch(
+  () => funnelStore.pendingFunnels,
+  () => {
+    console.log(funnelStore.pendingFunnels.length)
+    if (isGeneratingRecommendation.value && funnelStore.pendingFunnels.length === 0) {
+      // If there are no more pending funnels and the URL parameter is set, generate the recommendation
+      setTimeout(() => {
+        generateRecommendation();
+      }, 5000);
+    }
+  },
+  { deep: true }
+);
+
 watch(selectedDateRange, () => {
   dashboard.value.funnels.forEach(funnel => {
     funnelStore.addFunnelJob(funnel)
@@ -458,5 +542,6 @@ watch(selectedDateRange, () => {
 
 onMounted(() => {
   loadDashboard()
+  checkIsGeneratingRecommendation()
 })
 </script>

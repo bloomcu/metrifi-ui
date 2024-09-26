@@ -4,14 +4,10 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
-// const { funnel, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 
 export const useFunnelStore = defineStore('funnelStore', () => {
     const funnels = ref([])
     const funnel = ref(null)
-    // const reportsQueue = ref([])
-    // const reportsInProgress = ref([])
-    // const reportsCompleted = ref([])
     const pendingFunnels = ref([])
     const activeFunnel = ref(null)
     const completedFunnels = ref([])
@@ -111,25 +107,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         startNextFunnelJob()
     }, 500)
 
-    // function removeDisabledStepsFromReport(funnel) {
-    //     if (!funnel.pivot) return
-
-    //     let disabled_steps = funnel.pivot.disabled_steps
-    //     if (!disabled_steps) return
-
-    //     funnel.steps.forEach((step) => {
-    //         if (disabled_steps.includes(step.id)) {
-    //             // Find the index of the step in the report by it's id
-    //             let index = funnel.report.steps.findIndex(s => s.id === step.id)
-
-    //             // Remove the step from the report
-    //             funnel.report.steps.splice(index, 1)
-    //         }
-    //     })
-    // }
-
     function calculateReportConversions(funnel, steps) {
-        // console.log('calculateReportConversions...')
 
         steps.forEach((step, index) => {
             // Update user count
@@ -170,7 +148,6 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         update,
         addFunnel,
         addFunnelJob,
-        // calculateReportConversions,
     }
 })
 

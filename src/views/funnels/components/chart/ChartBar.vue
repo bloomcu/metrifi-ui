@@ -10,6 +10,10 @@
         <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
         <!-- <span class="text-sm">Disable</span> -->
       </button>
+      <button @click="emit('')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
+        <BoltIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
+        <!-- <span class="text-sm">Disable</span> -->
+      </button>
     </div>
 
     <!-- Chart bar -->
@@ -27,9 +31,9 @@
 
 <script setup>
 import { computed } from 'vue'
-import { EyeSlashIcon,  ArrowLeftEndOnRectangleIcon} from '@heroicons/vue/24/outline'
-import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
-import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
+import { EyeSlashIcon,  ArrowLeftEndOnRectangleIcon, BoltIcon} from '@heroicons/vue/24/outline'
+// import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
+// import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
 
 const props = defineProps({
   value: 0,

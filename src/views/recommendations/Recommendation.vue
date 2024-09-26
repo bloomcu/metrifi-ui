@@ -13,12 +13,12 @@
       </div>
 
       <div class="flex items-center gap-3">
+        <p v-if="isLoading" class="text-xs text-gray-400">Loading...</p>
+
         <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="generateRecommendation()" variant="tertiary" size="base">
           Regenerate recommendation
         </AppButton>
       </div>
-
-      <p v-if="isLoading">Loading...</p>
     </header>
 
     <div v-if="issue" class="flex flex-col items-center justify-center min-h-screen">
@@ -119,6 +119,7 @@ const isLoading = ref(false)
 const toggled = ref(false)
 
 const steps = [
+  { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
   { status: 'ui_analyzer_in_progress', text: 'Analyzing UI', completed: false },
   { status: 'confidentiality_rule_qa_in_progress', text: 'Removing identifiable information', completed: false },
   { status: 'content_writer_in_progress', text: 'Writing new content', completed: false },
@@ -134,9 +135,16 @@ function generateRecommendation() {
   recommendationStore.store(route.params.organization, route.params.dashboard, {
     title: 'Webpage recommendation',
   }).then(() => {
-    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } }).then(() => {
-      window.location.reload()
-    })
+    // Go back to the dashboard view and add url param ?generate-recommendation=true
+    router.push({ name: 'dashboard', params: { organization: route.params.organization, dashboard: route.params.dashboard }, query: { 'generate-recommendation': true } })
+
+    // router.push({ name: 'dashboard', params: { organization: route.params.organization, dashboard: route.params.dashboard }, query: { 'generate-recommendation': true } }).then(() => {
+    //   window.location.reload()
+    // })
+
+    // router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } }).then(() => {
+    //   window.location.reload()
+    // })
   })
 }
 
