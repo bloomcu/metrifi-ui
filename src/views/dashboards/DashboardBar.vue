@@ -177,6 +177,7 @@
           :enableStepExpansion="authStore.user.role === 'admin'"
           @stepDisabled="disableFunnelStep"
           @stepExpanded="expandFunnelStep"
+          @generateRecommendation="generateRecommendation"
         />
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
@@ -287,13 +288,14 @@ function expandFunnelStep(step) {
   openTray()
 }
 
-function getMetadataForRecommendations() {
-  let stepIndex = dashboard.value.median_analysis.bofi_step_index
-
-  let focusName = funnelStore.funnels[0].report.steps[stepIndex].name
+function getMetadataForRecommendations(stepIndex) {
+  let index = Number(stepIndex)
+  console.log('The index is...', index)
+  console.log(funnelStore.funnels[0].report.steps[index + 1])
+  let focusName = funnelStore.funnels[0].report.steps[index].name
   let focusDomain = funnelStore.funnels[0].organization.domain
-  let focusUrl = focusDomain + funnelStore.funnels[0].report.steps[stepIndex].metrics[0].pagePath
-  let conversion = funnelStore.funnels[0].report.steps[stepIndex + 1].conversionRate
+  let focusUrl = focusDomain + funnelStore.funnels[0].report.steps[index].metrics[0].pagePath
+  let conversion = funnelStore.funnels[0].report.steps[index + 1].conversionRate
 
   let focus = {
     name: focusName,
@@ -303,13 +305,13 @@ function getMetadataForRecommendations() {
   }
 
   let comparisons = funnelStore.funnels
-    .filter((funnel, index) => index !== 0)
+    .filter((funnel, i) => i !== 0)
     .map((funnel) => {
       console.log(funnel)
-      let name = funnel.report.steps[stepIndex].name
+      let name = funnel.report.steps[index].name
       let domain = funnel.organization.domain
-      let url = domain + funnel.report.steps[stepIndex].metrics[0].pagePath
-      let conversion = funnel.report.steps[stepIndex + 1].conversionRate
+      let url = domain + funnel.report.steps[index].metrics[0].pagePath
+      let conversion = funnel.report.steps[index + 1].conversionRate
 
       return {
         name: name,
@@ -331,10 +333,11 @@ function getMetadataForRecommendations() {
   }
 }
 
-function generateRecommendation() {
-  let metadata = getMetadataForRecommendations()
+function generateRecommendation(stepIndex) {
+  let metadata = getMetadataForRecommendations(stepIndex)
 
   recommendationStore.store(route.params.organization, route.params.dashboard, {
+    step_index: stepIndex,
     metadata: metadata,
   }).then(() => {
     router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
@@ -358,20 +361,6 @@ function storeAnalysis() {
     loadDashboard()
   })
 }
-
-// function reRunAnalysis() {
-//   analysisStore.analysis.content = ''
-
-//   storeAnalysis()
-// }
-
-// function updateAnalysis() {
-//   analysisStore.update(route.params.organization, route.params.dashboard, analysisStore.analysis.id, {
-//     content: analysisStore.analysis.content,
-//   }).then(() => {
-//     isEditingAnalysis.value = false
-//   })
-// }
 
 const updateDashboard = debounce(() => {
   isUpdating.value = true
@@ -503,18 +492,15 @@ function openFunnel(funnel) {
 
 // Check for `generate-recommendation` param and initialize `isGeneratingRecommendation`
 function checkIsGeneratingRecommendation() {
-  if (route.query['generate-recommendation'] === 'true') {
+  if (route.query['recommendation-step']) {
     isGeneratingRecommendation.value = true;
-
-    // Remove the `generate-recommendation` parameter from the URL
-    removeGenerateRecommendationParam();
   }
 }
 
 // Remove the `generate-recommendation` parameter from the URL
 function removeGenerateRecommendationParam() {
   const query = { ...route.query }; // Copy the existing query parameters
-  delete query['generate-recommendation']; // Remove the specific parameter
+  delete query['recommendation-step']; // Remove the specific parameter
 
   // Use router.replace to update the URL without reloading the page
   router.replace({ query });
@@ -523,11 +509,12 @@ function removeGenerateRecommendationParam() {
 watch(
   () => funnelStore.pendingFunnels,
   () => {
-    console.log(funnelStore.pendingFunnels.length)
     if (isGeneratingRecommendation.value && funnelStore.pendingFunnels.length === 0) {
       // If there are no more pending funnels and the URL parameter is set, generate the recommendation
       setTimeout(() => {
-        generateRecommendation();
+        console.log(route.query['recommendation-step'])
+        generateRecommendation(route.query['recommendation-step']);
+        removeGenerateRecommendationParam();
       }, 5000);
     }
   },

@@ -51,9 +51,9 @@
 
         <!-- Right Side (2/3 of the screen) -->
         <div class="flex-1 overflow-y-auto px-12 pt-5 pb-24 bg-gray-100">
+          <!-- Loading content -->
           <div v-if="recommendationStore.recommendation.status != 'done'" class="p-6">
             <div class="flex items-center justify-center mb-6">
-              <!-- <div class="w-24 h-24 border-2 border-indigo-300 rounded-full border-t-transparent spin"/> -->
               <div class="w-12 h-12 border-2 border-indigo-300 rounded-full border-t-transparent spin"/>
             </div>
             <p class="text-xl text-center text-gray-700 mb-6">{{ currentStep.text }}</p>
@@ -136,7 +136,10 @@ function generateRecommendation() {
     title: 'Webpage recommendation',
   }).then(() => {
     // Go back to the dashboard view and add url param ?generate-recommendation=true
-    router.push({ name: 'dashboard', params: { organization: route.params.organization, dashboard: route.params.dashboard }, query: { 'generate-recommendation': true } })
+    router.push({ 
+      name: 'dashboard', 
+      params: { organization: route.params.organization, dashboard: route.params.dashboard }, 
+      query: { 'recommendation-step': recommendationStore.recommendation.step_index } })
 
     // router.push({ name: 'dashboard', params: { organization: route.params.organization, dashboard: route.params.dashboard }, query: { 'generate-recommendation': true } }).then(() => {
     //   window.location.reload()
