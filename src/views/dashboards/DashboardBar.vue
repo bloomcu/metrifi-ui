@@ -290,8 +290,7 @@ function expandFunnelStep(step) {
 
 function getMetadataForRecommendations(stepIndex) {
   let index = Number(stepIndex)
-  console.log('The index is...', index)
-  console.log(funnelStore.funnels[0].report.steps[index + 1])
+  
   let focusName = funnelStore.funnels[0].report.steps[index].name
   let focusDomain = funnelStore.funnels[0].organization.domain
   let focusUrl = focusDomain + funnelStore.funnels[0].report.steps[index].metrics[0].pagePath
@@ -307,12 +306,11 @@ function getMetadataForRecommendations(stepIndex) {
   let comparisons = funnelStore.funnels
     .filter((funnel, i) => i !== 0)
     .map((funnel) => {
-      console.log(funnel)
       let name = funnel.report.steps[index].name
       let domain = funnel.organization.domain
       let url = domain + funnel.report.steps[index].metrics[0].pagePath
       let conversion = funnel.report.steps[index + 1].conversionRate
-
+      
       return {
         name: name,
         domain: domain,
@@ -515,7 +513,7 @@ watch(
         console.log(route.query['recommendation-step'])
         generateRecommendation(route.query['recommendation-step']);
         removeGenerateRecommendationParam();
-      }, 5000);
+      }, 3000);
     }
   },
   { deep: true }
