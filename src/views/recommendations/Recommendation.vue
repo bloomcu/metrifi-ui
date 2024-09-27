@@ -38,13 +38,13 @@
         <div id="left-panel" :class="toggled ? 'w-1/3' : ''" class="bg-white min-w-[36px] max-w-[520px]">
           <div v-if="toggled" class="p-8">
             <!-- <div v-html="recommendationStore.recommendation.content" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 py-2 px-4"></div> -->
-            <AppRichtext v-model="recommendationStore.recommendation.content" class="mb-2"/>
+            <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
           </div>
         </div>
 
         <!-- Divider with Toggle Button -->
-        <div v-if="recommendationStore.recommendation.content" class="w-0.5 relative flex items-center">
-          <button @click="toggled = !toggled" :class="toggled ? '' : 'rotate-180'" class="absolute -right-4 top-8 transform -translate-y-1/2 flex items-center justify-center border bg-white text-gray-400 w-8 h-8 rounded-full">
+        <div class="w-0.5 relative flex items-center">
+          <button @click="toggled = !toggled, hasShownAnalysisToUser = true" :class="toggled ? '' : 'rotate-180'" class="absolute -right-4 top-8 transform -translate-y-1/2 flex items-center justify-center border bg-white text-gray-400 w-8 h-8 rounded-full">
             <ChevronLeftIcon class="h-5 w-5 shrink-0 -ml-[3px]" />
           </button>
         </div>
@@ -116,6 +116,7 @@ const route = useRoute()
 
 const recommendationStore = useRecommendationStore()
 const isLoading = ref(false)
+const hasShownAnalysisToUser = ref(false)
 const toggled = ref(false)
 
 const steps = [
@@ -168,7 +169,7 @@ function fetchRecommendation() {
       const recommendation = recommendationStore.recommendation;
       setTimeout(() => isLoading.value = false, 800)
       
-      if (recommendation.content) {
+      if (hasShownAnalysisToUser.value === false && recommendation.content) {
         toggled.value = true;
       } 
 

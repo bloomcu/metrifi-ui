@@ -171,7 +171,7 @@
           :updating="funnelStore.isLoading"
           :enableControls="true"
           :enableStepExpansion="authStore.user.role === 'admin'"
-          :enableGenerateRecommendation="index === 0 && funnel.organization.slug === route.params.organization"
+          :enableGenerateRecommendation="index === 0 && !funnelStore.activeFunnel && funnel.organization.slug === route.params.organization"
           @stepDisabled="disableFunnelStep"
           @stepExpanded="expandFunnelStep"
           @generateRecommendation="generateRecommendation"
