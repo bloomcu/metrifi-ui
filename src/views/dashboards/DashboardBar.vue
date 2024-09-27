@@ -53,10 +53,6 @@
           View recommendation
         </AppButton>
 
-        <AppButton v-if="!dashboard.recommendation" @click="generateRecommendation()" variant="tertiary" size="base" class="flex items-center gap-2">
-          Generate recommendation
-        </AppButton>
-
         <!-- Zoom -->
         <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
       </div>
@@ -175,6 +171,7 @@
           :updating="funnelStore.isLoading"
           :enableControls="true"
           :enableStepExpansion="authStore.user.role === 'admin'"
+          :enableGenerateRecommendation="index === 0 && funnel.organization.slug === route.params.organization"
           @stepDisabled="disableFunnelStep"
           @stepExpanded="expandFunnelStep"
           @generateRecommendation="generateRecommendation"
@@ -290,7 +287,7 @@ function expandFunnelStep(step) {
 
 function getMetadataForRecommendations(stepIndex) {
   let index = Number(stepIndex)
-  
+
   let focusName = funnelStore.funnels[0].report.steps[index].name
   let focusDomain = funnelStore.funnels[0].organization.domain
   let focusUrl = focusDomain + funnelStore.funnels[0].report.steps[index].metrics[0].pagePath
@@ -322,8 +319,8 @@ function getMetadataForRecommendations(stepIndex) {
   // Sort the comparisons by the step conversion rate
   comparisons.sort((a, b) => b.conversion - a.conversion)
 
-  // Get the top two comparisons
-  comparisons = comparisons.slice(0, 2)
+  // Get the top three comparisons
+  comparisons = comparisons.slice(0, 3)
 
   return {
     focus: focus,
@@ -489,7 +486,7 @@ function openFunnel(funnel) {
 }
 
 // Check for `generate-recommendation` param and initialize `isGeneratingRecommendation`
-function checkIsGeneratingRecommendation() {
+function checkShouldGenerateRecommendation() {
   if (route.query['recommendation-step']) {
     isGeneratingRecommendation.value = true;
   }
@@ -510,7 +507,6 @@ watch(
     if (isGeneratingRecommendation.value && funnelStore.pendingFunnels.length === 0) {
       // If there are no more pending funnels and the URL parameter is set, generate the recommendation
       setTimeout(() => {
-        console.log(route.query['recommendation-step'])
         generateRecommendation(route.query['recommendation-step']);
         removeGenerateRecommendationParam();
       }, 3000);
@@ -527,6 +523,6 @@ watch(selectedDateRange, () => {
 
 onMounted(() => {
   loadDashboard()
-  checkIsGeneratingRecommendation()
+  checkShouldGenerateRecommendation()
 })
 </script>

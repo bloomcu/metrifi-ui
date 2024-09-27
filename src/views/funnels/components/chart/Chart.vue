@@ -62,6 +62,7 @@
                                 :updating="updating"
                                 :enableControls="enableControls"
                                 :enableStepExpansion="enableStepExpansion"
+                                :enableGenerateRecommendation="enableGenerateRecommendation"
                                 :enableCursorPointer="enableCursorPointer"
                                 @stepSelected="emit('stepSelected', step)"
                                 @stepDisabled="emit('stepDisabled', funnel, step)"
@@ -187,6 +188,7 @@ const props = defineProps({
     zoom: Number,
     enableControls: false,
     enableStepExpansion: false,
+    enableGenerateRecommendation: false,
     enableCursorPointer: false,
     updating: {
         type: Boolean,

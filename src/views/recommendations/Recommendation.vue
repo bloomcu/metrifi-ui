@@ -121,7 +121,7 @@ const toggled = ref(false)
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
   { status: 'ui_analyzer_in_progress', text: 'Analyzing UI', completed: false },
-  { status: 'confidentiality_rule_qa_in_progress', text: 'Removing identifiable information', completed: false },
+  { status: 'confidentiality_rule_qa_in_progress', text: 'Reviewing analysis', completed: false },
   { status: 'content_writer_in_progress', text: 'Writing new content', completed: false },
   { status: 'section_counter_in_progress', text: 'Counting sections', completed: false },
   // { status: 'section_categorizer_in_progress', text: 'Categorizing sections', completed: false },

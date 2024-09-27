@@ -1,7 +1,7 @@
 <template>
   <div @click="emit('stepSelected')" :class="enableCursorPointer ? 'cursor-pointer' : ''" class="group relative flex flex-1 h-full items-end p-1.5 rounded-lg transition-colors duration-200 hover:bg-gray-200/60">
-    <div v-if="enableControls" class="invisible group-hover:visible">
-      <div class="absolute left-3 top-3 flex gap-1.5">
+    <div v-if="enableControls">
+      <div class="absolute left-3 top-3 flex gap-1.5 invisible group-hover:visible">
         <button v-if="enableStepExpansion" @click="emit('stepExpanded')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
           <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
         </button>
@@ -11,9 +11,9 @@
       </div>
 
       <div class="absolute right-3 top-3">
-        <button @click="emit('generateRecommendation')" class="flex items-center gap-0.5 p-1 bg-[#99FFCC] cursor-pointer rounded-md hover:bg-[#89e7b8]">
-          <BoltIcon class="h-5 w-5" aria-hidden="true" />
-          <span class="text-xs">Improve</span>
+        <button v-if="enableGenerateRecommendation" @click="emit('generateRecommendation')" class="flex items-center gap-0.5 p-1.5 bg-[#99FFCC] cursor-pointer rounded-md hover:bg-[#89e7b8]">
+          <BoltIcon class="h-4 w-4" aria-hidden="true" />
+          <span class="text-xs font-medium">Improve</span>
         </button>
       </div>
     </div>
@@ -41,6 +41,7 @@ const props = defineProps({
   isProjection: false,
   enableControls: false,
   enableStepExpansion: false,
+  enableGenerateRecommendation: false,
   enableCursorPointer: false,
 })
 
