@@ -2,7 +2,7 @@
   <template v-if="isOpen">
     <!-- <div @click="toggleTray()" class="fixed inset-0 h-full w-full overflow-y-auto bg-slate-600 bg-opacity-20"></div> -->
 
-    <div class="fixed left-0 top-0 h-full overflow-y-scroll w-96 p-6 transform rounded-r-3xl bg-white shadow-2xl ring-1 ring-gray-900/5">
+    <div class="fixed left-0 top-0 h-full overflow-y-auto w-96 p-6 transform rounded-r-3xl bg-white shadow-2xl ring-1 ring-gray-900/5">
       <!-- Tray header -->
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-xl font-semibold">Step details</h3>

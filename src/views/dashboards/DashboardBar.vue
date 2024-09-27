@@ -8,6 +8,8 @@
           <p class="text-base">Loading funnel reports</p>
       </div>
     </div>
+
+    <!-- <pre>{{ dashboard }}</pre> -->
     
     <!-- Header -->
     <header class="pt-3 pb-4 flex items-center justify-between">
@@ -48,9 +50,9 @@
         <AppButton @click="storeAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
           Run analysis
         </AppButton>
-
-        <AppButton v-if="dashboard.recommendation" @click="router.push({name: 'recommendation', params:{ recommendation: dashboard.recommendation.id }})" variant="tertiary" size="base" class="flex items-center gap-2">
-          View recommendation
+        
+        <AppButton v-if="dashboard.recommendation" @click="isRecommendationsListPanelOpen = true" variant="tertiary" size="base" class="flex items-center gap-2">
+          Recommendations
         </AppButton>
 
         <!-- Zoom -->
@@ -198,7 +200,8 @@
       </div>
     </VueDraggableNext>
 
-    <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
+    <AddFunnelModal :open="isAddFunnelsModalOpen" @attachFunnels="attachFunnels"/>
+    <RecommendationsListPanel/>
 
     <StepDetailsTray v-if="authStore.user.role === 'admin'"/>
   </LayoutDefault>
@@ -230,6 +233,7 @@ import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 // import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
+import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -247,7 +251,8 @@ const dashboard = ref()
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
-const isModalOpen = ref(false)
+const isAddFunnelsModalOpen = ref(false)
+const isRecommendationsListPanelOpen = ref(false)
 const isShowingOrganizations = ref(false)
 const isShowingNotes = ref(false)
 const isEditingNotes = ref(false)
@@ -262,7 +267,8 @@ const funnelsAlreadyAttachedIds = computed(() => {
   return funnelStore.funnels.map(funnel => funnel.id)
 })
 
-provide('isModalOpen', isModalOpen)
+provide('isAddFunnelsModalOpen', isAddFunnelsModalOpen)
+provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
@@ -452,7 +458,7 @@ function enableFunnelSteps(funnel) {
 // }
 
 function toggleModal() { 
-  isModalOpen.value = !isModalOpen.value 
+  isAddFunnelsModalOpen.value = !isAddFunnelsModalOpen.value 
 }
 
 function loadDashboard() {

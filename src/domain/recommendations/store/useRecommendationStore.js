@@ -4,33 +4,46 @@ import { recommendationsApi as RecommendationsApi } from '@/domain/recommendatio
 export const useRecommendationStore = defineStore('recommendationStore', {
     state: () => ({
         recommendation: null,
+        recommendations: [],
         isLoading: false,
     }),
     
-    actions: {        
-        async store(organization, dashboard, params) {
-          this.isLoading = true
-          
-          await RecommendationsApi.store(organization, dashboard, params)
-            .then(response => {
-              this.recommendation = response.data.data
-              this.isLoading = false
-            }).catch(error => {
-              console.log('Error', error.response.data)
-            })
-        },
+    actions: {
+      index(organization, dashboard, params) {
+        this.analyses = []
+
+        RecommendationsApi.index(organization, dashboard, params)
+          .then(response => {
+            this.recommendations = response.data.data
+          }).catch(error => {
+            console.log('Error', error.response.data)
+          })
+      },
+
+      async store(organization, dashboard, params) {
+        this.isLoading = true
         
-        async show(organization, dashboard, id) {
-          // console.log('Show recommendation', organization, dashboard, id)
-          this.isLoading = true
-          // this.recommendation = null
-          
-          await RecommendationsApi.show(organization, dashboard, id)
-            .then(response => {
-              this.recommendation = response.data.data
-              this.isLoading = false
-            })
-        },
+        await RecommendationsApi.store(organization, dashboard, params)
+          .then(response => {
+            this.recommendation = response.data.data
+            this.recommendations.push(this.recommendation)
+            this.isLoading = false
+          }).catch(error => {
+            console.log('Error', error.response.data)
+          })
+      },
+      
+      async show(organization, dashboard, id) {
+        // console.log('Show recommendation', organization, dashboard, id)
+        this.isLoading = true
+        // this.recommendation = null
+        
+        await RecommendationsApi.show(organization, dashboard, id)
+          .then(response => {
+            this.recommendation = response.data.data
+            this.isLoading = false
+          })
+      },
     }
 })
 

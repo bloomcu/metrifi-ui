@@ -12,11 +12,15 @@
         <span v-if="recommendationStore.recommendation" class="text-gray-400 text-sm font-normal">Created {{ moment(recommendationStore.recommendation.created_at).fromNow() }}</span>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
         <p v-if="isLoading" class="text-xs text-gray-400">Loading...</p>
 
-        <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="generateRecommendation()" variant="tertiary" size="base">
-          Regenerate recommendation
+        <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="generateRecommendation()" variant="secondary" size="base">
+          Regenerate
+        </AppButton>
+
+        <AppButton @click="isRecommendationsListPanelOpen = true" variant="tertiary" size="base" class="flex items-center gap-2">
+          Recommendations
         </AppButton>
       </div>
     </header>
@@ -99,25 +103,31 @@
         </div>
       </div>
     </div> -->
+
+    <RecommendationsListPanel/>
   </div>
 </template>
 
 <script setup>
 import moment from "moment"
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, watch, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { ArrowLeftIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import Prototype from '@/views/recommendations/components/Prototype.vue'
+import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 
 const router = useRouter()
 const route = useRoute()
 
 const recommendationStore = useRecommendationStore()
 const isLoading = ref(false)
+const isRecommendationsListPanelOpen = ref(false)
 const hasShownAnalysisToUser = ref(false)
 const toggled = ref(false)
+
+provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
@@ -197,6 +207,13 @@ function fetchRecommendation() {
       console.error('Error fetching recommendation status:', error);
     });
 }
+
+// Watch the route param 'recommendation' for changes
+// watch(() => route.params.recommendation, (recommendationId) => {
+//   if (recommendationId) {
+//     fetchRecommendation()
+//   }
+// })
 
 const tailwind = ref('tailwind')
 let tailwindScript = null
