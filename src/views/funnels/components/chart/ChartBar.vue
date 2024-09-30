@@ -1,18 +1,22 @@
 <template>
   <div @click="emit('stepSelected')" :class="enableCursorPointer ? 'cursor-pointer' : ''" class="group relative flex flex-1 h-full items-end p-1.5 rounded-lg transition-colors duration-200 hover:bg-gray-200/60">
-    <!-- Controls -->
-    <div v-if="enableControls" class="absolute left-3 top-3 flex gap-1.5 invisible group-hover:visible">
-      <button v-if="enableStepExpansion" @click="emit('stepExpanded')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
-        <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
-        <!-- <span class="text-sm">Details</span> -->
-      </button>
-      <button @click="emit('stepDisabled')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
-        <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
-        <!-- <span class="text-sm">Disable</span> -->
-      </button>
-    </div>
+    <div v-if="enableControls">
+      <div class="absolute left-3 top-3 flex gap-1.5 invisible group-hover:visible">
+        <button v-if="enableStepExpansion" @click="emit('stepExpanded')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
+          <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
+        </button>
+        <button @click="emit('stepDisabled')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
+          <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
+        </button>
+      </div>
 
-    <!-- Chart bar -->
+      <div class="absolute right-3 top-3">
+        <button v-if="enableGenerateRecommendation" @click="emit('generateRecommendation')" class="flex items-center gap-0.5 p-1.5 bg-[#99FFCC] cursor-pointer rounded-md hover:bg-[#89e7b8]">
+          <BoltIcon class="h-4 w-4" aria-hidden="true" />
+          <span class="text-xs font-medium">Improve</span>
+        </button>
+      </div>
+    </div>
     <div 
       :style="`height: ${height}%;`"
       :class="[
@@ -27,9 +31,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { EyeSlashIcon,  ArrowLeftEndOnRectangleIcon} from '@heroicons/vue/24/outline'
-import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
-import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
+import { EyeSlashIcon,  ArrowLeftEndOnRectangleIcon, BoltIcon} from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   value: 0,
@@ -39,22 +41,11 @@ const props = defineProps({
   isProjection: false,
   enableControls: false,
   enableStepExpansion: false,
+  enableGenerateRecommendation: false,
   enableCursorPointer: false,
 })
 
-const emit = defineEmits(['stepSelected', 'stepExpanded', 'stepDisabled'])
-
-// function onStepSelected() {
-//   emit('stepSelected')
-// }
-
-// function onExpandStep() {
-//   emit('stepExpanded')
-// }
-
-// function onDisableStep() {
-//   emit('stepDisabled')
-// }
+const emit = defineEmits(['stepSelected', 'stepExpanded', 'stepDisabled', 'generateRecommendation'])
 
 const height = computed(() => {
   let value = props.value
@@ -81,9 +72,3 @@ const height = computed(() => {
   return h * 100
 })
 </script>
-
-<!-- <style lang="scss">
-div {
-  transform: scaleY(v-bind(height));
-}
-</style> -->

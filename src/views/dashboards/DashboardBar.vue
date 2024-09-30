@@ -1,9 +1,15 @@
 <template>
   <LayoutDefault v-if="dashboard" width="lg" class="min-h-screen flex flex-col px-4">
-    <!-- <pre>
-      Pending: {{ pending.length }}
-      Completed: {{ completed.length }}
-    </pre> -->
+    <!-- Model: Generating recommendation -->
+    <div v-if="isGeneratingRecommendation" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div class="flex flex-col items-center justify-center rounded-lg shadow-lg p-6 w-full max-w-lg bg-white ">
+          <div class="w-12 h-12 mb-4 border-2 border-indigo-300 rounded-full border-t-transparent spin"/>
+          <h3 class="text-2xl font-medium">Generating recommendation</h3>
+          <p class="text-base">Loading funnel reports</p>
+      </div>
+    </div>
+
+    <!-- <pre>{{ dashboard }}</pre> -->
     
     <!-- Header -->
     <header class="pt-3 pb-4 flex items-center justify-between">
@@ -44,14 +50,10 @@
         <AppButton @click="storeAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
           Run analysis
         </AppButton>
-
-        <AppButton v-if="dashboard.recommendation" @click="router.push({name: 'recommendation', params:{ recommendation: dashboard.recommendation.id }})" variant="tertiary" size="base" class="flex items-center gap-2">
-          View recommendation
+        
+        <AppButton v-if="dashboard.recommendation" @click="isRecommendationsListPanelOpen = true" variant="tertiary" size="base" class="flex items-center gap-2">
+          Recommendations
         </AppButton>
-
-        <!-- <AppButton v-if="!dashboard.recommendation" @click="generateRecommendation()" variant="tertiary" size="base" class="flex items-center gap-2">
-          Generate recommendation
-        </AppButton> -->
 
         <!-- Zoom -->
         <!-- <Zoom v-model="dashboard.zoom" @update:modelValue="updateDashboard"/> -->
@@ -171,8 +173,10 @@
           :updating="funnelStore.isLoading"
           :enableControls="true"
           :enableStepExpansion="authStore.user.role === 'admin'"
+          :enableGenerateRecommendation="index === 0 && !funnelStore.activeFunnel && funnel.organization.slug === route.params.organization"
           @stepDisabled="disableFunnelStep"
           @stepExpanded="expandFunnelStep"
+          @generateRecommendation="generateRecommendation"
         />
 
         <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
@@ -196,7 +200,8 @@
       </div>
     </VueDraggableNext>
 
-    <AddFunnelModal :open="isModalOpen" @attachFunnels="attachFunnels"/>
+    <AddFunnelModal :open="isAddFunnelsModalOpen" @attachFunnels="attachFunnels"/>
+    <RecommendationsListPanel/>
 
     <StepDetailsTray v-if="authStore.user.role === 'admin'"/>
   </LayoutDefault>
@@ -228,6 +233,7 @@ import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 // import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
+import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -245,13 +251,15 @@ const dashboard = ref()
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
-const isModalOpen = ref(false)
+const isAddFunnelsModalOpen = ref(false)
+const isRecommendationsListPanelOpen = ref(false)
 const isShowingOrganizations = ref(false)
 const isShowingNotes = ref(false)
 const isEditingNotes = ref(false)
 const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
 const isShowingReference = ref(false)
+const isGeneratingRecommendation = ref(false)
 
 const activeAnalysisType = ref('median_analysis')
 
@@ -259,7 +267,8 @@ const funnelsAlreadyAttachedIds = computed(() => {
   return funnelStore.funnels.map(funnel => funnel.id)
 })
 
-provide('isModalOpen', isModalOpen)
+provide('isAddFunnelsModalOpen', isAddFunnelsModalOpen)
+provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 
@@ -282,6 +291,60 @@ function expandFunnelStep(step) {
   openTray()
 }
 
+function getMetadataForRecommendations(stepIndex) {
+  let index = Number(stepIndex)
+
+  let focusName = funnelStore.funnels[0].report.steps[index].name
+  let focusDomain = funnelStore.funnels[0].organization.domain
+  let focusUrl = focusDomain + funnelStore.funnels[0].report.steps[index].metrics[0].pagePath
+  let conversion = funnelStore.funnels[0].report.steps[index + 1].conversionRate
+
+  let focus = {
+    name: focusName,
+    domain: focusDomain,
+    url: focusUrl,
+    conversion: conversion,
+  }
+
+  let comparisons = funnelStore.funnels
+    .filter((funnel, i) => i !== 0)
+    .map((funnel) => {
+      let name = funnel.report.steps[index].name
+      let domain = funnel.organization.domain
+      let url = domain + funnel.report.steps[index].metrics[0].pagePath
+      let conversion = funnel.report.steps[index + 1].conversionRate
+      
+      return {
+        name: name,
+        domain: domain,
+        url: url,
+        conversion: conversion,
+      };
+    });
+
+  // Sort the comparisons by the step conversion rate
+  comparisons.sort((a, b) => b.conversion - a.conversion)
+
+  // Get the top three comparisons
+  comparisons = comparisons.slice(0, 3)
+
+  return {
+    focus: focus,
+    comparisons: comparisons,
+  }
+}
+
+function generateRecommendation(stepIndex) {
+  let metadata = getMetadataForRecommendations(stepIndex)
+
+  recommendationStore.store(route.params.organization, route.params.dashboard, {
+    step_index: stepIndex,
+    metadata: metadata,
+  }).then(() => {
+    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
+  })
+}
+
 function storeAnalysis() {
   let subjectFunnel = funnelStore.funnels[0]
   let comparisonFunnels = funnelStore.funnels.filter((funnel, index) => index !== 0)
@@ -299,28 +362,6 @@ function storeAnalysis() {
     loadDashboard()
   })
 }
-
-function generateRecommendation() {
-  recommendationStore.store(route.params.organization, route.params.dashboard, {
-    title: 'Webpage recommendation',
-  }).then(() => {
-    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
-  })
-}
-
-// function reRunAnalysis() {
-//   analysisStore.analysis.content = ''
-
-//   storeAnalysis()
-// }
-
-// function updateAnalysis() {
-//   analysisStore.update(route.params.organization, route.params.dashboard, analysisStore.analysis.id, {
-//     content: analysisStore.analysis.content,
-//   }).then(() => {
-//     isEditingAnalysis.value = false
-//   })
-// }
 
 const updateDashboard = debounce(() => {
   isUpdating.value = true
@@ -417,7 +458,7 @@ function enableFunnelSteps(funnel) {
 // }
 
 function toggleModal() { 
-  isModalOpen.value = !isModalOpen.value 
+  isAddFunnelsModalOpen.value = !isAddFunnelsModalOpen.value 
 }
 
 function loadDashboard() {
@@ -450,6 +491,36 @@ function openFunnel(funnel) {
   window.open(routeData.href, '_blank');
 }
 
+// Check for `generate-recommendation` param and initialize `isGeneratingRecommendation`
+function checkShouldGenerateRecommendation() {
+  if (route.query['recommendation-step']) {
+    isGeneratingRecommendation.value = true;
+  }
+}
+
+// Remove the `generate-recommendation` parameter from the URL
+function removeGenerateRecommendationParam() {
+  const query = { ...route.query }; // Copy the existing query parameters
+  delete query['recommendation-step']; // Remove the specific parameter
+
+  // Use router.replace to update the URL without reloading the page
+  router.replace({ query });
+}
+
+watch(
+  () => funnelStore.pendingFunnels,
+  () => {
+    if (isGeneratingRecommendation.value && funnelStore.pendingFunnels.length === 0) {
+      // If there are no more pending funnels and the URL parameter is set, generate the recommendation
+      setTimeout(() => {
+        generateRecommendation(route.query['recommendation-step']);
+        removeGenerateRecommendationParam();
+      }, 3000);
+    }
+  },
+  { deep: true }
+);
+
 watch(selectedDateRange, () => {
   dashboard.value.funnels.forEach(funnel => {
     funnelStore.addFunnelJob(funnel)
@@ -458,5 +529,6 @@ watch(selectedDateRange, () => {
 
 onMounted(() => {
   loadDashboard()
+  checkShouldGenerateRecommendation()
 })
 </script>

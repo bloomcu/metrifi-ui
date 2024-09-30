@@ -62,10 +62,12 @@
                                 :updating="updating"
                                 :enableControls="enableControls"
                                 :enableStepExpansion="enableStepExpansion"
+                                :enableGenerateRecommendation="enableGenerateRecommendation"
                                 :enableCursorPointer="enableCursorPointer"
                                 @stepSelected="emit('stepSelected', step)"
                                 @stepDisabled="emit('stepDisabled', funnel, step)"
                                 @stepExpanded="emit('stepExpanded', step)"
+                                @generateRecommendation="emit('generateRecommendation', index)"
                             />
                             <ChartBar 
                                 v-if="projection && projection.length && projection[index]"
@@ -186,6 +188,7 @@ const props = defineProps({
     zoom: Number,
     enableControls: false,
     enableStepExpansion: false,
+    enableGenerateRecommendation: false,
     enableCursorPointer: false,
     updating: {
         type: Boolean,
@@ -198,7 +201,7 @@ const funnelStore = useFunnelStore()
 const projection = inject('projection', null)
 const isEditConversionValueModalOpen = inject('isEditConversionValueModalOpen', null)
 
-const emit = defineEmits(['stepSelected', 'stepDisabled', 'stepExpanded'])
+const emit = defineEmits(['stepSelected', 'stepDisabled', 'stepExpanded', 'generateRecommendation'])
 
 const calculateProjectionUsers = () => {
     // console.log('Calculating projection users...')
