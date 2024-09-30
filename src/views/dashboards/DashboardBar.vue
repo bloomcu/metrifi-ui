@@ -96,7 +96,7 @@
           <span class="mr-3">Analysis</span>
         </p>
 
-        <div class="absolute right-4 top-3 flex items-center">
+        <div class="absolute right-4 top-3 flex items-center gap-3">
           <!-- Re-run analysis -->
           <AppButton @click="storeAnalysis()" variant="link" class="flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
