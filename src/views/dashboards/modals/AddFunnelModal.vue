@@ -1,8 +1,8 @@
 <template>
   <AppModal 
     size="6xl"
-    @closed="isModalOpen = false" 
-    :open="isModalOpen"
+    @closed="isAddFunnelsModalOpen = false" 
+    :open="isAddFunnelsModalOpen"
   >
     <div class="flex items-center justify-between mb-6">
       <!-- Modal title -->
@@ -116,7 +116,6 @@ import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
 import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 
-
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -125,7 +124,7 @@ const category = ref(null)
 
 const funnels = ref([])
 const funnelsAlreadyAttachedIds = inject('funnelsAlreadyAttachedIds')
-const isModalOpen = inject('isModalOpen')
+const isAddFunnelsModalOpen = inject('isAddFunnelsModalOpen')
 const isUpdating = ref(false)
 const isShowingOrganizations = inject('isShowingOrganizations')
 const selected = ref([])
@@ -180,7 +179,7 @@ function selectAllFunnels() {
 function attachFunnels() {
   emit('attachFunnels', selected.value)
   selected.value = []
-  isModalOpen.value = false
+  isAddFunnelsModalOpen.value = false
 }
 
 function listOwnFunnels() {
