@@ -189,6 +189,11 @@ function fetchRecommendation() {
         currentStepIndex.value = currentStepIdx;
         setTimeout(() => isLoading.value = false, 800) // move into store
       }
+
+      // Continue polling if the recommendation status is null
+      if (recommendation.status === null) {
+        return;
+      }
       
       // Stop polling if the recommendation process is completed
       if (recommendation.status === 'done') {
@@ -196,7 +201,7 @@ function fetchRecommendation() {
         setTimeout(() => isLoading.value = false, 800)
       }
 
-      // Stop polling if the recommendation process is completed
+      // Stop polling if the recommendation process has softly failed
       if (['requires_action', 'cancelled', 'failed', 'expired'].some(status => recommendation.status.includes(status))) {
         clearInterval(interval);
         issue.value = recommendation.status;
