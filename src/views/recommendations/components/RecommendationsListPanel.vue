@@ -15,10 +15,21 @@
             <div 
                 v-for="recommendation in recommendationStore.recommendations" 
                 @click="showRecommendation(recommendation.id)"
-                class="border rounded-md p-2 mb-2 cursor-pointer hover:bg-gray-50"
+                :class="{'bg-indigo-100 border-indigo-300 hover:bg-indigo-200': recommendation.id == route.params.recommendation}"
+                class="border rounded-md p-2 mb-2 cursor-pointer hover:bg-gray-100"
             >
-                <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
-                <p class="text-gray-500 text-sm">Created {{ moment(recommendation.created_at).fromNow() }}</p>
+                <div class="flex justify-between">
+                    <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
+                    <span :class="recommendation.status == 'done' ? 'text-green-600' : 'text-blue-500'" class="text-sm">
+                        {{ recommendation.status == 'done' ? 'Done' : 'In progress' }}
+                    </span>
+                </div>
+
+                <div class="flex justify-between text-gray-500 text-sm">
+                    <p>{{ moment(recommendation.created_at).fromNow() }}</p>
+                    <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
+                </div>
+                
             </div>
         </div>
     </template>
@@ -43,9 +54,7 @@ function showRecommendation(recommendationId) {
 }
 
 onMounted(() => {
-    // if (recommendationStore.recommendations.length === 0) {
-        recommendationStore.index(route.params.organization, route.params.dashboard)
-    // }
+    recommendationStore.index(route.params.organization, route.params.dashboard)
 })
 </script>
   
