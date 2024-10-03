@@ -20,9 +20,9 @@
             >
                 <div class="flex justify-between">
                     <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
-                    <span :class="recommendation.status == 'done' ? 'text-green-600' : 'text-blue-500'" class="text-sm">
-                        {{ recommendation.status == 'done' ? 'Done' : 'In progress' }}
-                    </span>
+                    <span v-if="recommendation.status == 'done'" class="text-green-600 text-sm">Done</span>
+                    <span v-if="recommendation.status.includes('_in_progress')" class="text-blue-600 text-sm">In progress</span>
+                    <span v-if="recommendation.status.includes('_failed')" class="text-red-600 text-sm">Failed</span>
                 </div>
 
                 <div class="flex justify-between text-gray-500 text-sm">

@@ -15,9 +15,9 @@
       <div class="flex items-center gap-2">
         <p v-if="isLoading" class="text-xs text-gray-400">Loading...</p>
 
-        <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="generateRecommendation()" variant="secondary" size="base">
+        <!-- <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="generateRecommendation()" variant="secondary" size="base">
           Regenerate
-        </AppButton>
+        </AppButton> -->
 
         <AppButton @click="isRecommendationsListPanelOpen = true" variant="tertiary" size="base" class="flex items-center gap-2">
           Recommendations
@@ -29,9 +29,9 @@
       <div class="p-6 text-center text-gray-700">
         <p class="text-xl mb-4"><span class="font-bold">Issue:</span> {{ issue }}</p>
         <p class="mb-8">The assistant was not able to complete it's job.</p>
-        <AppButton @click="generateRecommendation()" variant="primary" size="base">
+        <!-- <AppButton @click="generateRecommendation()" variant="primary" size="base">
           Regenerate recommendation
-        </AppButton>
+        </AppButton> -->
       </div>
     </div>
     
