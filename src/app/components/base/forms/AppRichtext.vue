@@ -36,7 +36,7 @@
       </menu>
     </div>
     
-    <EditorContent :value="modelValue" :editor="editor" class="appearance-none"/>
+    <EditorContent :value="modelValue" :editor="editor" :class="editable ? 'border border-gray-300 rounded-md' : ''" class="appearance-none bg-white"/>
   </div>
 </template>
 
@@ -67,7 +67,7 @@ const editor = useEditor({
   ],
   editorProps: {
     attributes: {
-      class: 'prose prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 !max-w-none focus:outline-none py-4 px-2 h-full min-h-40 w-full'
+      class: 'prose prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 !max-w-none focus:outline-none py-2 px-4 h-full min-h-40 w-full'
     }
   },
   onUpdate: ({ editor }) => {

@@ -41,14 +41,39 @@
         <!-- Left Side (Collapsible) -->
         <div id="left-panel" :class="toggled ? 'w-1/3' : ''" class="bg-white min-w-[36px] max-w-[520px]">
           <div v-if="toggled" class="p-8">
-            <!-- <div v-html="recommendationStore.recommendation.content" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 py-2 px-4"></div> -->
-            <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
+            <!-- Prompt/recommendation toggler -->
+            <div class="flex mb-6">
+              <div class="p-1 border border-gray-300 rounded-lg flex space-x-1">
+                  <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-indigo-100 text-indigo-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                      <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="4" cy="6" r="1"></circle><circle cx="4" cy="12" r="1"></circle><circle cx="4" cy="18" r="1"></circle></svg> -->
+                      <span class="text-sm">Prompt</span>
+                  </button>
+                  <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-indigo-100 text-indigo-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                      <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg> -->
+                      <span class="text-sm">Recommendation</span>
+                  </button>
+              </div>
+            </div>
+
+            <!-- Prompt -->
+            <div v-if="show === 'prompt'">
+              <p class="text-xl font-semibold mb-4">Prompt:</p>
+                <div v-if="recommendationStore.recommendation.prompt" v-html="recommendationStore.recommendation.prompt"/>
+                <p v-else>No prompt provided</p>
+            </div>
+
+            <!-- Recommendation content -->
+            <div v-if="show === 'recommendation'">
+              <p class="text-xl font-semibold mt-8 mb-4">Recommendation:</p>
+              <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
+              <p v-else>Awaiting recommendation</p>
+            </div>
           </div>
         </div>
 
         <!-- Divider with Toggle Button -->
         <div class="w-0.5 relative flex items-center">
-          <button @click="toggled = !toggled, hasShownAnalysisToUser = true" :class="toggled ? '' : 'rotate-180'" class="absolute -right-4 top-8 transform -translate-y-1/2 flex items-center justify-center border bg-white text-gray-400 w-8 h-8 rounded-full">
+          <button @click="toggled = !toggled" :class="toggled ? '' : 'rotate-180'" class="absolute -right-4 top-8 transform -translate-y-1/2 flex items-center justify-center border bg-white text-gray-400 w-8 h-8 rounded-full">
             <ChevronLeftIcon class="h-5 w-5 shrink-0 -ml-[3px]" />
           </button>
         </div>
@@ -125,14 +150,16 @@ const recommendationStore = useRecommendationStore()
 const isLoading = ref(false)
 const isRecommendationsListPanelOpen = ref(false)
 const hasShownAnalysisToUser = ref(false)
-const toggled = ref(false)
+const toggled = ref(true)
+const show = ref('prompt')
 
 provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
-  { status: 'ui_analyzer_in_progress', text: 'Analyzing UI', completed: false },
-  { status: 'confidentiality_rule_qa_in_progress', text: 'Reviewing analysis', completed: false },
+  { status: 'analyzer_in_progress', text: 'Analyzing UI', completed: false },
+  { status: 'synthesizer_in_progress', text: 'Synthesizing prompt', completed: false },
+  { status: 'anonymizer_in_progress', text: 'Reviewing analysis', completed: false },
   { status: 'content_writer_in_progress', text: 'Writing new content', completed: false },
   { status: 'section_counter_in_progress', text: 'Counting sections', completed: false },
   // { status: 'section_categorizer_in_progress', text: 'Categorizing sections', completed: false },
@@ -179,9 +206,14 @@ function fetchRecommendation() {
       const recommendation = recommendationStore.recommendation;
       setTimeout(() => isLoading.value = false, 800)
       
+      // if (hasShownAnalysisToUser.value === false && recommendation.content) {
+      //   toggled.value = true;
+      // } 
+
       if (hasShownAnalysisToUser.value === false && recommendation.content) {
-        toggled.value = true;
-      } 
+        hasShownAnalysisToUser.value = true;
+        show.value = 'recommendation'
+      }
 
       // Update the current step based on the recommendation status
       const currentStepIdx = steps.findIndex(step => step.status === recommendation.status);
