@@ -58,14 +58,12 @@
 
             <!-- Prompt -->
             <div v-if="show === 'prompt'">
-              <p class="text-xl font-semibold mt-8 mb-4">Prompt</p>
                 <AppRichtext v-if="recommendationStore.recommendation.prompt" v-model="recommendationStore.recommendation.prompt" class="mb-2"/>
                 <p v-else>No prompt provided</p>
             </div>
 
             <!-- Recommendation content -->
             <div v-if="show === 'recommendation'">
-              <p class="text-xl font-semibold mt-8 mb-4">Analysis</p>
               <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
               <p v-else>Awaiting recommendation</p>
             </div>
