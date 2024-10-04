@@ -15,10 +15,25 @@
             <div 
                 v-for="recommendation in recommendationStore.recommendations" 
                 @click="showRecommendation(recommendation.id)"
-                class="border rounded-md p-2 mb-2 cursor-pointer hover:bg-gray-50"
+                :class="{'bg-indigo-100 border-indigo-300 hover:bg-indigo-200': recommendation.id == route.params.recommendation}"
+                class="border rounded-md p-2 mb-2 cursor-pointer hover:bg-gray-100"
             >
-                <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
-                <p class="text-gray-500 text-sm">Created {{ moment(recommendation.created_at).fromNow() }}</p>
+                <div class="flex justify-between">
+                    <div>
+                        <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
+                        <p class="text-xs">For step {{ recommendation.step_index + 1 }}</p>
+                    </div>
+                    
+                    <span v-if="recommendation.status == 'done'" class="text-green-600 text-sm">Done</span>
+                    <span v-if="isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
+                    <span v-if="isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
+                </div>
+
+                <div class="flex justify-between text-gray-500 text-sm">
+                    <p>{{ moment(recommendation.created_at).fromNow() }}</p>
+                    <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
+                </div>
+                
             </div>
         </div>
     </template>
@@ -26,7 +41,7 @@
 
 <script setup>
 import moment from "moment"
-import { inject, onMounted } from 'vue'
+import { inject, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 
@@ -34,6 +49,14 @@ const route = useRoute()
 const router = useRouter()
 const recommendationStore = useRecommendationStore()
 const isRecommendationsListPanelOpen = inject('isRecommendationsListPanelOpen')
+
+function isInProgress(status) {
+  return status ? ['in_progress', '_completed', 'queued'].some(s => status.includes(s)) : false;
+}
+
+function isFailed(status) {
+  return status ? ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s)) : false;
+}
 
 function showRecommendation(recommendationId) {
     router.push({name: 'recommendation', params:{ organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationId }})
@@ -43,9 +66,7 @@ function showRecommendation(recommendationId) {
 }
 
 onMounted(() => {
-    // if (recommendationStore.recommendations.length === 0) {
-        recommendationStore.index(route.params.organization, route.params.dashboard)
-    // }
+    recommendationStore.index(route.params.organization, route.params.dashboard)
 })
 </script>
   

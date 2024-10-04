@@ -19,8 +19,8 @@ const recommendationsApi = {
      * @param Object organization [Properties to create file from]
      * @return promise
      */
-    store(organization, dashboard, params) {
-        return HttpClient.post(`/${organization}/dashboards/${dashboard}/recommendations`, params)
+    async store(organization, dashboard, params) {
+        return await HttpClient.post(`/${organization}/dashboards/${dashboard}/recommendations`, params)
     },
     
     /**
@@ -29,8 +29,8 @@ const recommendationsApi = {
      * @param String slug [Organization slug]
      * @return promise
      */
-    show(organization, dashboard, id) {
-      return HttpClient.get(`/${organization}/dashboards/${dashboard}/recommendations/${id}`)
+    async show(organization, dashboard, id) {
+      return await HttpClient.get(`/${organization}/dashboards/${dashboard}/recommendations/${id}`)
     },
 }
 
