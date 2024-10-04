@@ -72,6 +72,9 @@ async function generateRecommendation() {
   }).then(() => {
     isGenerateRecommendationModalOpen.value = false
     router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
+      .then(() => {
+          window.location.reload()
+      })
   })
 }
 
