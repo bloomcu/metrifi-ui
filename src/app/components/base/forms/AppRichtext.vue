@@ -23,20 +23,26 @@
         </li>
 
         <li>
-          <button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
+          <button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
             <span class="relative block m-auto">H1</span>
           </button>
         </li>
 
         <li>
-          <button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
+          <button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
             <span class="relative block m-auto">H2</span>
+          </button>
+        </li>
+
+        <li>
+          <button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
+            <span class="relative block m-auto">H3</span>
           </button>
         </li>
       </menu>
     </div>
     
-    <EditorContent :value="modelValue" :editor="editor" :class="editable ? 'border border-gray-300 rounded-md' : ''" class="appearance-none bg-white"/>
+    <EditorContent :value="modelValue" :editor="editor" :class="editable ? 'border border-gray-300 rounded-md p-4' : ''" class="appearance-none bg-white"/>
   </div>
 </template>
 
@@ -67,7 +73,7 @@ const editor = useEditor({
   ],
   editorProps: {
     attributes: {
-      class: 'prose prose prose-h2:mb-2 prose-h3:mb-1.5 prose-p:my-1 !max-w-none focus:outline-none py-2 px-4 h-full min-h-40 w-full'
+      class: 'prose prose prose-h1:my-2.5 prose-h2:my-2 prose-h3:my-1.5 !max-w-none focus:outline-none h-full min-h-40 w-full'
     }
   },
   onUpdate: ({ editor }) => {
