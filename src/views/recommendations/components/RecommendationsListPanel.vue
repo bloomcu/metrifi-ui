@@ -21,8 +21,8 @@
                 <div class="flex justify-between">
                     <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
                     <span v-if="recommendation.status == 'done'" class="text-green-600 text-sm">Done</span>
-                    <span v-if="recommendation.status.includes('_in_progress')" class="text-blue-600 text-sm">In progress</span>
-                    <span v-if="recommendation.status.includes('_failed')" class="text-red-600 text-sm">Failed</span>
+                    <span v-if="isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
+                    <span v-if="isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
                 </div>
 
                 <div class="flex justify-between text-gray-500 text-sm">
@@ -37,7 +37,7 @@
 
 <script setup>
 import moment from "moment"
-import { inject, onMounted } from 'vue'
+import { inject, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 
@@ -45,6 +45,14 @@ const route = useRoute()
 const router = useRouter()
 const recommendationStore = useRecommendationStore()
 const isRecommendationsListPanelOpen = inject('isRecommendationsListPanelOpen')
+
+function isInProgress(status) {
+  return ['in_progress', 'queued'].some(s => status.includes(s))
+}
+
+function isFailed(status) {
+  return ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s))
+}
 
 function showRecommendation(recommendationId) {
     router.push({name: 'recommendation', params:{ organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationId }})
