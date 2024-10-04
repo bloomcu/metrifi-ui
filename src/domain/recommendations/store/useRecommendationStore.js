@@ -23,9 +23,8 @@ export const useRecommendationStore = defineStore('recommendationStore', {
       async store(organization, dashboard, params) {
         this.isLoading = true
         
-        await RecommendationsApi.store(organization, dashboard, params)
+        return await RecommendationsApi.store(organization, dashboard, params)
           .then(response => {
-            console.log('Recommendation created', response.data.data)
             this.recommendation = response.data.data
             this.recommendations.unshift(response.data.data)
             this.isLoading = false
@@ -35,11 +34,9 @@ export const useRecommendationStore = defineStore('recommendationStore', {
       },
       
       async show(organization, dashboard, id) {
-        // console.log('Show recommendation', organization, dashboard, id)
         this.isLoading = true
-        // this.recommendation = null
         
-        await RecommendationsApi.show(organization, dashboard, id)
+        return await RecommendationsApi.show(organization, dashboard, id)
           .then(response => {
             this.recommendation = response.data.data
             this.isLoading = false

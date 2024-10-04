@@ -49,13 +49,20 @@ watch(() => props.prompt, (newValue) => {
   localPrompt.value = newValue;
 });
 
-function generateRecommendation() {
+async function generateRecommendation() {
   let metadata = {}
 
-  if (recommendationStore.recommendation) {
-    metadata = recommendationStore.recommendation.metadata
+  // If we're on a recommendation page, use the metadata from the recommendation
+  if (route.params.recommendation) {
+    await recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
+      .then(response => {
+        metadata = recommendationStore.recommendation.metadata
+        console.log('We are regenerating an existing recommendation.', metadata)
+      })
+      
   } else {
     metadata = getMetadataForRecommendations(props.stepIndex)
+    console.log('We are generating a new recommendation.', metadata)
   }
 
   recommendationStore.store(route.params.organization, route.params.dashboard, {

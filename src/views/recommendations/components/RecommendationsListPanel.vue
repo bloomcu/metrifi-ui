@@ -51,7 +51,7 @@ const recommendationStore = useRecommendationStore()
 const isRecommendationsListPanelOpen = inject('isRecommendationsListPanelOpen')
 
 function isInProgress(status) {
-  return status ? ['in_progress', 'queued'].some(s => status.includes(s)) : false;
+  return status ? ['in_progress', '_completed', 'queued'].some(s => status.includes(s)) : false;
 }
 
 function isFailed(status) {

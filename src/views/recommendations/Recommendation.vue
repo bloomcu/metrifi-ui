@@ -184,26 +184,6 @@ function toggleGenerateRecommendationModal() {
   recommendationPrompt.value = recommendationStore.recommendation.prompt
 }
 
-function generateRecommendation() {
-  recommendationStore.store(route.params.organization, route.params.dashboard, {
-    title: 'Webpage recommendation',
-  }).then(() => {
-    // Go back to the dashboard view and add url param ?generate-recommendation=true
-    router.push({ 
-      name: 'dashboard', 
-      params: { organization: route.params.organization, dashboard: route.params.dashboard }, 
-      query: { 'recommendation-step': recommendationStore.recommendation.step_index } })
-
-    // router.push({ name: 'dashboard', params: { organization: route.params.organization, dashboard: route.params.dashboard }, query: { 'generate-recommendation': true } }).then(() => {
-    //   window.location.reload()
-    // })
-
-    // router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } }).then(() => {
-    //   window.location.reload()
-    // })
-  })
-}
-
 let interval = null
 const issue = ref(null)
 const currentStepIndex = ref(0)
