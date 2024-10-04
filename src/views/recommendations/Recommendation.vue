@@ -51,7 +51,7 @@
                   </button>
                   <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-indigo-100 text-indigo-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                       <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg> -->
-                      <span class="text-sm">Recommendation</span>
+                      <span class="text-sm">Analysis</span>
                   </button>
               </div>
             </div>
@@ -65,7 +65,7 @@
 
             <!-- Recommendation content -->
             <div v-if="show === 'recommendation'">
-              <p class="text-xl font-semibold mt-8 mb-4">Recommendation</p>
+              <p class="text-xl font-semibold mt-8 mb-4">Analysis</p>
               <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
               <p v-else>Awaiting recommendation</p>
             </div>
