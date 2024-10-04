@@ -19,7 +19,11 @@
                 class="border rounded-md p-2 mb-2 cursor-pointer hover:bg-gray-100"
             >
                 <div class="flex justify-between">
-                    <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
+                    <div>
+                        <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
+                        <p class="text-xs">For step {{ recommendation.step_index + 1 }}</p>
+                    </div>
+                    
                     <span v-if="recommendation.status == 'done'" class="text-green-600 text-sm">Done</span>
                     <span v-if="isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
                     <span v-if="isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
@@ -47,11 +51,11 @@ const recommendationStore = useRecommendationStore()
 const isRecommendationsListPanelOpen = inject('isRecommendationsListPanelOpen')
 
 function isInProgress(status) {
-  return ['in_progress', 'queued'].some(s => status.includes(s))
+  return status ? ['in_progress', 'queued'].some(s => status.includes(s)) : false;
 }
 
 function isFailed(status) {
-  return ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s))
+  return status ? ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s)) : false;
 }
 
 function showRecommendation(recommendationId) {

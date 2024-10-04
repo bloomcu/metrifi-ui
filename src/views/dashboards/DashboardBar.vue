@@ -201,7 +201,7 @@
     </VueDraggableNext>
 
     <AddFunnelModal :open="isAddFunnelsModalOpen" @attachFunnels="attachFunnels"/>
-    <GenerateRecommendationModal :open="isGenerateRecommendationModalOpen"/>
+    <GenerateRecommendationModal :stepIndex="recommendationStepIndex" :open="isGenerateRecommendationModalOpen"/>
     <RecommendationsListPanel/>
 
     <StepDetailsTray v-if="authStore.user.role === 'admin'"/>
@@ -260,9 +260,10 @@ const isShowingAnalysis = ref(false)
 const isEditingAnalysis = ref(false)
 const isShowingReference = ref(false)
 
-const isGenerateRecommendationModalOpen = ref(false)
 const isRecommendationsListPanelOpen = ref(false)
 const isGeneratingRecommendation = ref(false)
+
+const isGenerateRecommendationModalOpen = ref(false)
 const recommendationStepIndex = ref(null)
 
 const activeAnalysisType = ref('median_analysis')
@@ -276,7 +277,7 @@ provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
-provide('recommendationStepIndex', recommendationStepIndex)
+// provide('recommendationStepIndex', recommendationStepIndex)
 
 function toggleNotes() {
   isShowingNotes.value = !isShowingNotes.value

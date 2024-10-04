@@ -25,8 +25,9 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         
         await RecommendationsApi.store(organization, dashboard, params)
           .then(response => {
+            console.log('Recommendation created', response.data.data)
             this.recommendation = response.data.data
-            this.recommendations.push(this.recommendation)
+            this.recommendations.unshift(response.data.data)
             this.isLoading = false
           }).catch(error => {
             console.log('Error', error.response.data)

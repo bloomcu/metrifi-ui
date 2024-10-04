@@ -5,14 +5,16 @@
     :open="isGenerateRecommendationModalOpen"
   >
     <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Generate recommendation</h3>
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">
+        Generate recommendation for step {{ stepIndex + 1 }}
+      </h3>
     </div>
 
     <div class="space-y-4">
-      <AppRichtext v-model="prompt" label="Prompt" :editable="true"/>
+      <AppRichtext v-model="localPrompt" label="Prompt" :editable="true"/>
 
       <AppButton @click="generateRecommendation()">
-        {{ prompt !== '' && prompt !== '<p></p>' ? 'Generate' : 'Generate without prompt' }}
+        {{ localPrompt !== '' && localPrompt !== '<p></p>' ? 'Generate' : 'Generate without prompt' }}
       </AppButton>
     </div>
 
@@ -20,32 +22,48 @@
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from 'vue'
+import { ref, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 
+const props = defineProps({
+  stepIndex: '',
+  prompt: '',
+})
+
 const route = useRoute()
 const router = useRouter()
 const recommendationStore = useRecommendationStore()
 const funnelStore = useFunnelStore()
-const prompt = ref('')
+
+const localPrompt = ref(props.prompt)
 
 const isGenerateRecommendationModalOpen = inject('isGenerateRecommendationModalOpen')
-const recommendationStepIndex = inject('recommendationStepIndex')
+// const recommendationStepIndex = inject('recommendationStepIndex')
+
+// Watch the prop value and update the ref whenever it changes
+watch(() => props.prompt, (newValue) => {
+  localPrompt.value = newValue;
+});
 
 function generateRecommendation() {
-  let stepIndex = recommendationStepIndex.value
-  
-  let metadata = getMetadataForRecommendations(stepIndex)
+  let metadata = {}
+
+  if (recommendationStore.recommendation) {
+    metadata = recommendationStore.recommendation.metadata
+  } else {
+    metadata = getMetadataForRecommendations(props.stepIndex)
+  }
 
   recommendationStore.store(route.params.organization, route.params.dashboard, {
-    step_index: stepIndex,
-    prompt: prompt.value,
+    step_index: props.stepIndex,
+    prompt: localPrompt.value,
     metadata: metadata,
   }).then(() => {
+    isGenerateRecommendationModalOpen.value = false
     router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
   })
 }

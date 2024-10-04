@@ -9,15 +9,16 @@
           <ArrowLeftIcon class="h-4 w-4 shrink-0" />
         </AppButton>
         <p v-if="recommendationStore.recommendation" class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }} recommendation</p>
+        <p v-if="recommendationStore.recommendation" class="text-sm">For step {{ recommendationStore.recommendation.step_index + 1 }}</p>
         <span v-if="recommendationStore.recommendation" class="text-gray-400 text-sm font-normal">Created {{ moment(recommendationStore.recommendation.created_at).fromNow() }}</span>
       </div>
 
       <div class="flex items-center gap-2">
         <p v-if="isLoading" class="text-xs text-gray-400">Loading...</p>
 
-        <!-- <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="generateRecommendation()" variant="secondary" size="base">
+        <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="toggleGenerateRecommendationModal()" variant="secondary" size="base">
           Regenerate
-        </AppButton> -->
+        </AppButton>
 
         <AppButton @click="isRecommendationsListPanelOpen = true" variant="tertiary" size="base" class="flex items-center gap-2">
           Recommendations
@@ -29,9 +30,9 @@
       <div class="p-6 text-center text-gray-700">
         <p class="text-xl mb-4"><span class="font-bold">Issue:</span> {{ issue }}</p>
         <p class="mb-8">The assistant was not able to complete it's job.</p>
-        <!-- <AppButton @click="generateRecommendation()" variant="primary" size="base">
+        <AppButton @click="toggleGenerateRecommendationModal()" variant="primary" size="base">
           Regenerate recommendation
-        </AppButton> -->
+        </AppButton>
       </div>
     </div>
     
@@ -129,6 +130,7 @@
       </div>
     </div> -->
 
+    <GenerateRecommendationModal :stepIndex="recommendationStepIndex" :prompt="recommendationPrompt" :open="isGenerateRecommendationModalOpen"/>
     <RecommendationsListPanel/>
   </div>
 </template>
@@ -142,18 +144,27 @@ import { ArrowLeftIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import Prototype from '@/views/recommendations/components/Prototype.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
+import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecommendationModal.vue'
 
 const router = useRouter()
 const route = useRoute()
 
 const recommendationStore = useRecommendationStore()
+
 const isLoading = ref(false)
+
 const isRecommendationsListPanelOpen = ref(false)
+
+const isGenerateRecommendationModalOpen = ref(false)
+const recommendationStepIndex = ref(null)
+const recommendationPrompt = ref('')
+
 const hasShownAnalysisToUser = ref(false)
 const toggled = ref(true)
 const show = ref('prompt')
 
 provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
+provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
@@ -168,6 +179,12 @@ const steps = [
   { status: 'page_builder_completed', text: 'Queuing next component', completed: false },
   { status: 'done', text: 'All done', completed: false },
 ]
+
+function toggleGenerateRecommendationModal() { 
+  isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 
+  recommendationStepIndex.value = recommendationStore.recommendation.step_index
+  recommendationPrompt.value = recommendationStore.recommendation.prompt
+}
 
 function generateRecommendation() {
   recommendationStore.store(route.params.organization, route.params.dashboard, {
@@ -222,8 +239,8 @@ function fetchRecommendation() {
         setTimeout(() => isLoading.value = false, 800) // move into store
       }
 
-      // Continue polling if the recommendation status is null
-      if (recommendation.status === null) {
+      // Continue polling if the recommendation status is null or queued
+      if (recommendation.status === null || recommendation.status === 'queued') {
         return;
       }
       
