@@ -1,6 +1,6 @@
 <template>
   <AppModal 
-    size="6xl"
+    size="5xl"
     @closed="isGenerateRecommendationModalOpen = false" 
     :open="isGenerateRecommendationModalOpen"
   >
@@ -12,7 +12,7 @@
     <div class="space-y-4">
       <label class="inline-block text-md font-medium leading-6 text-gray-900">Additional information</label>
 
-      <AppRichtext v-model="localPrompt" :editable="true"/>
+      <AppRichtext v-model="localPrompt" :editable="true" editorClasses="max-h-[50vh] overflow-y-scroll"/>
 
       <AppButton @click="generateRecommendation()">Generate recommendation</AppButton>
     </div>

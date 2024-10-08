@@ -1,5 +1,5 @@
 <template>
-  <div v-if="editor" class="md-editor">
+  <div v-if="editor" class="md-editor ">
     <label v-if="label" class="inline-block text-sm font-medium leading-6 text-gray-900" :for="label">{{ label }}</label>
     
     <div v-if="editable" class="bg-white border border-gray-300 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
@@ -42,7 +42,12 @@
       </menu>
     </div>
     
-    <EditorContent :value="modelValue" :editor="editor" :class="editable ? 'border border-gray-300 rounded-md p-4' : ''" class="appearance-none bg-white"/>
+    <EditorContent 
+      :value="modelValue" 
+      :editor="editor" 
+      :class="[editable ? 'border border-gray-300 rounded-md p-4' : '', editorClasses]" 
+      class="h-full appearance-none bg-white"
+    />
   </div>
 </template>
 
@@ -61,6 +66,10 @@ const props = defineProps({
   editable: {
     type: Boolean,
     default: false
+  },
+  editorClasses: {
+    type: String,
+    default: ''
   }
 })
 
