@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-screen flex flex-col overflow-hidden">
     <div ref="tailwind"/>
 
     <!-- Header -->
@@ -38,10 +38,10 @@
     
     <div v-if="recommendationStore.recommendation" class="min-h-screen flex flex-col">
       <!-- Container -->
-      <div class="flex flex-grow">
+      <div class="flex flex-grow h-0">
         <!-- Left Side (Collapsible) -->
-        <div id="left-panel" :class="toggled ? 'w-1/3' : ''" class="bg-white min-w-[36px] max-w-[520px]">
-          <div v-if="toggled" class="p-8">
+        <div :class="toggled ? 'w-1/3' : ''" class="pb-20 min-w-[36px] max-w-[520px] h-full overflow-y-auto bg-white">
+          <div v-if="toggled" class="px-8 py-6">
             <!-- Prompt/recommendation toggler -->
             <div class="flex mb-6">
               <div class="p-1 border border-gray-300 rounded-lg flex space-x-1">
@@ -71,14 +71,14 @@
         </div>
 
         <!-- Divider with Toggle Button -->
-        <div class="w-0.5 relative flex items-center">
-          <button @click="toggled = !toggled" :class="toggled ? '' : 'rotate-180'" class="absolute -right-4 top-8 transform -translate-y-1/2 flex items-center justify-center border bg-white text-gray-400 w-8 h-8 rounded-full">
+        <div class="relative flex items-center">
+          <button @click="toggled = !toggled" :class="toggled ? 'right-8' : 'rotate-180 -right-4'" class="absolute top-12 transform -translate-y-1/2 flex items-center justify-center border border-gray-300 bg-white text-gray-400 w-8 h-8 rounded-full">
             <ChevronLeftIcon class="h-5 w-5 shrink-0 -ml-[3px]" />
           </button>
         </div>
 
         <!-- Right Side (2/3 of the screen) -->
-        <div class="flex-1 overflow-y-auto px-12 pt-5 pb-24 bg-gray-100">
+        <div class="pb-40 flex-1 h-full overflow-y-auto px-12 pt-5 bg-gray-100">
           <!-- Loading content -->
           <div v-if="recommendationStore.recommendation.status != 'done'" class="p-6">
             <div class="flex items-center justify-center mb-6">
@@ -100,33 +100,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <div v-else class="flex flex-col items-center justify-center min-h-screen">
-      <div class="w-96 p-6">
-        <div class="flex items-center justify-center mb-10">
-          <div class="w-24 h-24 border-2 border-indigo-300 rounded-full border-t-transparent spin"/>
-        </div>
-
-        <p class="text-xl text-center text-gray-700 mb-10">{{ currentStep.text }}</p>
-
-        <div class="relative h-2 bg-gray-200 rounded">
-          <div :style="{ width: progressWidth, transition: 'width 0.5s ease' }" class="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-indigo-300 rounded"/>
-        </div>
-      </div>
-    </div> -->
-
-    <!-- <div v-else class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div class="w-64 p-6 bg-white rounded-lg shadow-lg">
-        <div class="flex items-center gap-2 mb-10">
-          <div class="w-5 h-5 border-2 border-indigo-500 rounded-full border-t-transparent spin"/>
-          <p class="text-center text-gray-700">{{ currentStep.text }}</p>
-        </div>
-
-        <div class="relative h-2 bg-gray-200 rounded">
-          <div :style="{ width: progressWidth, transition: 'width 0.5s ease' }" class="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-indigo-300 rounded"/>
-        </div>
-      </div>
-    </div> -->
 
     <GenerateRecommendationModal :stepIndex="recommendationStepIndex" :prompt="recommendationPrompt" :open="isGenerateRecommendationModalOpen"/>
     <RecommendationsListPanel/>
