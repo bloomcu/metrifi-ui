@@ -4,18 +4,17 @@
     @closed="isGenerateRecommendationModalOpen = false" 
     :open="isGenerateRecommendationModalOpen"
   >
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">
-        Generate recommendation for step {{ stepIndex + 1 }}
-      </h3>
+    <div class="mb-6 max-w-4xl">
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:truncate sm:text-2xl">Generate recommendation for step {{ stepIndex + 1 }}</h3>
+      <p class="text-gray-500">Analyze your web page, compare it to top-performing comparisons, and get insights to optimize design, copy, and interactivity for higher conversions and a better user experience.</p>
     </div>
 
     <div class="space-y-4">
-      <AppRichtext v-model="localPrompt" label="Prompt" :editable="true"/>
+      <label class="inline-block text-md font-medium leading-6 text-gray-900">Additional information</label>
 
-      <AppButton @click="generateRecommendation()">
-        {{ localPrompt !== '' && localPrompt !== '<p></p>' ? 'Generate' : 'Generate without prompt' }}
-      </AppButton>
+      <AppRichtext v-model="localPrompt" :editable="true"/>
+
+      <AppButton @click="generateRecommendation()">Generate recommendation</AppButton>
     </div>
 
   </AppModal>
