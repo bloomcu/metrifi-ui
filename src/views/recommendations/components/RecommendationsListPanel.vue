@@ -16,12 +16,12 @@
                 v-for="recommendation in recommendationStore.recommendations" 
                 @click="showRecommendation(recommendation.id)"
                 :class="{'bg-indigo-100 border-indigo-300 hover:bg-indigo-200': recommendation.id == route.params.recommendation}"
-                class="border rounded-md p-2 mb-2 cursor-pointer hover:bg-gray-100"
+                class="flex flex-col gap-2 border rounded-lg p-2 mb-3 cursor-pointer hover:bg-gray-100"
             >
                 <div class="flex justify-between">
                     <div>
                         <p class="font-medium text-gray-900">{{ recommendation.title }}</p>
-                        <p class="text-xs">For step {{ recommendation.step_index + 1 }}</p>
+                        <p class="text-sm text-gray-700">For step {{ recommendation.step_index + 1 }}</p>
                     </div>
                     
                     <span v-if="recommendation.status == 'done'" class="text-green-600 text-sm">Done</span>
@@ -30,8 +30,16 @@
                 </div>
 
                 <div class="flex justify-between text-gray-500 text-sm">
-                    <p>{{ moment(recommendation.created_at).fromNow() }}</p>
-                    <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
+                    <div class="flex items-center gap-1">
+                        <ClockIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
+                        <!-- <span>{{ moment(recommendation.created_at).fromNow() }}</span> -->
+                        <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-1">
+                        <UserIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
+                        <span>{{ recommendation.user.name }}</span>
+                    </div>
                 </div>
                 
             </div>
@@ -44,6 +52,7 @@ import moment from "moment"
 import { inject, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
+import { UserIcon, ClockIcon } from '@heroicons/vue/16/solid'
 
 const route = useRoute()
 const router = useRouter()

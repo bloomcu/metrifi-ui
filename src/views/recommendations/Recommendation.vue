@@ -10,7 +10,7 @@
         </AppButton>
         <p v-if="recommendationStore.recommendation" class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }} recommendation</p>
         <p v-if="recommendationStore.recommendation" class="text-sm">For step {{ recommendationStore.recommendation.step_index + 1 }}</p>
-        <span v-if="recommendationStore.recommendation" class="text-gray-400 text-sm font-normal">Created {{ moment(recommendationStore.recommendation.created_at).fromNow() }}</span>
+        <span v-if="recommendationStore.recommendation" class="text-gray-400 text-sm font-normal">Created {{ moment(recommendationStore.recommendation.created_at).fromNow() }} by {{ recommendationStore.recommendation.user.name }}</span>
       </div>
 
       <div class="flex items-center gap-2">
