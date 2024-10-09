@@ -10,7 +10,7 @@
     </div>
 
     <!-- Accordion 1 - UI analysis -->
-    <div class="mb-4 border rounded-lg shadow-lg">
+    <div class="mb-4 border rounded-lg overflow-hidden shadow-lg">
       <div class="flex items-center justify-between p-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
         <div class="flex gap-2">
           <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
@@ -57,7 +57,7 @@
           <h2 class="font-medium">Additional information</h2>
         </div>
 
-        <CheckCircleIcon v-if="hasCompetitors" class="h-7 w-7 text-green-600"/>
+        <CheckCircleIcon v-if="localPrompt" class="h-7 w-7 text-green-600"/>
       </div>
       <div v-if="accordionStates.accordion3" class="p-4 bg-gray-100 border-t transition-all duration-300 ease-in-out">
         <div class="space-y-4">
@@ -101,6 +101,7 @@ const accordionStates = reactive({
 
 const competitors = ref(['', '', ''])
 const hasCompetitors = computed(() => competitors.value.some(competitor => competitor))
+// create a computed property that is true if local prompt is not equal to the prop prompt
 
 const toggleAccordion = (accordionName) => {
   if (accordionStates.hasOwnProperty(accordionName)) {
