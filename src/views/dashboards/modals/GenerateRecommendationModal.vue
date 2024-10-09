@@ -57,7 +57,7 @@
           <h2 class="font-medium">Additional information</h2>
         </div>
 
-        <CheckCircleIcon v-if="localPrompt" class="h-7 w-7 text-green-600"/>
+        <CheckCircleIcon v-if="localPrompt && localPrompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
       </div>
       <div v-if="accordionStates.accordion3" class="p-4 bg-gray-100 border-t transition-all duration-300 ease-in-out">
         <div class="space-y-4">
