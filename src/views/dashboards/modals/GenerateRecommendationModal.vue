@@ -10,7 +10,7 @@
     </div>
 
     <!-- Accordion 1 - UI analysis -->
-    <div class="mb-4 border rounded-lg overflow-hidden shadow-lg">
+    <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
       <div class="flex items-center justify-between p-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
         <div class="flex gap-2">
           <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Accordion 2 - Competitors -->
-    <div class="mb-4 border rounded-lg overflow-hidden shadow-lg">
+    <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
       <div class="flex items-center justify-between p-4 bg-white cursor-pointer" @click="toggleAccordion('accordion2')">
         <div class="flex gap-2">
           <MinusIcon v-if="accordionStates.accordion2" class="h-6 w-6 text-gray-600"/>
@@ -49,7 +49,7 @@
     </div>
 
     <!-- Accordion 3 - Additional information -->
-    <div class="mb-6 border rounded-lg overflow-hidden shadow-lg">
+    <div class="mb-6 border border-gray-300 rounded-lg overflow-hidden">
       <div class="flex items-center justify-between p-4 bg-white cursor-pointer" @click="toggleAccordion('accordion3')">
         <div class="flex gap-2">
           <MinusIcon v-if="accordionStates.accordion3" class="h-6 w-6 text-gray-600"/>
