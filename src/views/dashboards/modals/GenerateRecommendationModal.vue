@@ -9,24 +9,79 @@
       <p class="text-gray-500">Analyze your web page, compare it to top-performing comparisons, and get insights to optimize design, copy, and interactivity for higher conversions and a better user experience.</p>
     </div>
 
-    <div class="space-y-4">
-      <label class="inline-block text-md font-medium leading-6 text-gray-900">Additional information</label>
+    <!-- Accordion 1 - UI analysis -->
+    <div class="mb-4 border rounded-lg shadow-lg">
+      <div class="flex items-center justify-between p-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
+        <div class="flex gap-2">
+          <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
+          <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+          <h2 class="font-medium">UI analysis</h2>
+        </div>
 
-      <AppRichtext v-model="localPrompt" :editable="true" editorClasses="max-h-[50vh] overflow-y-scroll"/>
-
-      <AppButton @click="generateRecommendation()">Generate recommendation</AppButton>
+        <!-- <AppTooltipWrapper> -->
+          <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+          <!-- <AppTooltip text="Enabled" alignment="center" variant="success" /> -->
+        <!-- </AppTooltipWrapper> -->
+      </div>
+      <div v-if="accordionStates.accordion1" class="p-4 bg-gray-100 border-t transition-all duration-300 ease-in-out">
+        <p>The latest UI analysis will be used as context for the recommendation.</p>
+      </div>
     </div>
 
+    <!-- Accordion 2 - Competitors -->
+    <div class="mb-4 border rounded-lg overflow-hidden shadow-lg">
+      <div class="flex items-center justify-between p-4 bg-white cursor-pointer" @click="toggleAccordion('accordion2')">
+        <div class="flex gap-2">
+          <MinusIcon v-if="accordionStates.accordion2" class="h-6 w-6 text-gray-600"/>
+          <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+          <h2 class="font-medium">Competitors</h2>
+        </div>
+
+        <CheckCircleIcon v-if="hasCompetitors" class="h-7 w-7 text-green-600"/>
+      </div>
+      <div v-if="accordionStates.accordion2" class="p-4 bg-gray-100 border-t transition-all duration-300 ease-in-out">
+        <div class="space-y-4">
+          <AppInput v-model="competitors[0]" label="Competitor URL" placeholder="https://example.com"/>
+          <AppInput v-model="competitors[1]" label="Competitor URL" placeholder="https://example.com"/>
+          <AppInput v-model="competitors[2]" label="Competitor URL" placeholder="https://example.com"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion 3 - Additional information -->
+    <div class="mb-6 border rounded-lg overflow-hidden shadow-lg">
+      <div class="flex items-center justify-between p-4 bg-white cursor-pointer" @click="toggleAccordion('accordion3')">
+        <div class="flex gap-2">
+          <MinusIcon v-if="accordionStates.accordion3" class="h-6 w-6 text-gray-600"/>
+          <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+          <h2 class="font-medium">Additional information</h2>
+        </div>
+
+        <CheckCircleIcon v-if="hasCompetitors" class="h-7 w-7 text-green-600"/>
+      </div>
+      <div v-if="accordionStates.accordion3" class="p-4 bg-gray-100 border-t transition-all duration-300 ease-in-out">
+        <div class="space-y-4">
+          <p>This information will be provided as context for the recommendation.</p>
+          <!-- <label class="inline-block text-md font-medium leading-6 text-gray-900">Additional information</label> -->
+          <AppRichtext v-model="localPrompt" :editable="true" editorClasses="max-h-[50vh] overflow-y-scroll"/>
+        </div>
+      </div>
+    </div>
+
+    <AppButton @click="generateRecommendation()">Generate recommendation</AppButton>
   </AppModal>
 </template>
 
 <script setup>
-import { ref, inject, watch } from 'vue'
+import { ref, reactive, computed, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
+import { PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
+import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
+import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
 
 const props = defineProps({
   stepIndex: '',
@@ -38,8 +93,22 @@ const router = useRouter()
 const recommendationStore = useRecommendationStore()
 const funnelStore = useFunnelStore()
 
-const localPrompt = ref(props.prompt)
+const accordionStates = reactive({
+  accordion1: false,
+  accordion2: false,
+  accordion3: false,
+});
 
+const competitors = ref(['', '', ''])
+const hasCompetitors = computed(() => competitors.value.some(competitor => competitor))
+
+const toggleAccordion = (accordionName) => {
+  if (accordionStates.hasOwnProperty(accordionName)) {
+    accordionStates[accordionName] = !accordionStates[accordionName];
+  }
+};
+
+const localPrompt = ref(props.prompt)
 const isGenerateRecommendationModalOpen = inject('isGenerateRecommendationModalOpen')
 // const recommendationStepIndex = inject('recommendationStepIndex')
 
