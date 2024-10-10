@@ -82,8 +82,32 @@
         <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
           <div class="space-y-4">
             <p class="text-gray-600">This information will be provided as context for the recommendation.</p>
-            <!-- <label class="inline-block text-md font-medium leading-6 text-gray-900">Additional information</label> -->
             <AppRichtext v-model="localPrompt" :editable="true"/>
+
+            <!-- Upload files -->
+            <FileUploader class="mb-5"/>
+
+            <!-- Files -->
+            <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
+              <li v-for="file in fileStore.files" :key="file.id" class="relative">
+                <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
+                  <!-- Thumbnail -->
+                  <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
+
+                  <!-- Select -->
+                  <!-- <button class="absolute flex top-1 left-1 h-7 w-7 items-center justify-center text-gray-600 hover:text-gray-900">
+                    <input :checked="selected.includes(file.id)" type="checkbox" class="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                  </button> -->
+
+                  <!-- Delete -->
+                  <button @click.stop="fileStore.destroy(route.params.organization, file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
+                    <TrashIcon class="h-4 w-4"/>
+                  </button>
+                </div>
+                <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
+                <p class="block truncate text-sm text-gray-500">{{ file.filename }}</p>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -95,12 +119,12 @@
 import { ref, reactive, computed, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
-import { ArrowLeftIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
+import { ArrowLeftIcon, TrashIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
+import { useFileStore } from '@/domain/files/store/useFileStore'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
-import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
-import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
+import FileUploader from '@/domain/files/components/FileUploader.vue'
 
 const props = defineProps({
   stepIndex: '',
@@ -111,6 +135,7 @@ const route = useRoute()
 const router = useRouter()
 const recommendationStore = useRecommendationStore()
 const funnelStore = useFunnelStore()
+const fileStore = useFileStore()
 
 const accordionStates = reactive({
   accordion1: false,
@@ -207,4 +232,32 @@ function getMetadataForRecommendations(stepIndex) {
     comparisons: comparisons,
   }
 }
+
+// function selectFile(id, event = null) {
+//   const index = selected.value.indexOf(id);
+
+//   if (event && event.shiftKey && lastSelected.value !== null) {
+//     // Handle multi-select with the Shift key
+//     const fileIds = fileStore.files.map(file => file.id);
+//     const from = fileIds.indexOf(id);
+//     const to = fileIds.indexOf(lastSelected.value);
+//     const [start, end] = [from, to].sort((a, b) => a - b);
+
+//     // Select the range of files between the last selected and the current
+//     const selection = fileIds.slice(start, end + 1);
+
+//     // Update the selected files, ensuring uniqueness
+//     selected.value = Array.from(new Set([...selected.value, ...selection]));
+//   } else {
+//     // Toggle the selection of the file
+//     if (index === -1) {
+//       selected.value.push(id);
+//     } else {
+//       selected.value.splice(index, 1);
+//     }
+//   }
+
+//   // Update the last selected file
+//   lastSelected.value = id;
+// }
 </script>
