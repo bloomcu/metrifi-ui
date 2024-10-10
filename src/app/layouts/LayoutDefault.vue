@@ -1,5 +1,5 @@
 <template>
-  <main :class="widthClasses[width]" class="mx-auto px-4 sm:px-6 lg:px-8">
+  <main :class="widthClasses[width]" class="mx-auto">
     <slot/>
   </main>
 </template>

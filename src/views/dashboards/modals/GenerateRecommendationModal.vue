@@ -4,15 +4,29 @@
     @closed="isGenerateRecommendationModalOpen = false" 
     :open="isGenerateRecommendationModalOpen"
   >
-    <div class="max-w-4xl mx-auto pb-28">
+    <!-- Sticky Top Bar -->
+    <div class="fixed top-0 left-0 w-full bg-white border-b border-gray-200">
+      <div class="flex items-center justify-between px-4 py-2">
+        <AppButton @click="isGenerateRecommendationModalOpen = false" variant="tertiary" size="base">
+          <ArrowLeftIcon class="h-5 w-5 shrink-0" />
+        </AppButton>
+
+        <AppButton @click="generateRecommendation()" class="whitespace-nowrap">
+          Generate recommendation
+        </AppButton>
+      </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto pt-16 pb-28">
       <div class="max-w-2xl mt-6 mb-10">
         <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:text-2xl">
-            Generate recommendation for step {{ stepIndex + 1 }}
-          </h3>
-          <p class="text-gray-600">
-            Analyze your web page, compare it to top-performing comparisons, and get insights to optimize design, copy, and
-            interactivity for higher conversions and a better user experience.
-          </p>
+          Generate recommendation for step {{ stepIndex + 1 }}
+        </h3>
+
+        <p class="text-gray-600">
+          Analyze your web page, compare it to top-performing comparisons, and get insights to optimize design, copy, and
+          interactivity for higher conversions and a better user experience.
+        </p>
       </div>
 
       <!-- Accordion 1 - UI analysis -->
@@ -74,15 +88,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Sticky Bottom Bar -->
-    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 px-8 py-4 h-16">
-      <div class="max-w-4xl mx-auto flex justify-end">
-        <AppButton @click="generateRecommendation()" class="whitespace-nowrap">
-          Generate recommendation
-        </AppButton>
-      </div>
-    </div>
   </AppModal>
 </template>
 
@@ -90,7 +95,7 @@
 import { ref, reactive, computed, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
-import { PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
+import { ArrowLeftIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
