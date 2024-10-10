@@ -19,34 +19,34 @@
         display: none;
     }
 
-    // /* 
-    //  * Stylize visible scrollbars 
-    //  *
-    //  */
+    /* 
+     * Stylize visible scrollbars 
+     *
+     */
 
-    // /* Width */
-    // .styleized-scrollbar::-webkit-scrollbar {
-    //     width: 14px;
-    // }
+    /* Width */
+    ::-webkit-scrollbar {
+        width: 14px;
+    }
     
-    // /* Track */
-    // .styleized-scrollbar::-webkit-scrollbar-track {
-    //     background: #ffffff;
-    // }
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #ffffff;
+    }
     
-    // /* Handle */
-    // .styleized-scrollbar::-webkit-scrollbar-thumb {
-    //     background: #e4e2e2;
-    //     border-radius: 100px;
-    //     border: 4px solid transparent; /* Creates space between thumb and track */
-    //     background-clip: content-box;  /* Ensures the background doesn't cover the border */
-    // }
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #e4e2e2;
+        border-radius: 100px;
+        border: 4px solid transparent; /* Creates space between thumb and track */
+        background-clip: content-box;  /* Ensures the background doesn't cover the border */
+    }
     
-    // /* Handle on hover */
-    // .styleized-scrollbar::-webkit-scrollbar-thumb:hover {
-    //     background: #cdcdcd;
-    //     border-radius: 100px;
-    //     border: 4px solid transparent; /* Creates space between thumb and track */
-    //     background-clip: content-box;  /* Ensures the background doesn't cover the border */
-    // }
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #cdcdcd;
+        border-radius: 100px;
+        border: 4px solid transparent; /* Creates space between thumb and track */
+        background-clip: content-box;  /* Ensures the background doesn't cover the border */
+    }
 }

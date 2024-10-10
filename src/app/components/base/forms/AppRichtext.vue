@@ -17,8 +17,7 @@
         
         <li>
           <button @click="editor.chain().focus().toggleItalic().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Italic">
-            <svg class="relative block m-auto w-[16px] h-[16px]" viewBox="0 0 16 16"><title>Italic</title><g fill="currentColor"><path d="M6 15h3a1 1 0 0 0 0-2H7.388l3.333-10H13a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1.612L5.279 13H3a1 1 0 0 0 0 2h3z"></path></g>
-            </svg>
+            <svg class="relative block m-auto w-[16px] h-[16px]" viewBox="0 0 16 16"><title>Italic</title><g fill="currentColor"><path d="M6 15h3a1 1 0 0 0 0-2H7.388l3.333-10H13a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1.612L5.279 13H3a1 1 0 0 0 0 2h3z"></path></g></svg>
           </button>
         </li>
 
@@ -45,7 +44,7 @@
     <EditorContent 
       :value="modelValue" 
       :editor="editor" 
-      :class="[editable ? 'border border-gray-300 rounded-md p-4' : '', editorClasses]" 
+      :class="[editable ? 'border border-gray-300 rounded-md p-4' : '']" 
       class="h-full appearance-none bg-white"
     />
   </div>
@@ -67,10 +66,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  editorClasses: {
-    type: String,
-    default: ''
-  }
 })
 
 const editor = useEditor({

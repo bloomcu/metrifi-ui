@@ -1,74 +1,88 @@
 <template>
   <AppModal 
-    size="5xl"
+    size="full"
     @closed="isGenerateRecommendationModalOpen = false" 
     :open="isGenerateRecommendationModalOpen"
   >
-    <div class="mb-6 max-w-4xl">
-      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:truncate sm:text-2xl">Generate recommendation for step {{ stepIndex + 1 }}</h3>
-      <p class="text-gray-500">Analyze your web page, compare it to top-performing comparisons, and get insights to optimize design, copy, and interactivity for higher conversions and a better user experience.</p>
+    <div class="max-w-4xl mx-auto pb-28">
+      <div class="max-w-2xl mt-6 mb-10">
+        <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:text-2xl">
+            Generate recommendation for step {{ stepIndex + 1 }}
+          </h3>
+          <p class="text-gray-600">
+            Analyze your web page, compare it to top-performing comparisons, and get insights to optimize design, copy, and
+            interactivity for higher conversions and a better user experience.
+          </p>
+      </div>
+
+      <!-- Accordion 1 - UI analysis -->
+      <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
+        <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
+          <div class="flex gap-2">
+            <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
+            <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+            <h2 class="font-medium">UI analysis</h2>
+          </div>
+
+          <!-- <AppTooltipWrapper> -->
+            <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+            <!-- <AppTooltip text="Enabled" alignment="center" variant="success" /> -->
+          <!-- </AppTooltipWrapper> -->
+        </div>
+        <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+          <p class="text-gray-600">The latest UI analysis will be used as context for the recommendation.</p>
+        </div>
+      </div>
+
+      <!-- Accordion 2 - Competitors -->
+      <!-- <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
+        <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion2')">
+          <div class="flex gap-2">
+            <MinusIcon v-if="accordionStates.accordion2" class="h-6 w-6 text-gray-600"/>
+            <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+            <h2 class="font-medium">Competitors</h2>
+          </div>
+
+          <CheckCircleIcon v-if="hasCompetitors" class="h-7 w-7 text-green-600"/>
+        </div>
+        <div v-if="accordionStates.accordion2" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+          <div class="space-y-4">
+            <AppInput v-model="competitors[0]" label="Competitor URL" placeholder="https://example.com"/>
+            <AppInput v-model="competitors[1]" label="Competitor URL" placeholder="https://example.com"/>
+            <AppInput v-model="competitors[2]" label="Competitor URL" placeholder="https://example.com"/>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Accordion 3 - Additional information -->
+      <div class="mb-6 border border-gray-300 rounded-lg overflow-hidden">
+        <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion3')">
+          <div class="flex gap-2">
+            <MinusIcon v-if="accordionStates.accordion3" class="h-6 w-6 text-gray-600"/>
+            <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+            <h2 class="font-medium">Additional information</h2>
+          </div>
+
+          <CheckCircleIcon v-if="localPrompt && localPrompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
+        </div>
+        <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+          <div class="space-y-4">
+            <p class="text-gray-600">This information will be provided as context for the recommendation.</p>
+            <!-- <label class="inline-block text-md font-medium leading-6 text-gray-900">Additional information</label> -->
+            <AppRichtext v-model="localPrompt" :editable="true"/>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Accordion 1 - UI analysis -->
-    <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
-      <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
-        <div class="flex gap-2">
-          <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
-          <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
-          <h2 class="font-medium">UI analysis</h2>
-        </div>
-
-        <!-- <AppTooltipWrapper> -->
-          <CheckCircleIcon class="h-7 w-7 text-green-600"/>
-          <!-- <AppTooltip text="Enabled" alignment="center" variant="success" /> -->
-        <!-- </AppTooltipWrapper> -->
-      </div>
-      <div v-if="accordionStates.accordion1" class="p-4 bg-gray-100 border-t transition-all duration-300 ease-in-out">
-        <p>The latest UI analysis will be used as context for the recommendation.</p>
+    <!-- Sticky Bottom Bar -->
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 px-8 py-4 h-16">
+      <div class="max-w-4xl mx-auto flex justify-end">
+        <AppButton @click="generateRecommendation()" class="whitespace-nowrap">
+          Generate recommendation
+        </AppButton>
       </div>
     </div>
-
-    <!-- Accordion 2 - Competitors -->
-    <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
-      <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion2')">
-        <div class="flex gap-2">
-          <MinusIcon v-if="accordionStates.accordion2" class="h-6 w-6 text-gray-600"/>
-          <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
-          <h2 class="font-medium">Competitors</h2>
-        </div>
-
-        <CheckCircleIcon v-if="hasCompetitors" class="h-7 w-7 text-green-600"/>
-      </div>
-      <div v-if="accordionStates.accordion2" class="p-4 bg-gray-100 border-t transition-all duration-300 ease-in-out">
-        <div class="space-y-4">
-          <AppInput v-model="competitors[0]" label="Competitor URL" placeholder="https://example.com"/>
-          <AppInput v-model="competitors[1]" label="Competitor URL" placeholder="https://example.com"/>
-          <AppInput v-model="competitors[2]" label="Competitor URL" placeholder="https://example.com"/>
-        </div>
-      </div>
-    </div>
-
-    <!-- Accordion 3 - Additional information -->
-    <div class="mb-6 border border-gray-300 rounded-lg overflow-hidden">
-      <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion3')">
-        <div class="flex gap-2">
-          <MinusIcon v-if="accordionStates.accordion3" class="h-6 w-6 text-gray-600"/>
-          <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
-          <h2 class="font-medium">Additional information</h2>
-        </div>
-
-        <CheckCircleIcon v-if="localPrompt && localPrompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
-      </div>
-      <div v-if="accordionStates.accordion3" class="p-4 bg-gray-100 border-t transition-all duration-300 ease-in-out">
-        <div class="space-y-4">
-          <p>This information will be provided as context for the recommendation.</p>
-          <!-- <label class="inline-block text-md font-medium leading-6 text-gray-900">Additional information</label> -->
-          <AppRichtext v-model="localPrompt" :editable="true" editorClasses="max-h-[50vh] overflow-y-scroll"/>
-        </div>
-      </div>
-    </div>
-
-    <AppButton @click="generateRecommendation()">Generate recommendation</AppButton>
   </AppModal>
 </template>
 
@@ -99,9 +113,8 @@ const accordionStates = reactive({
   accordion3: false,
 });
 
-const competitors = ref(['', '', ''])
-const hasCompetitors = computed(() => competitors.value.some(competitor => competitor))
-// create a computed property that is true if local prompt is not equal to the prop prompt
+// const competitors = ref(['', '', ''])
+// const hasCompetitors = computed(() => competitors.value.some(competitor => competitor))
 
 const toggleAccordion = (accordionName) => {
   if (accordionStates.hasOwnProperty(accordionName)) {
