@@ -90,6 +90,7 @@
             <!-- Files -->
             <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
               <li v-for="file in fileStore.files" :key="file.id" class="relative">
+                {{ file }}
                 <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
                   <!-- Thumbnail -->
                   <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
