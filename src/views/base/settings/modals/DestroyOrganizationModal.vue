@@ -4,21 +4,21 @@
     @closed="organizationStore.toggleDestroyModal()"
     :open="organizationStore.destroyModalOpen"
   >
-    <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:truncate sm:text-2xl">
-      Delete organization
-    </h3>
+    <div class="p-6">
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:truncate sm:text-2xl">Delete organization</h3>
 
-    <p class="leading-6 mb-8 text-gray-700">
-      Deleting the 
-      <span class="rounded-md bg-gray-50 px-2 py-1 text-sm font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-        {{ organizationStore.organization.title }}
-      </span>
-      organization will also delete all the data associated with it. This action cannot be undone. Are you sure you want to delete it?
-    </p>
+      <p class="leading-6 mb-8 text-gray-700">
+        Deleting the 
+        <span class="rounded-md bg-gray-50 px-2 py-1 text-sm font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+          {{ organizationStore.organization.title }}
+        </span>
+        organization will also delete all the data associated with it. This action cannot be undone. Are you sure you want to delete it?
+      </p>
 
-    <div class="flex justify-end gap-3 border-t pt-4">
-      <AppButton @click="organizationStore.toggleDestroyModal()" variant="tertiary">Never mind</AppButton>
-      <AppButton @click="destroy()" :loading="organizationStore.loading" variant="primary" class="bg-red-600 hover:bg-red-700">Delete</AppButton>
+      <div class="flex justify-end gap-3 border-t pt-4">
+        <AppButton @click="organizationStore.toggleDestroyModal()" variant="tertiary">Never mind</AppButton>
+        <AppButton @click="destroy()" :loading="organizationStore.loading" variant="primary" class="bg-red-600 hover:bg-red-700">Delete</AppButton>
+      </div>
     </div>
   </AppModal>
 </template>

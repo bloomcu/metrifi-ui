@@ -1,8 +1,8 @@
 <template>
     <template v-if="isRecommendationsListPanelOpen">
-        <!-- <div @click="toggleTray()" class="fixed inset-0 h-full w-full overflow-y-auto bg-slate-600 bg-opacity-20"></div> -->
+        <div @click="isRecommendationsListPanelOpen = false" class="fixed inset-0 h-full w-full overflow-y-auto bg-slate-600 bg-opacity-40"></div>
 
-        <div class="fixed right-0 top-0 h-full overflow-y-auto w-96 p-6 transform rounded-r-3xl bg-white shadow-2xl ring-1 ring-gray-900/5">
+        <div class="fixed right-0 top-0 h-full overflow-y-auto w-96 p-6 transform rounded-l-3xl bg-white shadow-2xl ring-1 ring-gray-900/5">
             <!-- Tray header -->
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-xl font-medium">Recommendations</h3>

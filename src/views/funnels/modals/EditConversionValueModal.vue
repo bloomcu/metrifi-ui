@@ -5,11 +5,14 @@
     :open="isOpen"
   >
     <!-- <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Edit</h3> -->
+    <div class="p-6">
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Edit funnel</h3>
 
-    <form action="#" @submit.prevent="updateFunnel()" class="flex flex-col gap-6">
-      <AppInput v-model="computedValue" label="Assets per conversion" :maxlength="18"/>
-      <AppButton :loading="loading" class="w-full">Update</AppButton>
-    </form>
+      <form action="#" @submit.prevent="updateFunnel()" class="flex flex-col gap-6">
+        <AppInput v-model="computedValue" label="Assets per conversion" :maxlength="18"/>
+        <AppButton :loading="loading" class="w-full">Update</AppButton>
+      </form>
+    </div>
   </AppModal>
 </template>
 

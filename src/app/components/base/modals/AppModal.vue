@@ -38,9 +38,9 @@
               <button
                 type="button"
                 @click="close()"
-                class="absolute top-6 right-6 text-gray-500 hover:text-gray-700 focus:outline-none"
+                class="absolute top-7 right-6 text-gray-500 hover:text-gray-700 focus:outline-none"
               >
-                <XMarkIcon class="h-8 w-8 text-gray-600"/>
+                <XMarkIcon class="h-7 w-7 text-gray-600"/>
               </button>
 
               <slot />

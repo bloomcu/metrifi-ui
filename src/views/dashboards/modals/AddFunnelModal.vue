@@ -4,12 +4,12 @@
     @closed="isAddFunnelsModalOpen = false" 
     :open="isAddFunnelsModalOpen"
   >
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-6 px-6 pt-6">
       <!-- Modal title -->
       <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Add funnel</h3>
 
       <!-- Show/hide organizations -->
-      <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2">
+      <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2 pr-16">
         <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
         <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
           Show organizations
@@ -18,7 +18,7 @@
     </div>
 
     <div>
-      <div class="flex items-center gap-3 mb-4">
+      <div class="flex items-center gap-3 mb-4 px-6">
         <AppInput v-model="input" placeholder="Search" class="w-6/12"/>
         <CategoryPicker class="w-4/12" v-model="category"/>
         <AppButton @click="attachFunnels()" :disabled="!selected.length" class="w-2/12">
