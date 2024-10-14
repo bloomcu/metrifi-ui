@@ -32,9 +32,10 @@ import { useRoute } from 'vue-router'
 import { useFileStore } from '@/domain/files/store/useFileStore'
 import { CloudArrowUpIcon } from '@heroicons/vue/24/solid'
 
+const emit = defineEmits(['fileUploaded'])
+
 const route = useRoute()
 const fileStore = useFileStore()
-
 const files = ref([])
 
 function onInputChange(e) {
@@ -65,8 +66,9 @@ function uploadFiles() {
     return Promise.all(files.value.map((file) => {
         file.status = 'Uploading'
 
-        fileStore.store(route.params.organization, file.file).then(response => {
+        fileStore.store(route.params.organization, file.file).then(file => {
             file.status = 'Uploaded'
+            emit('fileUploaded', file)
         }).catch(error => {
             console.error(error)
             file.status = 'Failed'

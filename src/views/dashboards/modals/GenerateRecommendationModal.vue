@@ -85,7 +85,7 @@
             <AppRichtext v-model="localPrompt" :editable="true"/>
 
             <!-- Upload files -->
-            <FileUploader class="mb-5"/>
+            <FileUploader @fileUploaded="handleFileUploaded" class="mb-5"/>
 
             <!-- Files -->
             <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
@@ -143,51 +143,55 @@ const accordionStates = reactive({
   accordion3: false,
 });
 
-// const competitors = ref(['', '', ''])
-// const hasCompetitors = computed(() => competitors.value.some(competitor => competitor))
-
-const toggleAccordion = (accordionName) => {
-  if (accordionStates.hasOwnProperty(accordionName)) {
-    accordionStates[accordionName] = !accordionStates[accordionName];
-  }
-};
-
+const files = ref([])
 const localPrompt = ref(props.prompt)
 const isGenerateRecommendationModalOpen = inject('isGenerateRecommendationModalOpen')
-// const recommendationStepIndex = inject('recommendationStepIndex')
 
 // Watch the prop value and update the ref whenever it changes
 watch(() => props.prompt, (newValue) => {
   localPrompt.value = newValue;
 });
 
+function handleFileUploaded(file) {
+  files.value.push(file.id)
+}
+
 async function generateRecommendation() {
   let metadata = {}
+  let file_ids = []
 
   // If we're on a recommendation page, use the metadata from the recommendation
   if (route.params.recommendation) {
     await recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
       .then(response => {
+        // We're regenerating an existing recommendation
         metadata = recommendationStore.recommendation.metadata
-        console.log('We are regenerating an existing recommendation.', metadata)
+        file_ids = recommendationStore.recommendation.file_ids
       })
       
   } else {
+    // We're generating a new recommendation
     metadata = getMetadataForRecommendations(props.stepIndex)
-    console.log('We are generating a new recommendation.', metadata)
   }
 
+  // Store the recommendation
   recommendationStore.store(route.params.organization, route.params.dashboard, {
+    // status: 'draft',
     step_index: props.stepIndex,
     prompt: localPrompt.value,
     metadata: metadata,
+    file_ids: files.value,
   }).then(() => {
-    isGenerateRecommendationModalOpen.value = false
-    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
-      .then(() => {
-          window.location.reload()
-      })
+    // isGenerateRecommendationModalOpen.value = false
+    // router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
+    //   .then(() => {
+    //       window.location.reload()
+    //   })
   })
+
+  // Clear the prompt and files
+  // localPrompt.value = ''
+  // files.value = []
 }
 
 function getMetadataForRecommendations(stepIndex) {
@@ -233,31 +237,9 @@ function getMetadataForRecommendations(stepIndex) {
   }
 }
 
-// function selectFile(id, event = null) {
-//   const index = selected.value.indexOf(id);
-
-//   if (event && event.shiftKey && lastSelected.value !== null) {
-//     // Handle multi-select with the Shift key
-//     const fileIds = fileStore.files.map(file => file.id);
-//     const from = fileIds.indexOf(id);
-//     const to = fileIds.indexOf(lastSelected.value);
-//     const [start, end] = [from, to].sort((a, b) => a - b);
-
-//     // Select the range of files between the last selected and the current
-//     const selection = fileIds.slice(start, end + 1);
-
-//     // Update the selected files, ensuring uniqueness
-//     selected.value = Array.from(new Set([...selected.value, ...selection]));
-//   } else {
-//     // Toggle the selection of the file
-//     if (index === -1) {
-//       selected.value.push(id);
-//     } else {
-//       selected.value.splice(index, 1);
-//     }
-//   }
-
-//   // Update the last selected file
-//   lastSelected.value = id;
-// }
+const toggleAccordion = (accordionName) => {
+  if (accordionStates.hasOwnProperty(accordionName)) {
+    accordionStates[accordionName] = !accordionStates[accordionName];
+  }
+};
 </script>

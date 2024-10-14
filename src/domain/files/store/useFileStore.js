@@ -20,7 +20,7 @@ export const useFileStore = defineStore('fileStore', {
       
       return await fileApi.store(organization, formData).then(response => {
         this.files.unshift(response.data.data)
-        return response
+        return response.data.data
       })
     },
 

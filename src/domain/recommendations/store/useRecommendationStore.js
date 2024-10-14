@@ -22,9 +22,10 @@ export const useRecommendationStore = defineStore('recommendationStore', {
 
       async store(organization, dashboard, params) {
         this.isLoading = true
-        
+        console.log('Params', params)
         return await RecommendationsApi.store(organization, dashboard, params)
           .then(response => {
+            console.log('Respoinse', response)
             this.recommendation = response.data.data
             this.recommendations.unshift(response.data.data)
             this.isLoading = false
