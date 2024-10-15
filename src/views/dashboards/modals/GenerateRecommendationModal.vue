@@ -143,8 +143,8 @@ const accordionStates = reactive({
   accordion3: false,
 });
 
-const files = ref([])
 const localPrompt = ref(props.prompt)
+const localFiles = ref([])
 const isGenerateRecommendationModalOpen = inject('isGenerateRecommendationModalOpen')
 
 // Watch the prop value and update the ref whenever it changes
@@ -153,45 +153,51 @@ watch(() => props.prompt, (newValue) => {
 });
 
 function handleFileUploaded(file) {
-  files.value.push(file.id)
+  localFiles.value.push(file)
+
+  // recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, file.id)
 }
 
 async function generateRecommendation() {
+  let prompt = localPrompt.value
   let metadata = {}
-  let file_ids = []
 
-  // If we're on a recommendation page, use the metadata from the recommendation
-  if (route.params.recommendation) {
+  // We're regenerating an existing recommendation
+  if (route.params.recommendation) { 
     await recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
-      .then(response => {
-        // We're regenerating an existing recommendation
+      .then(response => { // use the prompt and metadata from the original recommendation
+        prompt = recommendationStore.recommendation.prompt
         metadata = recommendationStore.recommendation.metadata
-        file_ids = recommendationStore.recommendation.file_ids
       })
       
-  } else {
-    // We're generating a new recommendation
+  } else { // We're generating a new recommendation
     metadata = getMetadataForRecommendations(props.stepIndex)
   }
 
-  // Store the recommendation
+  // Store recommendation
   recommendationStore.store(route.params.organization, route.params.dashboard, {
-    // status: 'draft',
     step_index: props.stepIndex,
-    prompt: localPrompt.value,
+    prompt: prompt,
     metadata: metadata,
-    file_ids: files.value,
   }).then(() => {
-    // isGenerateRecommendationModalOpen.value = false
-    // router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
-    //   .then(() => {
-    //       window.location.reload()
-    //   })
+    // Create an array holding the ids of the files in localFiles
+    let fileIds = localFiles.value.map(file => file.id)
+
+    // Attach files
+    recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds)
+
+    setTimeout(() => {
+      isGenerateRecommendationModalOpen.value = false
+
+      router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
+        .then(() => {
+            window.location.reload()
+        })
+    }, 1000)
   })
 
   // Clear the prompt and files
   // localPrompt.value = ''
-  // files.value = []
 }
 
 function getMetadataForRecommendations(stepIndex) {

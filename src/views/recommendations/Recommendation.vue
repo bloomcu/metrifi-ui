@@ -40,7 +40,7 @@
       <!-- Container -->
       <div class="flex flex-grow h-0">
         <!-- Left Side (Collapsible) -->
-        <div :class="toggled ? 'w-1/3' : ''" class="pb-20 min-w-[36px] max-w-[520px] h-full overflow-y-auto bg-white">
+        <div :class="toggled ? 'w-1/3 min-w-[420px]' : 'min-w-[36px]'" class="pb-20  max-w-[520px] h-full overflow-y-auto bg-white">
           <div v-if="toggled" class="px-8 py-6">
             <!-- Prompt/recommendation toggler -->
             <div class="flex mb-6">
@@ -58,8 +58,26 @@
 
             <!-- Prompt -->
             <div v-if="show === 'prompt'">
-                <AppRichtext v-if="recommendationStore.recommendation.prompt" v-model="recommendationStore.recommendation.prompt" class="mb-2"/>
-                <p v-else>No prompt provided</p>
+              <!-- Files -->
+              <div v-if="recommendationStore.recommendation.files.length" class="bg-gray-50 rounded-lg border px-4 py-3 mb-6">
+                <p class="font-semibold mb-4">Files</p>
+                <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8">
+                  <li v-for="file in recommendationStore.recommendation.files" :key="file.id" class="relative">
+                    <div class="group relative block overflow-hidden rounded-lg bg-gray-100 border mb-2">
+                      <!-- Thumbnail -->
+                      <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-32 object-cover"/>
+                    </div>
+                    <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Prompt content -->
+              <div v-if="recommendationStore.recommendation.prompt" class="rounded-lg border px-4 py-3">
+              <p class="font-semibold mb-1">Prompt</p>
+              <AppRichtext v-model="recommendationStore.recommendation.prompt" class="mb-2"/>
+              </div>
+              <p v-else>No prompt provided</p>
             </div>
 
             <!-- Recommendation content -->
