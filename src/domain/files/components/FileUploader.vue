@@ -4,7 +4,7 @@
         <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full cursor-pointer bg-white hover:bg-gray-50">
             <div class="flex flex-col items-center justify-center text-center p-6">
                 <CloudArrowUpIcon class="h-7 w-7 mb-2 text-gray-500" />
-                <p class="text-xs text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-xs text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop .jpeg, .jpg, .png, .gif or .webp</p>
                 <!-- <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (max 1GB)</p> -->
             </div>
             <input multiple accept="*" @change="onInputChange($event)" id="dropzone-file" type="file" class="absolute inset-0 z-50 p-0 m-0 w-full h-full top-0 right-0 opacity-0 cursor-pointer" />

@@ -173,15 +173,16 @@ async function generateRecommendation() {
     metadata = getMetadataForRecommendations(props.stepIndex)
   }
 
+  // Create an array holding the ids of the files in localFiles
+  let fileIds = localFiles.value.map(file => file.id)
+
   // Store recommendation
   recommendationStore.store(route.params.organization, route.params.dashboard, {
     step_index: props.stepIndex,
     prompt: prompt,
+    file_ids: fileIds,
     metadata: metadata,
   }).then(() => {
-    // Create an array holding the ids of the files in localFiles
-    let fileIds = localFiles.value.map(file => file.id)
-
     // Attach files
     recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds)
 
