@@ -7,7 +7,14 @@
                 <p class="text-xs text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop .jpeg, .jpg, .png, .gif or .webp</p>
                 <!-- <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (max 1GB)</p> -->
             </div>
-            <input multiple accept="*" @change="onInputChange($event)" id="dropzone-file" type="file" class="absolute inset-0 z-50 p-0 m-0 w-full h-full top-0 right-0 opacity-0 cursor-pointer" />
+            <input 
+                multiple 
+                accept=".jpeg, .jpg, .png, .gif, .webp" 
+                @change="onInputChange($event)" 
+                id="dropzone-file" 
+                type="file" 
+                class="absolute inset-0 z-50 p-0 m-0 w-full h-full top-0 right-0 opacity-0 cursor-pointer"
+            />
         </label>
 
         <!-- Dropped files -->
