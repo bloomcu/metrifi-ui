@@ -20,12 +20,11 @@
     <div class="max-w-4xl mx-auto pt-16 pb-28">
       <div class="max-w-2xl mt-6 mb-10">
         <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:text-2xl">
-          Generate recommendation for step {{ stepIndex + 1 }}
+          Generate a recommendation for step {{ stepIndex + 1 }}
         </h3>
 
         <p class="text-gray-600">
-          Analyze your web page, compare it to top-performing comparisons, and get insights to optimize design, copy, and
-          interactivity for higher conversions and a better user experience.
+          MetriFi AI will use the information below to generate a new webpage for you.
         </p>
       </div>
 
@@ -35,16 +34,16 @@
           <div class="flex gap-2">
             <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
             <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
-            <h2 class="font-medium">UI analysis</h2>
+            <h2 class="font-medium">Compare to higher-converting pages</h2>
           </div>
 
-          <!-- <AppTooltipWrapper> -->
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-400">Included by default</span>
             <CheckCircleIcon class="h-7 w-7 text-green-600"/>
-            <!-- <AppTooltip text="Enabled" alignment="center" variant="success" /> -->
-          <!-- </AppTooltipWrapper> -->
+          </div>
         </div>
         <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
-          <p class="text-gray-600">The latest UI analysis will be used as context for the recommendation.</p>
+          <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
         </div>
       </div>
 
@@ -81,7 +80,7 @@
         </div>
         <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
           <div class="space-y-4">
-            <p class="text-gray-600">This information will be provided as context for the recommendation.</p>
+            <p class="text-gray-600">Add more details for MetriFi AI to consider while generating the recommendation.</p>
             <AppRichtext v-model="localPrompt" :editable="true"/>
 
             <!-- Upload files -->
