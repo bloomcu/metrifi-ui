@@ -63,16 +63,19 @@ function fileExists(checkId) {
 }
 
 function uploadFiles() {
-    return Promise.all(files.value.map((file) => {
-        file.status = 'Uploading'
+    // Only upload files that haven't been uploaded yet
+    const filesToUpload = files.value.filter(file => !file.status || file.status === 'Failed');
+    return Promise.all(filesToUpload.map((file) => {
+        file.status = 'Uploading';
 
-        fileStore.store(route.params.organization, file.file).then(file => {
-            file.status = 'Uploaded'
-            emit('fileUploaded', file)
+        fileStore.store(route.params.organization, file.file).then(uploadedFile => {
+            file.status = 'Uploaded';
+            emit('fileUploaded', uploadedFile);
         }).catch(error => {
-            console.error(error)
-            file.status = 'Failed'
-        })
-  }))
+            console.error(error);
+            file.status = 'Failed';
+        });
+    }));
 }
+
 </script>
