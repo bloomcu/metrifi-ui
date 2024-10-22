@@ -2,7 +2,7 @@
   <div v-if="editor" class="md-editor">
     <label v-if="label" class="inline-block text-sm font-medium leading-6 text-gray-900" :for="label">{{ label }}</label>
     
-    <div v-if="editable" class="bg-white border border-gray-300 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
+    <div v-if="editable" class="sticky top-[52px] z-10 bg-white border border-gray-300 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
       <menu class="flex flex-wrap">    
         <li>
           <button @click="editor.chain().focus().toggleBold().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-100 active:translate-y-px" type="button" title="Bold">
