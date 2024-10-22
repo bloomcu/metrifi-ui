@@ -5,7 +5,7 @@
     :open="isGenerateRecommendationModalOpen"
   >
     <!-- Sticky Top Bar -->
-    <div class="fixed top-0 left-0 w-full bg-white border-b border-gray-200">
+    <div class="z-10 fixed top-0 left-0 w-full bg-white border-b border-gray-200">
       <div class="flex items-center justify-between px-4 py-2">
         <AppButton @click="isGenerateRecommendationModalOpen = false" variant="tertiary" size="base">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
