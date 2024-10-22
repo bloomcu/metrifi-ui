@@ -83,7 +83,7 @@
             <!-- Recommendation content -->
             <div v-if="show === 'recommendation'">
               <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
-              <p v-else>Awaiting analysis</p>
+              <p v-else>Awaiting analysis...</p>
             </div>
           </div>
         </div>
