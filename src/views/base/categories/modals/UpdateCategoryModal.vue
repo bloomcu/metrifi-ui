@@ -4,11 +4,15 @@
     @closed="isUpdateCategoryModalOpen = false" 
     :open="isUpdateCategoryModalOpen"
   >
-    <form v-if="category" action="#" @submit.prevent="update(category.id, category)" class="flex flex-col gap-3">
-      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Update category</h3>
-      <AppInput v-model="category.title" label="Title" placeholder="Acme Credit Union" required />
-      <AppButton class="w-full">Update</AppButton>
-    </form>
+    <div class="p-6">
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Edit category</h3>
+
+      <form v-if="category" action="#" @submit.prevent="update(category.id, category)" class="flex flex-col gap-3">
+        <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Update category</h3>
+        <AppInput v-model="category.title" label="Title" placeholder="Acme Credit Union" required />
+        <AppButton class="w-full">Update</AppButton>
+      </form>
+    </div>
   </AppModal>
 </template>
 

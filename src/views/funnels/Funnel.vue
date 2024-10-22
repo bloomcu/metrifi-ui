@@ -1,7 +1,7 @@
 <template>
-  <LayoutDefault v-if="funnelStore.funnel"  width="full" class="min-h-screen flex flex-col">
+  <LayoutDefault v-if="funnelStore.funnel" width="full" class="min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="border-b py-3 flex items-center gap-3 justify-between">
+    <header class="border-b flex items-center gap-3 justify-between py-3 px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-2 grow">
         <!-- Back -->
         <AppButton :to="{name: 'funnels'}" variant="tertiary" size="base">
@@ -48,7 +48,7 @@
       <!-- Left: Funnel steps -->
       <nav class="min-w-[24rem] max-w-[24rem] border-r">
         <!-- Header -->
-        <div class="flex items-center justify-between border-b p-3">
+        <div class="flex items-center justify-between border-b py-3 pr-4 pl-4 sm:pl-6 lg:pl-8">
           <p>Steps</p>
 
           <div class="flex gap-2">
@@ -67,7 +67,7 @@
         </div>
 
         <!-- Steps -->
-        <div v-if="funnelStore.funnel.steps.length" class="p-3">
+        <div v-if="funnelStore.funnel.steps.length" class="py-3 pr-4 pl-4 sm:pl-6 lg:pl-8">
           <VueDraggableNext 
             :list="funnelStore.funnel.steps" 
             :animation="150"

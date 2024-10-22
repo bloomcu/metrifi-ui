@@ -9,10 +9,10 @@ export const useRecommendationStore = defineStore('recommendationStore', {
     }),
     
     actions: {
-      index(organization, dashboard, params) {
+      index(organizationSlug, dashboardId, params) {
         this.analyses = []
 
-        RecommendationsApi.index(organization, dashboard, params)
+        RecommendationsApi.index(organizationSlug, dashboardId, params)
           .then(response => {
             this.recommendations = response.data.data
           }).catch(error => {
@@ -20,11 +20,12 @@ export const useRecommendationStore = defineStore('recommendationStore', {
           })
       },
 
-      async store(organization, dashboard, params) {
+      async store(organizationSlug, dashboardId, params) {
         this.isLoading = true
-        
-        return await RecommendationsApi.store(organization, dashboard, params)
+
+        return await RecommendationsApi.store(organizationSlug, dashboardId, params)
           .then(response => {
+            console.log('Response from recommendation store', response)
             this.recommendation = response.data.data
             this.recommendations.unshift(response.data.data)
             this.isLoading = false
@@ -33,13 +34,23 @@ export const useRecommendationStore = defineStore('recommendationStore', {
           })
       },
       
-      async show(organization, dashboard, id) {
+      async show(organizationSlug, dashboardId, id) {
         this.isLoading = true
         
-        return await RecommendationsApi.show(organization, dashboard, id)
+        return await RecommendationsApi.show(organizationSlug, dashboardId, id)
           .then(response => {
             this.recommendation = response.data.data
             this.isLoading = false
+          })
+      },
+
+      async attachFile(organizationSlug, recommendationId, fileIds) {
+        return await RecommendationsApi.attachFile(organizationSlug, recommendationId, fileIds)
+          .then(response => {
+            console.log('Response', response.data.data)
+            // this.recommendation.files.unshift(response.data.data)
+          }).catch(error => {
+            console.log('Error', error.response.data)
           })
       },
     }

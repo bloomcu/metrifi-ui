@@ -42,9 +42,9 @@
         <DatePicker class="w-[400px]"/>
 
         <!-- Show notes -->
-        <AppButton @click="toggleNotes()" variant="tertiary" size="base" class="flex items-center gap-2">
+        <!-- <AppButton @click="toggleNotes()" variant="tertiary" size="base" class="flex items-center gap-2">
           Notes
-        </AppButton>
+        </AppButton> -->
 
         <!-- Run analysis -->
         <AppButton @click="storeAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">

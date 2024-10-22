@@ -8,7 +8,7 @@
       <div class="w-full sm:max-w-xs">
         <AppInput v-model="email" placeholder="email@example.com" required :errors="errorStore.errors.email" />
       </div>
-      <AppButton :loading="sendingInvite" class="self-start sm:w-auto sm:mt-0 sm:ml-3 mt-3 w-full">Send invite</AppButton>
+      <AppButton :loading="sendingInvite" class="self-stretch sm:w-auto sm:mt-0 sm:ml-3 mt-3 w-full">Send invite</AppButton>
     </form>
   </div>
 
