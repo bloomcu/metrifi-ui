@@ -81,9 +81,13 @@
         <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
           <div class="space-y-4">
             <p class="text-gray-600">Add more details for MetriFi AI to consider while generating the recommendation.</p>
-            <AppRichtext v-model="localPrompt" :editable="true"/>
+
+            <!-- Instructions -->
+            <p class="font-semibold mb-1">Instructions</p>
+            <AppRichtext v-model="localPrompt" :editable="true" class="bg-white"/>
 
             <!-- Upload files -->
+            <p class="font-semibold mb-1">Files</p>
             <FileUploader @fileUploaded="handleFileUploaded" class="mb-5"/>
 
             <!-- Files -->

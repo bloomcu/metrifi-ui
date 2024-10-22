@@ -40,14 +40,14 @@
       <!-- Container -->
       <div class="flex flex-grow h-0">
         <!-- Left Side (Collapsible) -->
-        <div :class="toggled ? 'w-1/3 min-w-[420px]' : 'min-w-[36px]'" class="pb-20  max-w-[520px] h-full overflow-y-auto bg-white">
+        <div :class="toggled ? 'w-1/3 min-w-[420px]' : 'min-w-[36px]'" class="pb-20 max-w-[560px] h-full overflow-y-auto bg-white">
           <div v-if="toggled" class="px-8 py-6">
-            <!-- Prompt/recommendation toggler -->
+            <!-- Instructions/recommendation toggler -->
             <div class="flex mb-6">
               <div class="p-1 border border-gray-300 rounded-lg flex space-x-1">
                   <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-indigo-100 text-indigo-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                       <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="4" cy="6" r="1"></circle><circle cx="4" cy="12" r="1"></circle><circle cx="4" cy="18" r="1"></circle></svg> -->
-                      <span class="text-sm">Prompt</span>
+                      <span class="text-sm">Instructions</span>
                   </button>
                   <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-indigo-100 text-indigo-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                       <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg> -->
@@ -56,32 +56,66 @@
               </div>
             </div>
 
-            <!-- Prompt -->
+            <!-- Instructions -->
             <div v-if="show === 'prompt'">
-              <!-- Files -->
-              <div v-if="recommendationStore.recommendation.files.length" class="bg-gray-50 rounded-lg border px-4 py-3 mb-6">
-                <p class="font-semibold mb-4">Files</p>
-                <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8">
-                  <li v-for="file in recommendationStore.recommendation.files" :key="file.id" class="relative">
-                    <div class="group relative block overflow-hidden rounded-lg bg-gray-100 border mb-2">
-                      <!-- Thumbnail -->
-                      <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-32 object-cover"/>
-                    </div>
-                    <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
-                  </li>
-                </ul>
+
+              <!-- Accordion 1 - UI analysis -->
+              <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
+                <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
+                  <div class="flex items-center gap-4">
+                    <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
+                    <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+                    <h2 class="font-medium">Compare to higher-converting pages</h2>
+                  </div>
+
+                  <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+                </div>
+                <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+                  <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
+                </div>
               </div>
 
-              <!-- Prompt content -->
-              <div v-if="recommendationStore.recommendation.prompt" class="rounded-lg border px-4 py-3">
-              <p class="font-semibold mb-1">Prompt</p>
-              <AppRichtext v-model="recommendationStore.recommendation.prompt" class="mb-2"/>
+              <!-- Accordion 3 - Additional information -->
+              <div class="mb-6 border border-gray-300 rounded-lg overflow-hidden">
+                <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion3')">
+                  <div class="flex gap-4">
+                    <MinusIcon v-if="accordionStates.accordion3" class="h-6 w-6 text-gray-600"/>
+                    <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+                    <h2 class="font-medium">Additional information</h2>
+                  </div>
+                  <CheckCircleIcon v-if="recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
+                </div>
+
+                <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+                  <div class="space-y-6">
+                    <p class="text-gray-600">More details for MetriFi AI to consider while generating the recommendation.</p>
+
+                    <!-- Prompt content -->
+                    <div v-if="recommendationStore.recommendation.prompt">
+                      <p class="font-semibold mb-1">Instructions</p>
+                      <AppRichtext v-model="recommendationStore.recommendation.prompt" class="mb-2"/>
+                    </div>
+                    <p v-else>No instructions provided</p>
+
+                    <!-- Files -->
+                    <div v-if="recommendationStore.recommendation.files.length">
+                      <p class="font-semibold mb-4">Files</p>
+                      <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8">
+                        <li v-for="file in recommendationStore.recommendation.files" :key="file.id" class="relative">
+                          <div class="group relative block overflow-hidden rounded-lg bg-gray-100 border mb-2">
+                            <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-32 object-cover"/>
+                          </div>
+                          <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p v-else>No prompt provided</p>
             </div>
 
             <!-- Recommendation content -->
-            <div v-if="show === 'recommendation'">
+            <div v-if="show === 'recommendation'" class="border border-gray-300 rounded-lg p-4">
               <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
               <p v-else>Awaiting analysis...</p>
             </div>
@@ -126,10 +160,10 @@
 
 <script setup>
 import moment from "moment"
-import { ref, watch, provide, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, watch, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
-import { ArrowLeftIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
+import { ArrowLeftIcon, ChevronLeftIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import Prototype from '@/views/recommendations/components/Prototype.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
@@ -148,9 +182,23 @@ const isGenerateRecommendationModalOpen = ref(false)
 const recommendationStepIndex = ref(null)
 const recommendationPrompt = ref('')
 
+// Tabs state
 const hasShownAnalysisToUser = ref(false)
 const toggled = ref(true)
 const show = ref('prompt')
+
+// Accordions state
+const accordionStates = reactive({
+  accordion1: false,
+  accordion2: false,
+  accordion3: false,
+});
+
+const toggleAccordion = (accordionName) => {
+  if (accordionStates.hasOwnProperty(accordionName)) {
+    accordionStates[accordionName] = !accordionStates[accordionName];
+  }
+};
 
 provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
