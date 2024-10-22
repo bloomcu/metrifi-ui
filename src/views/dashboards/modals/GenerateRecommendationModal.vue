@@ -28,6 +28,8 @@
         </p>
       </div>
 
+      <p class="font-semibold mb-3">Instructions</p>
+
       <!-- Accordion 1 - UI analysis -->
       <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
         <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
