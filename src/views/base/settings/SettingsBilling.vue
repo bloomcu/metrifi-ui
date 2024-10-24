@@ -17,21 +17,21 @@
           <p class="text-sm text-gray-500">$0/month</p>
         </AppCard>
 
-        <AppCard>
+        <!-- <AppCard>
           <div class="flex justify-between">
             <p class="text-gray-900">Basic</p>
             <AppButton @click="selectPlan('price_1QDAmYIoK0qLKtdjC0Z8TKYl')" size="sm">Upgrade to Basic</AppButton>
           </div>
           <p class="text-sm text-gray-500">$99/month</p>
-        </AppCard>
+        </AppCard> -->
 
-        <AppCard>
+        <!-- <AppCard>
           <div class="flex justify-between">
             <p class="text-gray-900">Pro</p>
             <AppButton @click="selectPlan('price_1QDAmvIoK0qLKtdjBtml4pRo')" size="sm">Upgrade to Pro</AppButton>
           </div>
           <p class="text-sm text-gray-500">$299/month</p>
-        </AppCard>
+        </AppCard> -->
       </div>
     </div>
 
@@ -116,13 +116,10 @@
 <script setup>
 import moment from "moment"
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { stripeApi } from '@/domain/stripe/api/stripeApi'
-// import AddressFieldGroup from '@/app/components/base/forms/AddressFieldGroup.vue'
 
-
-const router = useRouter()
 const route = useRoute()
 
 // import the stripe api
@@ -134,7 +131,6 @@ const selectPlan = (price) => {
   })
     .then(response => {
       window.location.assign(response.data.redirect_url)
-      // console.log('Response', response)
     }).catch(error => {
       console.log('Error', error.response.data)
     })
