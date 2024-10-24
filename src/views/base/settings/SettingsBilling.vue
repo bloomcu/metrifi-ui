@@ -9,21 +9,30 @@
         </div>
       </div>
 
-      <AppCard v-if="organizationStore.organization">
-        <div class="flex justify-between">
-          <p class="text-gray-900">Free Plan</p>
-          <!-- <p class="text-gray-900">{{ organizationStore.organization.plan.title }}</p> -->
-          <!-- <AppButton :to="{ name: 'subscription-swap' }">Change plan</AppButton> -->
-        </div>
-        <p class="text-sm text-gray-500">$0/month</p>
-        <!-- <p class="text-sm text-gray-500">
-          {{ organizationStore.organization.plan.price }}{{ organizationStore.organization.plan.interval ? ' / ' + organizationStore.organization.plan.interval : '/month' }}
-        </p> -->
-        <!-- <p v-if="organizationStore.organization.ends_at" class="text-sm text-indigo-600">
-          Your subscription ends {{ moment(organizationStore.organization.ends_at).fromNow() }} 
-          on {{ moment(organizationStore.organization.ends_at).format('LL') }}
-        </p> -->
-      </AppCard>
+      <div v-if="organizationStore.organization" class="flex flex-col gap-3">
+        <AppCard>
+          <div class="flex justify-between">
+            <p class="text-gray-900">Free</p>
+          </div>
+          <p class="text-sm text-gray-500">$0/month</p>
+        </AppCard>
+
+        <AppCard>
+          <div class="flex justify-between">
+            <p class="text-gray-900">Basic</p>
+            <AppButton @click="selectPlan('price_1QDAmYIoK0qLKtdjC0Z8TKYl')" size="sm">Upgrade to Basic</AppButton>
+          </div>
+          <p class="text-sm text-gray-500">$99/month</p>
+        </AppCard>
+
+        <AppCard>
+          <div class="flex justify-between">
+            <p class="text-gray-900">Pro</p>
+            <AppButton @click="selectPlan('price_1QDAmvIoK0qLKtdjBtml4pRo')" size="sm">Upgrade to Pro</AppButton>
+          </div>
+          <p class="text-sm text-gray-500">$299/month</p>
+        </AppCard>
+      </div>
     </div>
 
     <!-- Billing -->
@@ -107,10 +116,29 @@
 <script setup>
 import moment from "moment"
 import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
-import AddressFieldGroup from '@/app/components/base/forms/AddressFieldGroup.vue'
+import { stripeApi } from '@/domain/stripe/api/stripeApi'
+// import AddressFieldGroup from '@/app/components/base/forms/AddressFieldGroup.vue'
 
+
+const router = useRouter()
+const route = useRoute()
+
+// import the stripe api
 const organizationStore = useOrganizationStore()
+
+const selectPlan = (price) => {
+  stripeApi.test(route.params.organization, {
+    price: price
+  })
+    .then(response => {
+      window.location.assign(response.data.redirect_url)
+      // console.log('Response', response)
+    }).catch(error => {
+      console.log('Error', error.response.data)
+    })
+}
 
 const payments = [
   { date: 'November 27, 2022', amount: '$64.00' },
