@@ -1,5 +1,11 @@
 <template>
   <div class="max-w-2xl divide-y divide-gray-200">
+    <!-- Processing successful subscription -->
+    <div v-if="showLoader" class="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm flex flex-col items-center justify-center z-50 space-y-4">
+      <div class="w-16 h-16 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
+      <p class="text-white text-xl">Processing subscription</p>
+    </div>
+
     <!-- Subscription -->
     <div class="pb-12">
       <div class="flex justify-between mb-6">
@@ -17,13 +23,13 @@
           <p class="text-sm text-gray-500">$0/month</p>
         </AppCard>
 
-        <!-- <AppCard>
+        <AppCard>
           <div class="flex justify-between">
             <p class="text-gray-900">Basic</p>
             <AppButton @click="selectPlan('price_1QDAmYIoK0qLKtdjC0Z8TKYl')" size="sm">Upgrade to Basic</AppButton>
           </div>
           <p class="text-sm text-gray-500">$99/month</p>
-        </AppCard> -->
+        </AppCard>
 
         <!-- <AppCard>
           <div class="flex justify-between">
@@ -114,20 +120,20 @@
 </template>
 
 <script setup>
-import moment from "moment"
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { stripeApi } from '@/domain/stripe/api/stripeApi'
 
 const route = useRoute()
-
-// import the stripe api
+const router = useRouter()
 const organizationStore = useOrganizationStore()
 
-const selectPlan = (price) => {
+const showLoader = computed(() => route.query.success === 'true')
+
+const selectPlan = (price_id) => {
   stripeApi.test(route.params.organization, {
-    price: price
+    price_id: price_id
   })
     .then(response => {
       window.location.assign(response.data.redirect_url)
@@ -136,19 +142,16 @@ const selectPlan = (price) => {
     })
 }
 
-const payments = [
-  { date: 'November 27, 2022', amount: '$64.00' },
-  { date: 'October 27, 2022', amount: '$64.00' },
-]
-
-const address = ref({
-  address1: '',
-  address2: '',
-  city: '',
-  state: '',
-  postal_code: '',
-  country: '',
-  lat: '',
-  lng: '',
+onMounted(() => {
+  // Check if the loader should be shown
+  if (showLoader.value) {
+    setTimeout(() => {
+      // Remove `success` from the query parameters
+      router.replace({ query: { ...route.query, success: undefined } }).then(() => {
+        // Refresh the page after updating the URL
+        location.reload()
+      })
+    }, 4000) // Wait for 4 seconds
+  }
 })
 </script>
