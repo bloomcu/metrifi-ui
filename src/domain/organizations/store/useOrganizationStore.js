@@ -1,8 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { organizationApi as OrganizationApi } from '@/domain/base/organizations/api/organizationApi'
 
-import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
-
 export const useOrganizationStore = defineStore('organizationStore', {
     state: () => ({
         organizations: [],
@@ -16,11 +14,11 @@ export const useOrganizationStore = defineStore('organizationStore', {
     getters: {},
     
     actions: {
-      async show(slug) {
+      async show(organization_slug) {
         this.isLoading = true
         this.organization = null
         
-        await OrganizationApi.show(slug)
+        await OrganizationApi.show(organization_slug)
           .then(response => {
             this.organization = response.data.data
             this.isLoading = false
@@ -37,12 +35,12 @@ export const useOrganizationStore = defineStore('organizationStore', {
           })
       },
       
-      async destroy(slug) {
+      async destroy(organization_slug) {
         this.isLoading = true
         
-        await OrganizationApi.destroy(slug)
+        await OrganizationApi.destroy(organization_slug)
           .then(response => {
-            this.organizations = this.organizations.filter((organization) => organization.slug !== slug)
+            this.organizations = this.organizations.filter((organization) => organization.slug !== organization_slug)
             this.isLoading = false
           })
       },

@@ -138,25 +138,24 @@
             
             <!-- Bottom / user -->
             <li class="mt-auto">
-              <!-- Usage -->
-              <div class="p-3 mb-3 hover:bg-gray-100 rounded-md cursor-pointer -mx-3">
-                <div class="flex justify-between items-baseline mb-2">
-                  <h2 class="text-sm text-gray-900">Recommendations</h2>
-                  <p class="text-sm">
-                    2 <span class="text-gray-500">/ 10</span>
+              <!-- Subscription -->
+              <RouterLink v-if="organizationSubscriptionStore.subscription" :to="{name: 'settingsBilling', params: { organization: organizationStore.organization.slug}}" tag="div" >
+                <div class="rounded-md cursor-pointer p-3 mb-3 -mx-3 hover:bg-gray-100">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h2 class="text-sm text-gray-900">Recommendations</h2>
+                    <p class="text-sm">
+                      {{ organizationSubscriptionStore.subscription.recommendations_used }} <span class="text-gray-500">/ {{ organizationSubscriptionStore.subscription.plan.limits.recommendations }}</span>
+                    </p>
+                  </div>
+                  <div class="w-full h-1 bg-gray-200 rounded-full mb-2">
+                    <div class="h-full bg-indigo-600 rounded-full" :style="{ width: organizationSubscriptionStore.percentageOfUsage + '%' }"></div>
+                  </div>
+                  <p class="text-xs text-gray-500">
+                    <span class="font-semibold text-indigo-600">{{ organizationSubscriptionStore.subscription.plan.title }} plan</span> 
+                    renews on {{ moment(organizationSubscriptionStore.subscription.renews_at).format('MMM DD') }}
                   </p>
                 </div>
-                <div class="w-full h-1 bg-gray-200 rounded-full mb-2">
-                  <div class="h-full bg-indigo-600 rounded-full" :style="{ width: 10 + '%' }"></div>
-                </div>
-                <p v-if="organizationStore.organization.subscribed" class="text-xs text-gray-500">
-                  <span class="font-semibold text-indigo-600">Starter plan</span> 
-                  resets {{ moment(organizationStore.organization.subscription_renews_at).format('MMM DD, Y') }}
-                </p>
-                <p v-else class="text-xs text-gray-500">
-                  <span class="font-semibold">Free plan</span> 
-                  resets {{ moment().add(1, 'months').startOf('month').format('MMM DD, Y') }}</p>
-              </div>
+              </RouterLink>
 
               <!-- User -->
               <Menu as="div" class="-mx-2 space-y-1">
@@ -194,15 +193,19 @@
 
 <script setup>
 import moment from "moment"
-import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
+import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 
 import Avatar from '@/app/components/base/avatars/Avatar.vue'
 
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const organizationStore = useOrganizationStore()
+const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 
 const emit = defineEmits(['close'])
 
@@ -216,6 +219,10 @@ const props = defineProps({
 function close() {
   emit('close')
 }
+
+onMounted(() => {
+  organizationSubscriptionStore.show(route.params.organization)
+})
 
 import {
   Dialog,

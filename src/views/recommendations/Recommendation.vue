@@ -162,6 +162,7 @@
 import moment from "moment"
 import { ref, reactive, watch, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { ArrowLeftIcon, ChevronLeftIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
@@ -172,6 +173,7 @@ import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecom
 const router = useRouter()
 const route = useRoute()
 
+const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const recommendationStore = useRecommendationStore()
 
 const isLoading = ref(false)
@@ -300,6 +302,9 @@ onMounted(() => {
   tailwindScript = document.createElement('script')
   tailwindScript.src = 'https://cdn.tailwindcss.com'
   tailwind.value.appendChild(tailwindScript)
+
+  // Hydrate the organization subscription store
+  organizationSubscriptionStore.show(route.params.organization)
 })
 
 onUnmounted(() => {
