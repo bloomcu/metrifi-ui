@@ -207,8 +207,7 @@ provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
-  { status: 'anonymizer_in_progress', text: 'Analyzing UI', completed: false },
-  { status: 'analyzer_in_progress', text: 'Analyzing UI', completed: false },
+  { status: 'ui_analyzer', text: 'Analyzing UI', completed: false },
   { status: 'synthesizer_in_progress', text: 'Synthesizing prompt', completed: false },
   { status: 'anonymizer_in_progress', text: 'Reviewing analysis', completed: false },
   { status: 'content_writer_in_progress', text: 'Writing new content', completed: false },
