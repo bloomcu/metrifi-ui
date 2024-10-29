@@ -150,7 +150,7 @@
                   <div class="h-full bg-indigo-600 rounded-full" :style="{ width: 10 + '%' }"></div>
                 </div>
                 <p v-if="organizationStore.organization.subscribed" class="text-xs text-gray-500">
-                  <span class="font-semibold text-indigo-600">Basic plan</span> 
+                  <span class="font-semibold text-indigo-600">Starter plan</span> 
                   resets {{ moment(organizationStore.organization.subscription_renews_at).format('MMM DD, Y') }}
                 </p>
                 <p v-else class="text-xs text-gray-500">
