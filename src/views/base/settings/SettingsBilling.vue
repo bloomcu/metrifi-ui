@@ -26,7 +26,7 @@
         <AppCard>
           <div class="flex justify-between">
             <p class="text-gray-900">Basic</p>
-            <AppButton @click="selectPlan('price_1QDAmYIoK0qLKtdjC0Z8TKYl')" size="sm">Upgrade to Basic</AppButton>
+            <AppButton @click="selectPlan('price_1QF8fLRB5mhzFf19UAWKZhkx')" size="sm">Upgrade to Basic</AppButton>
           </div>
           <p class="text-sm text-gray-500">$99/month</p>
         </AppCard>
