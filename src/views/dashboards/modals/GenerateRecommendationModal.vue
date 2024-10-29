@@ -214,7 +214,9 @@ async function generateRecommendation() {
     metadata: metadata,
   }).then(() => {
     // Attach files
-    recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds)
+    if (fileIds.length > 0) {
+      recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds)
+    }
 
     setTimeout(() => {
       isGenerateRecommendationModalOpen.value = false
