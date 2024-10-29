@@ -143,7 +143,7 @@
                 <div class="flex justify-between items-baseline mb-2">
                   <h2 class="text-sm text-gray-900">Recommendations</h2>
                   <p class="text-sm">
-                    2 <span class="text-gray-500">/ 20</span>
+                    2 <span class="text-gray-500">/ 10</span>
                   </p>
                 </div>
                 <div class="w-full h-1 bg-gray-200 rounded-full mb-2">
