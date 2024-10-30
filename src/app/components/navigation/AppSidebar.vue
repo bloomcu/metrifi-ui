@@ -151,8 +151,8 @@
                     <div class="h-full bg-indigo-600 rounded-full" :style="{ width: Math.min(organizationSubscriptionStore.percentageOfUsage, 100) + '%' }"></div>
                   </div>
                   <p class="text-xs text-gray-500">
-                    <span class="font-semibold text-indigo-600">{{ organizationSubscriptionStore.subscription.plan.title }}</span> 
-                    renews on {{ moment(organizationSubscriptionStore.subscription.renews_at).format('MMM DD') }}
+                    <span class="font-semibold text-indigo-600">{{ organizationSubscriptionStore.subscription.plan.title }}</span><br>
+                    renews on {{ moment(organizationSubscriptionStore.subscription.renews_at).format('MMM DD, YYYY') }}
                   </p>
                 </div>
               </RouterLink>
