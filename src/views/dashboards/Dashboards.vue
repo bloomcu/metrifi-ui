@@ -24,7 +24,7 @@
         </nav>
 
         <!-- Total assets -->
-        <div v-if="organizationStore.organization && organizationStore.organization.assets" class=" w-2/3 border rounded-lg overflow-hidden">
+        <div v-if="organizationStore.organization && organizationStore.organization.assets" class="bg-white w-2/3 border rounded-lg overflow-hidden">
           <div v-if="activeAnalysisType === 'median_analysis'" class="flex flex-1">
             <div class="flex flex-1 flex-col gap-0.5 px-4 py-3">
                 <p>Total assets</p>
@@ -63,7 +63,7 @@
               <div class="flex space-x-4">
                 <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Step opportunity
-                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                  <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'bofi_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
@@ -71,7 +71,7 @@
 
                 <button @click="setActiveSort('subject_funnel_performance')" :class="[activeSort == 'subject_funnel_performance' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Conversion rate
-                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                  <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'subject_funnel_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
@@ -79,7 +79,7 @@
 
                 <button @click="setActiveSort('subject_funnel_users')" :class="[activeSort == 'subject_funnel_users' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap pr-1 py-4 text-sm font-medium']">
                   Users
-                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                  <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'subject_funnel_users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
@@ -87,7 +87,7 @@
 
                 <button @click="setActiveSort('bofi_asset_change')" :class="[activeSort == 'bofi_asset_change' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Potential assets
-                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                  <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'bofi_asset_change'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
@@ -97,7 +97,7 @@
               <div class="flex space-x-4">
                 <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Name
-                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                  <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'name' " :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
@@ -105,7 +105,7 @@
 
                 <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Last modified
-                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                  <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'updated_at'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
