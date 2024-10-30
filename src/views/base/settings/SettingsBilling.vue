@@ -72,14 +72,12 @@
         <button v-if="tier.title == 'Free' && organizationSubscriptionStore.subscription.plan.title !== 'Free'" @click="cancelPlan()" class="w-full text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Downgrade to Free
         </button>
-        <button v-if="tier.title == 'Starter' && organizationSubscriptionStore.subscription.plan.title !== 'Starter'" @click="selectPlan('price_1QF8fLRB5mhzFf19UAWKZhkx')" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <button v-if="tier.title == 'Starter' && organizationSubscriptionStore.subscription.plan.title !== 'Starter'" @click="selectPlan(tier.price_id[frequency.value])" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Upgrade to Starter
         </button>
         <a v-if="tier.title == 'Growth' && organizationSubscriptionStore.subscription.plan.title !== 'Growth'" href="https://forms.gle/bFphAEUc7UBhkroH8" target="_blank" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Upgrade to Growth
         </a>
-
-        
       </div>
     </div>
 
@@ -181,13 +179,14 @@ const frequencies = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
   { value: 'annually', label: 'Annually', priceSuffix: '/year' },
 ]
+
 const tiers = [
   {
     title: 'Free',
     slug: 'free',
     href: '#',
     price: { monthly: '$0', annually: '$0' },
-    // description: 'The essentials to provide your best work for clients.',
+    price_id: { monthly: '', annually: '' },
     features: [
       'Recommendations: 2 / mo', 
       'Funnels: unlimited', 
@@ -202,7 +201,8 @@ const tiers = [
     slug: 'starter',
     href: '#',
     price: { monthly: '$99', annually: '$990' },
-    // description: 'A plan that scales with your rapidly growing business.',
+    price_id: { monthly: 'price_1QF8fLRB5mhzFf19UAWKZhkx', annually: 'price_1QFi54RB5mhzFf19jxiFvBQG' }, // Staging
+    // price_id: { monthly: 'price_1QDAmYIoK0qLKtdjC0Z8TKYl', annually: 'price_1QFiAtIoK0qLKtdjZHFs4KwO' }, // Local
     features: [
       'Recommendations: 10 / mo', 
       'Funnels: unlimited', 
@@ -217,7 +217,7 @@ const tiers = [
     slug: 'growth',
     href: '#',
     price: { monthly: 'Contact us', annually: 'Contact us' },
-    // description: 'Dedicated support and infrastructure for your company.',
+    price_id: { monthly: '', annually: '' },
     features: [
       'Recommendations: custom', 
       'Funnels: unlimited', 
