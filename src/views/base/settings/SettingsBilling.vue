@@ -41,14 +41,14 @@
       </div>
     </div> -->
 
-    <AppCard class="mb-12">
+    <AppCard v-if="organizationSubscriptionStore.subscription && !organizationSubscriptionStore.subscription.plan.title.startsWith('Free')" class="mb-12">
       <h2 class="text-base font-medium leading-6 text-gray-900">Billing portal</h2>
       <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p>
       <AppButton @click="visitBillingPortal()" variant="secondary" class="mt-6">Visit billing portal</AppButton>
     </AppCard>
 
-    <AppCard class="mb-12">
-      <h2 class="text-base font-medium leading-6 text-gray-900">Plan</h2>
+    <AppCard v-if="organizationSubscriptionStore.subscription"  class="mb-12">
+      <h2 class="text-base font-medium leading-6 text-gray-900">Plans</h2>
       <p class="mt-2 text-sm text-gray-500">You are currently subscribed to <span class="font-medium text-gray-800">{{ organizationSubscriptionStore.subscription.plan.title }}</span>.</p>
 
       <fieldset class="mt-8" aria-label="Payment frequency">
@@ -59,7 +59,7 @@
         </RadioGroup>
       </fieldset>
       
-      <div v-if="organizationSubscriptionStore.subscription" class="isolate mt-6 grid grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+      <div class="isolate mt-6 grid grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-3">
         <div v-for="tier in tiers" :key="tier.slug" :class="[organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
           <div class="flex items-center justify-between gap-x-4">
             <h3 :id="tier.slug" class="text-gray-900 text-lg font-semibold">{{ tier.title }}</h3>
