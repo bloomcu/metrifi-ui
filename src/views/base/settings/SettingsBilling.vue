@@ -52,11 +52,12 @@
     </div>
     
     <div v-if="organizationSubscriptionStore.subscription" class="isolate mt-6 grid grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-      <div v-for="tier in tiers" :key="tier.slug" :class="[organizationSubscriptionStore.subscription.plan.title == tier.title ? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
+      <div v-for="tier in tiers" :key="tier.slug" :class="[organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
         <div class="flex items-center justify-between gap-x-4">
           <h3 :id="tier.slug" class="text-gray-900 text-lg font-semibold">{{ tier.title }}</h3>
-          <p v-if="organizationSubscriptionStore.subscription.plan.title == tier.title" class="rounded-full bg-indigo-600/10 px-2.5 py-1 text-xs/5 font-semibold text-indigo-600">Current plan</p>
+          <p v-if="organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)" class="rounded-full bg-indigo-600/10 px-2.5 py-1 text-xs/5 font-semibold text-indigo-600">Current plan</p>
         </div>
+
         <p class="mt-6 flex items-baseline gap-x-1">
           <span class="text-3xl font-semibold tracking-tight text-gray-900">{{ tier.price[frequency.value] }}</span>
           <span v-if="tier.title !== 'Growth'" class="text-sm/6 font-semibold text-gray-600">{{ frequency.priceSuffix }}</span>

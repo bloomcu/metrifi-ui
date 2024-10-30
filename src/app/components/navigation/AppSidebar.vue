@@ -139,15 +139,15 @@
             <!-- Bottom / user -->
             <li class="mt-auto">
               <!-- Subscription -->
-              <RouterLink v-if="organizationSubscriptionStore.subscription" :to="{name: 'settingsBilling', params: { organization: organizationStore.organization.slug}}" tag="div" >
-                <div class="rounded-md cursor-pointer p-3 mb-3 -mx-3 hover:bg-gray-100">
-                  <div class="flex justify-between items-baseline mb-2">
-                    <h2 class="text-sm text-gray-900">Remaining recommendations</h2>
+              <RouterLink v-if="organizationSubscriptionStore.subscription" :to="{name: 'settingsBilling', params: { organization: organizationStore.organization.slug}}">
+                <div class="rounded-md cursor-pointer p-3 mb-3 -mx-3 border hover:bg-gray-100">
+                  <div class="flex justify-between items-end mb-3">
+                    <h2 class="text-sm text-gray-900 leading-tight">Remaining recommendations</h2>
                     <p class="text-sm text-gray-500 whitespace-nowrap">
                       {{ organizationSubscriptionStore.recommendationsRemaining }} of {{ organizationSubscriptionStore.subscription.plan.limits.recommendations }}
                     </p>
                   </div>
-                  <div class="w-full h-1 bg-gray-200 rounded-full mb-2">
+                  <div class="w-full h-1 bg-gray-200 rounded-full mb-3">
                     <div 
                       class="h-full bg-indigo-600 rounded-full" 
                       :style="{ width: organizationSubscriptionStore.percentageOfUsageRemaining + '%' }">
