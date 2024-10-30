@@ -69,13 +69,13 @@
           </li>
         </ul>
 
-        <button v-if="tier.title == 'Free' && organizationSubscriptionStore.subscription.plan.title !== 'Free'" @click="cancelPlan()" class="w-full text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <button v-if="tier.title == 'Free' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Free')" @click="cancelPlan()" class="w-full text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Downgrade to Free
         </button>
-        <button v-if="tier.title == 'Starter' && organizationSubscriptionStore.subscription.plan.title !== 'Starter'" @click="selectPlan(tier.price_id[frequency.value])" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <button v-if="tier.title == 'Starter' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Starter')" @click="selectPlan(tier.price_id[frequency.value])" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Upgrade to Starter
         </button>
-        <a v-if="tier.title == 'Growth' && organizationSubscriptionStore.subscription.plan.title !== 'Growth'" href="https://forms.gle/bFphAEUc7UBhkroH8" target="_blank" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <a v-if="tier.title == 'Growth' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Growth')" href="https://forms.gle/bFphAEUc7UBhkroH8" target="_blank" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Upgrade to Growth
         </a>
       </div>

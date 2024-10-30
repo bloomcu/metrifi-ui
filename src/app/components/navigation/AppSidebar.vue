@@ -142,13 +142,16 @@
               <RouterLink v-if="organizationSubscriptionStore.subscription" :to="{name: 'settingsBilling', params: { organization: organizationStore.organization.slug}}" tag="div" >
                 <div class="rounded-md cursor-pointer p-3 mb-3 -mx-3 hover:bg-gray-100">
                   <div class="flex justify-between items-baseline mb-2">
-                    <h2 class="text-sm text-gray-900">Recommendations</h2>
-                    <p class="text-sm">
-                      {{ organizationSubscriptionStore.subscription.recommendations_used }} <span class="text-gray-500">/ {{ organizationSubscriptionStore.subscription.plan.limits.recommendations }}</span>
+                    <h2 class="text-sm text-gray-900">Remaining recommendations</h2>
+                    <p class="text-sm text-gray-500 whitespace-nowrap">
+                      {{ organizationSubscriptionStore.recommendationsRemaining }} of {{ organizationSubscriptionStore.subscription.plan.limits.recommendations }}
                     </p>
                   </div>
                   <div class="w-full h-1 bg-gray-200 rounded-full mb-2">
-                    <div class="h-full bg-indigo-600 rounded-full" :style="{ width: Math.min(organizationSubscriptionStore.percentageOfUsage, 100) + '%' }"></div>
+                    <div 
+                      class="h-full bg-indigo-600 rounded-full" 
+                      :style="{ width: organizationSubscriptionStore.percentageOfUsageRemaining + '%' }">
+                    </div>
                   </div>
                   <p class="text-xs text-gray-500">
                     <span class="font-semibold text-indigo-600">{{ organizationSubscriptionStore.subscription.plan.title }}</span><br>

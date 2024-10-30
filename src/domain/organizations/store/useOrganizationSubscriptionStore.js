@@ -8,10 +8,15 @@ export const useOrganizationSubscriptionStore = defineStore('organizationSubscri
     }),
 
     getters: {
-      percentageOfUsage: (state) => 
-        state.subscription?.recommendations_used && state.subscription?.plan?.limits?.recommendations
-          ? (state.subscription.recommendations_used / state.subscription.plan.limits.recommendations) * 100
+      recommendationsRemaining: (state) => 
+        state.subscription?.plan?.limits?.recommendations != null && state.subscription.recommendations_used != null
+          ? Math.max(state.subscription.plan.limits.recommendations - state.subscription.recommendations_used, 0)
           : 0,
+
+      percentageOfUsageRemaining: (state) => 
+        state.subscription?.recommendations_used != null && state.subscription?.plan?.limits?.recommendations
+          ? Math.max(100 - (state.subscription.recommendations_used / state.subscription.plan.limits.recommendations) * 100, 0)
+          : 100,
     
       limitExceeded: (state) => 
         state.subscription?.recommendations_used && state.subscription?.plan?.limits?.recommendations
