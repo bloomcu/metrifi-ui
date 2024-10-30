@@ -148,7 +148,7 @@
                     </p>
                   </div>
                   <div class="w-full h-1 bg-gray-200 rounded-full mb-2">
-                    <div class="h-full bg-indigo-600 rounded-full" :style="{ width: organizationSubscriptionStore.percentageOfUsage + '%' }"></div>
+                    <div class="h-full bg-indigo-600 rounded-full" :style="{ width: Math.min(organizationSubscriptionStore.percentageOfUsage, 100) + '%' }"></div>
                   </div>
                   <p class="text-xs text-gray-500">
                     <span class="font-semibold text-indigo-600">{{ organizationSubscriptionStore.subscription.plan.title }} plan</span> 
