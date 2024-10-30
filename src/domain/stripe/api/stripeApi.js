@@ -5,6 +5,10 @@ const stripeApi = {
       return HttpClient.post(`/${organizationSlug}/stripe/checkout`, params)
     },
 
+    billing(organizationSlug) {
+      return HttpClient.post(`/${organizationSlug}/stripe/billing`)
+    },
+
     cancel(organizationSlug) {
       return HttpClient.post(`/${organizationSlug}/stripe/cancel`)
     },
