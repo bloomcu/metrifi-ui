@@ -7,7 +7,7 @@
           <h2 class="mt-8 text-3xl font-medium leading-9 text-gray-900 tracking-tight sm:text-4xl sm:truncate">Sign in</h2>
           <!-- <p class="mt-3 leading-6 text-gray-500">
             Don't have an account?
-            <RouterLink :to="{ name: 'register' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Register</RouterLink>
+            <RouterLink :to="{ name: 'register' }" class="font-medium leading-6 text-violet-600 hover:text-violet-500">Register</RouterLink>
           </p> -->
         </div>
 
@@ -25,7 +25,7 @@
             
             <p class="mt-6 leading-6 text-gray-500">
               Forgot password?
-              <RouterLink :to="{ name: 'forgotPassword' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Reset password</RouterLink>
+              <RouterLink :to="{ name: 'forgotPassword' }" class="font-medium leading-6 text-violet-600 hover:text-violet-500">Reset password</RouterLink>
             </p>
           </form>
         </div>
@@ -55,11 +55,11 @@
       <div class="text-center mt-4">
         <p class="text-sm text-gray-500">
           Forgot password?
-          <RouterLink :to="{ name: 'forgotPassword' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Reset password</RouterLink>
+          <RouterLink :to="{ name: 'forgotPassword' }" class="font-medium leading-6 text-violet-600 hover:text-violet-500">Reset password</RouterLink>
         </p>
         <p class="text-sm text-gray-500">
           Don't have an account? 
-          <RouterLink :to="{ name: 'register' }" class="font-medium leading-6 text-indigo-600 hover:text-indigo-500">Register</RouterLink>
+          <RouterLink :to="{ name: 'register' }" class="font-medium leading-6 text-violet-600 hover:text-violet-500">Register</RouterLink>
         </p>
       </div>
     </form>

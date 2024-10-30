@@ -5,7 +5,7 @@
       <select 
         @input="updateValue($event.target.value)" 
         :value="modelValue" 
-        :class="errors ? 'ring-red-300 placeholder:text-red-300 hover:ring-red-600 focus:ring-red-500' : 'ring-gray-300 placeholder:text-gray-400 hover:ring-indigo-600 focus:ring-indigo-600'"
+        :class="errors ? 'ring-red-300 placeholder:text-red-300 hover:ring-red-600 focus:ring-red-500' : 'ring-gray-300 placeholder:text-gray-400 hover:ring-violet-600 focus:ring-violet-600'"
         class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 hover:ring-2 focus:ring-2 sm:text-sm sm:leading-6"
       >
         <option disabled value="">{{ placeholder }}</option>

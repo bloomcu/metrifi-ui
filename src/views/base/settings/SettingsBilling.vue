@@ -54,16 +54,16 @@
       <fieldset class="mt-8" aria-label="Payment frequency">
         <RadioGroup v-model="frequency" class="w-fit grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-sm font-semibold ring-1 ring-inset ring-gray-200">
           <RadioGroupOption as="template" v-for="option in frequencies" :key="option.value" :value="option" v-slot="{ checked }">
-            <div :class="[checked ? 'bg-indigo-600 text-white' : 'text-gray-500', 'cursor-pointer rounded-full px-3 py-2']">{{ option.label }}</div>
+            <div :class="[checked ? 'bg-violet-600 text-white' : 'text-gray-500', 'cursor-pointer rounded-full px-3 py-2']">{{ option.label }}</div>
           </RadioGroupOption>
         </RadioGroup>
       </fieldset>
       
       <div class="isolate mt-6 grid grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-        <div v-for="tier in tiers" :key="tier.slug" :class="[organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
+        <div v-for="tier in tiers" :key="tier.slug" :class="[organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)? 'ring-2 ring-violet-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
           <div class="flex items-center justify-between gap-x-4">
             <h3 :id="tier.slug" class="text-gray-900 text-lg font-semibold">{{ tier.title }}</h3>
-            <p v-if="organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)" class="rounded-full bg-indigo-600/10 px-2.5 py-1 text-xs/5 font-semibold text-indigo-600">Current plan</p>
+            <p v-if="organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)" class="rounded-full bg-violet-600/10 px-2.5 py-1 text-xs/5 font-semibold text-violet-600">Current plan</p>
           </div>
 
           <p class="mt-6 flex items-baseline gap-x-1">
@@ -73,18 +73,18 @@
 
           <ul role="list" class="mt-6 space-y-3 text-sm/6 text-gray-600">
             <li v-for="feature in tier.features" :key="feature" class="flex gap-x-2">
-              <CheckIcon class="h-6 w-5 flex-none text-indigo-600" aria-hidden="true" />
+              <CheckIcon class="h-6 w-5 flex-none text-violet-600" aria-hidden="true" />
               {{ feature }}
             </li>
           </ul>
 
-          <button v-if="tier.title == 'Free' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Free')" @click="cancelPlan()" class="w-full text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <button v-if="tier.title == 'Free' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Free')" @click="cancelPlan()" class="w-full text-violet-600 ring-1 ring-inset ring-violet-200 hover:ring-violet-300 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Downgrade to Free
           </button>
-          <button v-if="tier.title == 'Starter' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Starter')" @click="selectPlan(tier.price_id[frequency.value])" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <button v-if="tier.title == 'Starter' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Starter')" @click="selectPlan(tier.price_id[frequency.value])" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to Starter
           </button>
-          <a v-if="tier.title == 'Growth' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Growth')" href="https://forms.gle/bFphAEUc7UBhkroH8" target="_blank" class="w-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 mt-8 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <a v-if="tier.title == 'Growth' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Growth')" href="https://forms.gle/bFphAEUc7UBhkroH8" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to Growth
           </a>
         </div>
@@ -149,7 +149,7 @@
             <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-0">{{ payment.date }}</td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ payment.amount }}</td>
             <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-              <a href="#" class="text-indigo-600 hover:text-indigo-900">Download invoice</a>
+              <a href="#" class="text-violet-600 hover:text-violet-700">Download invoice</a>
             </td>
           </tr>
         </tbody>

@@ -27,8 +27,8 @@
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
-                          <RouterLink :to="item.to" :class="[item.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium']">
-                            <component :is="item.icon" :class="[item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600', 'h-6 w-6 shrink-0']" aria-hidden="true" />
+                          <RouterLink :to="item.to" :class="[item.current ? 'bg-gray-50 text-violet-600' : 'text-gray-700 hover:text-violet-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium']">
+                            <component :is="item.icon" :class="[item.current ? 'text-violet-600' : 'text-gray-400 group-hover:text-violet-600', 'h-6 w-6 shrink-0']" aria-hidden="true" />
                             {{ item.name }}
                           </RouterLink>
                         </li>
@@ -38,16 +38,16 @@
                       <div class="text-xs font-medium leading-6 text-gray-400">Your teams</div>
                       <ul role="list" class="-mx-2 mt-2 space-y-1">
                         <li v-for="team in teams" :key="team.name">
-                          <a :href="team.href" :class="[team.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium']">
-                            <span :class="[team.current ? 'text-indigo-600 border-indigo-600' : 'text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{ team.initial }}</span>
+                          <a :href="team.href" :class="[team.current ? 'bg-gray-50 text-violet-600' : 'text-gray-700 hover:text-violet-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium']">
+                            <span :class="[team.current ? 'text-violet-600 border-violet-600' : 'text-gray-400 border-gray-200 group-hover:border-violet-600 group-hover:text-violet-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{ team.initial }}</span>
                             <span class="truncate">{{ team.name }}</span>
                           </a>
                         </li>
                       </ul>
                     </li> -->
                     <!-- <li class="mt-auto">
-                      <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-medium leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
-                        <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
+                      <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-medium leading-6 text-gray-700 hover:bg-gray-50 hover:text-violet-600">
+                        <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-violet-600" aria-hidden="true" />
                         Settings
                       </a>
                     </li> -->
@@ -84,8 +84,8 @@
                     <div class="px-1 py-1">
                       <div class="px-4 text-xs leading-6 text-gray-400">Organizations</div>
                       <MenuItem v-slot="{ active }" v-for="team in teams" :key="team.name">
-                        <a :href="team.href" class="flex gap-x-3 px-4 py-2 rounded-md text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
-                          <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600">{{ team.initial }}</span>
+                        <a :href="team.href" class="flex gap-x-3 px-4 py-2 rounded-md text-sm leading-6 font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50">
+                          <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white text-gray-400 border-gray-200 group-hover:border-violet-600 group-hover:text-violet-600">{{ team.initial }}</span>
                           <span class="truncate">{{ team.name }}</span>
                         </a>
                       </MenuItem>
@@ -116,8 +116,8 @@
             <li v-if="!organizationStore.organization.onboarding.hideOnboarding" class="border-b pb-3 mb-3">
               <ul role="list" class="-mx-2 space-y-1">
                 <li>
-                  <RouterLink :to="{name: 'welcome'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
-                    <HomeIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
+                  <RouterLink :to="{name: 'welcome'}" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50">
+                    <HomeIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-violet-600" aria-hidden="true" />
                     Welcome
                   </RouterLink>
                 </li>
@@ -128,8 +128,8 @@
             <li>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
-                  <RouterLink :to="item.to" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
-                    <component :is="item.icon" class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
+                  <RouterLink :to="item.to" class="group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium text-gray-700 hover:text-violet-600 hover:bg-gray-50">
+                    <component :is="item.icon" class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-violet-600" aria-hidden="true" />
                     {{ item.name }}
                   </RouterLink>
                 </li>
@@ -149,12 +149,12 @@
                   </div>
                   <div class="w-full h-1 bg-gray-200 rounded-full mb-3">
                     <div 
-                      class="h-full bg-indigo-600 rounded-full" 
+                      class="h-full bg-violet-600 rounded-full" 
                       :style="{ width: organizationSubscriptionStore.percentageOfUsageRemaining + '%' }">
                     </div>
                   </div>
                   <p class="text-xs text-gray-500">
-                    <span class="font-semibold text-indigo-600">{{ organizationSubscriptionStore.subscription.plan.title }}</span><br>
+                    <span class="font-semibold text-violet-600">{{ organizationSubscriptionStore.subscription.plan.title }}</span><br>
                     renews on {{ moment(organizationSubscriptionStore.subscription.renews_at).format('MMM DD, YYYY') }}
                   </p>
                 </div>
@@ -267,10 +267,10 @@ const teams = [
 
 <style lang="scss" scoped>
 .router-link-active {
-  @apply bg-gray-50 text-indigo-600
+  @apply bg-gray-50 text-violet-600
 }
 
 .router-link-active svg {
-  @apply text-indigo-600
+  @apply text-violet-600
 }
 </style>

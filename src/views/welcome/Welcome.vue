@@ -1,7 +1,7 @@
 <template>
   <LayoutWithSidebar>
     <!-- Complete -->
-    <div v-if="organizationStore.organization.onboarding['onboardingComplete'] == true" class="rounded-md bg-indigo-50 p-4 mb-8">
+    <div v-if="organizationStore.organization.onboarding['onboardingComplete'] == true" class="rounded-md bg-violet-50 p-4 mb-8">
       <h2 class="mb-2 text-3xl font-medium text-gray-900">You're all done! Nice work!</h2>
       <p class="text-lg text-gray-700 mb-4">You can unhide this Welcome screen at any time by going to Settings.</p>
       <AppButton @click="hideOnboarding()">Hide Welcome screen</AppButton>
@@ -20,15 +20,15 @@
           <li 
             v-for="(step, index) in steps" 
             :key="step.id" 
-            :class="step.current ? 'bg-indigo-50 hover:bg-indigo-100' : 'bg-white hover:bg-gray-50'" 
+            :class="step.current ? 'bg-violet-50 hover:bg-violet-100' : 'bg-white hover:bg-gray-50'" 
             class="relative flex space-x-3 rounded-lg p-3 cursor-pointer"
             @click="selectStep(step.id)"
           >
             <div v-if="organizationStore.organization.onboarding[step.id] === 'complete'" class="h-8 w-8 rounded-full flex items-center justify-center bg-emerald-500 text-white">
               <CheckIcon class="h-5 w-5" aria-hidden="true" />
             </div>
-            <div v-else class="h-8 w-8 rounded-full flex items-center justify-center bg-white border-2 border-gray-300 text-indigo-600">
-              <span class="text-indigo-600">{{ index + 1 }}</span>
+            <div v-else class="h-8 w-8 rounded-full flex items-center justify-center bg-white border-2 border-gray-300 text-violet-600">
+              <span class="text-violet-600">{{ index + 1 }}</span>
             </div>
             <div class="flex items-center min-w-0 font-medium">
               <p v-if="step.current" class="text-gray-900">{{ step.title }}</p>

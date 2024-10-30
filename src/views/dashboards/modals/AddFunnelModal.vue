@@ -10,7 +10,7 @@
 
       <!-- Show/hide organizations -->
       <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2 pr-16">
-        <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+        <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-600" />
         <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
           Show organizations
         </label>
@@ -33,7 +33,7 @@
               <th scope="col" class="py-3.5 pl-4 sm:pl-6">
                 <input 
                   @click="selectAllFunnels()" 
-                  class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" 
+                  class="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-600" 
                   type="checkbox" 
                 />
               </th>
@@ -73,7 +73,7 @@
                   <input 
                     @select="selectFunnel(funnel.id)" 
                     :checked="selected.includes(funnel.id)" 
-                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" 
+                    class="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-600" 
                     type="checkbox" 
                   />
                 </td>
@@ -101,7 +101,7 @@
 
       <!-- Empty state: No funnels -->
       <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-        <ChartBarIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
+        <ChartBarIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
         <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels found</h2>
         <p class="mt-1 text-gray-400">Try another search term.</p>
       </div>

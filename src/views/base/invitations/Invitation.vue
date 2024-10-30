@@ -5,7 +5,7 @@
           <p class="text-lg leading-8 text-gray-500">Invitation</p>
 
           <h1 class="mt-4 text-4xl font-medium tracking-tight text-gray-900 sm:text-5xl">
-            You've been invited to the <span class="text-indigo-600">{{ invitationStore.invitation.organization.title }}</span> team.
+            You've been invited to the <span class="text-violet-600">{{ invitationStore.invitation.organization.title }}</span> team.
           </h1>
           
           <div class="mt-8 flex items-center">
@@ -30,9 +30,9 @@
               <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
               <div class="flex items-center py-2">
-                <input v-model="inputs.accept_terms" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+                <input v-model="inputs.accept_terms" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-600" />
                 <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
-                  I agree to MetriFi's <a href="https://metrifi.com/legal/terms-of-service/" target="_blank" class="text-indigo-600 hover:underline">Terms of Service</a> and <a href="https://metrifi.com/legal/privacy-policy/" target="_blank" class="text-indigo-600 hover:underline">Privacy Policy</a>
+                  I agree to MetriFi's <a href="https://metrifi.com/legal/terms-of-service/" target="_blank" class="text-violet-600 hover:underline">Terms of Service</a> and <a href="https://metrifi.com/legal/privacy-policy/" target="_blank" class="text-violet-600 hover:underline">Privacy Policy</a>
                 </label>
               </div>
               

@@ -7,8 +7,8 @@
       <button 
         v-for="option in options" 
         @click="updateValue(option.value)"
-        :class="option.value == modelValue ? 'bg-gray-50 text-indigo-600' : ''" 
-        class="w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+        :class="option.value == modelValue ? 'bg-gray-50 text-violet-600' : ''" 
+        class="w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-violet-600"
       >
         {{ option.label }}
       </button>

@@ -2,7 +2,7 @@
 <div>
   <div class="sm:hidden">
     <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
-    <select id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+    <select id="tabs" name="tabs" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-violet-600 sm:text-sm sm:leading-6">
       <option v-for="tab in tabs" :key="tab.name" :selected="tab.current">{{ tab.name }}</option>
     </select>
   </div>
@@ -31,10 +31,10 @@ const tabs = [
 
 <style lang="scss" scoped>
 .router-link-active {
-  @apply border-indigo-500 text-indigo-600
+  @apply border-violet-500 text-violet-600
 }
 
 .router-link-active svg {
-  @apply text-indigo-600
+  @apply text-violet-600
 }
 </style>

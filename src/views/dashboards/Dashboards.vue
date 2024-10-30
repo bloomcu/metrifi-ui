@@ -18,8 +18,8 @@
         <!-- Analysis type tabs -->
         <nav class="flex justify-between mb-4">
           <div class="flex space-x-6">
-            <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Average</button>
-            <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Maximum</button>
+            <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-violet-500 text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Average</button>
+            <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-violet-500 text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Maximum</button>
           </div>
         </nav>
 
@@ -30,7 +30,7 @@
                 <p>Total assets</p>
                 <span class="text-2xl font-medium">{{ organizationStore.organization.assets.median.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
             </div>
-            <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
+            <div class="flex flex-1 flex-col gap-0.5 text-violet-600 border-l px-4 py-3">
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.median.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
@@ -44,7 +44,7 @@
                 <p>Total assets</p>
                 <span class="text-2xl font-medium">{{ organizationStore.organization.assets.max.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
             </div>
-            <div class="flex flex-1 flex-col gap-0.5 text-indigo-600 border-l px-4 py-3">
+            <div class="flex flex-1 flex-col gap-0.5 text-violet-600 border-l px-4 py-3">
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.max.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
@@ -61,53 +61,53 @@
           <div class="hidden sm:block">
             <nav class="-mb-px flex justify-between">
               <div class="flex space-x-4">
-                <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Step opportunity
-                  <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
-                    <ChevronUpIcon v-if="activeSort == 'bofi_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
+                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                    <ChevronUpIcon v-if="activeSort == 'bofi_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
 
-                <button @click="setActiveSort('subject_funnel_performance')" :class="[activeSort == 'subject_funnel_performance' ? 'text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('subject_funnel_performance')" :class="[activeSort == 'subject_funnel_performance' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Conversion rate
-                  <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
-                    <ChevronUpIcon v-if="activeSort == 'subject_funnel_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
+                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                    <ChevronUpIcon v-if="activeSort == 'subject_funnel_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
 
-                <button @click="setActiveSort('subject_funnel_users')" :class="[activeSort == 'subject_funnel_users' ? 'text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap pr-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('subject_funnel_users')" :class="[activeSort == 'subject_funnel_users' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap pr-1 py-4 text-sm font-medium']">
                   Users
-                  <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
-                    <ChevronUpIcon v-if="activeSort == 'subject_funnel_users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
+                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                    <ChevronUpIcon v-if="activeSort == 'subject_funnel_users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
 
-                <button @click="setActiveSort('bofi_asset_change')" :class="[activeSort == 'bofi_asset_change' ? 'text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('bofi_asset_change')" :class="[activeSort == 'bofi_asset_change' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Potential assets
-                  <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
-                    <ChevronUpIcon v-if="activeSort == 'bofi_asset_change'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
+                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                    <ChevronUpIcon v-if="activeSort == 'bofi_asset_change'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
               </div>
 
               <div class="flex space-x-4">
-                <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Name
-                  <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
-                    <ChevronUpIcon v-if="activeSort == 'name' " :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
+                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                    <ChevronUpIcon v-if="activeSort == 'name' " :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
 
-                <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Last modified
-                  <span class="inline-flex ml-2 rounded bg-indigo-100 __hover:bg-gray-200">
-                    <ChevronUpIcon v-if="activeSort == 'updated_at'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-indigo-900 h-5 w-5" aria-hidden="true" />
-                    <MinusIcon v-else class="text-indigo-300 h-5 w-5" aria-hidden="true" />
+                  <span class="inline-flex ml-2 rounded bg-violet-100 __hover:bg-gray-200">
+                    <ChevronUpIcon v-if="activeSort == 'updated_at'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
               </div>
@@ -134,7 +134,7 @@
           <!-- Card header -->
           <div :class="dashboard.median_analysis && dashboard.max_analysis ? 'border-b pb-4' : ''" class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <ChartBarIcon class="w-5 text-indigo-600"/>
+              <ChartBarIcon class="w-5 text-violet-600"/>
               <h3 class="text-xl font-medium text-gray-900">{{ dashboard.name }}</h3>
             </div>
             
@@ -215,9 +215,9 @@
     </div>
 
     <!-- Empty state: No dashboards -->
-    <div v-else @click="storeNewDashboard()" class="flex flex-col items-center justify-center border border-indigo-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-indigo-50">
-      <Squares2X2Icon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-indigo-600">Create a dashboard</h2>
+    <div v-else @click="storeNewDashboard()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
+      <Squares2X2Icon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-violet-600">Create a dashboard</h2>
     </div>
   </LayoutWithSidebar>
 </template>
