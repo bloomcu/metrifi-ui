@@ -121,7 +121,7 @@ const plans = {
       title: 'Growth',
       group: 'growth',
       frequency: 'monthly',
-      href: 'https://forms.gle/bFphAEUc7UBhkroH8',
+      href: 'https://metrifi.com/pricing/growth-plan/',
       price: 'Contact us',
       priceSuffix: '',
       price_id: '',
@@ -170,7 +170,7 @@ const plans = {
     {
       title: 'Growth',
       group: 'growth',
-      href: 'https://forms.gle/bFphAEUc7UBhkroH8',
+      href: 'https://metrifi.com/pricing/growth-plan/',
       price: 'Contact us',
       priceSuffix: '',
       price_id: '',
