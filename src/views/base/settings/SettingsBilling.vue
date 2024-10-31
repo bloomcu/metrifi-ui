@@ -17,6 +17,7 @@
     <h2 class="text-base font-medium leading-6 text-gray-900">Plans</h2>
     <p class="mt-2 text-sm text-gray-500">You are currently subscribed to <span class="font-medium text-gray-800">{{ organizationSubscriptionStore.subscription.plan.title }}</span>.</p>
 
+    <!-- Frequency toggle -->
     <fieldset class="mt-8" aria-label="Payment frequency">
       <RadioGroup v-model="frequency" class="w-fit grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-sm font-semibold ring-1 ring-inset ring-gray-200">
         <RadioGroupOption as="template" v-for="option in frequencies" :key="option.value" :value="option" v-slot="{ checked }">
@@ -25,16 +26,17 @@
       </RadioGroup>
     </fieldset>
     
+    <!-- Plans -->
     <div class="isolate mt-6 grid grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-      <div v-for="tier in tiers" :key="tier.slug" :class="[organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)? 'ring-2 ring-violet-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
+      <div v-for="(tier, index) in plans[frequency.value]" :key="index" :class="[organizationSubscriptionStore.subscription.plan.title == tier.title ? 'ring-2 ring-violet-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
         <div class="flex items-center justify-between gap-x-4">
-          <h3 :id="tier.slug" class="text-gray-900 text-lg font-semibold">{{ tier.title }}</h3>
-          <p v-if="organizationSubscriptionStore.subscription.plan.title.startsWith(tier.title)" class="rounded-full bg-violet-600/10 px-2.5 py-1 text-xs/5 font-semibold text-violet-600">Current plan</p>
+          <h3 class="text-gray-900 text-lg font-semibold">{{ tier.title }}</h3>
+          <p v-if="organizationSubscriptionStore.subscription.plan.title == tier.title" class="rounded-full bg-violet-600/10 px-2.5 py-1 text-xs/5 font-semibold text-violet-600">Current plan</p>
         </div>
 
         <p class="mt-6 flex items-baseline gap-x-1">
-          <span class="text-3xl font-semibold tracking-tight text-gray-900">{{ tier.price[frequency.value] }}</span>
-          <span v-if="tier.title !== 'Growth'" class="text-sm/6 font-semibold text-gray-600">{{ frequency.priceSuffix }}</span>
+          <span class="text-3xl font-semibold tracking-tight text-gray-900">{{ tier.price }}</span>
+          <span class="text-sm/6 font-semibold text-gray-600">{{ tier.priceSuffix }}</span>
         </p>
 
         <ul role="list" class="mt-6 space-y-3 text-sm/6 text-gray-600">
@@ -44,14 +46,14 @@
           </li>
         </ul>
 
-        <button v-if="tier.title == 'Free Plan' && !organizationSubscriptionStore.subscription.plan.title !== 'Free Plan'" @click="cancelPlan()" class="w-full text-violet-600 ring-1 ring-inset ring-violet-200 hover:ring-violet-300 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
-          Downgrade to Free
+        <button v-if="tier.group == 'free' && organizationSubscriptionStore.subscription.plan.title !== 'Free Plan'" @click="cancelPlan()" class="w-full text-violet-600 ring-1 ring-inset ring-violet-200 hover:ring-violet-300 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+          Downgrade to {{ tier.title }}
         </button>
-        <button v-if="tier.title == 'Starter' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Starter')" @click="selectPlan(tier.price_id[frequency.value])" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
-          Upgrade to Starter
+        <button v-if="tier.group == 'starter' && organizationSubscriptionStore.subscription.plan.title !== tier.title" @click="selectPlan(tier.price_id)" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+          Upgrade to {{ tier.title }}
         </button>
-        <a v-if="tier.title == 'Growth' && !organizationSubscriptionStore.subscription.plan.title.startsWith('Growth')" href="https://forms.gle/bFphAEUc7UBhkroH8" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
-          Upgrade to Growth
+        <a v-if="tier.href" :href="tier.href" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+          Upgrade to {{ tier.title }}
         </a>
       </div>
     </div>
@@ -75,60 +77,113 @@ const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const showLoader = computed(() => route.query.success === 'true')
 
 const frequencies = [
-  { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
-  { value: 'annually', label: 'Annually', priceSuffix: '/year' },
-]
-
-const tiers = [
-  {
-    title: 'Free Plan',
-    slug: 'free',
-    href: '#',
-    price: { monthly: '$0', annually: '$0' },
-    price_id: { monthly: '', annually: '' },
-    features: [
-      'Recommendations: 2 / mo', 
-      'Funnels: unlimited', 
-      'Comparisons: unlimited', 
-      'Users: unlimited',
-      'File retention: 1 year'
-    ],
-    mostPopular: false,
-  },
-  {
-    title: 'Starter',
-    slug: 'starter',
-    href: '#',
-    price: { monthly: '$99', annually: '$990' },
-    price_id: { monthly: 'price_1QF8fLRB5mhzFf19UAWKZhkx', annually: 'price_1QFi54RB5mhzFf19jxiFvBQG' }, // Staging
-    // price_id: { monthly: 'price_1QDAmYIoK0qLKtdjC0Z8TKYl', annually: 'price_1QFiAtIoK0qLKtdjZHFs4KwO' }, // Local
-    features: [
-      'Recommendations: 10 / mo', 
-      'Funnels: unlimited', 
-      'Comparisons: unlimited', 
-      'Users: unlimited',
-      'File retention: 1 year'
-    ],
-    mostPopular: true,
-  },
-  {
-    title: 'Growth',
-    slug: 'growth',
-    href: '#',
-    price: { monthly: 'Contact us', annually: 'Contact us' },
-    price_id: { monthly: '', annually: '' },
-    features: [
-      'Recommendations: custom', 
-      'Funnels: unlimited', 
-      'Comparisons: unlimited', 
-      'Users: unlimited',
-      'File retention: 1 year'
-    ],
-    mostPopular: false,
-  },
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'yearly', label: 'Yearly' },
 ]
 
 const frequency = ref(frequencies[0])
+
+const plans = {
+  monthly: [
+    {
+      title: 'Free Plan',
+      group: 'free',
+      href: null,
+      price: '$0',
+      priceSuffix: '',
+      price_id: '',
+      features: [
+        'Recommendations: 2 / mo', 
+        'Funnels: unlimited', 
+        'Comparisons: unlimited', 
+        'Users: unlimited',
+        'File retention: 1 year'
+      ],
+    },
+    {
+      title: 'Starter Monthly',
+      group: 'starter',
+      frequency: 'monthly',
+      href: null,
+      price: '$99',
+      priceSuffix: '/ month',
+      price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
+      // price_id: 'price_1QDAmYIoK0qLKtdjC0Z8TKYl', // Local
+      features: [
+        'Recommendations: 10 / mo', 
+        'Funnels: unlimited', 
+        'Comparisons: unlimited', 
+        'Users: unlimited',
+        'File retention: 1 year'
+      ],
+    },
+    {
+      title: 'Growth',
+      group: 'growth',
+      frequency: 'monthly',
+      href: 'https://forms.gle/bFphAEUc7UBhkroH8',
+      price: 'Contact us',
+      priceSuffix: '',
+      price_id: '',
+      features: [
+        'Recommendations: custom', 
+        'Funnels: unlimited', 
+        'Comparisons: unlimited', 
+        'Users: unlimited',
+        'File retention: 1 year'
+      ],
+    },
+  ],
+  
+  yearly: [
+    {
+      title: 'Free Plan',
+      group: 'free',
+      href: null,
+      price: '$0',
+      priceSuffix: '',
+      price_id: '',
+      features: [
+        'Recommendations: 2 / mo', 
+        'Funnels: unlimited', 
+        'Comparisons: unlimited', 
+        'Users: unlimited',
+        'File retention: 1 year'
+      ],
+    },
+    {
+      title: 'Starter Yearly',
+      group: 'starter',
+      href: null,
+      price: '$990',
+      priceSuffix: '/ year',
+      price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
+      // price_id: 'price_1QFiAtIoK0qLKtdjZHFs4KwO', // Local
+      features: [
+        'Recommendations: 10 / mo', 
+        'Funnels: unlimited', 
+        'Comparisons: unlimited', 
+        'Users: unlimited',
+        'File retention: 1 year'
+      ],
+    },
+    {
+      title: 'Growth',
+      group: 'growth',
+      href: 'https://forms.gle/bFphAEUc7UBhkroH8',
+      price: 'Contact us',
+      priceSuffix: '',
+      price_id: '',
+      features: [
+        'Recommendations: custom', 
+        'Funnels: unlimited', 
+        'Comparisons: unlimited', 
+        'Users: unlimited',
+        'File retention: 1 year'
+      ],
+    },
+  ]
+}
 
 const visitBillingPortal = () => {
   stripeApi.billing(route.params.organization)
