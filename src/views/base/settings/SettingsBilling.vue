@@ -165,7 +165,7 @@ const plans = {
       price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
       // price_id: 'price_1QFiAtIoK0qLKtdjZHFs4KwO', // Local
       features: [
-        'Recommendations: 10 / mo', 
+        'Recommendations: 120 / yr', 
         'Funnels: unlimited', 
         'Comparisons: unlimited', 
         'Users: unlimited',
