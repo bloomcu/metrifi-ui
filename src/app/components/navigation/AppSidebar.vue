@@ -153,9 +153,16 @@
                       :style="{ width: organizationSubscriptionStore.percentageOfUsageRemaining + '%' }">
                     </div>
                   </div>
-                  <p class="text-xs text-gray-500">
+                  <!-- Plan will cancel -->
+                  <p v-if="organizationSubscriptionStore.subscription.ends_at" class="text-xs text-gray-500">
                     <span class="font-semibold text-violet-600">{{ organizationSubscriptionStore.subscription.plan.title }}</span><br>
-                    renews on {{ moment(organizationSubscriptionStore.subscription.renews_at).format('MMM DD, YYYY') }}
+                    Ends on {{ moment(organizationSubscriptionStore.subscription.ends_at).format('MMM DD, YYYY') }}
+                  </p>
+
+                  <!-- Plan will renew -->
+                  <p v-else class="text-xs text-gray-500">
+                    <span class="font-semibold text-violet-600">{{ organizationSubscriptionStore.subscription.plan.title }}</span><br>
+                    Renews on {{ moment(organizationSubscriptionStore.subscription.renews_at).format('MMM DD, YYYY') }}
                   </p>
                 </div>
               </RouterLink>

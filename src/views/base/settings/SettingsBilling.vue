@@ -6,16 +6,37 @@
   </div>
 
   <!-- Billing portal -->
-  <AppCard v-if="organizationSubscriptionStore.subscription && !organizationSubscriptionStore.subscription.plan.title.startsWith('Free')" class="mb-12">
+  <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12">
     <h2 class="text-base font-medium leading-6 text-gray-900">Billing portal</h2>
     <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p>
-    <AppButton @click="visitBillingPortal()" variant="secondary" class="mt-6">Visit billing portal</AppButton>
+    <div class="flex gap-3 mt-6">
+      <AppButton @click="visitBillingPortal()" variant="secondary">Visit billing portal</AppButton>
+      <AppButton @click="updateSubscription()" variant="secondary">Change subscription plan</AppButton>
+    </div>
   </AppCard>
 
   <!-- Plans -->
   <AppCard v-if="organizationSubscriptionStore.subscription"  class="mb-12">
     <h2 class="text-base font-medium leading-6 text-gray-900">Plans</h2>
-    <p class="mt-2 text-sm text-gray-500">You are currently subscribed to <span class="font-medium text-gray-800">{{ organizationSubscriptionStore.subscription.plan.title }}</span>.</p>
+
+    <!-- Plan is canceling message -->
+    <div v-if="organizationSubscriptionStore.subscription.ends_at" class="rounded-md bg-yellow-50 mt-2 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            Your subscription to <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.title }}</span> will end on {{ moment(organizationSubscriptionStore.subscription.ends_at).format('MMM DD, YYYY') }}.
+            {{ ' ' }}
+            <a @click="visitBillingPortal()" href="" class=" text-yellow-700 underline hover:text-yellow-600">Renew subscription</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plan is active -->
+    <p v-else class="mt-2 text-sm text-gray-500">You are currently subscribed to <span class="font-bold text-violet-700">{{ organizationSubscriptionStore.subscription.plan.title }}</span>.</p>
 
     <!-- Frequency toggle -->
     <fieldset class="mt-8" aria-label="Payment frequency">
@@ -49,26 +70,35 @@
           </li>
         </ul>
 
-        <button v-if="tier.group == 'free' && organizationSubscriptionStore.subscription.plan.title !== 'Free Plan'" @click="cancelPlan()" class="w-full text-violet-600 ring-1 ring-inset ring-violet-200 hover:ring-violet-300 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
-          Downgrade to {{ tier.title }}
-        </button>
-        <button v-if="tier.group == 'starter' && organizationSubscriptionStore.subscription.plan.title !== tier.title" @click="selectPlan(tier.price_id)" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
-          Upgrade to {{ tier.title }}
-        </button>
-        <a v-if="tier.href" :href="tier.href" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
-          Upgrade to {{ tier.title }}
-        </a>
+        <template v-if="!organizationSubscriptionStore.subscription.subscribed">
+          <button v-if="tier.group == 'starter'" @click="selectPlan(tier.price_id)" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+            Upgrade to {{ tier.title }}
+          </button>
+          <a v-if="tier.href" :href="tier.href" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+            Upgrade to {{ tier.title }}
+          </a>
+        </template>
 
-        <p v-if="tier.title === 'Starter Yearly'" :class="invisible" class="text-center text-sm/6 text-violet-600 mt-2">Subscribe annually and get 2 months free</p>
+        <p v-if="tier.title === 'Starter Yearly'" class="text-center text-sm/6 text-violet-600 mt-6">Subscribe annually and get 2 months free</p>
       </div>
     </div>
   </AppCard>
+
+  <!-- Cancel -->
+  <!-- <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12"> -->
+    <!-- <h2 class="text-base font-medium leading-6 text-gray-900">Danger</h2> -->
+    <!-- <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p> -->
+    <!-- <div class="flex gap-3 _mt-6"> -->
+      <AppButton v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" @click="cancelSubscription()" variant="link">Cancel subscription</AppButton>
+    <!-- </div> -->
+  <!-- </AppCard> -->
 </template>
 
 <script setup>
+import moment from "moment"
 import { ref, computed, onMounted } from 'vue'
 import { RadioGroup, RadioGroupOption } from '@headlessui/vue'
-import { CheckIcon } from '@heroicons/vue/20/solid'
+import { ExclamationTriangleIcon, CheckIcon } from '@heroicons/vue/20/solid'
 import { useRoute, useRouter } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
@@ -113,7 +143,7 @@ const plans = {
       price: '$99',
       priceSuffix: '/ month',
       price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
-      // price_id: 'price_1QDAmYIoK0qLKtdjC0Z8TKYl', // Local
+      // price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
       features: [
         'Recommendations: 10 / mo', 
         'Funnels: unlimited', 
@@ -163,7 +193,7 @@ const plans = {
       price: '$990',
       priceSuffix: '/ year',
       price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
-      // price_id: 'price_1QFiAtIoK0qLKtdjZHFs4KwO', // Local
+      // price_id: 'price_1QG5qjIoK0qLKtdjoxTpaNrH', // Local
       features: [
         'Recommendations: 120 / yr', 
         'Funnels: unlimited', 
@@ -191,7 +221,7 @@ const plans = {
 }
 
 const visitBillingPortal = () => {
-  stripeApi.billing(route.params.organization)
+  stripeApi.visitBillingPortal(route.params.organization)
     .then(response => {
       window.location.assign(response.data.redirect_url)
     }).catch(error => {
@@ -210,10 +240,20 @@ const selectPlan = (price_id) => {
     })
 }
 
-const cancelPlan = () => {
+
+const updateSubscription = () => {
+  stripeApi.update(route.params.organization)
+    .then(response => {
+      window.location.assign(response.data.redirect_url)
+    }).catch(error => {
+      console.log('Error', error.response.data)
+    })
+}
+
+const cancelSubscription = () => {
   stripeApi.cancel(route.params.organization)
     .then(response => {
-      location.reload()
+      window.location.assign(response.data.redirect_url)
     }).catch(error => {
       console.log('Error', error.response.data)
     })

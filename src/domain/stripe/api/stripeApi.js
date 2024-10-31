@@ -5,8 +5,12 @@ const stripeApi = {
       return HttpClient.post(`/${organizationSlug}/stripe/checkout`, params)
     },
 
-    billing(organizationSlug) {
+    visitBillingPortal(organizationSlug) {
       return HttpClient.post(`/${organizationSlug}/stripe/billing`)
+    },
+
+    update(organizationSlug) {
+      return HttpClient.post(`/${organizationSlug}/stripe/update`)
     },
 
     cancel(organizationSlug) {
