@@ -21,7 +21,10 @@
     <fieldset class="mt-8" aria-label="Payment frequency">
       <RadioGroup v-model="frequency" class="w-fit grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-sm font-semibold ring-1 ring-inset ring-gray-200">
         <RadioGroupOption as="template" v-for="option in frequencies" :key="option.value" :value="option" v-slot="{ checked }">
-          <div :class="[checked ? 'bg-violet-600 text-white' : 'text-gray-500', 'cursor-pointer rounded-full px-3 py-2']">{{ option.label }}</div>
+          <div :class="[checked ? 'bg-violet-600 text-white' : 'text-gray-500', 'cursor-pointer rounded-full px-6 py-2']">
+            {{ option.label }}
+            <span v-if="option.value === 'yearly'" class="text-xs font-medium text-violet-600 py-0.5 px-2 ml-0.5 rounded-full bg-violet-100">Save 17%</span>
+          </div>
         </RadioGroupOption>
       </RadioGroup>
     </fieldset>
@@ -55,6 +58,8 @@
         <a v-if="tier.href" :href="tier.href" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
           Upgrade to {{ tier.title }}
         </a>
+
+        <p v-if="tier.title === 'Starter Yearly'" :class="invisible" class="text-center text-sm/6 text-violet-600 mt-2">Subscribe annually and get 2 months free</p>
       </div>
     </div>
   </AppCard>
