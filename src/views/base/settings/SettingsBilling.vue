@@ -52,10 +52,10 @@
     
     <!-- Plans -->
     <div class="isolate mt-6 grid grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-      <div v-for="(tier, index) in plans[frequency.value]" :key="index" :class="[organizationSubscriptionStore.subscription.plan.title == tier.title ? 'ring-2 ring-violet-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
+      <div v-for="(tier, index) in plans[frequency.value]" :key="index" :class="[organizationSubscriptionStore.subscription.plan.title == tier.fullTitle ? 'ring-2 ring-violet-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
         <div class="flex items-center justify-between gap-x-4">
           <h3 class="text-gray-900 text-lg font-semibold">{{ tier.title }}</h3>
-          <p v-if="organizationSubscriptionStore.subscription.plan.title == tier.title" class="rounded-full bg-violet-600/10 px-2.5 py-1 text-xs/5 font-semibold text-violet-600">Current plan</p>
+          <p v-if="organizationSubscriptionStore.subscription.plan.title == tier.fullTitle" class="rounded-full bg-violet-600/10 px-2.5 py-1 text-xs/5 font-semibold text-violet-600">Current plan</p>
         </div>
 
         <p class="mt-6 flex items-baseline gap-x-1">
@@ -122,6 +122,7 @@ const plans = {
   monthly: [
     {
       title: 'Free Plan',
+      fullTitle: 'Free Plan',
       group: 'free',
       href: null,
       price: '$0',
@@ -137,6 +138,7 @@ const plans = {
     },
     {
       title: 'Starter',
+      fullTitle: 'Starter Monthly',
       group: 'starter',
       frequency: 'monthly',
       href: null,
@@ -154,6 +156,7 @@ const plans = {
     },
     {
       title: 'Growth',
+      fullTitle: 'Growth Monthly',
       group: 'growth',
       frequency: 'monthly',
       href: 'https://metrifi.com/pricing/growth-plan/',
@@ -173,6 +176,7 @@ const plans = {
   yearly: [
     {
       title: 'Free Plan',
+      fullTitle: 'Free Plan',
       group: 'free',
       href: null,
       price: '$0',
@@ -188,6 +192,7 @@ const plans = {
     },
     {
       title: 'Starter',
+      fullTitle: 'Starter Yearly',
       group: 'starter',
       href: null,
       price: '$82.50',
@@ -204,6 +209,7 @@ const plans = {
     },
     {
       title: 'Growth',
+      fullTitle: 'Growth Yearly',
       group: 'growth',
       href: 'https://metrifi.com/pricing/growth-plan/',
       price: 'Contact us',
