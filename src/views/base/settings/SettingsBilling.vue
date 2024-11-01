@@ -112,8 +112,8 @@ const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const showLoader = computed(() => route.query.success === 'true')
 
 const frequencies = [
-  { value: 'monthly', label: 'Monthly' },
   { value: 'yearly', label: 'Yearly' },
+  { value: 'monthly', label: 'Monthly' },
 ]
 
 const frequency = ref(frequencies[0])
