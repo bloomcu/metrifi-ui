@@ -190,8 +190,8 @@ const plans = {
       title: 'Starter',
       group: 'starter',
       href: null,
-      price: '$990',
-      priceSuffix: '/ year',
+      price: '$82.50',
+      priceSuffix: '/ month',
       price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
       // price_id: 'price_1QG5qjIoK0qLKtdjoxTpaNrH', // Local
       features: [
