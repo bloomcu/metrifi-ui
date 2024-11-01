@@ -136,7 +136,7 @@ const plans = {
       ],
     },
     {
-      title: 'Starter Monthly',
+      title: 'Starter',
       group: 'starter',
       frequency: 'monthly',
       href: null,
@@ -187,7 +187,7 @@ const plans = {
       ],
     },
     {
-      title: 'Starter Yearly',
+      title: 'Starter',
       group: 'starter',
       href: null,
       price: '$990',
