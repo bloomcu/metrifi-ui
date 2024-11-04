@@ -44,7 +44,7 @@
         <RadioGroupOption as="template" v-for="option in frequencies" :key="option.value" :value="option" v-slot="{ checked }">
           <div :class="[checked ? 'bg-violet-600 text-white' : 'text-gray-500', 'cursor-pointer rounded-full px-6 py-2']">
             {{ option.label }}
-            <span v-if="option.value === 'yearly'" class="text-xs font-medium text-violet-600 py-0.5 px-2 ml-0.5 rounded-full bg-violet-100">Save 17%</span>
+            <span v-if="option.value === 'yearly'" class="text-xs font-medium text-violet-600 py-0.5 px-2 ml-0.5 rounded-full bg-violet-100">Save 16%</span>
           </div>
         </RadioGroupOption>
       </RadioGroup>
@@ -58,10 +58,12 @@
           <p v-if="organizationSubscriptionStore.subscription.plan.title == tier.fullTitle" class="rounded-full bg-violet-600/10 px-2.5 py-1 text-xs/5 font-semibold text-violet-600">Current plan</p>
         </div>
 
-        <p class="mt-6 flex items-baseline gap-x-1">
+        <p class="mt-4 flex items-baseline gap-x-1">
           <span class="text-3xl font-semibold tracking-tight text-gray-900">{{ tier.price }}</span>
           <span class="text-sm/6 font-semibold text-gray-600">{{ tier.priceSuffix }}</span>
         </p>
+
+        <p v-if="frequency.value == 'yearly'" class="mt-1.5 text-sm text-gray-600">{{ tier.fullTitle == 'Starter Yearly' ? 'Billed yearly at $996' : '&nbsp;' }} </p>
 
         <ul role="list" class="mt-6 space-y-3 text-sm/6 text-gray-600">
           <li v-for="feature in tier.features" :key="feature" class="flex gap-x-2">
@@ -144,8 +146,8 @@ const plans = {
       href: null,
       price: '$99',
       priceSuffix: '/ month',
-      // price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
-      price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
+      price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
+      // price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
       features: [
         'Recommendations: 10 / mo', 
         'Funnels: unlimited', 
@@ -195,10 +197,10 @@ const plans = {
       fullTitle: 'Starter Yearly',
       group: 'starter',
       href: null,
-      price: '$82.50',
+      price: '$83',
       priceSuffix: '/ month',
-      // price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
-      price_id: 'price_1QG5qjIoK0qLKtdjoxTpaNrH', // Local
+      price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
+      // price_id: 'price_1QG5qjIoK0qLKtdjoxTpaNrH', // Local
       features: [
         'Recommendations: 120 / yr', 
         'Funnels: unlimited', 
