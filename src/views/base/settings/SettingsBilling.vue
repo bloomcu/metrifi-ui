@@ -5,16 +5,6 @@
     <p class="text-white text-xl">Processing subscription</p>
   </div>
 
-  <!-- Billing portal -->
-  <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12">
-    <h2 class="text-base font-medium leading-6 text-gray-900">Billing portal</h2>
-    <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p>
-    <div class="flex gap-3 mt-6">
-      <AppButton @click="visitBillingPortal()" variant="secondary">Visit billing portal</AppButton>
-      <AppButton @click="updateSubscription()" variant="secondary">Change subscription plan</AppButton>
-    </div>
-  </AppCard>
-
   <!-- Plans -->
   <AppCard v-if="organizationSubscriptionStore.subscription"  class="mb-12">
     <h2 class="text-base font-medium leading-6 text-gray-900">Plans</h2>
@@ -86,14 +76,18 @@
     </div>
   </AppCard>
 
+  <!-- Billing portal -->
+  <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12">
+    <h2 class="text-base font-medium leading-6 text-gray-900">Billing portal</h2>
+    <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p>
+    <div class="flex gap-3 mt-6">
+      <AppButton @click="visitBillingPortal()" variant="secondary">Visit billing portal</AppButton>
+      <AppButton @click="updateSubscription()" variant="secondary">Change subscription plan</AppButton>
+    </div>
+  </AppCard>
+
   <!-- Cancel -->
-  <!-- <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12"> -->
-    <!-- <h2 class="text-base font-medium leading-6 text-gray-900">Danger</h2> -->
-    <!-- <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p> -->
-    <!-- <div class="flex gap-3 _mt-6"> -->
-      <AppButton v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" @click="cancelSubscription()" variant="link">Cancel subscription</AppButton>
-    <!-- </div> -->
-  <!-- </AppCard> -->
+  <AppButton v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" @click="cancelSubscription()" variant="link">Cancel subscription</AppButton>
 </template>
 
 <script setup>
