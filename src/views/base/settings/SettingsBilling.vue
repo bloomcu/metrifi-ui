@@ -5,16 +5,6 @@
     <p class="text-white text-xl">Processing subscription</p>
   </div>
 
-  <!-- Billing portal -->
-  <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12">
-    <h2 class="text-base font-medium leading-6 text-gray-900">Billing portal</h2>
-    <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p>
-    <div class="flex gap-3 mt-6">
-      <AppButton @click="visitBillingPortal()" variant="secondary">Visit billing portal</AppButton>
-      <AppButton @click="updateSubscription()" variant="secondary">Change subscription plan</AppButton>
-    </div>
-  </AppCard>
-
   <!-- Plans -->
   <AppCard v-if="organizationSubscriptionStore.subscription"  class="mb-12">
     <h2 class="text-base font-medium leading-6 text-gray-900">Plans</h2>
@@ -86,14 +76,18 @@
     </div>
   </AppCard>
 
+  <!-- Billing portal -->
+  <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12">
+    <h2 class="text-base font-medium leading-6 text-gray-900">Billing portal</h2>
+    <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p>
+    <div class="flex gap-3 mt-6">
+      <AppButton @click="visitBillingPortal()" variant="secondary">Visit billing portal</AppButton>
+      <AppButton @click="updateSubscription()" variant="secondary">Change subscription plan</AppButton>
+    </div>
+  </AppCard>
+
   <!-- Cancel -->
-  <!-- <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12"> -->
-    <!-- <h2 class="text-base font-medium leading-6 text-gray-900">Danger</h2> -->
-    <!-- <p class="mt-2 text-sm text-gray-500">Manage your payment information and invoices.</p> -->
-    <!-- <div class="flex gap-3 _mt-6"> -->
-      <AppButton v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" @click="cancelSubscription()" variant="link">Cancel subscription</AppButton>
-    <!-- </div> -->
-  <!-- </AppCard> -->
+  <AppButton v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" @click="cancelSubscription()" variant="link">Cancel subscription</AppButton>
 </template>
 
 <script setup>
@@ -146,8 +140,8 @@ const plans = {
       href: null,
       price: '$99',
       priceSuffix: '/ month',
-      price_id: 'price_1QHVQdK64893LVlSnjMHeeOk', // Production
-      // price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
+      // price_id: 'price_1QHVQdK64893LVlSnjMHeeOk', // Production
+      price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
       // price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
       features: [
         'Recommendations: 10 / mo', 
@@ -200,8 +194,8 @@ const plans = {
       href: null,
       price: '$83',
       priceSuffix: '/ month',
-      price_id: 'price_1QHVQzK64893LVlSx24PpimR', // Production
-      // price_id: 'price_1QHUFJRB5mhzFf19JkljJoNt', // Staging
+      // price_id: 'price_1QHVQzK64893LVlSx24PpimR', // Production
+      price_id: 'price_1QHUFJRB5mhzFf19JkljJoNt', // Staging
       // price_id: 'price_1QHTk3IoK0qLKtdjKBrj2CEF', // Local
       features: [
         'Recommendations: 120 / yr', 
