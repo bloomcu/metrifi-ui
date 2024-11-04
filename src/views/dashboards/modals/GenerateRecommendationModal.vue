@@ -141,7 +141,7 @@
 
       <!-- Accordion 4 - Secret shopper information -->
       <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
-        <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click.self="toggleAccordion('accordion4')">
+        <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion4')">
           <div class="flex gap-2">
             <MinusIcon v-if="accordionStates.accordion4" class="h-6 w-6 text-gray-600"/>
             <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
@@ -149,7 +149,7 @@
           </div>
 
           <div class="flex gap-3">
-            <a href="https://metrifi.com/secret-shop-your-website/" target="_blank" class="px-2.5 py-1.5 text-sm text-violet-600 bg-violet-50 hover:bg-violet-100 font-medium rounded-full active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-nonefocus-visible:outline-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Secret shop my website</a>
+            <a @click.stop href="https://metrifi.com/secret-shop-your-website/" target="_blank" class="px-2.5 py-1.5 text-sm text-violet-600 bg-violet-50 hover:bg-violet-100 font-medium rounded-full active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-nonefocus-visible:outline-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Secret shop my website</a>
             <CheckCircleIcon v-if="secretShopperPrompt && secretShopperPrompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
           </div>
         </div>
