@@ -7,13 +7,13 @@
             <img class="hidden h-8 w-auto lg:block" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-            <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-            <RouterLink :to="{ name: 'sites', params: { organization: auth.organization.slug}}" class="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900">Sites</RouterLink>
+            <!-- Current: "border-violet-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+            <RouterLink :to="{ name: 'sites', params: { organization: auth.organization.slug}}" class="inline-flex items-center border-b-2 border-violet-500 px-1 pt-1 text-sm font-medium text-gray-900">Sites</RouterLink>
           </div>
         </div>
         <div class="hidden sm:ml-6 sm:flex sm:items-center">
           <!-- Notifications -->
-          <!-- <button type="button" class="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          <!-- <button type="button" class="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2">
             <span class="sr-only">View notifications</span>
             <BellIcon class="h-6 w-6" aria-hidden="true" />
           </button> -->
@@ -21,7 +21,7 @@
           <!-- Profile dropdown -->
           <Menu as="div" class="relative ml-3">
             <div>
-              <MenuButton class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              <MenuButton class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2">
                 <span class="sr-only">Open user menu</span>
                 <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
               </MenuButton>
@@ -54,7 +54,7 @@
         </div>
         <div class="-mr-2 flex items-center sm:hidden">
           <!-- Mobile menu button -->
-          <DisclosureButton class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+          <DisclosureButton class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500">
             <span class="sr-only">Open main menu</span>
             <Bars3Icon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
             <XMarkIcon v-else class="block h-6 w-6" aria-hidden="true" />
@@ -65,8 +65,8 @@
 
     <DisclosurePanel class="sm:hidden">
       <div class="space-y-1 pb-3 pt-2">
-        <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
-        <RouterLink :to="{ name: 'sites', params: { organization: auth.organization.slug}}" class="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700">Sites</RouterLink>
+        <!-- Current: "bg-violet-50 border-violet-500 text-violet-600", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
+        <RouterLink :to="{ name: 'sites', params: { organization: auth.organization.slug}}" class="block border-l-4 border-violet-500 bg-violet-50 py-2 pl-3 pr-4 text-base font-medium text-violet-600">Sites</RouterLink>
       </div>
       <div class="border-t border-gray-200 pb-3 pt-4">
         <div class="flex items-center px-4">
@@ -77,7 +77,7 @@
             <div class="text-base font-medium text-gray-800">Tom Cook</div>
             <div class="text-sm font-medium text-gray-500">tom@example.com</div>
           </div>
-          <button type="button" class="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          <button type="button" class="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2">
             <span class="sr-only">View notifications</span>
             <BellIcon class="h-6 w-6" aria-hidden="true" />
           </button>

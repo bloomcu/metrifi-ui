@@ -28,7 +28,7 @@
       <!-- Tabs -->
       <div class="relative mb-2">
         <nav class="flex space-x-2 py-2" aria-label="Tabs">
-          <button v-for="tab in tabs" :key="tab.name" @click.stop="selectTab(tab)" :class="selectedTab.metric == tab.metric ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-100' : ''" class="text-gray-500 rounded-md px-3 py-2 text-sm font-medium hover:text-gray-700 hover:bg-gray-100">
+          <button v-for="tab in tabs" :key="tab.name" @click.stop="selectTab(tab)" :class="selectedTab.metric == tab.metric ? 'bg-violet-100 text-violet-600 hover:bg-violet-100' : ''" class="text-gray-500 rounded-md px-3 py-2 text-sm font-medium hover:text-gray-700 hover:bg-gray-100">
             <span>{{ tab.name }}</span>
           </button>
         </nav>
@@ -186,7 +186,7 @@
 
     <!-- Empty state: No connections -->
     <div v-if="connections && !connections.length" class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <CloudIcon class="mx-auto w-8 text-indigo-600" aria-hidden="true" />
+      <CloudIcon class="mx-auto w-8 text-violet-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No connections</h2>
       <p class="mt-1 mb-5 text-gray-500">A connection is needed to explore analytics.</p>
       <AppButton :to="{name: 'connections'}">Go to Connections</AppButton>

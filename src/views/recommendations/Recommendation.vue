@@ -45,11 +45,11 @@
             <!-- Instructions/recommendation toggler -->
             <div class="flex mb-6">
               <div class="p-1 border border-gray-300 rounded-lg flex space-x-1">
-                  <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-indigo-100 text-indigo-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                  <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-violet-100 text-violet-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                       <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="4" cy="6" r="1"></circle><circle cx="4" cy="12" r="1"></circle><circle cx="4" cy="18" r="1"></circle></svg> -->
                       <span class="text-sm">Instructions</span>
                   </button>
-                  <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-indigo-100 text-indigo-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                  <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-violet-100 text-violet-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                       <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg> -->
                       <span class="text-sm">Analysis</span>
                   </button>
@@ -134,11 +134,11 @@
           <!-- Loading content -->
           <div v-if="recommendationStore.recommendation.status != 'done'" class="p-6">
             <div class="flex items-center justify-center mb-6">
-              <div class="w-12 h-12 border-2 border-indigo-300 rounded-full border-t-transparent spin"/>
+              <div class="w-12 h-12 border-2 border-violet-300 rounded-full border-t-transparent spin"/>
             </div>
             <p class="text-xl text-center text-gray-700 mb-6">{{ currentStep.text }}</p>
             <div class="w-96 m-auto relative h-2 bg-gray-200 rounded">
-              <div :style="{ width: progressWidth, transition: 'width 0.5s ease' }" class="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-600 to-indigo-300 rounded"/>
+              <div :style="{ width: progressWidth, transition: 'width 0.5s ease' }" class="absolute top-0 left-0 h-full bg-gradient-to-r from-violet-600 to-violet-300 rounded"/>
             </div>
           </div>
 
@@ -162,6 +162,7 @@
 import moment from "moment"
 import { ref, reactive, watch, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { ArrowLeftIcon, ChevronLeftIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
@@ -172,6 +173,7 @@ import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecom
 const router = useRouter()
 const route = useRoute()
 
+const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const recommendationStore = useRecommendationStore()
 
 const isLoading = ref(false)
@@ -205,7 +207,7 @@ provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
-  { status: 'analyzer_in_progress', text: 'Analyzing UI', completed: false },
+  { status: 'ui_analyzer_in_progress', text: 'Analyzing UI', completed: false },
   { status: 'synthesizer_in_progress', text: 'Synthesizing prompt', completed: false },
   { status: 'anonymizer_in_progress', text: 'Reviewing analysis', completed: false },
   { status: 'content_writer_in_progress', text: 'Writing new content', completed: false },
@@ -300,6 +302,9 @@ onMounted(() => {
   tailwindScript = document.createElement('script')
   tailwindScript.src = 'https://cdn.tailwindcss.com'
   tailwind.value.appendChild(tailwindScript)
+
+  // Hydrate the organization subscription store
+  organizationSubscriptionStore.show(route.params.organization)
 })
 
 onUnmounted(() => {

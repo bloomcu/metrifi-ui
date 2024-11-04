@@ -57,7 +57,7 @@
 
     <!-- Empty state: No connections -->
     <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <CloudIcon class="mx-auto h-10 w-10 text-indigo-600" aria-hidden="true" />
+      <CloudIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No connection</h2>
       <p class="mt-1 text-gray-400">Get started by connecting Google Analytics.</p>
     </div>

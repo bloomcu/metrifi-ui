@@ -11,13 +11,35 @@
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
-        <AppButton @click="generateRecommendation()" class="whitespace-nowrap">
+        <AppButton v-if="!organizationSubscriptionStore.limitExceeded" @click="generateRecommendation()" class="whitespace-nowrap">
           Generate recommendation
         </AppButton>
       </div>
     </div>
 
-    <div class="max-w-4xl mx-auto pt-16 pb-28">
+    <div v-if="organizationSubscriptionStore.limitExceeded" class="max-w-4xl mx-auto pt-16 pb-28">
+      <div class="max-w-2xl mt-6 mb-10">
+        <div class="mx-auto flex h-12 w-12 mb-4 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+          <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          </svg>
+        </div>
+
+        <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:text-2xl">Subscription limit reached</h3>
+        <p class="text-gray-500 mb-6">You've reached the usage limit for your current plan.</p>
+
+        <p class="text-lg mb-6">
+          Your <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.title }} plan</span> allows for <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.limits.recommendations }} recommendations</span> per month. You've used all available recommendations for this billing cycle.
+        </p>
+
+        <div class="flex gap-2">
+          <AppButton @click="isGenerateRecommendationModalOpen = false" variant="tertiary" size="md">Close</AppButton>
+          <AppButton :to="{name: 'settingsBilling', params: {organization: route.params.slug}}" size="md">Upgrade Plan</AppButton>
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="max-w-4xl mx-auto pt-16 pb-28">
       <div class="max-w-2xl mt-6 mb-10">
         <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:text-2xl">
           Generate a recommendation for step {{ stepIndex + 1 }}
@@ -101,7 +123,7 @@
 
                   <!-- Select -->
                   <!-- <button class="absolute flex top-1 left-1 h-7 w-7 items-center justify-center text-gray-600 hover:text-gray-900">
-                    <input :checked="selected.includes(file.id)" type="checkbox" class="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                    <input :checked="selected.includes(file.id)" type="checkbox" class="h-4 w-4 cursor-pointer rounded border-gray-300 text-violet-600 focus:ring-violet-600">
                   </button> -->
 
                   <!-- Delete -->
@@ -125,6 +147,7 @@ import { ref, reactive, computed, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { ArrowLeftIcon, TrashIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
+import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { useFileStore } from '@/domain/files/store/useFileStore'
@@ -138,6 +161,7 @@ const props = defineProps({
 
 const route = useRoute()
 const router = useRouter()
+const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const recommendationStore = useRecommendationStore()
 const funnelStore = useFunnelStore()
 const fileStore = useFileStore()
@@ -190,7 +214,9 @@ async function generateRecommendation() {
     metadata: metadata,
   }).then(() => {
     // Attach files
-    recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds)
+    if (fileIds.length > 0) {
+      recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds)
+    }
 
     setTimeout(() => {
       isGenerateRecommendationModalOpen.value = false

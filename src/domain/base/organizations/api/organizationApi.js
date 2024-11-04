@@ -4,11 +4,11 @@ const organizationApi = {
     /**
      * Show an organization
      *
-     * @param String slug [Organization slug]
+     * @param String organization_slug [Organization organization_slug]
      * @return promise
      */
-    show(slug) {
-      return HttpClient.get(`/organizations/${slug}`)
+    show(organization_slug) {
+      return HttpClient.get(`/organizations/${organization_slug}`)
     },
 
     /**
@@ -18,8 +18,8 @@ const organizationApi = {
      * @param Object  invitation [Properties to update organization with]
      * @return promise
      */
-    update(slug, organization) {
-      return HttpClient.put(`/organizations/${slug}`, organization)
+    update(organization_slug, organization) {
+      return HttpClient.put(`/organizations/${organization_slug}`, organization)
     },
 
     /**
@@ -28,9 +28,13 @@ const organizationApi = {
      * @param Integer id [Id of the organization you want to destroy]
      * @return promise
      */
-    destroy(slug) {
-        return HttpClient.delete(`/organizations/${slug}`)
+    destroy(organization_slug) {
+        return HttpClient.delete(`/organizations/${organization_slug}`)
     },
+
+    showSubscription(organization_slug) {
+        return HttpClient.get(`/organizations/${organization_slug}/subscription`)
+    }
 }
 
 export { organizationApi }

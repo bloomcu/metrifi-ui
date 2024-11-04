@@ -15,7 +15,7 @@
             <div 
                 v-for="recommendation in recommendationStore.recommendations" 
                 @click="showRecommendation(recommendation.id)"
-                :class="{'bg-indigo-100 border-indigo-300 hover:bg-indigo-200': recommendation.id == route.params.recommendation}"
+                :class="{'bg-violet-100 border-violet-300 hover:bg-violet-200': recommendation.id == route.params.recommendation}"
                 class="flex flex-col gap-2 border rounded-lg p-2 mb-3 cursor-pointer hover:bg-gray-100"
             >
                 <div class="flex justify-between">

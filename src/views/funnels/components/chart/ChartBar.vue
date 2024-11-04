@@ -2,11 +2,11 @@
   <div @click="emit('stepSelected')" :class="enableCursorPointer ? 'cursor-pointer' : ''" class="group relative flex flex-1 h-full items-end p-1.5 rounded-lg transition-colors duration-200 hover:bg-gray-200/60">
     <div v-if="enableControls">
       <div class="absolute left-3 top-3 flex gap-1.5 invisible group-hover:visible">
-        <button v-if="enableStepExpansion" @click="emit('stepExpanded')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
-          <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
+        <button v-if="enableStepExpansion" @click="emit('stepExpanded')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-violet-100">
+          <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-violet-600" aria-hidden="true" />
         </button>
-        <button @click="emit('stepDisabled')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-indigo-100">
-          <EyeSlashIcon class="h-5 w-5 text-indigo-600" aria-hidden="true" />
+        <button @click="emit('stepDisabled')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-violet-100">
+          <EyeSlashIcon class="h-5 w-5 text-violet-600" aria-hidden="true" />
         </button>
       </div>
 
@@ -21,7 +21,7 @@
       :style="`height: ${height}%;`"
       :class="[
         updating ? 'animate-pulse' : '',
-        isProjection ? 'from-indigo-400 to-indigo-500' : 'from-indigo-600 to-indigo-700'
+        isProjection ? 'from-violet-400 to-violet-500' : 'from-violet-600 to-violet-600'
       ]"
       class="flex-1 rounded-lg transition duration-300 bg-gradient-to-b " 
     >
