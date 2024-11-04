@@ -140,8 +140,8 @@ const plans = {
       href: null,
       price: '$99',
       priceSuffix: '/ month',
-      price_id: 'price_1QHVQdK64893LVlSnjMHeeOk', // Production
-      // price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
+      // price_id: 'price_1QHVQdK64893LVlSnjMHeeOk', // Production
+      price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
       // price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
       features: [
         'Recommendations: 10 / mo', 
@@ -194,8 +194,8 @@ const plans = {
       href: null,
       price: '$83',
       priceSuffix: '/ month',
-      price_id: 'price_1QHVQzK64893LVlSx24PpimR', // Production
-      // price_id: 'price_1QHUFJRB5mhzFf19JkljJoNt', // Staging
+      // price_id: 'price_1QHVQzK64893LVlSx24PpimR', // Production
+      price_id: 'price_1QHUFJRB5mhzFf19JkljJoNt', // Staging
       // price_id: 'price_1QHTk3IoK0qLKtdjKBrj2CEF', // Local
       features: [
         'Recommendations: 120 / yr', 
