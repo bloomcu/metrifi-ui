@@ -29,7 +29,7 @@
           <p class="text-sm text-yellow-700">
             Your subscription to <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.title }}</span> will end on {{ moment(organizationSubscriptionStore.subscription.ends_at).format('MMM DD, YYYY') }}.
             {{ ' ' }}
-            <a @click="visitBillingPortal()" href="" class=" text-yellow-700 underline hover:text-yellow-600">Renew subscription</a>
+            <button @click="visitBillingPortal()" class="text-yellow-700 underline hover:text-yellow-600">Renew subscription</button>
           </p>
         </div>
       </div>
@@ -70,14 +70,14 @@
           </li>
         </ul>
 
-        <template v-if="!organizationSubscriptionStore.subscription.subscribed">
-          <button v-if="tier.group == 'starter'" @click="selectPlan(tier.price_id)" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+        <!-- <template> -->
+          <button v-if="tier.group == 'starter' && !organizationSubscriptionStore.subscription.subscribed" @click="selectPlan(tier.price_id)" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to {{ tier.title }}
           </button>
-          <a v-if="tier.href" :href="tier.href" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+          <a v-if="tier.group == 'growth'" :href="tier.href" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to {{ tier.title }}
           </a>
-        </template>
+        <!-- </template> -->
 
         <p v-if="tier.title === 'Starter Yearly'" class="text-center text-sm/6 text-violet-600 mt-6">Subscribe annually and get 2 months free</p>
       </div>
@@ -144,8 +144,8 @@ const plans = {
       href: null,
       price: '$99',
       priceSuffix: '/ month',
-      price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
-      // price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
+      // price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
+      price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
       features: [
         'Recommendations: 10 / mo', 
         'Funnels: unlimited', 
@@ -197,8 +197,8 @@ const plans = {
       href: null,
       price: '$82.50',
       priceSuffix: '/ month',
-      price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
-      // price_id: 'price_1QG5qjIoK0qLKtdjoxTpaNrH', // Local
+      // price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
+      price_id: 'price_1QG5qjIoK0qLKtdjoxTpaNrH', // Local
       features: [
         'Recommendations: 120 / yr', 
         'Funnels: unlimited', 
