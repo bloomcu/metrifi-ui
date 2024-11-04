@@ -199,8 +199,8 @@ const plans = {
       href: null,
       price: '$83',
       priceSuffix: '/ month',
-      price_id: 'price_1QFi54RB5mhzFf19jxiFvBQG', // Staging
-      // price_id: 'price_1QG5qjIoK0qLKtdjoxTpaNrH', // Local
+      price_id: 'price_1QHUFJRB5mhzFf19JkljJoNt', // Staging
+      // price_id: 'price_1QHTk3IoK0qLKtdjKBrj2CEF', // Local
       features: [
         'Recommendations: 120 / yr', 
         'Funnels: unlimited', 
