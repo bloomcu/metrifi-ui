@@ -9,8 +9,24 @@
   <AppCard v-if="organizationSubscriptionStore.subscription"  class="mb-12">
     <h2 class="text-base font-medium leading-6 text-gray-900">Plans</h2>
 
+    <!-- Plan has upcoming changes -->
+    <div v-if="organizationSubscriptionStore.subscription.upcoming_plan" class="rounded-md bg-yellow-50 mt-2 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            Your subscription to <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.title }}</span> 
+            will change to <span class="font-bold">{{ organizationSubscriptionStore.subscription.upcoming_plan }}</span> 
+            on {{ moment(organizationSubscriptionStore.subscription.upcoming_plan_start_at).format('MMM DD, YYYY') }}.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <!-- Plan is canceling message -->
-    <div v-if="organizationSubscriptionStore.subscription.ends_at" class="rounded-md bg-yellow-50 mt-2 p-4">
+    <div v-else-if="organizationSubscriptionStore.subscription.ends_at" class="rounded-md bg-yellow-50 mt-2 p-4">
       <div class="flex">
         <div class="flex-shrink-0">
           <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
@@ -141,8 +157,8 @@ const plans = {
       price: '$99',
       priceSuffix: '/ month',
       // price_id: 'price_1QHVQdK64893LVlSnjMHeeOk', // Production
-      price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
-      // price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
+      // price_id: 'price_1QF8fLRB5mhzFf19UAWKZhkx', // Staging
+      price_id: 'price_1QG5rLIoK0qLKtdj50iKKLaq', // Local
       features: [
         'Recommendations: 10 / mo', 
         'Funnels: unlimited', 
@@ -195,8 +211,8 @@ const plans = {
       price: '$83',
       priceSuffix: '/ month',
       // price_id: 'price_1QHVQzK64893LVlSx24PpimR', // Production
-      price_id: 'price_1QHUFJRB5mhzFf19JkljJoNt', // Staging
-      // price_id: 'price_1QHTk3IoK0qLKtdjKBrj2CEF', // Local
+      // price_id: 'price_1QHUFJRB5mhzFf19JkljJoNt', // Staging
+      price_id: 'price_1QHTk3IoK0qLKtdjKBrj2CEF', // Local
       features: [
         'Recommendations: 120 / yr', 
         'Funnels: unlimited', 
