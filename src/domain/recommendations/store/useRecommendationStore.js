@@ -44,8 +44,8 @@ export const useRecommendationStore = defineStore('recommendationStore', {
           })
       },
 
-      async attachFile(organizationSlug, recommendationId, fileIds) {
-        return await RecommendationsApi.attachFile(organizationSlug, recommendationId, fileIds)
+      async attachFile(organizationSlug, recommendationId, fileIds, type) {
+        return await RecommendationsApi.attachFile(organizationSlug, recommendationId, fileIds, type)
           .then(response => {
             console.log('Response', response.data.data)
             // this.recommendation.files.unshift(response.data.data)

@@ -13,8 +13,11 @@ const recommendationsApi = {
       return await HttpClient.get(`/${organizationSlug}/dashboards/${dashboardId}/recommendations/${recommendationId}`)
     },
 
-    async attachFile(organizationSlug, recommendationId, fileIds) {
-      return await HttpClient.post(`/${organizationSlug}/recommendations/${recommendationId}/files`, { file_ids: fileIds })
+    async attachFile(organizationSlug, recommendationId, fileIds, type) {
+      return await HttpClient.post(`/${organizationSlug}/recommendations/${recommendationId}/files`, { 
+        file_ids: fileIds,
+        type: type
+      })
   },
 }
 
