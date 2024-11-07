@@ -140,33 +140,33 @@
       </div>
 
       <!-- Accordion 4 - Secret shopper information -->
-      <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
+      <!-- <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
         <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion4')">
           <div class="flex gap-2">
             <MinusIcon v-if="accordionStates.accordion4" class="h-6 w-6 text-gray-600"/>
             <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
             <h2 class="font-medium">Secret shopping study</h2>
-          </div>
+          </div> -->
 
-          <div class="flex gap-3">
+          <!-- <div class="flex gap-3">
             <a @click.stop href="https://metrifi.com/secret-shop-your-website/" target="_blank" class="px-2.5 py-1.5 text-sm text-violet-600 bg-violet-50 hover:bg-violet-100 font-medium rounded-full active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-nonefocus-visible:outline-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Secret shop my website</a>
             <CheckCircleIcon v-if="secretShopperPrompt && secretShopperPrompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
           </div>
         </div>
         <div v-if="accordionStates.accordion4" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
           <div class="space-y-4">
-            <p class="text-gray-600 mb-2">Add insights from a secret shopping study for MetriFi AI to consider while generating the recommendation.</p>
+            <p class="text-gray-600 mb-2">Add insights from a secret shopping study for MetriFi AI to consider while generating the recommendation.</p> -->
 
             <!-- Instructions -->
-            <p class="font-semibold mb-1">Details</p>
-            <AppRichtext v-model="secretShopperPrompt" :editable="true" class="bg-white"/>
+            <!-- <p class="font-semibold mb-1">Details</p>
+            <AppRichtext v-model="secretShopperPrompt" :editable="true" class="bg-white"/> -->
 
             <!-- Upload files -->
-            <p class="font-semibold mb-1">Files</p>
-            <FileUploader @fileUploaded="handleSecretShopperFileUploaded" class="mb-5"/>
+            <!-- <p class="font-semibold mb-1">Files</p>
+            <FileUploader @fileUploaded="handleSecretShopperFileUploaded" class="mb-5"/> -->
 
             <!-- Files -->
-            <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
+            <!-- <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
               <li v-for="file in secretShopperFiles" :key="file.id" class="relative">
                 <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
                   <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
@@ -180,7 +180,7 @@
             </ul>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </AppModal>
 </template>
