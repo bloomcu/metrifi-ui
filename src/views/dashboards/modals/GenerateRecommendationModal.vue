@@ -62,7 +62,7 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-400">Included by default</span>
+            <span class="text-sm text-green-600">Included by default</span>
             <CheckCircleIcon class="h-7 w-7 text-green-600"/>
           </div>
         </div>
@@ -92,7 +92,7 @@
       </div> -->
 
       <!-- Accordion 3 - Additional information -->
-      <div class="mb-6 border border-gray-300 rounded-lg overflow-clip">
+      <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
         <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion3')">
           <div class="flex gap-2">
             <MinusIcon v-if="accordionStates.accordion3" class="h-6 w-6 text-gray-600"/>
@@ -112,11 +112,11 @@
 
             <!-- Upload files -->
             <p class="font-semibold mb-1">Files</p>
-            <FileUploader @fileUploaded="handleFileUploaded" class="mb-5"/>
+            <FileUploader @fileUploaded="handleLocalFileUploaded" class="mb-5"/>
 
             <!-- Files -->
             <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
-              <li v-for="file in fileStore.files" :key="file.id" class="relative">
+              <li v-for="file in localFiles" :key="file.id" class="relative">
                 <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
                   <!-- Thumbnail -->
                   <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
@@ -138,6 +138,49 @@
           </div>
         </div>
       </div>
+
+      <!-- Accordion 4 - Secret shopper information -->
+      <!-- <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
+        <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion4')">
+          <div class="flex gap-2">
+            <MinusIcon v-if="accordionStates.accordion4" class="h-6 w-6 text-gray-600"/>
+            <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
+            <h2 class="font-medium">Secret shopping study</h2>
+          </div> -->
+
+          <!-- <div class="flex gap-3">
+            <a @click.stop href="https://metrifi.com/secret-shop-your-website/" target="_blank" class="px-2.5 py-1.5 text-sm text-violet-600 bg-violet-50 hover:bg-violet-100 font-medium rounded-full active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-nonefocus-visible:outline-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Secret shop my website</a>
+            <CheckCircleIcon v-if="secretShopperPrompt && secretShopperPrompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
+          </div>
+        </div>
+        <div v-if="accordionStates.accordion4" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+          <div class="space-y-4">
+            <p class="text-gray-600 mb-2">Add insights from a secret shopping study for MetriFi AI to consider while generating the recommendation.</p> -->
+
+            <!-- Instructions -->
+            <!-- <p class="font-semibold mb-1">Details</p>
+            <AppRichtext v-model="secretShopperPrompt" :editable="true" class="bg-white"/> -->
+
+            <!-- Upload files -->
+            <!-- <p class="font-semibold mb-1">Files</p>
+            <FileUploader @fileUploaded="handleSecretShopperFileUploaded" class="mb-5"/> -->
+
+            <!-- Files -->
+            <!-- <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
+              <li v-for="file in secretShopperFiles" :key="file.id" class="relative">
+                <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
+                  <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
+                  <button @click.stop="fileStore.destroy(route.params.organization, file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
+                    <TrashIcon class="h-4 w-4"/>
+                  </button>
+                </div>
+                <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
+                <p class="block truncate text-sm text-gray-500">{{ file.filename }}</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div> -->
     </div>
   </AppModal>
 </template>
@@ -153,6 +196,7 @@ import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { useFileStore } from '@/domain/files/store/useFileStore'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import FileUploader from '@/domain/files/components/FileUploader.vue'
+import AppButton from '../../../app/components/base/buttons/AppButton.vue'
 
 const props = defineProps({
   stepIndex: '',
@@ -170,21 +214,28 @@ const accordionStates = reactive({
   accordion1: false,
   accordion2: false,
   accordion3: false,
+  accordion4: false,
 });
+
+const isGenerateRecommendationModalOpen = inject('isGenerateRecommendationModalOpen')
 
 const localPrompt = ref(props.prompt)
 const localFiles = ref([])
-const isGenerateRecommendationModalOpen = inject('isGenerateRecommendationModalOpen')
+
+const secretShopperPrompt = ref('')
+const secretShopperFiles = ref([])
 
 // Watch the prop value and update the ref whenever it changes
 watch(() => props.prompt, (newValue) => {
   localPrompt.value = newValue;
 });
 
-function handleFileUploaded(file) {
+function handleLocalFileUploaded(file) {
   localFiles.value.push(file)
+}
 
-  // recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, file.id)
+function handleSecretShopperFileUploaded(file) {
+  secretShopperFiles.value.push(file)
 }
 
 async function generateRecommendation() {
