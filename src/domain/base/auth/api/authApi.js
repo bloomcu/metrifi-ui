@@ -33,11 +33,12 @@ const authApi = {
    * @param String password_confirmation [repeated password]
    * @return promise
    */
-  register(name, email, organization_title, password, password_confirmation, accept_terms) {
+  register(name, email, organization_title, organization_domain, password, password_confirmation, accept_terms) {
     return HttpClient.post(`/auth/register`, {
       name: name,
       email: email,
       organization_title: organization_title,
+      organization_domain: organization_domain,
       password: password,
       password_confirmation: password_confirmation, 
       accept_terms: accept_terms,

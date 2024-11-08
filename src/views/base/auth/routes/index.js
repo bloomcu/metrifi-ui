@@ -15,11 +15,11 @@ export default [
     name: "logout",
     component: Logout,
   },
-  // {
-  //   path: "/register",
-  //   name: "register",
-  //   component: Register,
-  // },
+  {
+    path: "/register",
+    name: "register",
+    component: Register,
+  },
   {
     path: "/forgot-password",
     name: "forgotPassword",

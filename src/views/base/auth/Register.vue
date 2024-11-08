@@ -21,6 +21,7 @@
               <AppInput v-model="inputs.name" label="Full name" :errors="errorStore.errors.name" required autofocus />
               <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" required />
               <AppInput v-model="inputs.organization_title" label="Organization name" :errors="errorStore.errors.organization_title" required />
+              <AppInput v-model="inputs.organization_domain" label="Website domain" placeholder="acmecu.com" :errors="errorStore.errors.organization_domain" required />
               <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Password" required />
               <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
@@ -86,13 +87,14 @@ const inputs = ref({
   name: '',
   email: '',
   organization_title: '',
+  organization_domain: '',
   password: '',
   password_confirmation: '',
   accept_terms: false
 })
 
 function register() {
-  const { name, email, organization_title, password, password_confirmation, accept_terms } = inputs.value
-  authStore.register(name, email, organization_title, password, password_confirmation, accept_terms)
+  const { name, email, organization_title, organization_domain, password, password_confirmation, accept_terms } = inputs.value
+  authStore.register(name, email, organization_title, organization_domain, password, password_confirmation, accept_terms)
 }
 </script>
