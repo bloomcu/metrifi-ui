@@ -21,7 +21,8 @@ const app = createApp(App)
   .use(
     createGtm({
       id: "GTM-P83WJ25N",
-      vueRouter: router
+      vueRouter: router,
+      enabled: import.meta.env.VITE_ENV === 'staging' || import.meta.env.VITE_ENV === 'production',
     })
   )
   .component('AppButton', AppButton)
