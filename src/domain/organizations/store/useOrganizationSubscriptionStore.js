@@ -19,7 +19,7 @@ export const useOrganizationSubscriptionStore = defineStore('organizationSubscri
           : 100,
     
       limitExceeded: (state) => 
-        state.subscription?.recommendations_used && state.subscription?.plan?.limits?.recommendations
+        state.subscription?.recommendations_used != null && state.subscription?.plan?.limits?.recommendations != null
           ? state.subscription.recommendations_used >= state.subscription.plan.limits.recommendations
           : false,
     },

@@ -10,7 +10,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
     
     actions: {
       index(organizationSlug, dashboardId, params) {
-        this.analyses = []
+        this.recommendations = []
 
         RecommendationsApi.index(organizationSlug, dashboardId, params)
           .then(response => {
@@ -48,7 +48,6 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         return await RecommendationsApi.attachFile(organizationSlug, recommendationId, fileIds, type)
           .then(response => {
             console.log('Response', response.data.data)
-            // this.recommendation.files.unshift(response.data.data)
           }).catch(error => {
             console.log('Error', error.response.data)
           })

@@ -18,7 +18,7 @@
         </label>
 
         <!-- Dropped files -->
-        <ul v-if="files.length"class="w-full divide-y divide-gray-200 border-t">
+        <ul v-if="files.length" class="w-full divide-y divide-gray-200 border-t">
             <li v-for="file in files" :key="file.id" class="flex items-center justify-between gap-x-6 p-3">
                 <div class="flex items-center min-w-0 gap-x-4">
                 <img class="h-16 w-20 flex-none rounded-md border border-gray-200 bg-gray-50 object-cover" :src="file.url" :alt="file.file.name" :title="file.file.name" />
