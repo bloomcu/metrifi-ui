@@ -20,10 +20,10 @@ export const useRecommendationStore = defineStore('recommendationStore', {
           })
       },
 
-      async store(organizationSlug, dashboardId, params) {
+      async store(organizationSlug, dashboardId, recommendation) {
         this.isLoading = true
 
-        return await RecommendationsApi.store(organizationSlug, dashboardId, params)
+        return await RecommendationsApi.store(organizationSlug, dashboardId, recommendation)
           .then(response => {
             console.log('Response from recommendation store', response)
             this.recommendation = response.data.data

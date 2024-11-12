@@ -5,7 +5,7 @@
     :open="isGenerateRecommendationModalOpen"
   >
     <!-- Sticky Top Bar -->
-    <div class="z-10 fixed top-0 left-0 w-full bg-white border-b border-gray-200">
+    <div class="z-20 fixed top-0 left-0 w-full bg-white border-b border-gray-200">
       <div class="flex items-center justify-between px-4 py-2">
         <AppButton @click="isGenerateRecommendationModalOpen = false" variant="tertiary" size="base">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
@@ -100,7 +100,7 @@
             <h2 class="font-medium">Additional information</h2>
           </div>
 
-          <CheckCircleIcon v-if="localPrompt && localPrompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
+          <CheckCircleIcon v-if="recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
         </div>
         <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
           <div class="space-y-4">
@@ -108,7 +108,7 @@
 
             <!-- Instructions -->
             <p class="font-semibold mb-1">Instructions</p>
-            <AppRichtext v-model="localPrompt" :editable="true" class="bg-white"/>
+            <AppRichtext v-model="recommendationStore.recommendation.prompt" :editable="true" class="bg-white"/>
 
             <!-- Upload files -->
             <p class="font-semibold mb-1">Files</p>
@@ -116,7 +116,7 @@
 
             <!-- Files -->
             <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
-              <li v-for="file in localFiles" :key="file.id" class="relative">
+              <li v-for="file in recommendationStore.recommendation.files" :key="file.id" class="relative">
                 <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
                   <!-- Thumbnail -->
                   <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
@@ -127,7 +127,7 @@
                   </button> -->
 
                   <!-- Delete -->
-                  <button @click.stop="fileStore.destroy(route.params.organization, file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
+                  <button @click.stop="handleDeleteLocalFile(file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
                     <TrashIcon class="h-4 w-4"/>
                   </button>
                 </div>
@@ -150,7 +150,7 @@
 
           <div class="flex gap-3">
             <a @click.stop href="https://metrifi.com/secret-shop-your-website/" target="_blank" class="px-2.5 py-1.5 text-sm text-violet-600 bg-violet-50 hover:bg-violet-100 font-medium rounded-full active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-nonefocus-visible:outline-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Secret shop my website</a>
-            <CheckCircleIcon v-if="secretShopperPrompt && secretShopperPrompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
+            <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
           </div>
         </div>
         <div v-if="accordionStates.accordion4" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
@@ -159,7 +159,7 @@
 
             <!-- Instructions -->
             <p class="font-semibold mb-1">Details</p>
-            <AppRichtext v-model="secretShopperPrompt" :editable="true" class="bg-white"/>
+            <AppRichtext v-model="recommendationStore.recommendation.secret_shopper_prompt" :editable="true" class="bg-white"/>
 
             <!-- Upload files -->
             <p class="font-semibold mb-1">Files</p>
@@ -167,10 +167,10 @@
 
             <!-- Files -->
             <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
-              <li v-for="file in secretShopperFiles" :key="file.id" class="relative">
+              <li v-for="file in recommendationStore.recommendation.secret_shopper_files" :key="file.id" class="relative">
                 <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
                   <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
-                  <button @click.stop="fileStore.destroy(route.params.organization, file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
+                  <button @click.stop="handleDeleteSecretShopperFile(file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
                     <TrashIcon class="h-4 w-4"/>
                   </button>
                 </div>
@@ -186,7 +186,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, inject, watch } from 'vue'
+import { ref, reactive, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { ArrowLeftIcon, TrashIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
@@ -195,8 +195,8 @@ import { useRecommendationStore } from '@/domain/recommendations/store/useRecomm
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { useFileStore } from '@/domain/files/store/useFileStore'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
+import AppButton from '@/app/components/base/buttons/AppButton.vue'
 import FileUploader from '@/domain/files/components/FileUploader.vue'
-import AppButton from '../../../app/components/base/buttons/AppButton.vue'
 
 const props = defineProps({
   stepIndex: '',
@@ -227,60 +227,79 @@ const secretShopperPrompt = ref('')
 const secretShopperFiles = ref([])
 
 // Watch the prop value and update the ref whenever it changes
-watch(() => props.prompt, (newValue) => {
-  localPrompt.value = newValue;
+watch(() => isGenerateRecommendationModalOpen.value, (modelOpen) => {
+  if (modelOpen === true) {
+    if (route.params.recommendation) {
+      // Get the current recommendation
+      recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
+      
+    } else {
+      // Start a new recommendation in the store
+      recommendationStore.recommendation = {
+        step_index: props.stepIndex,
+        prompt: '',
+        files: [],
+        secret_shopper_prompt: '',
+        secret_shopper_files: [],
+        metadata: {},
+      }
+    }
+  } else {
+    if (route.params.recommendation) {
+      recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
+    }
+  }
 });
 
-watch(() => props.secretShopperPrompt, (newValue) => {
-  secretShopperPrompt.value = newValue;
-});
+// watch(() => props.secretShopperPrompt, (newValue) => {
+//   secretShopperPrompt.value = newValue;
+// });
 
 function handleLocalFileUploaded(file) {
-  localFiles.value.push(file)
+  recommendationStore.recommendation.files.push(file)
 }
 
 function handleSecretShopperFileUploaded(file) {
-  secretShopperFiles.value.push(file)
+  recommendationStore.recommendation.secret_shopper_files.push(file)
+}
+
+function handleDeleteLocalFile(fileId) {
+  // We're not working with an existing recommendation, destroy the file
+  if (!route.params.recommendation) {
+    fileStore.destroy(route.params.organization, fileId)
+  }
+
+  recommendationStore.recommendation.files = recommendationStore.recommendation.files.filter(file => file.id !== fileId)
+}
+
+function handleDeleteSecretShopperFile(fileId) {
+  // We're not working with an existing recommendation, destroy the file
+  if (!route.params.recommendation) {
+    fileStore.destroy(route.params.organization, fileId)
+  }
+
+  recommendationStore.recommendation.secret_shopper_files = recommendationStore.recommendation.secret_shopper_files.filter(file => file.id !== fileId)
 }
 
 async function generateRecommendation() {
-  let prompt = localPrompt.value
-  let _secretShopperPrompt = secretShopperPrompt.value
-  let metadata = {}
-
-  // We're regenerating an existing recommendation
-  if (route.params.recommendation) { 
-    await recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
-      .then(response => { // use the prompt and metadata from the original recommendation
-        prompt = recommendationStore.recommendation.prompt
-        _secretShopperPrompt = recommendationStore.recommendation.secret_shopper_prompt
-        metadata = recommendationStore.recommendation.metadata
-      })
-
-  // We're generating a new recommendation
-  } else { 
-    metadata = getMetadataForRecommendations(props.stepIndex)
+  // We're creating a new recommendation, generate the metadata
+  if (!route.params.recommendation) { 
+    recommendationStore.recommendation.metadata = getMetadataForRecommendations(props.stepIndex)
   }
 
-  // Create an array holding the ids of the files in localFiles
-  let fileIds = localFiles.value.map(file => file.id)
-  let secretShopperFileIds = secretShopperFiles.value.map(file => file.id)
+  // Cache file ids
+  let fileIds = recommendationStore.recommendation?.files?.map(file => file.id)
+  let secretShopperFileIds = recommendationStore.recommendation?.secret_shopper_files?.map(file => file.id)
 
   // Store recommendation
-  recommendationStore.store(route.params.organization, route.params.dashboard, {
-    step_index: props.stepIndex,
-    prompt: prompt,
-    file_ids: fileIds,
-    secret_shopper_prompt: _secretShopperPrompt,
-    secret_shopper_file_ids: secretShopperFileIds,
-    metadata: metadata,
-  }).then(() => {
+  recommendationStore.store(route.params.organization, route.params.dashboard, recommendationStore.recommendation).then(() => {
+
     // Attach files
-    if (fileIds.length > 0) {
+    if (fileIds.length) {
       recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds, 'additional-information')
     }
 
-    if (secretShopperFileIds.length > 0) {
+    if (secretShopperFileIds.length) {
       recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, secretShopperFileIds, 'secret-shopper')
     }
 
