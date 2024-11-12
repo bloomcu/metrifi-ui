@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import { createGtm } from '@gtm-support/vue-gtm';
 import App from '@/App.vue'
-import store from '@/store.js'
-import router from '@/router.js'
+import store from './store.js'
+import router from './router.js'
 import * as Sentry from "@sentry/vue";
 // import websocket from '@/websocket'
 // import Echo from 'laravel-echo'
@@ -22,7 +22,7 @@ const app = createApp(App)
     createGtm({
       id: "GTM-P83WJ25N",
       vueRouter: router,
-      enabled: import.meta.env.VITE_ENV === 'staging' || import.meta.env.VITE_ENV === 'production',
+      enabled: import.meta.env.VITE_ENV === 'production',
     })
   )
   .component('AppButton', AppButton)
