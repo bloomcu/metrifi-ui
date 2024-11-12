@@ -3,5 +3,5 @@
 </template>
 
 <style lang="scss">
-@import '@/app/styles/styles.scss';
+@use '@/app/styles/styles.scss';
 </style>
