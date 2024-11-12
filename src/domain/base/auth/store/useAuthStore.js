@@ -62,11 +62,11 @@ export const useAuthStore = defineStore('authStore', {
           .catch(error => {})
       },
       
-      async register(name, email, organization_title, organization_domain, password, password_confirmation, accept_terms) {
+      async register(name, email, organization_title, organization_domain, password, accept_terms) {
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
         this.loading = true
         
-        await AuthApi.register(name, email, organization_title, organization_domain, password, password_confirmation, accept_terms)
+        await AuthApi.register(name, email, organization_title, organization_domain, password, accept_terms)
           .then(response => {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
@@ -84,10 +84,10 @@ export const useAuthStore = defineStore('authStore', {
           .catch(error => {})
       },
       
-      async registerWithInvitation(invitation_uuid, name, email, password, password_confirmation, accept_terms) {
+      async registerWithInvitation(invitation_uuid, name, email, password, accept_terms) {
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
         
-        await AuthApi.registerWithInvitation(invitation_uuid, name, email, password, password_confirmation, accept_terms)
+        await AuthApi.registerWithInvitation(invitation_uuid, name, email, password, accept_terms)
           .then(response => {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
@@ -118,10 +118,10 @@ export const useAuthStore = defineStore('authStore', {
           })
       },
       
-      async resetPassword(token, email, password, password_confirmation) {
+      async resetPassword(token, email, password) {
         this.passwordResetting = true
         
-        await AuthApi.resetPassword(token, email, password, password_confirmation)
+        await AuthApi.resetPassword(token, email, password)
           .then(response => {
             this.passwordResetting = false
             this.passwordReset = true
