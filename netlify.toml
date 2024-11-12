@@ -2,3 +2,11 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[build]
+  node_version = "18"
+  command = "npm run build"  # Or the specific build command for your project
+  publish = "dist"  
+
+[context.production.environment]
+  NODE_VERSION = "18"
