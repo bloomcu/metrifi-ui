@@ -1,12 +1,8 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { authApi as AuthApi } from '@/domain/base/auth/api/authApi'
 
-// We now get the current route in all stores.
-// Use the this.router.currentRoute to get the site.
-
 export const useAuthStore = defineStore('authStore', {
     state: () => ({
-      // TODO: Rename this property as "auth"
       user: JSON.parse(localStorage.getItem('user')),
       organization: null,
       loading: false,
@@ -29,7 +25,6 @@ export const useAuthStore = defineStore('authStore', {
 
         await AuthApi.login(email, password)
           .then(response => {      
-            // TODO: Do I need to do this if we set the organization in httpClient? No.
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.organization = response.data.data.organization
             this.user = response.data.data
@@ -71,8 +66,7 @@ export const useAuthStore = defineStore('authStore', {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
             this.organization = response.data.data.organization
-            
-            // this.router.push({ name: 'dashboards', params: { organization: this.organization.slug }})
+
             if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
               this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
             } else {
@@ -92,8 +86,7 @@ export const useAuthStore = defineStore('authStore', {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
             this.organization = response.data.data.organization
-
-            // this.router.push({ name: 'dashboards', params: { organization: this.organization.slug }})
+            
             if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
               this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
             } else {
