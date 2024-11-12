@@ -220,12 +220,6 @@ const accordionStates = reactive({
 
 const isGenerateRecommendationModalOpen = inject('isGenerateRecommendationModalOpen')
 
-const localPrompt = ref(props.prompt)
-const localFiles = ref([])
-
-const secretShopperPrompt = ref('')
-const secretShopperFiles = ref([])
-
 // Watch the prop value and update the ref whenever it changes
 watch(() => isGenerateRecommendationModalOpen.value, (modelOpen) => {
   if (modelOpen === true) {
@@ -250,10 +244,6 @@ watch(() => isGenerateRecommendationModalOpen.value, (modelOpen) => {
     }
   }
 });
-
-// watch(() => props.secretShopperPrompt, (newValue) => {
-//   secretShopperPrompt.value = newValue;
-// });
 
 function handleLocalFileUploaded(file) {
   recommendationStore.recommendation.files.push(file)
@@ -312,9 +302,6 @@ async function generateRecommendation() {
         })
     }, 1000)
   })
-
-  // Clear the prompt and files
-  // localPrompt.value = ''
 }
 
 function getMetadataForRecommendations(stepIndex) {
