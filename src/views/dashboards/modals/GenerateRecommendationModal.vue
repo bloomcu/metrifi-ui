@@ -280,27 +280,32 @@ async function generateRecommendation() {
   // Cache file ids
   let fileIds = recommendationStore.recommendation?.files?.map(file => file.id)
   let secretShopperFileIds = recommendationStore.recommendation?.secret_shopper_files?.map(file => file.id)
+  console.log('Cached fileIds', fileIds)
+  console.log('Cached secretShopperFileIds', secretShopperFileIds)
 
   // Store recommendation
-  recommendationStore.store(route.params.organization, route.params.dashboard, recommendationStore.recommendation).then(() => {
+  await recommendationStore.store(route.params.organization, route.params.dashboard, recommendationStore.recommendation).then(() => {
 
     // Attach files
     if (fileIds.length) {
+      console.log('Attaching files', fileIds)
       recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds, 'additional-information')
     }
 
     if (secretShopperFileIds.length) {
+      console.log('Attaching secret shopper files', secretShopperFileIds)
       recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, secretShopperFileIds, 'secret-shopper')
     }
 
     setTimeout(() => {
+      console.log('Redirecting to recommendation')
       isGenerateRecommendationModalOpen.value = false
 
       router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
         .then(() => {
             window.location.reload()
         })
-    }, 1000)
+    }, 2000)
   })
 }
 
