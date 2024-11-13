@@ -95,7 +95,10 @@
                       <p class="font-semibold mb-1">Instructions</p>
                       <AppRichtext v-model="recommendationStore.recommendation.prompt" class="mb-2"/>
                     </div>
-                    <p v-else>No instructions provided</p>
+                    <div v-else>
+                      <p class="font-semibold mb-1">Instructions</p>
+                      <p class="text-gray-600">No instructions provided</p>
+                    </div>
 
                     <!-- Files -->
                     <div v-if="recommendationStore.recommendation.files.length">
@@ -133,7 +136,10 @@
                       <p class="font-semibold mb-1">Details</p>
                       <AppRichtext v-model="recommendationStore.recommendation.secret_shopper_prompt" class="mb-2"/>
                     </div>
-                    <p v-else>No details provided</p>
+                    <div v-else>
+                      <p class="font-semibold mb-1">Details</p>
+                      <p class="text-gray-600">No details provided</p>
+                    </div>
 
                     <!-- Files -->
                     <div v-if="recommendationStore.recommendation.secret_shopper_files.length">
