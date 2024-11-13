@@ -10,7 +10,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
     
     actions: {
       index(organizationSlug, dashboardId, params) {
-        this.analyses = []
+        this.recommendations = []
 
         RecommendationsApi.index(organizationSlug, dashboardId, params)
           .then(response => {
@@ -20,12 +20,12 @@ export const useRecommendationStore = defineStore('recommendationStore', {
           })
       },
 
-      async store(organizationSlug, dashboardId, params) {
+      async store(organizationSlug, dashboardId, recommendation) {
         this.isLoading = true
 
-        return await RecommendationsApi.store(organizationSlug, dashboardId, params)
+        return await RecommendationsApi.store(organizationSlug, dashboardId, recommendation)
           .then(response => {
-            console.log('Response from recommendation store', response)
+            console.log('Finished storing recommendation', response)
             this.recommendation = response.data.data
             this.recommendations.unshift(response.data.data)
             this.isLoading = false
@@ -47,10 +47,9 @@ export const useRecommendationStore = defineStore('recommendationStore', {
       async attachFile(organizationSlug, recommendationId, fileIds, type) {
         return await RecommendationsApi.attachFile(organizationSlug, recommendationId, fileIds, type)
           .then(response => {
-            console.log('Response', response.data.data)
-            // this.recommendation.files.unshift(response.data.data)
+            console.log('Finished attaching file', response.data)
           }).catch(error => {
-            console.log('Error', error.response.data)
+            console.log('Error error attaching file', error.response.data)
           })
       },
     }

@@ -25,7 +25,6 @@
         
       <div class="flex flex-col gap-3">
         <AppInput v-model="inputs.password" type="password" label="Password" required />
-        <AppInput v-model="inputs.password_confirmation" type="password" label="Confirm password" required />
         <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
         <AppButton :loading="authStore.passwordResetting" class="w-full">Reset password</AppButton>
       </div>
@@ -52,12 +51,11 @@ const authStore = useAuthStore()
 
 const inputs = ref({
   password: '',
-  password_confirmation: ''
 })
 
 function submit() {
-  const { password, password_confirmation } = inputs.value
-  authStore.resetPassword(route.query.token, route.query.email, password, password_confirmation)
+  const { password } = inputs.value
+  authStore.resetPassword(route.query.token, route.query.email, password)
 }
 
 onMounted(() => {

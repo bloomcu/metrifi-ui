@@ -4,6 +4,18 @@ import path from 'path'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
+  server: {
+    port: 3000,
+  },
+
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler' // or "modern"
+      }
+    }
+  },
+
   resolve: {
       alias: {
           '@': `${path.resolve(__dirname, 'src')}`,

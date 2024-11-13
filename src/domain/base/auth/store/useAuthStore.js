@@ -1,12 +1,8 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { authApi as AuthApi } from '@/domain/base/auth/api/authApi'
 
-// We now get the current route in all stores.
-// Use the this.router.currentRoute to get the site.
-
 export const useAuthStore = defineStore('authStore', {
     state: () => ({
-      // TODO: Rename this property as "auth"
       user: JSON.parse(localStorage.getItem('user')),
       organization: null,
       loading: false,
@@ -29,7 +25,6 @@ export const useAuthStore = defineStore('authStore', {
 
         await AuthApi.login(email, password)
           .then(response => {      
-            // TODO: Do I need to do this if we set the organization in httpClient? No.
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.organization = response.data.data.organization
             this.user = response.data.data
@@ -62,17 +57,16 @@ export const useAuthStore = defineStore('authStore', {
           .catch(error => {})
       },
       
-      async register(name, email, organization_title, password, password_confirmation, accept_terms) {
+      async register(name, email, organization_title, organization_domain, password, accept_terms) {
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
         this.loading = true
         
-        await AuthApi.register(name, email, organization_title, password, password_confirmation, accept_terms)
+        await AuthApi.register(name, email, organization_title, organization_domain, password, accept_terms)
           .then(response => {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
             this.organization = response.data.data.organization
-            
-            // this.router.push({ name: 'dashboards', params: { organization: this.organization.slug }})
+
             if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
               this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
             } else {
@@ -84,16 +78,15 @@ export const useAuthStore = defineStore('authStore', {
           .catch(error => {})
       },
       
-      async registerWithInvitation(invitation_uuid, name, email, password, password_confirmation, accept_terms) {
+      async registerWithInvitation(invitation_uuid, name, email, password, accept_terms) {
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
         
-        await AuthApi.registerWithInvitation(invitation_uuid, name, email, password, password_confirmation, accept_terms)
+        await AuthApi.registerWithInvitation(invitation_uuid, name, email, password, accept_terms)
           .then(response => {
             localStorage.setItem('user', JSON.stringify(response.data.data))
             this.user = response.data.data
             this.organization = response.data.data.organization
-
-            // this.router.push({ name: 'dashboards', params: { organization: this.organization.slug }})
+            
             if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
               this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
             } else {
@@ -118,10 +111,10 @@ export const useAuthStore = defineStore('authStore', {
           })
       },
       
-      async resetPassword(token, email, password, password_confirmation) {
+      async resetPassword(token, email, password) {
         this.passwordResetting = true
         
-        await AuthApi.resetPassword(token, email, password, password_confirmation)
+        await AuthApi.resetPassword(token, email, password)
           .then(response => {
             this.passwordResetting = false
             this.passwordReset = true

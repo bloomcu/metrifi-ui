@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createGtm } from '@gtm-support/vue-gtm';
 import App from '@/App.vue'
 import store from '@/store.js'
 import router from '@/router.js'
@@ -17,6 +18,13 @@ import AppModal from '@/app/components/base/modals/AppModal.vue'
 const app = createApp(App)
   .use(store)
   .use(router)
+  .use(
+    createGtm({
+      id: "GTM-P83WJ25N",
+      vueRouter: router,
+      enabled: import.meta.env.VITE_ENV === 'production',
+    })
+  )
   .component('AppButton', AppButton)
   .component('AppCard', AppCard)
   .component('AppInput', AppInput)
