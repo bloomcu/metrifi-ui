@@ -83,7 +83,7 @@
                     <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
                     <h2 class="font-medium">Additional information</h2>
                   </div>
-                  <CheckCircleIcon v-if="recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
+                  <CheckCircleIcon v-if="recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>' || recommendationStore.recommendation.files.length" class="h-7 w-7 text-green-600"/>
                 </div>
 
                 <div v-if="accordionStates.accordion2" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
@@ -121,7 +121,7 @@
                     <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
                     <h2 class="font-medium">Secret shopping study</h2>
                   </div>
-                  <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>'" class="h-7 w-7 text-green-600"/>
+                  <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>' || recommendationStore.recommendation.secret_shopper_files.length" class="h-7 w-7 text-green-600"/>
                 </div>
 
                 <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
@@ -136,7 +136,7 @@
                     <p v-else>No details provided</p>
 
                     <!-- Files -->
-                    <div v-if="recommendationStore.recommendation.secret_shopper_files">
+                    <div v-if="recommendationStore.recommendation.secret_shopper_files.length">
                       <p class="font-semibold mb-4">Files</p>
                       <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8">
                         <li v-for="file in recommendationStore.recommendation.secret_shopper_files" :key="file.id" class="relative">
