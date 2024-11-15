@@ -61,7 +61,7 @@
             <h2 class="font-medium">Compare to higher-converting pages</h2>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div v-if="funnelsWithHigherPerformingComparisonStep.length" class="flex items-center gap-2">
             <span class="text-sm text-green-600">Included by default</span>
             <CheckCircleIcon class="h-7 w-7 text-green-600"/>
           </div>
