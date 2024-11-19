@@ -73,10 +73,31 @@
                     <h2 class="font-medium">Compare to higher-converting pages</h2>
                   </div>
 
-                  <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+                  <div v-if="recommendationStore.recommendation.metadata.comparisons?.length" class="flex items-center gap-2">
+                    <!-- <span class="text-sm text-green-600">Included by default</span> -->
+                    <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+                  </div>
+
+                  <div v-else class="flex items">
+                    <!-- <p class="text-sm text-gray-400">No higher-converting comparisons</p> -->
+                  </div>
                 </div>
                 <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
-                  <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
+                  <div class="space-y-4">
+                    <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
+
+                    <div v-if="recommendationStore.recommendation.metadata.comparisons?.length">
+                      <p class="font-semibold mb-1">Higher-converting comparisons</p>
+                      <ul v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="list-disc list-inside text-gray-600">
+                        <li>{{ comparison.name }}</li>
+                      </ul>
+                    </div>
+
+                    <div v-else>
+                      <p class="font-semibold mb-1">Higher-converting comparisons</p>
+                      <p class="text-gray-600">None</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 

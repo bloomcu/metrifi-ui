@@ -11,7 +11,7 @@
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
-        <AppButton v-if="!organizationSubscriptionStore.limitExceeded" @click="generateRecommendation()" class="whitespace-nowrap">
+        <AppButton v-if="!organizationSubscriptionStore.limitExceeded" :disabled="!canGenerateRecommendation" @click="generateRecommendation()" class="whitespace-nowrap">
           Generate recommendation
         </AppButton>
       </div>
@@ -55,7 +55,7 @@
       <!-- Accordion 1 - UI analysis -->
       <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
         <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
-          <div class="flex gap-2">
+          <div class="flex items-center gap-2">
             <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
             <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
             <h2 class="font-medium">Compare to higher-converting pages</h2>
@@ -75,7 +75,7 @@
             <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
 
             <div v-if="funnelsWithHigherPerformingComparisonStep.length">
-              <p class="font-semibold mb-1">Qualifying comparisons</p>
+              <p class="font-semibold mb-1">Higher-converting comparisons</p>
               <ul v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="list-disc list-inside">
                 <li><span class="font-semibold">{{ funnel.name }}</span> funnel step <span class="font-semibold">{{ funnel.report.steps[stepIndex + 1].name }}</span> ({{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)</li>
               </ul>
@@ -345,6 +345,20 @@ const funnelsWithHigherPerformingComparisonStep = computed(() => {
   });
 });
 
+const canGenerateRecommendation = computed(() => {
+  return (
+    // Has comparisons
+    funnelsWithHigherPerformingComparisonStep.value.length > 0 ||
+
+    // Or has additional information
+    (recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>') ||
+    recommendationStore.recommendation.files.length > 0 ||
+
+    // Or has secret shopper information
+    (recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>') ||
+    recommendationStore.recommendation.secret_shopper_files.length > 0
+  );
+});
 function getMetadataForRecommendations(stepIndex) {
   let index = Number(stepIndex)
 
