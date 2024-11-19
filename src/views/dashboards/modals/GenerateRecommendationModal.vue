@@ -65,18 +65,21 @@
             <span class="text-sm text-green-600">Included by default</span>
             <CheckCircleIcon class="h-7 w-7 text-green-600"/>
           </div>
+
+          <div v-else class="flex items">
+            <p class="text-sm text-gray-400">No higher-converting comparisons</p>
+          </div>
         </div>
         <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
           <div class="space-y-4">
             <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
 
-            <p class="font-semibold mb-1">Qualifying comparisons</p>
-
-            <ul v-if="funnelsWithHigherPerformingComparisonStep.length" v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="list-disc list-inside">
-              <li><span class="font-semibold">{{ funnel.name }}</span> funnel step <span class="font-semibold">{{ funnel.report.steps[stepIndex + 1].name }}</span> ({{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)</li>
-            </ul>
-
-            <p v-else class="text-gray-600">No qualified comparisons</p>
+            <div v-if="funnelsWithHigherPerformingComparisonStep.length">
+              <p class="font-semibold mb-1">Qualifying comparisons</p>
+              <ul v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="list-disc list-inside">
+                <li><span class="font-semibold">{{ funnel.name }}</span> funnel step <span class="font-semibold">{{ funnel.report.steps[stepIndex + 1].name }}</span> ({{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

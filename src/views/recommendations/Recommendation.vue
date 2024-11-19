@@ -26,16 +26,21 @@
       </div>
     </header>
 
+    <!-- Issue -->
     <div v-if="issue" class="flex flex-col items-center justify-center min-h-screen">
       <div class="p-6 text-center text-gray-700">
-        <p class="text-xl mb-4"><span class="font-bold">Issue:</span> {{ issue }}</p>
-        <p class="mb-8">The assistant was not able to complete it's job.</p>
-        <AppButton @click="toggleGenerateRecommendationModal()" variant="primary" size="base">
+        <p class="text-3xl font-bold mb-4">The AI failed to complete the job.</p>
+        <p class="mb-8">Sorry, please try again later. If this issue continues, please contact support.</p>
+        
+        <AppButton @click="toggleGenerateRecommendationModal()" variant="primary" size="base" class="mb-14">
           Regenerate recommendation
         </AppButton>
+
+        <pre class="bg-gray-100 text-sm rounded-md justify-end">Error details: {{ issue }}</pre>
       </div>
     </div>
     
+    <!-- Recommendation -->
     <div v-if="recommendationStore.recommendation" class="min-h-screen flex flex-col">
       <!-- Container -->
       <div class="flex flex-grow h-0">
