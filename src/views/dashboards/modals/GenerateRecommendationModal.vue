@@ -75,9 +75,21 @@
             <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
 
             <div v-if="funnelsWithHigherPerformingComparisonStep.length">
-              <p class="font-semibold mb-1">Higher-converting comparisons</p>
-              <ul v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="list-disc list-inside">
-                <li><span class="font-semibold">{{ funnel.name }}</span> funnel step <span class="font-semibold">{{ funnel.report.steps[stepIndex + 1].name }}</span> ({{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)</li>
+              <p class="font-semibold mb-2">Higher-converting comparisons</p>
+              <ul class="border divide-y bg-white rounded-md">
+                <li v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="flex justify-between py-3 px-4">
+                  <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex + 1].name }}</span> </p>
+                  <p>{{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
+                </li>
+              </ul>
+            </div>
+
+            <div v-else>
+              <p class="font-semibold mb-2">Higher-converting comparisons</p>
+              <ul class="border border-dashed divide-y bg-white rounded-md">
+                <li class="py-3 px-4">
+                  <p class="text-gray-500">No higher-converting comparisons</p>
+                </li>
               </ul>
             </div>
           </div>

@@ -74,12 +74,7 @@
                   </div>
 
                   <div v-if="recommendationStore.recommendation.metadata.comparisons?.length" class="flex items-center gap-2">
-                    <!-- <span class="text-sm text-green-600">Included by default</span> -->
                     <CheckCircleIcon class="h-7 w-7 text-green-600"/>
-                  </div>
-
-                  <div v-else class="flex items">
-                    <!-- <p class="text-sm text-gray-400">No higher-converting comparisons</p> -->
                   </div>
                 </div>
                 <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
@@ -87,15 +82,22 @@
                     <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
 
                     <div v-if="recommendationStore.recommendation.metadata.comparisons?.length">
-                      <p class="font-semibold mb-1">Higher-converting comparisons</p>
-                      <ul v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="list-disc list-inside text-gray-600">
-                        <li>{{ comparison.name }}</li>
+                      <p class="font-semibold mb-2">Higher-converting comparisons</p>
+                      <ul class="border divide-y bg-white rounded-md">
+                        <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex justify-between py-3 px-4">
+                          <p><span class="font-semibold">{{ comparison.name }}</span></p>
+                          <p>{{ Number(comparison.conversion).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
+                        </li>
                       </ul>
                     </div>
 
                     <div v-else>
-                      <p class="font-semibold mb-1">Higher-converting comparisons</p>
-                      <p class="text-gray-600">None</p>
+                      <p class="font-semibold mb-2">Higher-converting comparisons</p>
+                      <ul class="border border-dashed divide-y bg-white rounded-md">
+                        <li class="py-3 px-4">
+                          <p class="text-gray-500">No higher-converting comparisons</p>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
