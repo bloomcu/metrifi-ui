@@ -61,7 +61,7 @@
             <h2 class="font-medium">Compare to higher-converting pages</h2>
           </div>
 
-          <div v-if="funnelsWithHigherPerformingComparisonStep.length" class="flex items-center gap-2">
+          <div v-if="funnelsWithHigherPerformingComparisonStep.length || recommendationStore.recommendation.metadata.comparisons.length" class="flex items-center gap-2">
             <span class="text-sm text-green-600">Included by default</span>
             <CheckCircleIcon class="h-7 w-7 text-green-600"/>
           </div>
@@ -74,12 +74,24 @@
           <div class="space-y-4">
             <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
 
+            <!-- Get from from funnel reports via computed property -->
             <div v-if="funnelsWithHigherPerformingComparisonStep.length">
               <p class="font-semibold mb-2">Higher-converting comparisons</p>
               <ul class="border divide-y bg-white rounded-md">
                 <li v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="flex justify-between py-3 px-4">
                   <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex].name }}</span> </p>
                   <p>{{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Get comparisons from recommendation metadata -->
+            <div v-else-if="recommendationStore.recommendation.metadata.comparisons.length">
+              <p class="font-semibold mb-2">Higher-converting comparisons</p>
+              <ul class="border divide-y bg-white rounded-md">
+                <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex justify-between py-3 px-4">
+                  <p><span class="font-semibold">{{ comparison.name }}</span></p>
+                  <p>{{ Number(comparison.conversion).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
                 </li>
               </ul>
             </div>
@@ -360,7 +372,8 @@ const funnelsWithHigherPerformingComparisonStep = computed(() => {
 const canGenerateRecommendation = computed(() => {
   return (
     // Has comparisons
-    funnelsWithHigherPerformingComparisonStep.value.length > 0 ||
+    funnelsWithHigherPerformingComparisonStep.value.length > 0 || // Via computed property
+    recommendationStore.recommendation.metadata.comparisons.length > 0 || // Via recommendation metadata
 
     // Or has additional information
     (recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>') ||
