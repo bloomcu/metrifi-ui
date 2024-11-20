@@ -26,16 +26,21 @@
       </div>
     </header>
 
+    <!-- Issue -->
     <div v-if="issue" class="flex flex-col items-center justify-center min-h-screen">
       <div class="p-6 text-center text-gray-700">
-        <p class="text-xl mb-4"><span class="font-bold">Issue:</span> {{ issue }}</p>
-        <p class="mb-8">The assistant was not able to complete it's job.</p>
-        <AppButton @click="toggleGenerateRecommendationModal()" variant="primary" size="base">
+        <p class="text-3xl font-bold mb-4">The AI failed to complete the job.</p>
+        <p class="mb-8">Sorry, please try again later. If this issue continues, please contact support.</p>
+        
+        <AppButton @click="toggleGenerateRecommendationModal()" variant="primary" size="base" class="mb-14">
           Regenerate recommendation
         </AppButton>
+
+        <pre class="bg-gray-100 text-sm rounded-md justify-end">Error details: {{ issue }}</pre>
       </div>
     </div>
     
+    <!-- Recommendation -->
     <div v-if="recommendationStore.recommendation" class="min-h-screen flex flex-col">
       <!-- Container -->
       <div class="flex flex-grow h-0">
@@ -68,10 +73,33 @@
                     <h2 class="font-medium">Compare to higher-converting pages</h2>
                   </div>
 
-                  <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+                  <div v-if="recommendationStore.recommendation.metadata.comparisons?.length" class="flex items-center gap-2">
+                    <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+                  </div>
                 </div>
                 <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
-                  <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
+                  <div class="space-y-4">
+                    <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
+
+                    <div v-if="recommendationStore.recommendation.metadata.comparisons?.length">
+                      <p class="font-semibold mb-2">Higher-converting comparisons</p>
+                      <ul class="border divide-y bg-white rounded-md">
+                        <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex justify-between py-3 px-4">
+                          <p><span class="font-semibold">{{ comparison.name }}</span></p>
+                          <p>{{ Number(comparison.conversion).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div v-else>
+                      <p class="font-semibold mb-2">Higher-converting comparisons</p>
+                      <ul class="border border-dashed divide-y bg-white rounded-md">
+                        <li class="py-3 px-4">
+                          <p class="text-gray-500">No higher-converting comparisons</p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -252,7 +280,7 @@ provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
-  { status: 'ui_analyzer_in_progress', text: 'Analyzing UI', completed: false },
+  { status: 'comparison_analyzer_in_progress', text: 'Analyzing comparisons', completed: false },
   { status: 'synthesizer_in_progress', text: 'Synthesizing prompt', completed: false },
   { status: 'anonymizer_in_progress', text: 'Reviewing analysis', completed: false },
   { status: 'content_writer_in_progress', text: 'Writing new content', completed: false },

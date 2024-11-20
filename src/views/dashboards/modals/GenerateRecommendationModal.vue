@@ -11,7 +11,7 @@
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
-        <AppButton v-if="!organizationSubscriptionStore.limitExceeded" @click="generateRecommendation()" class="whitespace-nowrap">
+        <AppButton v-if="!organizationSubscriptionStore.limitExceeded" :disabled="!canGenerateRecommendation" @click="generateRecommendation()" class="whitespace-nowrap">
           Generate recommendation
         </AppButton>
       </div>
@@ -55,19 +55,44 @@
       <!-- Accordion 1 - UI analysis -->
       <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
         <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
-          <div class="flex gap-2">
+          <div class="flex items-center gap-2">
             <MinusIcon v-if="accordionStates.accordion1" class="h-6 w-6 text-gray-600"/>
             <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
             <h2 class="font-medium">Compare to higher-converting pages</h2>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div v-if="funnelsWithHigherPerformingComparisonStep.length" class="flex items-center gap-2">
             <span class="text-sm text-green-600">Included by default</span>
             <CheckCircleIcon class="h-7 w-7 text-green-600"/>
           </div>
+
+          <div v-else class="flex items">
+            <p class="text-sm text-gray-400">No higher-converting comparisons</p>
+          </div>
         </div>
         <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
-          <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
+          <div class="space-y-4">
+            <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
+
+            <div v-if="funnelsWithHigherPerformingComparisonStep.length">
+              <p class="font-semibold mb-2">Higher-converting comparisons</p>
+              <ul class="border divide-y bg-white rounded-md">
+                <li v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="flex justify-between py-3 px-4">
+                  <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex + 1].name }}</span> </p>
+                  <p>{{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
+                </li>
+              </ul>
+            </div>
+
+            <div v-else>
+              <p class="font-semibold mb-2">Higher-converting comparisons</p>
+              <ul class="border border-dashed divide-y bg-white rounded-md">
+                <li class="py-3 px-4">
+                  <p class="text-gray-500">No higher-converting comparisons</p>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -186,7 +211,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, inject, watch } from 'vue'
+import { reactive, computed, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { ArrowLeftIcon, TrashIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
@@ -297,6 +322,8 @@ async function generateRecommendation() {
       recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, secretShopperFileIds, 'secret-shopper')
     }
 
+    console.log('Metadata:', recommendationStore.recommendation.metadata)
+
     setTimeout(() => {
       console.log('Redirecting to recommendation')
       isGenerateRecommendationModalOpen.value = false
@@ -309,42 +336,80 @@ async function generateRecommendation() {
   })
 }
 
+// Compute the filtered funnels
+const funnelsWithHigherPerformingComparisonStep = computed(() => {
+  if (!funnelStore.funnels || funnelStore.funnels.length === 0) {
+    return [];
+  }
+
+  // Get the conversion rate of the first funnel at the given step index
+  const baseConversionRate =
+    funnelStore.funnels[0]?.report?.steps[props.stepIndex + 1]?.conversionRate || 0;
+
+  // Filter funnels where the step's conversion rate is higher
+  return funnelStore.funnels.filter((funnel, index) => {
+    // Skip the first funnel
+    if (index === 0) return false;
+
+    const conversionRate =
+      funnel?.report?.steps[props.stepIndex + 1]?.conversionRate || 0;
+    return conversionRate > baseConversionRate;
+  });
+});
+
+const canGenerateRecommendation = computed(() => {
+  return (
+    // Has comparisons
+    funnelsWithHigherPerformingComparisonStep.value.length > 0 ||
+
+    // Or has additional information
+    (recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>') ||
+    recommendationStore.recommendation.files.length > 0 ||
+
+    // Or has secret shopper information
+    (recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>') ||
+    recommendationStore.recommendation.secret_shopper_files.length > 0
+  );
+});
 function getMetadataForRecommendations(stepIndex) {
   let index = Number(stepIndex)
 
   let focusName = funnelStore.funnels[0].report.steps[index].name
   let focusDomain = funnelStore.funnels[0].organization.domain
   let focusUrl = focusDomain + funnelStore.funnels[0].report.steps[index].metrics[0].pagePath
-  let conversion = funnelStore.funnels[0].report.steps[index + 1].conversionRate
+  let conversion = funnelStore.funnels[0].report.steps[index + 1]?.conversionRate
 
   let focus = {
     name: focusName,
     domain: focusDomain,
     url: focusUrl,
-    conversion: conversion,
+    conversion: conversion ?? null,
   }
 
-  let comparisons = funnelStore.funnels
-    .filter((funnel, i) => i !== 0)
-    .map((funnel) => {
-      let name = funnel.report.steps[index].name
-      let domain = funnel.organization.domain
-      let url = domain + funnel.report.steps[index].metrics[0].pagePath
-      let conversion = funnel.report.steps[index + 1].conversionRate
-      
-      return {
-        name: name,
-        domain: domain,
-        url: url,
-        conversion: conversion,
-      };
-    });
+  let comparisons = []
 
-  // Sort the comparisons by the step conversion rate
-  comparisons.sort((a, b) => b.conversion - a.conversion)
+  if (funnelsWithHigherPerformingComparisonStep.value.length) {
+    comparisons = funnelsWithHigherPerformingComparisonStep.value
+      .map((funnel) => {
+        let name = funnel.report.steps[index].name
+        let domain = funnel.organization.domain
+        let url = domain + funnel.report.steps[index].metrics[0].pagePath
+        let conversion = funnel.report.steps[index + 1].conversionRate
+        
+        return {
+          name: name,
+          domain: domain,
+          url: url,
+          conversion: conversion,
+        };
+      });
 
-  // Get the top three comparisons
-  comparisons = comparisons.slice(0, 3)
+    // Sort the comparisons by the step conversion rate
+    comparisons.sort((a, b) => b.conversion - a.conversion)
+
+    // Get the top three comparisons
+    comparisons = comparisons.slice(0, 3)
+  }
 
   return {
     focus: focus,
