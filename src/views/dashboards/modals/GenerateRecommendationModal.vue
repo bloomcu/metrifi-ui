@@ -78,7 +78,7 @@
               <p class="font-semibold mb-2">Higher-converting comparisons</p>
               <ul class="border divide-y bg-white rounded-md">
                 <li v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="flex justify-between py-3 px-4">
-                  <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex + 1].name }}</span> </p>
+                  <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex].name }}</span> </p>
                   <p>{{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
                 </li>
               </ul>
