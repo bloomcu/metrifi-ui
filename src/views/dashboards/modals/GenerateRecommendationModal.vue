@@ -84,9 +84,19 @@
             <div v-if="funnelsWithHigherPerformingComparisonStep.length">
               <p class="font-semibold mb-2">Higher-converting comparisons</p>
               <ul class="border divide-y bg-white rounded-md">
-                <li v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="flex justify-between py-3 px-4">
+                <li v-for="(funnel, index) in funnelsWithHigherPerformingComparisonStep" :key="index" class="flex justify-between py-3 px-4 gap-4">
                   <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex].name }}</span></p>
-                  <p>{{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
+
+                  <div class="flex gap-4">
+                    <!-- Checkmark -->
+                    <div v-if="index < 3" class="flex items-center gap-2">
+                      <span class="text-sm text-green-600">Included</span>
+                      <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+                    </div>
+
+                    <!-- Conversion rate -->
+                    <p>{{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -321,7 +331,7 @@ function handleDeleteSecretShopperFile(fileId) {
 async function generateRecommendation() {
   // Show loader
   showLoader.value = true
-  
+
   // We're creating a new recommendation, generate the metadata
   if (!route.params.recommendation) { 
     recommendationStore.recommendation.metadata = getMetadataForRecommendations(props.stepIndex)
@@ -363,23 +373,32 @@ async function generateRecommendation() {
 // Compute the filtered funnels
 const funnelsWithHigherPerformingComparisonStep = computed(() => {
   if (!funnelStore.funnels || funnelStore.funnels.length === 0) {
-    return []
+    return [];
   }
 
   // Get the conversion rate of the first funnel at the given step index
   const baseConversionRate =
     funnelStore.funnels[0]?.report?.steps[props.stepIndex + 1]?.conversionRate || 0;
 
-  // Filter funnels where the step's conversion rate is higher
-  return funnelStore.funnels.filter((funnel, index) => {
-    // Skip the first funnel
-    if (index === 0) return false;
+  // Filter and sort funnels where the step's conversion rate is higher
+  return funnelStore.funnels
+    .filter((funnel, index) => {
+      // Skip the first funnel
+      if (index === 0) return false;
 
-    const conversionRate =
-      funnel?.report?.steps[props.stepIndex + 1]?.conversionRate || 0;
-    return conversionRate > baseConversionRate;
-  });
+      const conversionRate =
+        funnel?.report?.steps[props.stepIndex + 1]?.conversionRate || 0;
+      return conversionRate > baseConversionRate;
+    })
+    .sort((a, b) => {
+      const aRate = a?.report?.steps[props.stepIndex + 1]?.conversionRate || 0;
+      const bRate = b?.report?.steps[props.stepIndex + 1]?.conversionRate || 0;
+
+      // Sort in descending order
+      return bRate - aRate;
+    });
 });
+
 
 const canGenerateRecommendation = computed(() => {
   return (
