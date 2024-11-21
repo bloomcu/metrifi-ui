@@ -84,8 +84,13 @@
                     <div v-if="recommendationStore.recommendation.metadata.comparisons?.length">
                       <p class="font-semibold mb-2">Higher-converting comparisons</p>
                       <ul class="border divide-y bg-white rounded-md">
-                        <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex justify-between py-3 px-4">
-                          <p><span class="font-semibold">{{ comparison.name }}</span></p>
+                        <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex items-center justify-between py-3 px-4">
+                          <!-- <p v-if="comparison.funnel"><span class="font-semibold">{{ comparison.funnel}}</span> funnel, step <span class="font-semibold">{{ comparison.name }}</span></p> -->
+                          <div v-if="comparison.funnel">
+                            <p class="text-gray-500">Funnel: {{ comparison.funnel}}</p>
+                            <p>Step: <span class="font-semibold">{{ comparison.name }}</span></p>
+                          </div>
+                          <p v-else><span class="font-semibold">{{ comparison.name }}</span></p>
                           <p>{{ Number(comparison.conversion).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
                         </li>
                       </ul>
