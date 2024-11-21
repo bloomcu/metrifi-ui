@@ -77,15 +77,20 @@
           </div>
         </div>
         <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
-          <div class="space-y-4">
+          <div class="space-y-6">
             <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
 
             <!-- Get from from funnel reports via computed property -->
             <div v-if="funnelsWithHigherPerformingComparisonStep.length">
               <p class="font-semibold mb-2">Higher-converting comparisons</p>
+              <p class="text-gray-600 mb-3">Up to three comparisons will be used.</p>
+
               <ul class="border divide-y bg-white rounded-md">
-                <li v-for="(funnel, index) in funnelsWithHigherPerformingComparisonStep" :key="index" class="flex justify-between py-3 px-4 gap-4">
-                  <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex].name }}</span></p>
+                <li v-for="(funnel, index) in funnelsWithHigherPerformingComparisonStep" :key="index" class="flex items-center justify-between py-3 px-4 gap-4">
+                  <div>
+                    <p class="text-gray-500">Funnel: {{ funnel.name }}</p>
+                    <p>Step: <span class="font-semibold">{{ funnel.report.steps[stepIndex].name }}</span></p>
+                  </div>
 
                   <div class="flex gap-4">
                     <!-- Checkmark -->
@@ -114,9 +119,13 @@
             <div v-if="recommendationStore.recommendation.metadata.comparisons">
               <p class="font-semibold mb-2">Previously used comparisons</p>
               <ul class="border divide-y bg-white rounded-md">
-                <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex justify-between py-3 px-4">
-                  <p v-if="comparison.funnel"><span class="font-semibold">{{ comparison.funnel}}</span> funnel, step <span class="font-semibold">{{ comparison.name }}</span></p>
-                  <p v-else><span class="font-semibold">{{ comparison.name }}</span></p>
+                <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex items-center justify-between py-3 px-4">
+                  <div v-if="comparison.funnel">
+                    <p class="text-gray-500">Funnel: {{ comparison.funnel}}</p>
+                    <p>Step: <span class="font-semibold">{{ comparison.name }}</span></p>
+                  </div>
+
+                  <p v-else>Step: <span class="font-semibold">{{ comparison.name }}</span></p>
                   <p>{{ Number(comparison.conversion).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
                 </li>
               </ul>
