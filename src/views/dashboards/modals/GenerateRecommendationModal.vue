@@ -4,6 +4,12 @@
     @closed="isGenerateRecommendationModalOpen = false" 
     :open="isGenerateRecommendationModalOpen"
   >
+    <!-- Loading overlay -->
+    <div v-if="showLoader" class="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm flex flex-col items-center justify-center z-50 space-y-4">
+      <div class="w-16 h-16 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
+      <p class="text-white text-xl">Starting recommendation</p>
+    </div>
+
     <!-- Sticky Top Bar -->
     <div class="z-20 fixed top-0 left-0 w-full bg-white border-b border-gray-200">
       <div class="flex items-center justify-between px-4 py-2">
@@ -61,7 +67,7 @@
             <h2 class="font-medium">Compare to higher-converting pages</h2>
           </div>
 
-          <div v-if="funnelsWithHigherPerformingComparisonStep.length || recommendationStore.recommendation.metadata.comparisons.length" class="flex items-center gap-2">
+          <div v-if="funnelsWithHigherPerformingComparisonStep.length" class="flex items-center gap-2">
             <span class="text-sm text-green-600">Included by default</span>
             <CheckCircleIcon class="h-7 w-7 text-green-600"/>
           </div>
@@ -79,19 +85,8 @@
               <p class="font-semibold mb-2">Higher-converting comparisons</p>
               <ul class="border divide-y bg-white rounded-md">
                 <li v-for="funnel in funnelsWithHigherPerformingComparisonStep" :key="funnel.id" class="flex justify-between py-3 px-4">
-                  <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex].name }}</span> </p>
+                  <p><span class="font-semibold">{{ funnel.name }}</span> funnel, step <span class="font-semibold">{{ funnel.report.steps[stepIndex].name }}</span></p>
                   <p>{{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Get comparisons from recommendation metadata -->
-            <div v-else-if="recommendationStore.recommendation.metadata.comparisons.length">
-              <p class="font-semibold mb-2">Higher-converting comparisons</p>
-              <ul class="border divide-y bg-white rounded-md">
-                <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex justify-between py-3 px-4">
-                  <p><span class="font-semibold">{{ comparison.name }}</span></p>
-                  <p>{{ Number(comparison.conversion).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
                 </li>
               </ul>
             </div>
@@ -101,6 +96,18 @@
               <ul class="border border-dashed divide-y bg-white rounded-md">
                 <li class="py-3 px-4">
                   <p class="text-gray-500">No higher-converting comparisons</p>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Show previously used comparisons from metadata -->
+            <div v-if="recommendationStore.recommendation.metadata.comparisons">
+              <p class="font-semibold mb-2">Previously used comparisons</p>
+              <ul class="border divide-y bg-white rounded-md">
+                <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex justify-between py-3 px-4">
+                  <p v-if="comparison.funnel"><span class="font-semibold">{{ comparison.funnel}}</span> funnel, step <span class="font-semibold">{{ comparison.name }}</span></p>
+                  <p v-else><span class="font-semibold">{{ comparison.name }}</span></p>
+                  <p>{{ Number(comparison.conversion).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
                 </li>
               </ul>
             </div>
@@ -223,7 +230,7 @@
 </template>
 
 <script setup>
-import { reactive, computed, inject, watch } from 'vue'
+import { ref, reactive, computed, onMounted, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { ArrowLeftIcon, TrashIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
@@ -231,6 +238,7 @@ import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/u
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { useFileStore } from '@/domain/files/store/useFileStore'
+import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import AppButton from '@/app/components/base/buttons/AppButton.vue'
 import FileUploader from '@/domain/files/components/FileUploader.vue'
@@ -240,6 +248,8 @@ const props = defineProps({
   prompt: '',
   secretShopperPrompt: '',
 })
+
+const showLoader = ref(false)
 
 const route = useRoute()
 const router = useRouter()
@@ -309,6 +319,9 @@ function handleDeleteSecretShopperFile(fileId) {
 }
 
 async function generateRecommendation() {
+  // Show loader
+  showLoader.value = true
+  
   // We're creating a new recommendation, generate the metadata
   if (!route.params.recommendation) { 
     recommendationStore.recommendation.metadata = getMetadataForRecommendations(props.stepIndex)
@@ -322,7 +335,6 @@ async function generateRecommendation() {
 
   // Store recommendation
   await recommendationStore.store(route.params.organization, route.params.dashboard, recommendationStore.recommendation).then(() => {
-
     // Attach files
     if (fileIds.length) {
       console.log('Attaching files', fileIds)
@@ -351,7 +363,7 @@ async function generateRecommendation() {
 // Compute the filtered funnels
 const funnelsWithHigherPerformingComparisonStep = computed(() => {
   if (!funnelStore.funnels || funnelStore.funnels.length === 0) {
-    return [];
+    return []
   }
 
   // Get the conversion rate of the first funnel at the given step index
@@ -373,7 +385,7 @@ const canGenerateRecommendation = computed(() => {
   return (
     // Has comparisons
     funnelsWithHigherPerformingComparisonStep.value.length > 0 || // Via computed property
-    recommendationStore.recommendation.metadata.comparisons.length > 0 || // Via recommendation metadata
+    // recommendationStore?.recommendation?.metadata.comparisons.length > 0 || // Via recommendation metadata
 
     // Or has additional information
     (recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>') ||
@@ -384,6 +396,7 @@ const canGenerateRecommendation = computed(() => {
     recommendationStore.recommendation.secret_shopper_files.length > 0
   );
 });
+
 function getMetadataForRecommendations(stepIndex) {
   let index = Number(stepIndex)
 
@@ -404,12 +417,14 @@ function getMetadataForRecommendations(stepIndex) {
   if (funnelsWithHigherPerformingComparisonStep.value.length) {
     comparisons = funnelsWithHigherPerformingComparisonStep.value
       .map((funnel) => {
+        let funnelName = funnel.name
         let name = funnel.report.steps[index].name
         let domain = funnel.organization.domain
         let url = domain + funnel.report.steps[index].metrics[0].pagePath
         let conversion = funnel.report.steps[index + 1].conversionRate
         
         return {
+          funnel: funnelName,
           name: name,
           domain: domain,
           url: url,
@@ -430,9 +445,27 @@ function getMetadataForRecommendations(stepIndex) {
   }
 }
 
+function loadDashboard() {
+  funnelStore.funnels = []
+  
+  dashboardApi.show(route.params.organization, route.params.dashboard)
+    .then(response => {
+      // console.log(response)
+      let dashboard = response.data.data
+
+      dashboard.funnels.forEach(funnel => {
+        funnelStore.addFunnel(funnel)
+      })
+    })
+}
+
 const toggleAccordion = (accordionName) => {
   if (accordionStates.hasOwnProperty(accordionName)) {
     accordionStates[accordionName] = !accordionStates[accordionName];
   }
 };
+
+onMounted(() => {
+  loadDashboard()
+})
 </script>
