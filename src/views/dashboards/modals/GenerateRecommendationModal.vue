@@ -92,15 +92,17 @@
                     <p>Step: <span class="font-semibold">{{ funnel.report.steps[stepIndex].name }}</span></p>
                   </div>
 
-                  <div class="flex gap-4">
+                  <div class="flex items-center gap-4">
                     <!-- Checkmark -->
-                    <div v-if="index < 3" class="flex items-center gap-2">
+                    <div v-if="index < 3" class="flex items-center gap-2 flex-none">
                       <span class="text-sm text-green-600">Included</span>
-                      <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+                      <CheckCircleIcon class="h-7 w-7 text-green-600" />
                     </div>
 
                     <!-- Conversion rate -->
-                    <p>{{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%</p>
+                    <p class="text-right w-20">
+                      {{ Number(funnel.report.steps[stepIndex + 1].conversionRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%
+                    </p>
                   </div>
                 </li>
               </ul>
