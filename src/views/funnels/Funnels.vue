@@ -1,5 +1,17 @@
 <template>
   <LayoutWithSidebar>
+    <template #overlay>
+      <!-- Force GA connection first -->
+      <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'"  class="fixed h-full w-full bg-gray-white bg-opacity-50 backdrop-blur-sm flex justify-center z-50">
+        <div class="-ml-60 flex flex-col text-center items-center justify-center">
+          <svg class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+          <h1 class="mb-2 text-3xl font-medium text-gray-900">Connect Google Analytics</h1>
+          <p class="text-lg text-gray-700 mb-4">Connecting your Google Analytics 4 account allows MetriFi to access your GA4 data and build funnels.</p>
+          <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
+        </div>
+      </div>
+    </template>
+    
     <template #topbar>
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Funnels</h1>
@@ -20,7 +32,6 @@
           </AppButton> -->
         </div>
       </div>
-      
     </template>
 
     <!-- Automation running -->
@@ -53,16 +64,8 @@
       <CategoryPicker v-model="category"/>
     </div>
 
-    <!-- Force GA connection first -->
-    <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'" class="rounded-xl bg-violet-50 p-6 mb-8">
-      <svg class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
-      <h1 class="mb-2 text-3xl font-medium text-gray-900">Connect Google Analytics</h1>
-      <p class="text-lg text-gray-700 mb-4">Connecting your Google Analytics 4 account allows MetriFi to access your GA4 data and build funnels.</p>
-      <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
-    </div>
-
     <!-- List funnels -->
-    <table v-else-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-20 sm:mx-0 sm:rounded-lg">
+    <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-20 sm:mx-0 sm:rounded-lg">
       <thead>
         <tr class="">
           <th scope="col" class="py-3.5 pl-4 pr-4 sm:pl-4 text-left text-sm font-medium text-gray-900">Funnel</th>
