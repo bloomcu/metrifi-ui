@@ -1,7 +1,7 @@
 <template>
   <LayoutDefault v-if="funnelStore.funnel" width="full" class="min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="border-b flex items-center gap-3 justify-between py-3 px-4 sm:px-6 lg:px-8">
+    <header class="border-b flex items-center gap-3 justify-between py-3 px-3">
       <div class="flex items-center gap-2 grow">
         <!-- Back -->
         <AppButton :to="{name: 'funnels'}" variant="tertiary" size="base">

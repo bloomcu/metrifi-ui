@@ -2,7 +2,7 @@
   <LayoutWithSidebar>
     <template #overlay>
       <!-- Force GA connection first -->
-      <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'"  class="fixed h-full w-full bg-gray-white bg-opacity-50 backdrop-blur-sm flex justify-center z-50">
+      <div v-if="organizationStore.organization && organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'"  class="fixed h-full w-full bg-gray-white bg-opacity-50 backdrop-blur-sm flex justify-center z-50">
         <div class="-ml-60 flex flex-col text-center items-center justify-center">
           <svg class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
           <h1 class="mb-2 text-3xl font-medium text-gray-900">Connect Google Analytics</h1>
@@ -21,7 +21,7 @@
             <!-- <AppButton variant="tertiary">
               Analyze all dashboards
             </AppButton> -->
-            <AppButton v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete'" @click="storeNewDashboard()">
+            <AppButton v-if="organizationStore.organization && organizationStore.organization.funnels_count !== 0 && !organizationStore.organization.is_private" @click="storeNewDashboard()">
               Create dashboard
             </AppButton>
           </div>
@@ -226,6 +226,22 @@
       <div class="h-4 bg-gray-200 rounded w-3/4"></div>
     </div>
 
+    <!-- Force funnel create first -->
+    <div v-if="organizationStore.organization && organizationStore.organization.funnels_count === 0" @click="storeNewFunnel()" class="rounded-lg border border-violet-400 border-dashed p-6 pb-8 mb-8 hover:bg-violet-50 cursor-pointer">
+      <ChartBarIcon class="w-10 h-10 mb-8 text-violet-600" aria-hidden="true" />
+      <h1 class="mb-2 text-2xl font-medium text-violet-600">You need a funnel</h1>
+      <p class="text-lg text-gray-700 mb-4">You need a funnel to compare before creating a dashboard.</p>
+      <AppButton>Create a funnel</AppButton>
+    </div>
+
+    <!-- Force anonymous sharing -->
+    <div v-else-if="organizationStore.organization && organizationStore.organization.is_private" @click="router.push({name: 'settingsOrganization'})" class="rounded-lg border border-violet-400 border-dashed p-6 pb-8 mb-8 hover:bg-violet-50 cursor-pointer">
+      <EyeIcon class="w-10 h-10 mb-8 text-violet-600" aria-hidden="true" />
+      <h1 class="mb-2 text-2xl font-medium text-violet-600">Share anonymously</h1>
+      <p class="text-lg text-gray-700 mb-4">Sharing your analytics data anonymously allows you to compare your dashboards with the dashboards of other organizations.</p>
+      <AppButton>Enable anonymous sharing</AppButton>
+    </div>
+
     <!-- Empty state: No dashboards -->
     <div v-else @click="storeNewDashboard()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
       <Squares2X2Icon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
@@ -239,11 +255,12 @@ import moment from "moment"
 import { ref, computed, onMounted } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useRoute, useRouter } from 'vue-router'
+import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
-import { Squares2X2Icon } from '@heroicons/vue/24/outline'
-import { ChartBarIcon } from '@heroicons/vue/24/solid'
+import { Squares2X2Icon, ChartBarIcon, EyeIcon } from '@heroicons/vue/24/outline'
+// import { ChartBarIcon } from '@heroicons/vue/24/solid'
 import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
@@ -383,7 +400,20 @@ function showDashboard(dashboardId) {
   router.push({ name: 'dashboard', params: { dashboard: dashboardId } })
 }
 
+function storeNewFunnel() {
+  funnelApi.store(route.params.organization, {
+    name: 'New funnel',
+    description: 'This is the funnel description',
+    zoom: 0,
+    conversion_value: 0,
+  }).then(response => {
+    let funnel = response.data.data
+    router.push({ name: 'funnel', params: { funnel: funnel.id } })
+  })
+}
+
 onMounted(() => {
   loadDashboards()
+  organizationStore.show(route.params.organization)
 })
 </script>

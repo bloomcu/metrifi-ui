@@ -16,7 +16,7 @@
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Funnels</h1>
         <div class="flex gap-2">
-          <AppButton v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete'" @click="storeNewFunnel">
+          <AppButton v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete'" @click="storeNewFunnel()">
             Create blank funnel
           </AppButton>
           <!-- <AppButton v-if="!isAutomating" @click="toggleModal()" :disabled="isAutomating">
