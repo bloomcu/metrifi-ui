@@ -28,12 +28,21 @@
       </div>
 
       <!-- Funnels in progress -->
-      <div v-else-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && organizationStore.organization.funnels_count == 0" class="rounded-lg border border-violet-400 bg-violet-50 p-6 mb-8">
+      <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && organizationStore.organization.funnels_count == 0" class="rounded-lg border border-violet-400 p-6 mb-6">
         <div class="flex items-center gap-4 mb-2">
           <div class="w-6 h-6 border-2 border-t-transparent border-violet-600 rounded-full animate-spin"></div>
           <h3 class="text-2xl font-medium text-violet-600">Setting up your funnels</h3>
         </div>
         <p class="text-lg text-gray-700">MetriFi is working behind the scenes to set up your funnels and comparisons. We’ll email you when everything is ready.</p>
+      </div>
+
+      <!-- Suggest anonymous sharing -->
+      <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && organizationStore.organization.is_private" @click="router.push({name: 'settingsOrganization'})" class="flex items-center justify-between rounded-lg bg-violet-50 p-6 mb-6 cursor-pointer hover:bg-violet-100">
+        <div>
+          <h3 class="text-xl font-medium text-violet-600">Share anonymously</h3>      
+          <p class="text-gray-700">Sharing your analytics data anonymously allows you to compare your dashboards with the dashboards of other organizations.</p>
+        </div>
+        <AppButton>Enable anonymous sharing</AppButton>
       </div>
 
       <!-- Complete -->
@@ -121,6 +130,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { CheckIcon, CheckCircleIcon } from '@heroicons/vue/20/solid'
+import { EyeIcon } from '@heroicons/vue/24/outline'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'

@@ -13,6 +13,15 @@
     </template>
 
     <template #topbar>
+      <!-- Suggest anonymous sharing -->
+      <div v-if="organizationStore.organization && organizationStore.organization.is_private" @click="router.push({name: 'settingsOrganization'})" class="flex items-center justify-between rounded-lg bg-violet-50 p-6 mb-6 cursor-pointer hover:bg-violet-100">
+        <div>
+          <h3 class="text-xl font-medium text-violet-600">Share anonymously</h3>      
+          <p class="text-gray-700">Sharing your analytics data anonymously allows you to compare your dashboards with the dashboards of other organizations.</p>
+        </div>
+        <AppButton>Enable anonymous sharing</AppButton>
+      </div>
+
       <div class="relative border-b border-gray-200 pb-5 sm:pb-0">
         <!-- Title -->
         <div class="mb-5 md:flex md:items-center md:justify-between">
@@ -227,19 +236,11 @@
     </div>
 
     <!-- Force funnel create first -->
-    <div v-if="organizationStore.organization && organizationStore.organization.funnels_count === 0" @click="storeNewFunnel()" class="rounded-lg border border-violet-400 border-dashed p-6 pb-8 mb-8 hover:bg-violet-50 cursor-pointer">
-      <ChartBarIcon class="w-10 h-10 mb-8 text-violet-600" aria-hidden="true" />
-      <h1 class="mb-2 text-2xl font-medium text-violet-600">You need a funnel</h1>
+    <div v-if="organizationStore.organization && organizationStore.organization.funnels_count === 0" @click="storeNewFunnel()" class="rounded-lg border border-dashed border-violet-400 p-6 pb-8 mb-8 hover:bg-violet-50 cursor-pointer">
+      <ChartBarIcon class="w-10 h-10 mb-6 text-violet-600" aria-hidden="true" />
+      <h3 class="mb-2 text-2xl font-medium text-violet-600">You need a funnel</h3>
       <p class="text-lg text-gray-700 mb-4">You need a funnel to compare before creating a dashboard.</p>
       <AppButton>Create a funnel</AppButton>
-    </div>
-
-    <!-- Force anonymous sharing -->
-    <div v-else-if="organizationStore.organization && organizationStore.organization.is_private" @click="router.push({name: 'settingsOrganization'})" class="rounded-lg border border-violet-400 border-dashed p-6 pb-8 mb-8 hover:bg-violet-50 cursor-pointer">
-      <EyeIcon class="w-10 h-10 mb-8 text-violet-600" aria-hidden="true" />
-      <h1 class="mb-2 text-2xl font-medium text-violet-600">Share anonymously</h1>
-      <p class="text-lg text-gray-700 mb-4">Sharing your analytics data anonymously allows you to compare your dashboards with the dashboards of other organizations.</p>
-      <AppButton>Enable anonymous sharing</AppButton>
     </div>
 
     <!-- Empty state: No dashboards -->
