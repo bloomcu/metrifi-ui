@@ -2,43 +2,56 @@
   <LayoutWithSidebar>
     <template #overlay>
       <!-- Force GA connection first -->
-      <div v-if="organizationStore.organization && organizationStore.organization.connections_count == 0"  class="fixed h-full w-full items-center bg-white bg-opacity-60 backdrop-blur-sm flex justify-center z-50">
-        <div class="-ml-60 -mt-96 flex flex-col text-center items-center justify-center border rounded-xl bg-white shadow-xl p-10">
+      <!-- <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'" class="fixed h-full w-full items-center bg-white bg-opacity-60 backdrop-blur-sm flex justify-center z-50">
+        <div class="max-w-3xl lg:-ml-60 -mt-96 flex flex-col text-center items-center justify-center border rounded-xl bg-white shadow-xl mx-4 p-14">
           <svg class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
           <h1 class="mb-2 text-3xl font-medium text-gray-900">Connect Google Analytics</h1>
-          <p class="text-lg text-gray-700 mb-4">Connecting your Google Analytics 4 account allows MetriFi to access your GA4 data and build funnels.</p>
+          <p class="text-lg text-gray-700 mb-4">In order to use MetriFi, you need to connect your Google Analytics 4 account.</p>
           <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
         </div>
-      </div>
+      </div> -->
     </template>
 
-    <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete'">
+    <div v-if="organizationStore.organization">
+      <!-- Welcome -->
+      <div class="mb-8">
+        <h2 class="text-3xl mb-1 font-medium text-gray-900">Welcome to MetriFi</h2>
+        <p class="text-lg text-gray-700">Let’s analyze your website and maximize your conversions.</p>
+      </div>
+
+      <!-- Connect Google Analytics -->
+      <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
+        <svg class="w-9 h-9 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+        <h3 class="mb-2 text-2xl font-medium text-gray-900">Connect Google Analytics</h3>
+        <p class="text-lg text-gray-700 mb-4">In order to use MetriFi, you need to connect your Google Analytics 4 account.</p>
+        <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
+      </div>
+
+      <!-- Funnels in progress -->
+      <div v-else-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && organizationStore.organization.funnels_count == 0" class="rounded-lg border border-violet-400 bg-violet-50 p-6 mb-8">
+        <div class="flex items-center gap-4 mb-2">
+          <div class="w-6 h-6 border-2 border-t-transparent border-violet-600 rounded-full animate-spin"></div>
+          <h3 class="text-2xl font-medium text-violet-600">Setting up your funnels</h3>
+        </div>
+        <p class="text-lg text-gray-700">MetriFi is working behind the scenes to set up your funnels and comparisons. We’ll email you when everything is ready.</p>
+      </div>
+
       <!-- Complete -->
-      <div v-if="organizationStore.organization.onboarding['onboardingComplete'] == true" class="rounded-xl bg-violet-50 p-4 mb-8">
-        <h2 class="mb-2 text-3xl font-medium text-gray-900">You're all done! Nice work!</h2>
+      <div v-if="organizationStore.organization.onboarding['onboardingComplete'] == true" class="rounded-xl bg-violet-50 p-6 mb-8">
+        <h3 class="text-2xl mb-2 font-medium text-gray-900">You're all done! Nice work!</h3>
         <p class="text-lg text-gray-700 mb-4">You can unhide this Welcome screen at any time by going to Settings.</p>
         <AppButton @click="hideOnboarding()">Hide Welcome screen</AppButton>
       </div>
-
-      <!-- Welcome -->
-      <div v-else-if="organizationStore.organization.funnels_count == 0" class="rounded-lg border border-violet-400 bg-violet-50 p-6 mb-8">
-        <div class="flex items-center gap-4 mb-2">
-          <div class="w-6 h-6 border-2 border-t-transparent border-violet-600 rounded-full animate-spin"></div>
-          <h2 class="text-2xl font-medium text-violet-600">Funnels in progress</h2>
-        </div>
-        <p class="text-lg text-gray-700">MetriFi is working on building funnels for you. We’ll notify your email when we’re done.</p>
-      </div>
       
       <!-- Step tabs -->
-      <AppCard v-if="organizationStore.organization" padding="none" class="">
-        <!-- Welcome message -->
+      <AppCard v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete'" padding="none" class="">
         <div class="p-6 border-b">
           <h3 v-if="organizationStore.organization.funnels_count == 0" class="text-2xl mb-1 font-medium text-gray-900">In the meantime</h3>
           <h3 v-else class="text-2xl mb-1 font-medium text-gray-900">Finish Google Analytics setup</h3>
           <p class="text-lg text-gray-500">Make sure google analytics is configured correctly so we can get all the data we need.</p>
         </div>
 
-        <div class="flex mb-6">
+        <div class="flex">
           <div class="w-1/3 p-3 border-r">
             <ul role="list">
               <li 
