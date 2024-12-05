@@ -68,7 +68,7 @@ export const useAuthStore = defineStore('authStore', {
             this.organization = response.data.data.organization
 
             if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
-              this.router.push({ name: 'onboarding', params: { organization: this.organization.slug }})
+              this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
             } else {
               this.router.push({ name: redirect, params: { organization: this.organization.slug }})
             }

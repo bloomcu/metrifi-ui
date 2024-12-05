@@ -138,6 +138,14 @@
       </div>
     </template>
 
+    <!-- Force funnel create first -->
+    <div v-if="organizationStore.organization && organizationStore.organization.funnels_count === 0" @click="storeNewFunnel()" class="rounded-lg border border-dashed border-violet-400 p-6 pb-8 mb-8 hover:bg-violet-50 cursor-pointer">
+      <ChartBarIcon class="w-10 h-10 mb-6 text-violet-600" aria-hidden="true" />
+      <h3 class="mb-2 text-2xl font-medium text-violet-600">You need a funnel</h3>
+      <p class="text-lg text-gray-700 mb-4">You need a funnel to compare before creating a dashboard.</p>
+      <AppButton>Create a funnel</AppButton>
+    </div>
+
     <!-- List dashboards -->
     <VueDraggableNext 
       v-if="dashboards && sortedDashboards.length"
@@ -233,14 +241,6 @@
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-    </div>
-
-    <!-- Force funnel create first -->
-    <div v-if="organizationStore.organization && organizationStore.organization.funnels_count === 0" @click="storeNewFunnel()" class="rounded-lg border border-dashed border-violet-400 p-6 pb-8 mb-8 hover:bg-violet-50 cursor-pointer">
-      <ChartBarIcon class="w-10 h-10 mb-6 text-violet-600" aria-hidden="true" />
-      <h3 class="mb-2 text-2xl font-medium text-violet-600">You need a funnel</h3>
-      <p class="text-lg text-gray-700 mb-4">You need a funnel to compare before creating a dashboard.</p>
-      <AppButton>Create a funnel</AppButton>
     </div>
 
     <!-- Empty state: No dashboards -->

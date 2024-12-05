@@ -12,7 +12,7 @@ import recommendations from '@/views/recommendations/routes/index.js'
 import connections from '@/views/connections/routes/index.js'
 import services from '@/views/services/routes/index.js'
 import welcome from '@/views/welcome/routes/index.js'
-import onboarding from '@/views/onboarding/routes/index.js'
+// import onboarding from '@/views/onboarding/routes/index.js'
 
 import Sandbox from '@/views/Sandbox.vue';
 // import Flowchart from '@/views/Flowchart.vue';
@@ -28,7 +28,7 @@ const routes = [
   ...connections,
   ...services,
   ...welcome,
-  ...onboarding,
+  // ...onboarding,
   // {
   //   path: '/',
   //   redirect: '/admin/organizations'
