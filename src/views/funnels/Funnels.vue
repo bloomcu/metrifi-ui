@@ -295,5 +295,6 @@ watch(category, () => {
 
 onMounted(() => {
   loadFunnels()
+  organizationStore.show(route.params.organization)
 })
 </script>
