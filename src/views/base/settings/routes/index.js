@@ -1,6 +1,7 @@
 import Settings from '@/views/base/settings/Settings.vue'
 import SettingsBilling from '@/views/base/settings/SettingsBilling.vue'
 import SettingsOrganization from '@/views/base/settings/SettingsOrganization.vue'
+import SettingsSharing from '@/views/base/settings/SettingsSharing.vue'
 import SettingsUsers from '@/views/base/settings/SettingsUsers.vue'
 
 export default [
@@ -14,6 +15,11 @@ export default [
         path: "users",
         name: "settingsUsers",
         component: SettingsUsers,
+      },
+      {
+        path: "sharing",
+        name: "settingsSharing",
+        component: SettingsSharing,
       },
       {
         path: "organization",
