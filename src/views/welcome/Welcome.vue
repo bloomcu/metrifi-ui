@@ -31,7 +31,7 @@
       <div v-else-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && organizationStore.organization.is_private" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
         <EyeIcon class="w-10 h-10 mb-6 text-violet-600" aria-hidden="true" />
         <h3 class="mb-2 text-2xl font-medium text-gray-900">Share anonymously</h3>
-        <p class="text-lg text-gray-700 mb-4">Sharing your analytics data anonymously allows you to compare your dashboards with the dashboards of other organizations.</p>
+        <p class="text-lg text-gray-700 mb-4">Sharing your analytics data anonymously allows you to compare your analytics with other organizations.</p>
 
         <!-- Switch -->
         <AppCard v-if="organizationStore.organization" class="my-10 max-w-2xl">
