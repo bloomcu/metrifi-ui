@@ -157,7 +157,7 @@
       @change="reorderFunnel($event)"
       class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"
     >
-      <div v-for="(funnel, index) in funnelStore.funnels" class="p-6 border-2 border-gray-200 rounded-xl bg-white">
+      <div v-for="(funnel, index) in funnelStore.funnels" :key="funnel.id" class="p-6 border-2 border-gray-200 rounded-xl bg-white">
         <!-- Funnel and organization name -->
         <div class="flex items-center justify-between">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
@@ -419,27 +419,6 @@ function toggleAddFunnelModal() {
   isAddFunnelsModalOpen.value = !isAddFunnelsModalOpen.value 
 }
 
-function loadDashboard() {
-  funnelStore.funnels = []
-  
-  dashboardApi.show(route.params.organization, route.params.dashboard)
-    .then(response => {
-      dashboard.value = response.data.data
-
-      dashboard.value.funnels.forEach(funnel => {
-        funnelStore.addFunnel(funnel)
-      })
-
-      if (dashboard.value.median_analysis && dashboard.value.max_analysis) {
-        analysisStore.median_analysis = dashboard.value.median_analysis
-        analysisStore.max_analysis = dashboard.value.max_analysis
-        // analysisStore.show(route.params.organization, route.params.dashboard, dashboard.value.latest_analysis.id)
-      } else {
-        analysisStore.analysis = null
-      }
-    })
-}
-
 function openFunnel(funnel) {
   const routeData = router.resolve({name: 'funnel', params: {
       organization: funnel.organization.slug,
@@ -465,6 +444,34 @@ function removeGenerateRecommendationParam() {
   router.replace({ query });
 }
 
+function loadDashboard() {
+  funnelStore.funnels = []
+  
+  dashboardApi.show(route.params.organization, route.params.dashboard)
+    .then(response => {
+      dashboard.value = response.data.data
+      
+      dashboard.value.funnels.forEach(funnel => {
+        funnelStore.addFunnel(funnel)
+      })
+
+      if (dashboard.value.median_analysis && dashboard.value.max_analysis) {
+        analysisStore.median_analysis = dashboard.value.median_analysis
+        analysisStore.max_analysis = dashboard.value.max_analysis
+      } else {
+        analysisStore.analysis = null
+      }
+    })
+}
+
+watch(selectedDateRange, () => {
+  funnelStore.funnels = []
+
+  dashboard.value.funnels.forEach(funnel => {
+    funnelStore.addFunnel(funnel)
+  })
+})
+
 watch(
   () => funnelStore.pendingFunnels,
   () => {
@@ -478,12 +485,6 @@ watch(
   },
   { deep: true }
 );
-
-watch(selectedDateRange, () => {
-  dashboard.value.funnels.forEach(funnel => {
-    funnelStore.addFunnelJob(funnel)
-  })
-})
 
 onMounted(() => {
   loadDashboard()

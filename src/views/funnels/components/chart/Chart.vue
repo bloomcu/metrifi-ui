@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="flex flex-[8] z-0">
-                        <template v-for="(step, index) in funnel.report.steps">
+                        <template v-for="(step, index) in funnel.report.steps" :key="step.id">
                             <ChartBar 
                                 :value="step.users" 
                                 :max="maxValue" 
