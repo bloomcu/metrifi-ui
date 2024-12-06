@@ -86,7 +86,8 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         }
     }
 
-    function getReport(funnel) {
+    const getReport = debounce((funnel) => {
+        console.log('Getting report for funnel', funnel.id)
         isLoading.value = true
 
         gaDataApi.funnelReport(funnel.id, {
@@ -95,29 +96,11 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             endDate: selectedDateRange.value.endDate,
         }).then(response => {
             if (response.data.data.error) console.log(response.data.data.error)
-            console.log('Report', response.data.data.report)
             funnel.report = response.data.data.report
             isLoading.value = false
+            startNextFunnelJob()
         })
-
-        startNextFunnelJob()
-    }
-
-    // const getReport = debounce((funnel) => {
-    //     isLoading.value = true
-
-    //     gaDataApi.funnelReport(funnel.id, {
-    //         disabledSteps: funnel.pivot?.disabled_steps,
-    //         startDate: selectedDateRange.value.startDate,
-    //         endDate: selectedDateRange.value.endDate,
-    //     }).then(response => {
-    //         if (response.data.data.error) console.log(response.data.data.error)
-    //         funnel.report = response.data.data.report
-    //         isLoading.value = false
-    //     })
-
-    //     startNextFunnelJob()
-    // }, 500)
+    }, 500)
 
     return {
         funnels,
