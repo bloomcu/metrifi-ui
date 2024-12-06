@@ -1,8 +1,8 @@
 <template>
-    <div ref="content" class="relative" @click="open">
+    <div ref="content" class="relative mb-20" @click="open">
         <slot name="title">{{ title }}</slot>
 
-        <div v-show="isOpen" class="absolute left-0 right-0 z-50 mt-2 w-full ounded-md bg-white border-0 shadow-md">
+        <div v-show="isOpen" class="absolute left-0 right-0 z-50 mt-2 w-full">
             <slot />
         </div>
     </div>
