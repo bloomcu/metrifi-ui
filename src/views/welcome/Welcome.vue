@@ -65,7 +65,7 @@
       </div>
 
       <!-- Funnels in progress -->
-      <div v-else-if="organizationStore.organization.funnels_count == 0" class="rounded-lg border border-violet-400 p-6 mb-6">
+      <div v-else-if="connections && organizationStore.organization.funnels_count == 0" class="rounded-lg border border-violet-400 p-6 mb-6">
         <div class="flex items-center gap-3 mb-2">
           <div class="w-5 h-5 border-2 border-t-transparent border-violet-600 rounded-full animate-spin"></div>
           <h3 class="text-xl font-medium text-violet-600">Setting up your funnels</h3>
