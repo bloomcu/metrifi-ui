@@ -148,7 +148,7 @@
 
     <!-- List dashboards -->
     <VueDraggableNext 
-      v-if="dashboards && sortedDashboards.length"
+      v-else-if="dashboards && sortedDashboards.length"
       :list="dashboards" 
       :animation="150"
       @change="handleDragEvent($event)"
