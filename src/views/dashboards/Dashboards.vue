@@ -14,7 +14,7 @@
 
     <template #topbar>
       <!-- Suggest anonymous sharing -->
-      <div v-if="organizationStore.organization && organizationStore.organization.is_private" @click="router.push({name: 'settingsOrganization'})" class="flex items-center justify-between rounded-lg bg-violet-50 p-6 mb-6 cursor-pointer hover:bg-violet-100">
+      <div v-if="organizationStore.organization && organizationStore.organization.is_private" @click="router.push({name: 'settingsSharing'})" class="flex items-center justify-between rounded-lg bg-violet-50 p-6 mb-6 cursor-pointer hover:bg-violet-100">
         <div>
           <h3 class="text-xl font-medium text-violet-600 mb-1">Share anonymously</h3>      
           <p class="text-gray-500">Sharing your analytics data anonymously allows you to compare your analytics with other organizations.</p>

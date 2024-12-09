@@ -12,15 +12,23 @@
       </div> -->
     </template>
 
-    <div v-if="organizationStore.organization">
+    <div v-if="!organizationStore.isLoading && organizationStore.organization">
       <!-- Welcome -->
       <div class="mb-8">
         <h2 class="text-3xl mb-1 font-medium text-gray-900">Welcome to MetriFi</h2>
         <p class="text-lg text-gray-700">Let’s analyze your website and maximize your conversions.</p>
       </div>
 
+      <!-- Connect Google Analytics -->
+      <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
+        <svg class="w-9 h-9 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+        <h3 class="mb-2 text-2xl font-medium text-gray-900">Connect Google Analytics</h3>
+        <p class="text-lg text-gray-700 mb-4">In order to use MetriFi, you need to connect your Google Analytics 4 account.</p>
+        <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
+      </div>
+
       <!-- Suggest anonymous sharing -->
-      <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && organizationStore.organization.is_private" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
+      <div v-else-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && organizationStore.organization.is_private" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
         <EyeIcon class="w-10 h-10 mb-6 text-violet-600" aria-hidden="true" />
         <h3 class="mb-2 text-2xl font-medium text-gray-900">Share anonymously</h3>
         <p class="text-lg text-gray-700 mb-4">Sharing your analytics data anonymously allows you to compare your analytics with other organizations.</p>
@@ -54,14 +62,6 @@
             </RadioGroup>
           </fieldset>
         </AppCard>
-      </div>
-
-      <!-- Connect Google Analytics -->
-      <div v-else-if="organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
-        <svg class="w-9 h-9 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
-        <h3 class="mb-2 text-2xl font-medium text-gray-900">Connect Google Analytics</h3>
-        <p class="text-lg text-gray-700 mb-4">In order to use MetriFi, you need to connect your Google Analytics 4 account.</p>
-        <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
       </div>
 
       <!-- Funnels in progress -->
