@@ -1,10 +1,22 @@
 <template>
   <LayoutWithSidebar>
+    <template #overlay>
+      <!-- Force GA connection first -->
+      <div v-if="organizationStore.organization && organizationStore.organization.connections_count == 0" class="fixed h-full w-full items-center bg-white bg-opacity-60 backdrop-blur-sm flex justify-center z-50">
+        <div class="max-w-3xl lg:-ml-60 flex flex-col text-center items-center justify-center border rounded-xl bg-white shadow-xl mx-4 p-10">
+          <svg class="w-10 h-10 mb-4" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+          <h1 class="mb-2 text-3xl font-medium text-gray-900">Connect Google Analytics</h1>
+          <p class="text-lg text-gray-700 mb-4">In order to use MetriFi, you need to connect your Google Analytics 4 account.</p>
+          <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
+        </div>
+      </div>
+    </template>
+    
     <template #topbar>
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Funnels</h1>
         <div class="flex gap-2">
-          <AppButton @click="storeNewFunnel" variant="secondary">
+          <AppButton v-if="organizationStore.organization && organizationStore.organization.connections_count !== 0" @click="storeNewFunnel()">
             Create blank funnel
           </AppButton>
           <!-- <AppButton v-if="!isAutomating" @click="toggleModal()" :disabled="isAutomating">
@@ -20,7 +32,6 @@
           </AppButton> -->
         </div>
       </div>
-      
     </template>
 
     <!-- Automation running -->
@@ -53,7 +64,7 @@
       <CategoryPicker v-model="category"/>
     </div>
 
-    <!-- Funnels -->
+    <!-- List funnels -->
     <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-20 sm:mx-0 sm:rounded-lg">
       <thead>
         <tr class="">
@@ -156,12 +167,11 @@
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded w-3/4"></div>
     </div>
-    
+
     <!-- Empty state: No funnels -->
-    <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+    <div v-else @click="storeNewFunnel()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
       <ChartBarIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-gray-900">No funnels</h2>
-      <p class="mt-1 text-gray-400">Get started by creating a funnel.</p>
+      <h2 class="mt-2 text-lg font-medium text-violet-600">Create a funnel</h2>
     </div>
     
     <GenerateFunnelsModal :open="isModalOpen" @done="loadFunnels()"/>
@@ -173,6 +183,7 @@ import moment from 'moment'
 import { ref, watch, onMounted, provide, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
+import { useConnections } from '@/domain/connections/composables/useConnections'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
 import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
@@ -181,6 +192,9 @@ import GenerateFunnelsModal from '@/views/funnels/modals/GenerateFunnelsModal.vu
 
 const route = useRoute()
 const router = useRouter()
+
+const { connectToGoogle } = useConnections()
+
 const organizationStore = useOrganizationStore()
 
 const funnels = ref()
@@ -281,5 +295,6 @@ watch(category, () => {
 
 onMounted(() => {
   loadFunnels()
+  organizationStore.show(route.params.organization)
 })
 </script>

@@ -56,10 +56,16 @@
     </table>
 
     <!-- Empty state: No connections -->
-    <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
+    <!-- <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
       <CloudIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No connection</h2>
       <p class="mt-1 text-gray-400">Get started by connecting Google Analytics.</p>
+    </div> -->
+
+    <!-- Empty state: No connections -->
+    <div v-else @click="connectToGoogle()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
+      <CloudIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-violet-600">Connect Google Analytics</h2>
     </div>
 
     <DisconnectConnectionModal/>
@@ -72,6 +78,7 @@ import { ref, onMounted, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { googleApi } from '@/domain/services/google/api/googleApi.js'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
+import { useConnections } from '@/domain/connections/composables/useConnections'
 import { CloudIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import DisconnectConnectionModal from '@/views/connections/modals/DisconnectConnectionModal.vue'
@@ -79,22 +86,13 @@ import DisconnectConnectionModal from '@/views/connections/modals/DisconnectConn
 const route = useRoute()
 
 const connection = ref() // Enable only a single connection
-// const connections = ref() // Enable multiple connections
 const isModalOpen = ref(false)
 const connectionToBeDisconnected = ref()
 
+const { connectToGoogle } = useConnections()
+
 provide('isModalOpen', isModalOpen)
 provide('connectionToBeDisconnected', connectionToBeDisconnected)
-
-function connectToGoogle() {
-  googleApi.connect({
-    scope: 'https://www.googleapis.com/auth/analytics.readonly',
-    state: route.params.organization,
-  })
-  .then(response => {
-    window.location.href = response.data.url
-  })
-}
 
 function toggleModal(connection) { 
   isModalOpen.value = !isModalOpen.value 

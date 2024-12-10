@@ -113,7 +113,7 @@
 import debounce from 'lodash.debounce'
 import { ref, onMounted, computed, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+// import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useStepDetailsTray } from '@/domain/funnels/components/step-details/useStepDetailsTray'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
@@ -126,14 +126,14 @@ import StepDetailsTray from '@/domain/funnels/components/step-details/StepDetail
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 // import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
-import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
-import ApexChart from '@/views/funnels/components/chart-libraries/ApexChart.vue'
-import ChartJs from '@/views/funnels/components/chart-libraries/ChartJs.vue'
+// import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
+// import ApexChart from '@/views/funnels/components/chart-libraries/ApexChart.vue'
+// import ChartJs from '@/views/funnels/components/chart-libraries/ChartJs.vue'
 
 const router = useRouter()
 const route = useRoute()
 
-const { funnels, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
+// const { funnels, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 const { selectStep, openTray } = useStepDetailsTray()
 const { selectedDateRange } = useDatePicker()
 

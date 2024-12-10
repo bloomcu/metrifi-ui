@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce'
-import { computed, ref, watch } from 'vue'
+import { ref } from 'vue'
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { gaDataApi } from '@/domain/services/google-analytics/api/gaDataApi.js'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
@@ -45,7 +45,6 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             .then(response => {
                 funnel.value = response.data.data
                 addFunnel(funnel.value)
-                // setTimeout(() => isLoading.value = false, 500)
             })
     }
 
@@ -64,7 +63,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         addFunnelJob(funnel)
     }
 
-    function addFunnelJob(funnel) {
+    const addFunnelJob = (funnel) => {
         // Add funnel to reporting queue
         if (funnel.steps.length > 0) {
             pendingFunnels.value.push(funnel)
@@ -88,7 +87,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     }
 
     const getReport = debounce((funnel) => {
-        // console.log('getReport...')
+        console.log('Getting report for funnel', funnel.id)
         isLoading.value = true
 
         gaDataApi.funnelReport(funnel.id, {
@@ -97,43 +96,11 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             endDate: selectedDateRange.value.endDate,
         }).then(response => {
             if (response.data.data.error) console.log(response.data.data.error)
-            // console.log(response.data.data)
             funnel.report = response.data.data.report
-            // removeDisabledStepsFromReport(funnel)
-            // calculateReportConversions(funnel, funnel.report.steps)
             isLoading.value = false
+            startNextFunnelJob()
         })
-
-        startNextFunnelJob()
     }, 500)
-
-    function calculateReportConversions(funnel, steps) {
-
-        steps.forEach((step, index) => {
-            // Update user count
-            funnel.report.steps[index].users = step.users
-
-            // First conversion rate is always 100%
-            if (index === 0) {
-                funnel.report.steps[0].conversionRate = '100'
-                return
-            }
-
-            let cr = (step.users / steps[index - 1]?.users)
-
-            if (cr === Infinity || isNaN(cr)) {
-                funnel.report.steps[index].conversionRate = '0.00'
-                return
-            }
-
-            let percentage = cr * 100 // Get a percentage
-            // percentage = percentage.toFixed(2) // Round to 2 decimal places
-            // percentage = percentage.substring(0, 4) // Truncate to 4 characters
-
-            // Update conversion rate
-            funnel.report.steps[index].conversionRate = percentage
-        })
-    }
 
     return {
         funnels,

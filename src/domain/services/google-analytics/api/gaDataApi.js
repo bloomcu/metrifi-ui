@@ -7,7 +7,6 @@ const gaDataApi = {
    * @return promise
    */
   async funnelReport(funnelId, request) {
-    // TODO: Breakup 'request' so we know what can be sent
     return await HttpClient.post(`/ga/funnel-report/${funnelId}`, request)
   },
 

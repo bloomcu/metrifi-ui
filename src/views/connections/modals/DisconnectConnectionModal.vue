@@ -32,15 +32,26 @@
 import { inject } from 'vue'
 import { useRoute } from 'vue-router'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
+import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 const route = useRoute()
+const organizationStore = useOrganizationStore()
 const isModalOpen = inject('isModalOpen')
 const connectionToBeDisconnected = inject('connectionToBeDisconnected')
 
 function disconnect() {
-  console.log('Disconnecting connection...')
-
   connectionApi.destroy(route.params.organization, connectionToBeDisconnected.value.id)
+    .then(() => {
+      updateOrganization()
+    })
+}
+
+function updateOrganization() {
+  // Update the organization onboarding
+  organizationStore.organization.onboarding['connect-google-analytics'] = 'incomplete'
+  organizationStore.organization.onboarding['onboardingComplete'] = false
+
+  organizationStore.update()
     .then(() => {
       location.reload()
     })
