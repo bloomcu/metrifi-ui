@@ -60,14 +60,14 @@
       </div>
 
       <!-- Complete -->
-      <div v-if="organizationStore.organization.onboarding['onboardingComplete'] == true" class="rounded-xl bg-violet-50 p-6 mb-8">
+      <div v-if="screenReady && organizationStore.organization.onboarding['onboardingComplete'] == true" class="rounded-xl bg-violet-50 p-6 mb-8">
         <h3 class="text-2xl mb-2 font-medium text-gray-900">You're all done! Nice work!</h3>
         <p class="text-lg text-gray-700 mb-4">You can unhide this Welcome screen at any time by going to Settings.</p>
         <AppButton @click="hideOnboarding()">Hide Welcome screen</AppButton>
       </div>
       
       <!-- Step tabs -->
-      <AppCard v-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && !organizationStore.organization.is_private" padding="none" class="">
+      <AppCard v-if="screenReady && organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && !organizationStore.organization.is_private" padding="none" class="">
         <div class="p-6 border-b">
           <h3 v-if="organizationStore.organization.funnels_count == 0" class="text-2xl mb-1 font-medium text-gray-900">In the meantime</h3>
           <h3 v-else class="text-2xl mb-1 font-medium text-gray-900">Finish Google Analytics setup</h3>
