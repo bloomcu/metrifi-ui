@@ -86,6 +86,17 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         }
     }
 
+    // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    
+    // async function processFunnels() {
+    //     if (pendingFunnels.value.length <= 0) return
+            
+    //     for (const funnel of pendingFunnels.value) {
+    //         getReport(funnel)
+    //         await delay(500);
+    //     }
+    // }
+
     const getReport = debounce((funnel) => {
         console.log('Getting report for funnel', funnel.id)
         isLoading.value = true
