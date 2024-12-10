@@ -126,9 +126,9 @@ import StepDetailsTray from '@/domain/funnels/components/step-details/StepDetail
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 // import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
-import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
-import ApexChart from '@/views/funnels/components/chart-libraries/ApexChart.vue'
-import ChartJs from '@/views/funnels/components/chart-libraries/ChartJs.vue'
+// import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
+// import ApexChart from '@/views/funnels/components/chart-libraries/ApexChart.vue'
+// import ChartJs from '@/views/funnels/components/chart-libraries/ChartJs.vue'
 
 const router = useRouter()
 const route = useRoute()
