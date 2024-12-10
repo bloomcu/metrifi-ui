@@ -346,6 +346,6 @@ onMounted(() => {
   // set a timeout
   setTimeout(() => {
     screenReady.value = true
-  }, 500e)
+  }, 500)
 })
 </script>
