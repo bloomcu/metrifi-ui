@@ -1,17 +1,5 @@
 <template>
   <LayoutWithSidebar>
-    <template #overlay>
-      <!-- Force GA connection first -->
-      <!-- <div v-if="organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'" class="fixed h-full w-full items-center bg-white bg-opacity-60 backdrop-blur-sm flex justify-center z-50">
-        <div class="max-w-3xl lg:-ml-60 -mt-96 flex flex-col text-center items-center justify-center border rounded-xl bg-white shadow-xl mx-4 p-14">
-          <svg class="w-10 h-10 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
-          <h1 class="mb-2 text-3xl font-medium text-gray-900">Connect Google Analytics</h1>
-          <p class="text-lg text-gray-700 mb-4">In order to use MetriFi, you need to connect your Google Analytics 4 account.</p>
-          <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
-        </div>
-      </div> -->
-    </template>
-
     <div v-if="!organizationStore.isLoading && organizationStore.organization">
       <!-- Welcome -->
       <div class="mb-8">
@@ -19,8 +7,14 @@
         <p class="text-lg text-gray-700">Let’s analyze your website and maximize your conversions.</p>
       </div>
 
+      <!-- Loader -->
+      <svg v-if="!screenReady" class="inline w-6 h-6 text-violet-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
+        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+      </svg>
+
       <!-- Connect Google Analytics -->
-      <div v-if="connections && organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
+      <div v-if="screenReady && organizationStore.organization.onboarding['connect-google-analytics'] !== 'complete'" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
         <svg class="w-9 h-9 mb-8" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
         <h3 class="mb-2 text-2xl font-medium text-gray-900">Connect Google Analytics</h3>
         <p class="text-lg text-gray-700 mb-4">In order to use MetriFi, you need to connect your Google Analytics 4 account.</p>
@@ -28,7 +22,7 @@
       </div>
 
       <!-- Suggest anonymous sharing -->
-      <div v-else-if="organizationStore.organization.onboarding['connect-google-analytics'] == 'complete' && organizationStore.organization.is_private" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
+      <div v-else-if="screenReady && organizationStore.organization.is_private" class="border flex flex-col text-center items-center justify-center rounded-xl bg-white p-10">
         <EyeIcon class="w-10 h-10 mb-6 text-violet-600" aria-hidden="true" />
         <h3 class="mb-2 text-2xl font-medium text-gray-900">Turn on anonymous sharing</h3>
         <p class="text-lg text-gray-700">In order to compare your analytics with other organizations, you need to share your data anonymously.</p>
@@ -57,7 +51,7 @@
       </div>
 
       <!-- Funnels in progress -->
-      <div v-else-if="connections && organizationStore.organization.funnels_count == 0" class="rounded-lg border border-violet-400 p-6 mb-6">
+      <div v-else-if="screenReady && organizationStore.organization.funnels_count == 0" class="rounded-lg border border-violet-400 p-6 mb-6">
         <div class="flex items-center gap-3 mb-2">
           <div class="w-5 h-5 border-2 border-t-transparent border-violet-600 rounded-full animate-spin"></div>
           <h3 class="text-xl font-medium text-violet-600">Setting up your funnels</h3>
@@ -161,6 +155,8 @@ const route = useRoute()
 const router = useRouter()
 const organizationStore = useOrganizationStore()
 const { listConnections, connections, connectToGoogle } = useConnections()
+
+const screenReady = ref(false)
 
 // Privacy toggle
 const privacySettings = [
@@ -346,5 +342,10 @@ watch(
 
 onMounted(() => {
   checkConnections()
+
+  // set a timeout
+  setTimeout(() => {
+    screenReady.value = true
+  }, 500e)
 })
 </script>
