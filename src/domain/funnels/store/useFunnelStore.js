@@ -86,6 +86,17 @@ export const useFunnelStore = defineStore('funnelStore', () => {
         }
     }
 
+    // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    
+    // async function processFunnels() {
+    //     if (pendingFunnels.value.length <= 0) return
+            
+    //     for (const funnel of pendingFunnels.value) {
+    //         getReport(funnel)
+    //         await delay(500);
+    //     }
+    // }
+
     const getReport = debounce((funnel) => {
         console.log('Getting report for funnel', funnel.id)
         isLoading.value = true
@@ -98,8 +109,9 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             if (response.data.data.error) console.log(response.data.data.error)
             funnel.report = response.data.data.report
             isLoading.value = false
-            startNextFunnelJob()
         })
+
+        startNextFunnelJob()
     }, 500)
 
     return {

@@ -476,6 +476,7 @@ function getMetadataForRecommendations(stepIndex) {
 }
 
 function loadDashboard() {
+  console.log('Loading dashboard from within recommendation modal')
   funnelStore.funnels = []
   
   dashboardApi.show(route.params.organization, route.params.dashboard)
@@ -496,6 +497,8 @@ const toggleAccordion = (accordionName) => {
 };
 
 onMounted(() => {
-  loadDashboard()
+  if (route.params.recommendation) {
+    loadDashboard()
+  }
 })
 </script>

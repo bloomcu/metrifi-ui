@@ -445,6 +445,7 @@ function removeGenerateRecommendationParam() {
 }
 
 function loadDashboard() {
+  console.log('Loading dashboard...')
   funnelStore.funnels = []
   
   dashboardApi.show(route.params.organization, route.params.dashboard)
@@ -465,6 +466,7 @@ function loadDashboard() {
 }
 
 watch(selectedDateRange, () => {
+  console.log('Selectede date range changed')
   funnelStore.funnels = []
 
   dashboard.value.funnels.forEach(funnel => {
