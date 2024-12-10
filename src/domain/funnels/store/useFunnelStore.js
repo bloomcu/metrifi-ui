@@ -109,8 +109,9 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             if (response.data.data.error) console.log(response.data.data.error)
             funnel.report = response.data.data.report
             isLoading.value = false
-            startNextFunnelJob()
         })
+
+        startNextFunnelJob()
     }, 500)
 
     return {
