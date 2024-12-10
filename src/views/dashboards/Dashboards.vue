@@ -10,17 +10,48 @@
           <AppButton @click="connectToGoogle()">Connect Google Analytics</AppButton>
         </div>
       </div>
+
+      <!-- Force anonymous sharing -->
+      <div v-if="organizationStore.organization && organizationStore.organization.is_private" class="fixed h-full w-full items-center bg-white bg-opacity-60 backdrop-blur-sm flex justify-center z-50">
+        <div class="max-w-3xl lg:-ml-60 -mt-96 flex flex-col text-center items-center justify-center border rounded-xl bg-white shadow-xl mx-4 p-14">
+          <EyeIcon class="w-10 h-10 mb-8 text-violet-600" aria-hidden="true" />
+          <h1 class="mb-2 text-3xl font-medium text-gray-900">Turn on anonymous sharing</h1>
+          <p class="text-lg text-gray-700">In order to compare your analytics with other organizations, you need to share your data anonymously.</p>
+
+          <!-- Switch -->
+          <div v-if="organizationStore.organization" class="my-12 max-w-2xl">
+            <fieldset aria-label="Privacy setting" class="text-left">
+              <RadioGroup v-model="organizationStore.organization.is_private" class="-space-y-px rounded-md bg-white">
+                <RadioGroupOption as="template" v-for="(setting, settingIdx) in privacySettings" :key="setting.name" :value="setting.value" :aria-label="setting.name" :aria-description="setting.description" v-slot="{ checked, active }">
+                  <div :class="[settingIdx === 0 ? 'rounded-tl-md rounded-tr-md' : '', settingIdx === privacySettings.length - 1 ? 'rounded-bl-md rounded-br-md' : '', checked ? 'z-10 border-violet-200 bg-violet-50' : 'border-gray-200', 'relative flex cursor-pointer border p-5 focus:outline-none']">
+                    <span :class="[checked ? 'border-transparent bg-violet-600' : 'border-gray-300 bg-white', active ? 'ring-2 ring-violet-600 ring-offset-2' : '', 'mt-0.5 flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded-full border']" aria-hidden="true">
+                      <span class="h-1.5 w-1.5 rounded-full bg-white" />
+                    </span>
+                    <span class="ml-4 flex flex-col">
+                      <component :is="setting.icon" :class="[checked ? 'text-violet-600' : 'text-gray-500']" class="-ml-0.5 mb-2 h-5 w-5" aria-hidden="true" />
+                      <span :class="[checked ? 'text-violet-700' : 'text-gray-900']" class="block text-sm font-medium mb-2">{{ setting.name }}</span>
+                      <span :class="[checked ? 'text-violet-600' : 'text-gray-500']" class="block text-sm">{{ setting.description }}</span>
+                    </span>
+                  </div>
+                </RadioGroupOption>
+              </RadioGroup>
+            </fieldset>
+          </div>
+
+          <p class="text-gray-500">You can change this anytime in the <RouterLink :to="{name: 'settingsSharing'}" class="text-violet-600">Sharing</RouterLink> section of the settings menu.</p>
+        </div>
+      </div>
     </template>
 
     <template #topbar>
       <!-- Suggest anonymous sharing -->
-      <div v-if="organizationStore.organization && organizationStore.organization.is_private" @click="router.push({name: 'settingsSharing'})" class="flex items-center justify-between rounded-lg bg-violet-50 p-6 mb-6 cursor-pointer hover:bg-violet-100">
+      <!-- <div v-if="organizationStore.organization && organizationStore.organization.is_private" @click="router.push({name: 'settingsSharing'})" class="flex items-center justify-between rounded-lg bg-violet-50 p-6 mb-6 cursor-pointer hover:bg-violet-100">
         <div>
           <h3 class="text-xl font-medium text-violet-600 mb-1">Turn on anonymous sharing</h3>      
           <p class="text-gray-500">In order to compare your analytics with other organizations, you need to share your data anonymously.</p>
         </div>
         <AppButton>Enable anonymous sharing</AppButton>
-      </div>
+      </div> -->
 
       <div class="relative border-b border-gray-200 pb-5 sm:pb-0">
         <!-- Title -->
@@ -253,15 +284,15 @@
 
 <script setup>
 import moment from "moment"
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useRoute, useRouter } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { dashboardApi } from '@/domain/dashboards/api/dashboardApi.js'
-import { Squares2X2Icon, ChartBarIcon, EyeIcon } from '@heroicons/vue/24/outline'
-// import { ChartBarIcon } from '@heroicons/vue/24/solid'
+import { Squares2X2Icon, ChartBarIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
+import { RadioGroup, RadioGroupOption } from '@headlessui/vue'
 import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
@@ -279,6 +310,22 @@ const isLoading = ref(false)
 const activeAnalysisType = ref('median_analysis')
 const activeSort = ref('bofi_performance')
 const activeSortDirection = ref('asc')
+
+// Privacy toggle
+const privacySettings = [
+  { 
+    name: 'Private (no sharing)', 
+    value: 1, 
+    description: 'Your analytics data is not shared with anyone outside of your organization. Data from other organizations is not shared with you.',
+    icon: EyeSlashIcon,
+  },  
+  { 
+    name: 'Share anonymously', 
+    value: 0, 
+    description: 'Your analytics data is anonymously shared with people outside of your organization. Anonymous data from other organizations is shared with you.',
+    icon: EyeIcon,
+  },
+]
 
 const sortedDashboards = computed(() => {
   if (!activeSort.value) {
@@ -412,6 +459,18 @@ function storeNewFunnel() {
     router.push({ name: 'funnel', params: { funnel: funnel.id } })
   })
 }
+
+// Watch privacy toggle
+watch(
+  () => organizationStore.organization?.is_private,
+  (newValue, oldValue) => {
+    // Ensure the watcher doesn't trigger unnecessarily
+    if (newValue === undefined) return;
+
+    organizationStore.update()
+  },
+  { deep: true, immediate: false } // Prevent the watcher from firing at initialization
+)
 
 onMounted(() => {
   loadDashboards()
