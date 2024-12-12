@@ -179,6 +179,11 @@
                     <p class="text-xs uppercase">Form submit text:</p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.formSubmitText }}</p>
                   </div>
+
+                  <div v-if="metric.hostname" class="">
+                    <p class="text-xs uppercase">Hostname:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.hostname }}</p>
+                  </div>
                 </div>
               </div>
 

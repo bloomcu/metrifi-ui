@@ -40,6 +40,7 @@
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       pagePath: row.dimensionValues[0].value,
+                      hostname: row.dimensionValues[1].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
@@ -58,6 +59,7 @@
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       pagePathPlusQueryString: row.dimensionValues[0].value,
+                      hostname: row.dimensionValues[1].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
@@ -77,6 +79,7 @@
                       metric: selectedTab.metric,
                       linkUrl: row.dimensionValues[0].value,
                       pagePath: row.dimensionValues[1].value,
+                      hostname: row.dimensionValues[2].value,
                     })"
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
@@ -102,6 +105,7 @@
                       formId: row.dimensionValues[3].value,
                       formLength: row.dimensionValues[4].value,
                       formSubmitText: row.dimensionValues[5].value,
+                      hostname: row.dimensionValues[6].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
@@ -119,7 +123,7 @@
                     <!-- Form submit text -->
                     <td  class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[5%]">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td>
                     <!-- Hostname -->
-                    <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[1].value }}</td>
+                    <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[6].value ? row.dimensionValues[6].value : '(not set)' }}</td>
                     <!-- Users -->
                     <td class="py-3 px-3 text-sm font-medium text-gray-900 break-all w-[1%]">{{ row.metricValues[0].value }}</td>
                   </tr>
