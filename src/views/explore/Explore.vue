@@ -65,6 +65,7 @@
             </th>
           </tr>
         </thead>
+
         <tbody class="divide-y divide-gray-200">
           <!-- Page users -->
           <tr 
@@ -79,7 +80,7 @@
               <!-- Page path -->
               <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
               <!-- Hostname -->
-              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[1].value }}</td>
+              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/5">{{ row.dimensionValues[1].value }}</td>
               <!-- Users -->
               <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
           </tr>
@@ -97,7 +98,7 @@
               <!-- Page path + query string -->
               <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> 
               <!-- Hostname -->
-              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[1].value }}</td>
+              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/5">{{ row.dimensionValues[1].value }}</td>
               <!-- Users -->
               <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
           </tr>
@@ -117,6 +118,8 @@
               <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
               <!-- Page path -->
               <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td>
+              <!-- Hostname -->
+              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[2].value }}</td>
               <!-- Users -->
               <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
           </tr>
@@ -136,13 +139,23 @@
             })" 
             class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
           >
-              <!-- <td class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[8%]">{{ row.dimensionValues[0].value }}</td>--> <!-- Event name -->
-              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td> <!-- Page path -->
-              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td> <!-- Form destination -->
-              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[14%]">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td> <!-- Form id -->
-              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[1%]">{{ row.dimensionValues[4].value ? row.dimensionValues[4].value : '(not set)'}}</td> <!-- Form length -->
-              <td  class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[5%]">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td> <!-- Form submit text -->
-              <td class="py-3 px-3 text-sm font-medium text-gray-900 break-all w-[1%]">{{ row.metricValues[0].value }}</td> <!-- Users -->
+              <!-- Event name -->
+              <!-- <td class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[8%]">{{ row.dimensionValues[0].value }}</td>-->
+              
+              <!-- Page path -->
+              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td>
+              <!-- Form destination -->
+              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td>
+              <!-- Form id -->
+              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[14%]">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td>
+              <!-- Form length -->
+              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[1%]">{{ row.dimensionValues[4].value ? row.dimensionValues[4].value : '(not set)'}}</td>
+              <!-- Form submit text -->
+              <td  class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[5%]">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td>
+              <!-- Hostname -->
+              <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[1].value }}</td>
+              <!-- Users -->
+              <td class="py-3 px-3 text-sm font-medium text-gray-900 break-all w-[1%]">{{ row.metricValues[0].value }}</td>
           </tr>
         </tbody>
       </table>
@@ -241,6 +254,7 @@ const tabs = ref({
     columns: [
       { name: 'linkUrl', displayName: 'Link' },
       { name: 'pagePath', displayName: 'Page path' },
+      { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },
@@ -255,6 +269,7 @@ const tabs = ref({
       { name: 'customEvent:form_id', displayName: 'Id' },
       { name: 'customEvent:form_length', displayName: 'Fields' },
       { name: 'customEvent:form_submit_text', displayName: 'Text' },
+      { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },
