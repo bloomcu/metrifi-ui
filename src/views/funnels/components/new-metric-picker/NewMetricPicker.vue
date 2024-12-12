@@ -18,22 +18,8 @@
       </div>
 
       <div class="flex transform-gpu divide-x divide-gray-100" as="div">
-          <!-- Left -->
-          <!-- <div class="max-h-96 w-1/3 scroll-py-4 overflow-y-auto px-6 py-4">
-              <h2 v-if="searchQuery === ''" class="mb-4 mt-2 text-xs font-semibold text-gray-500">Recent searches</h2>
-              <div class="-mx-2 text-sm text-gray-700">
-                  <template v-for="person in searchQuery === '' ? recent : filteredPeople">
-                      <div class="group flex cursor-default select-none items-center rounded-md p-2">
-                          <span class="ml-3 flex-auto truncate">John Doe</span>
-                      </div>
-                  </template>
-              </div>
-          </div> -->
-
-          <!-- Right -->
+          <!-- Table container -->
           <div class="min-h-[480px] min-w-[860px] h-[70vh] w-[80vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
-            <!-- <pre>{{ reports }}</pre> -->
-            
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="table-fixedmin-w-full max-w-full divide-y divide-gray-300">
                 <thead>
                   <tr v-if="reports[selectedTab.metric].rows" class="divide-x divide-gray-200">
@@ -47,12 +33,14 @@
                 </thead>
                 
                 <tbody class="divide-y divide-gray-200">
+                  <!-- Page users -->
                   <tr 
                     v-if="selectedTab.metric === 'pageUsers'" 
                     v-for="row in reports[selectedTab.metric].rows" 
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       pagePath: row.dimensionValues[0].value,
+                      hostname: row.dimensionValues[1].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
@@ -64,23 +52,26 @@
                       <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
                   </tr>
                   
+                  <!-- Page + query string users -->
                   <tr 
                     v-if="selectedTab.metric === 'pagePlusQueryStringUsers'" 
                     v-for="row in reports[selectedTab.metric].rows" 
                     @click="updateMetric({
                       metric: selectedTab.metric,
                       pagePathPlusQueryString: row.dimensionValues[0].value,
+                      hostname: row.dimensionValues[1].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
                       <!-- Page path + query string -->
                       <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
                       <!-- Hostname -->
-                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[1].value }}</td>
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/5">{{ row.dimensionValues[1].value }}</td>
                       <!-- Users -->
                       <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
                   </tr>
 
+                  <!-- Outbound link users -->
                   <tr 
                     v-if="selectedTab.metric === 'outboundLinkUsers'" 
                     v-for="row in reports[selectedTab.metric].rows" 
@@ -88,14 +79,21 @@
                       metric: selectedTab.metric,
                       linkUrl: row.dimensionValues[0].value,
                       pagePath: row.dimensionValues[1].value,
+                      hostname: row.dimensionValues[2].value,
                     })"
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> <!-- Link -->
-                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td> <!-- Page path -->
-                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td> <!-- Users -->
+                      <!-- Link -->
+                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                      <!-- Page path -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-2/6">{{ row.dimensionValues[1].value }}</td>
+                      <!-- Hostname -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[2].value }}</td>
+                      <!-- Users -->
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
                   </tr>
 
+                  <!-- Form submission users -->
                   <tr 
                     v-if="selectedTab.metric === 'formUserSubmissions'" 
                     v-for="row in reports[selectedTab.metric].rows" 
@@ -107,16 +105,27 @@
                       formId: row.dimensionValues[3].value,
                       formLength: row.dimensionValues[4].value,
                       formSubmitText: row.dimensionValues[5].value,
+                      hostname: row.dimensionValues[6].value,
                     })" 
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
-                      <!-- <td class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[8%]">{{ row.dimensionValues[0].value }}</td>--> <!-- Event name -->
-                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td> <!-- Page path -->
-                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td> <!-- Form destination -->
-                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[14%]">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td> <!-- Form id -->
-                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[1%]">{{ row.dimensionValues[4].value ? row.dimensionValues[4].value : '(not set)'}}</td> <!-- Form length -->
-                      <td  class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[5%]">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td> <!-- Form submit text -->
-                      <td class="py-3 px-3 text-sm font-medium text-gray-900 break-all w-[1%]">{{ row.metricValues[0].value }}</td> <!-- Users -->
+                    <!-- Event name -->
+                    <!-- <td class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[8%]">{{ row.dimensionValues[0].value }}</td>-->
+                    
+                    <!-- Page path -->
+                    <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[1].value ? row.dimensionValues[1].value : '(not set)'}}</td>
+                    <!-- Form destination -->
+                    <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[30%]">{{ row.dimensionValues[2].value ? row.dimensionValues[2].value : '(not set)'}}</td>
+                    <!-- Form id -->
+                    <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[14%]">{{ row.dimensionValues[3].value ? row.dimensionValues[3].value : '(not set)'}}</td>
+                    <!-- Form length -->
+                    <td  class="py-3 px-3 text-sm text-gray-500 break-all w-[1%]">{{ row.dimensionValues[4].value ? row.dimensionValues[4].value : '(not set)'}}</td>
+                    <!-- Form submit text -->
+                    <td  class="py-3 px-3 text-sm text-gray-500 whitespace-nowrap w-[5%]">{{ row.dimensionValues[5].value ? row.dimensionValues[5].value : '(not set)'}}</td>
+                    <!-- Hostname -->
+                    <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[6].value ? row.dimensionValues[6].value : '(not set)' }}</td>
+                    <!-- Users -->
+                    <td class="py-3 px-3 text-sm font-medium text-gray-900 break-all w-[1%]">{{ row.metricValues[0].value }}</td>
                   </tr>
                 </tbody>
             </table>
@@ -216,6 +225,7 @@ const tabs = ref({
     columns: [
       { name: 'linkUrl', displayName: 'Link' },
       { name: 'pagePath', displayName: 'Page path' },
+      { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },
@@ -230,6 +240,7 @@ const tabs = ref({
       { name: 'customEvent:form_id', displayName: 'Id' },
       { name: 'customEvent:form_length', displayName: 'Fields' },
       { name: 'customEvent:form_submit_text', displayName: 'Text' },
+      { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },
