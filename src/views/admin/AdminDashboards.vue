@@ -4,7 +4,7 @@
       <div class="relative border-b border-gray-200 pb-5 sm:pb-0">
         <!-- Title -->
         <div class="md:flex md:items-center md:justify-between">
-          <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Super Dashboard</h1>
+          <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">All Dashboards</h1>
           <div class="flex gap-3 md:absolute md:right-0">
             <AppButton @click="analyzeAllDashboards()">Analyze all dashboards</AppButton>
           </div>
