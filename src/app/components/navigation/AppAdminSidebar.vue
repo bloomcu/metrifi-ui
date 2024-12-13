@@ -138,6 +138,7 @@ import {
 
 const navigation = [
   { name: 'Super Dashboard', to: { name: 'adminDashboards'}, icon: Squares2X2Icon},
+  { name: 'Super Funnel', to: { name: 'adminFunnels'}, icon: Squares2X2Icon},
   { name: 'Organizations', to: { name: 'adminOrganizations'}, icon: HomeModernIcon},
 ]
 </script>
