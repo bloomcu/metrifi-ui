@@ -149,6 +149,7 @@
               <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
 
               <div class="flex gap-2">
+                <p class="text-gray-500">{{ funnel.organization.title }}</p>
                 <div v-if="funnel.automation_msg" class="flex items-center text-sm leading-5 text-pink-600">
                   <p>{{ funnel.automation_msg }}</p>
                 </div>
