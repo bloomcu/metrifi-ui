@@ -107,6 +107,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             endDate: selectedDateRange.value.endDate,
         }).then(response => {
             if (response.data.data.error) console.log(response.data.data.error)
+            console.log('Report', response.data.data.report)
             funnel.report = response.data.data.report
             isLoading.value = false
         })
