@@ -78,7 +78,7 @@
 
           <!-- Category -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <input v-model="filters.category" @input="updateFilters" placeholder="Category name" class="mt-1 w-full border rounded px-2 py-1 text-sm">
+            <input v-model="filters.category" @input="updateFilters" placeholder="Exact category name" class="mt-1 w-full border rounded px-2 py-1 text-sm">
              
             <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Category
