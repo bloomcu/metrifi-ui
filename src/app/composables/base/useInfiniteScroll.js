@@ -1,16 +1,18 @@
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, reactive } from 'vue'
 
-export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }) {
+export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, baseParams = {}) {
     // Reference to the element that triggers loading more
     const loadMoreElement = ref(null)
 
     // Data state
     const items = ref([])
     const isLoading = ref(false)
-    const pagination = ref({
+    const pagination = reactive({
         current_page: 1,
         last_page: null, // Will be set after the first API response
     })
+
+    const params = reactive({ ...baseParams }) // Custom parameters for API
 
     // Observer setup using vanilla JS IntersectionObserver
     onMounted(() => {
@@ -33,7 +35,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }) {
         if (
             entry.isIntersecting &&
             !isLoading.value &&
-            (pagination.value.last_page === null || pagination.value.current_page < pagination.value.last_page)
+            (pagination.last_page === null || pagination.current_page < pagination.last_page)
         ) {
             await loadMore()
         }
@@ -43,11 +45,15 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }) {
     const loadMore = async () => {
         isLoading.value = true
         try {
-            const params = { page: pagination.value.current_page + 1 }
-            const response = await apiMethod(params)
+            const apiParams = {
+                ...params,
+                page: pagination.current_page + 1,
+            }
+
+            const response = await apiMethod(apiParams)
             items.value.push(...response.data.data) // Assuming the API returns a `data` array
-            pagination.value.current_page = response.data.meta.current_page
-            pagination.value.last_page = response.data.meta.last_page
+            pagination.current_page = response.data.meta.current_page
+            pagination.last_page = response.data.meta.last_page
         } catch (error) {
             console.error('Failed to load more items:', error)
         } finally {
@@ -55,10 +61,20 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }) {
         }
     }
 
+    // Function to update params and reset pagination
+    const updateParams = (newParams) => {
+        Object.assign(params, newParams) // Update params reactively
+        items.value = [] // Reset items
+        pagination.current_page = 1
+        pagination.last_page = null
+        loadMore() // Reload with updated params
+    }
+
     return {
         loadMoreElement,
         items,
         isLoading,
         pagination,
+        updateParams,
     }
 }

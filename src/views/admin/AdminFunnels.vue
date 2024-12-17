@@ -68,10 +68,10 @@
           </th>
 
           <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('updated')" :class="[activeSort == 'updated' ? 'text-violet-600' : 'border-transparent', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
-              Updated
+            <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-600' : 'border-transparent', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Created
               <span class="inline-flex ml-2 rounded bg-violet-100">
-                <ChevronUpIcon v-if="activeSort == 'updated'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <ChevronUpIcon v-if="activeSort == 'created'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                 <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
               </span>
             </button>
@@ -103,7 +103,7 @@
           <!-- Conversion rate -->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
             <div class="flex items-center text-sm">
-              {{ funnel.snapshots.last28Days.conversionRate !== null ? funnel.snapshots.last28Days.conversionRate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%' : '' }}
+              {{ funnel.snapshots.last28Days.conversion_rate !== null ? funnel.snapshots.last28Days.conversion_rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%' : '' }}
             </div>
           </td>
 
@@ -128,9 +128,9 @@
             </div>
           </td>
 
-          <!-- Updated -->
+          <!-- Created -->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
-            {{ moment(funnel.updated_at).fromNow() }}
+            {{ moment(funnel.created_at).fromNow() }}
           </td>
         </tr>
 
@@ -190,25 +190,43 @@ import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
 
 const router = useRouter()
 
-const { loadMoreElement, items: funnels, isLoading } = useInfiniteScroll(adminFunnelApi.index)
+// const { loadMoreElement, items: funnels, isLoading } = useInfiniteScroll(adminFunnelApi.index)
+const { 
+    loadMoreElement, 
+    items: funnels, 
+    isLoading, 
+    updateParams 
+} = useInfiniteScroll(adminFunnelApi.index, {}, { sort: '' })
 
 const activeSort = ref('conversionRate')
 const activeSortDirection = ref('asc')
 
+// function setActiveSort(sort) {
+//   // Toggle current sort off
+//   if (activeSort.value == sort) {
+//     toggleActiveSortDirection()
+//     return
+//   }
+
+//   // Set new sort
+//   activeSortDirection.value = 'asc'
+//   activeSort.value = sort
+// }
+
+// function toggleActiveSortDirection(sort) {
+//   activeSortDirection.value = activeSortDirection.value == 'desc' ? 'asc' : 'desc'
+// }
+
 function setActiveSort(sort) {
-  // Toggle current sort off
-  if (activeSort.value == sort) {
-    toggleActiveSortDirection()
-    return
-  }
+    if (activeSort.value === sort) {
+        activeSortDirection.value = activeSortDirection.value === 'asc' ? 'desc' : 'asc'
+    } else {
+        activeSort.value = sort
+        activeSortDirection.value = 'desc'
+    }
 
-  // Set new sort
-  activeSortDirection.value = 'asc'
-  activeSort.value = sort
-}
-
-function toggleActiveSortDirection(sort) {
-  activeSortDirection.value = activeSortDirection.value == 'desc' ? 'asc' : 'desc'
+    const sortParam = activeSortDirection.value === 'desc' ? `-${sort}` : sort
+    updateParams({ sort: sortParam }) // Pass updated sort parameters
 }
 
 function loadFunnels() {
