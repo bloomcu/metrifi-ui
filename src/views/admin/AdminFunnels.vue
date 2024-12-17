@@ -3,13 +3,20 @@
     <template #topbar>
       <div class="relative pb-5 sm:pb-0">
         <!-- Title -->
-        <div class="md:flex md:items-center md:justify-between">
+        <div class="mb-5 md:flex md:items-center md:justify-between">
           <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">All Funnels</h1>
           <div class="flex gap-3 md:absolute md:right-0">
             <AppButton @click="snapshotAllFunnels()">Analyze all funnels</AppButton>
           </div>
         </div>
 
+        <!-- Analysis type tabs -->
+        <nav class="flex justify-between mb-4">
+          <div class="flex space-x-6">
+            <button @click="activePeriod = 'last28Days'" :class="[activePeriod == 'last28Days' ? 'border-violet-500 text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Last 28 days</button>
+            <button @click="activePeriod = 'last90Days'" :class="[activePeriod == 'last90Days' ? 'border-violet-500 text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Last 90 days</button>
+          </div>
+        </nav>
       </div>
     </template>
 
@@ -18,7 +25,7 @@
       <thead>
         <tr class="">
           <th scope="col" class="py-3.5 pl-4 pr-4 sm:pl-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-600' : 'border-transparent', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Name
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'name'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -28,7 +35,7 @@
           </th>
 
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-600' : 'border-transparent', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Conversion rate
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'conversion_rate'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -38,7 +45,7 @@
           </th>
 
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('users')" :class="[activeSort == 'users' ? 'text-violet-600' : 'border-transparent', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('users')" :class="[activeSort == 'users' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Users
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -48,7 +55,7 @@
           </th>
 
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('steps_count')" :class="[activeSort == 'steps_count' ? 'text-violet-600' : 'border-transparent', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('steps_count')" :class="[activeSort == 'steps_count' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Steps
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'steps_count'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -58,7 +65,7 @@
           </th>
 
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-600' : 'border-transparent', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Category
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'category'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -68,7 +75,7 @@
           </th>
 
           <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-600' : 'border-transparent', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Created
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'created'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -103,14 +110,14 @@
           <!-- Conversion rate -->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
             <div class="flex items-center text-sm">
-              {{ funnel.snapshots.last28Days.conversion_rate !== null ? funnel.snapshots.last28Days.conversion_rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%' : '' }}
+              {{ funnel.snapshots[activePeriod].conversion_rate !== null ? funnel.snapshots[activePeriod].conversion_rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%' : '' }}
             </div>
           </td>
 
           <!-- Users -->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
             <div class="flex items-center text-sm">
-              {{ funnel.snapshots.last28Days.users !== null ? funnel.snapshots.last28Days.users.toLocaleString() : '' }}
+              {{ funnel.snapshots[activePeriod].users !== null ? funnel.snapshots[activePeriod].users.toLocaleString() : '' }}
             </div>
           </td>
 
@@ -180,7 +187,7 @@
 
 <script setup>
 import moment from "moment"
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInfiniteScroll } from '@/app/composables/base/useInfiniteScroll'
 import { adminFunnelApi } from '@/domain/admin/api/adminFunnelApi.js'
@@ -190,7 +197,6 @@ import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
 
 const router = useRouter()
 
-// const { loadMoreElement, items: funnels, isLoading } = useInfiniteScroll(adminFunnelApi.index)
 const { 
     loadMoreElement, 
     items: funnels, 
@@ -198,24 +204,9 @@ const {
     updateParams 
 } = useInfiniteScroll(adminFunnelApi.index, {}, { sort: '' })
 
-const activeSort = ref('conversionRate')
+const activePeriod = ref('last28Days')
+const activeSort = ref('')
 const activeSortDirection = ref('asc')
-
-// function setActiveSort(sort) {
-//   // Toggle current sort off
-//   if (activeSort.value == sort) {
-//     toggleActiveSortDirection()
-//     return
-//   }
-
-//   // Set new sort
-//   activeSortDirection.value = 'asc'
-//   activeSort.value = sort
-// }
-
-// function toggleActiveSortDirection(sort) {
-//   activeSortDirection.value = activeSortDirection.value == 'desc' ? 'asc' : 'desc'
-// }
 
 function setActiveSort(sort) {
     if (activeSort.value === sort) {
@@ -226,7 +217,7 @@ function setActiveSort(sort) {
     }
 
     const sortParam = activeSortDirection.value === 'desc' ? `-${sort}` : sort
-    updateParams({ sort: sortParam }) // Pass updated sort parameters
+    updateParams({ sort: sortParam, period: activePeriod.value }) // Pass updated sort parameters
 }
 
 function loadFunnels() {
@@ -243,7 +234,6 @@ function snapshotAllFunnels() {
 
   adminFunnelApi.snapshotAll().then(response => {
     isLoading.value = false
-    funnels.value = response.data.data
   })
 }
 
@@ -251,6 +241,12 @@ function showFunnel(funnel) {
   const route = router.resolve({name: 'funnel', params: {funnel: funnel.id, organization: funnel.organization.slug}});
   window.open(route.href, '_blank');
 }
+
+// watch activeSort
+watch(activePeriod, (newPeriod) => {
+  const sortParam = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value
+  updateParams({ sort: sortParam, period: newPeriod }) // Include activePeriod in params
+})
 
 onMounted(() => {
   loadFunnels()
