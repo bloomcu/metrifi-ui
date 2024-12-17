@@ -47,12 +47,14 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
         try {
             const apiParams = {
                 ...params,
-                page: pagination.current_page + 1,
+                page: pagination.current_page, // Use the correct page
             }
-
+    
             const response = await apiMethod(apiParams)
+            // console.log(response.data.meta)
+
             items.value.push(...response.data.data) // Assuming the API returns a `data` array
-            pagination.current_page = response.data.meta.current_page
+            pagination.current_page += 1 // Increment the page number
             pagination.last_page = response.data.meta.last_page
         } catch (error) {
             console.error('Failed to load more items:', error)

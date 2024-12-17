@@ -21,10 +21,13 @@
     </template>
 
     <!-- Funnels -->
-    <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-20 sm:mx-0 sm:rounded-lg">
+    <table class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-4 sm:mx-0 sm:rounded-lg">
       <thead>
         <tr class="">
+          <!-- Name -->
           <th scope="col" class="py-3.5 pl-4 pr-4 sm:pl-4 text-left text-sm font-medium text-gray-900">
+            <input v-model="filters.name" @input="updateFilters" placeholder="Funnel name" class="mt-1 w-full border rounded px-2 py-1 text-sm">
+             
             <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Name
               <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -34,7 +37,10 @@
             </button>
           </th>
 
+          <!-- Conversion rate -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <input v-model="filters.conversion_rate" @input="updateFilters" placeholder=">=" class="mt-1 w-full border rounded px-2 py-1 text-sm">
+             
             <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Conversion rate
               <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -44,7 +50,10 @@
             </button>
           </th>
 
+          <!-- Users -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <input v-model="filters.users" @input="updateFilters" placeholder=">=" class="mt-1 w-full border rounded px-2 py-1 text-sm">
+             
             <button @click="setActiveSort('users')" :class="[activeSort == 'users' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Users
               <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -54,7 +63,10 @@
             </button>
           </th>
 
+          <!-- Steps -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <input v-model="filters.steps_count" @input="updateFilters" placeholder=">=" class="mt-1 w-full border rounded px-2 py-1 text-sm">
+             
             <button @click="setActiveSort('steps_count')" :class="[activeSort == 'steps_count' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Steps
               <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -64,7 +76,10 @@
             </button>
           </th>
 
+          <!-- Category -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <input v-model="filters.category" @input="updateFilters" placeholder="Category name" class="mt-1 w-full border rounded px-2 py-1 text-sm">
+             
             <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Category
               <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -74,7 +89,10 @@
             </button>
           </th>
 
+          <!-- Created -->
           <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">
+            <input v-model="filters.created" @input="updateFilters" placeholder="Filter date" class="mt-1 w-full border rounded px-2 py-1 text-sm invisible">
+             
             <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Created
               <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -86,24 +104,13 @@
         </tr>
       </thead>
 
-      <tbody class="divide-y divide-gray-200">
+      <tbody v-if="funnels && funnels.length" class="divide-y divide-gray-200">
         <tr v-for="funnel in funnels" :key="funnel.id" @click="showFunnel(funnel)" class="hover:bg-gray-50 cursor-pointer">
           <!-- Funnel -->
           <td class="py-4 pr-2 text-sm w-2/5 sm:pl-4">
             <div class="flex-auto">
               <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
-
-              <div class="flex gap-2">
-                <p class="text-gray-500">{{ funnel.organization.title }}</p>
-                <div v-if="funnel.automation_msg" class="flex items-center text-sm leading-5 text-pink-600">
-                  <p>{{ funnel.automation_msg }}</p>
-                </div>
-
-                <p v-if="funnel.messages.length" class="text-sm leading-5">
-                  <span class="mr-1.5 text-gray-400">•</span>
-                  <span class="text-green-500">{{ funnel.messages.length }} notification</span>
-                </p>
-              </div>
+              <p class="text-gray-500">{{ funnel.organization.title }}</p>
             </div>
           </td>
 
@@ -146,7 +153,7 @@
     </table>
 
     <!-- State: Loading -->
-    <div v-else-if="isLoading" class="animate-pulse space-y-4">
+    <!-- <div v-if="isLoading" class="animate-pulse space-y-4">
       <div class="h-4 bg-gray-200 rounded w-2/3"></div>
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded"></div>
@@ -175,10 +182,10 @@
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-    </div>
+    </div> -->
 
     <!-- Empty state: No funnels -->
-    <div v-else class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
+    <div v-if="!funnels || funnels.length === 0" class="flex flex-col items-center justify-center bg-violet-50 rounded-lg py-6 px-2">
       <ChartBarIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-violet-600">No funnels to show</h2>
     </div>
@@ -207,6 +214,14 @@ const {
 const activePeriod = ref('last28Days')
 const activeSort = ref('')
 const activeSortDirection = ref('asc')
+const filters = ref({
+  name: '',
+  conversion_rate: '',
+  users: '',
+  steps_count: '',
+  category: '',
+  // created: ''
+})
 
 function setActiveSort(sort) {
     if (activeSort.value === sort) {
@@ -216,8 +231,30 @@ function setActiveSort(sort) {
         activeSortDirection.value = 'desc'
     }
 
-    const sortParam = activeSortDirection.value === 'desc' ? `-${sort}` : sort
-    updateParams({ sort: sortParam, period: activePeriod.value }) // Pass updated sort parameters
+    updateQueryParams()
+}
+
+function updateFilters() {
+  updateQueryParams()
+}
+
+function updateQueryParams() {
+  const sortParam = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
+
+  const formattedFilters = Object.fromEntries(
+  Object.entries(filters.value)
+    .filter(([_, value]) => value !== null && value !== undefined) // Allow empty strings
+    .map(([key, value]) => [`filter[${key}]`, value]) // Format keys for Spatie QueryBuilder
+);
+
+  const queryParams = {
+    sort: sortParam,
+    period: activePeriod.value,
+    ...formattedFilters, // Inject formatted filters
+    // page: 0
+  };
+
+  updateParams(queryParams);
 }
 
 function loadFunnels() {
@@ -244,11 +281,10 @@ function showFunnel(funnel) {
 
 // watch activeSort
 watch(activePeriod, (newPeriod) => {
-  const sortParam = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value
-  updateParams({ sort: sortParam, period: newPeriod }) // Include activePeriod in params
+  updateQueryParams()
 })
 
 onMounted(() => {
-  loadFunnels()
+  updateQueryParams()
 })
 </script>
