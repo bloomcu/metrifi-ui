@@ -12,8 +12,8 @@
         <ChevronDownIcon class="ml-1 h-5 w-5 text-gray-400"/>
       </template>
 
-      <div class="flex">
-        <div>
+      <div class="flex gap-2">
+        <div class="flex flex-col">
           <button 
             v-for="option in dateRangeOptions" 
             @click="selectDateRange(option)"
@@ -47,6 +47,7 @@ import { CalendarIcon } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import AppDropdown from '@/app/components/dropdown/AppDropdown.vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
+
 import '@vuepic/vue-datepicker/dist/main.css'
 
 const { dateRangeOptions, selectedDateRange, selectDateRange, setCustomDataRange } = useDatePicker()
