@@ -21,7 +21,7 @@
       </div>
     </template>
 
-    <!-- <pre>{{ filters }}</pre> -->
+    <pre>{{ filters }}</pre>
 
     <!-- Filters -->
     <div class="flex items-center justify-between gap-3 bg-gray-50 py-3 px-4 rounded-lg mb-4">
@@ -90,6 +90,40 @@
           <input v-model="filters.steps_count" @input="updateFilters" placeholder=">=" class="w-full p-2 border-none focus:ring-0">
         </AppDropdown>
 
+        <!-- Filter: Privacy -->
+        <AppDropdown class="text-sm">
+          <template #title>
+            <div v-if="filters.privacy">
+                <span class="font-medium text-left">Privacy: </span>
+                <span class="text-gray-500 text-left">{{ filters.privacy == '0' ? 'Anonymous' : 'Private' }}</span>
+              </div>
+              <span v-else class="text-gray-500 text-left">Privacy</span>
+          </template>
+
+          <div class="p-3 space-y-2">
+            <!-- Anonymous Radio Button -->
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input type="radio" value="" v-model="filters.privacy" class="hidden peer"/>
+              <div class="w-4 h-4 rounded-full border border-gray-400 peer-checked:border-violet-500 peer-checked:bg-violet-500"></div>
+              <span class="text-gray-700">Any</span>
+            </label>
+
+            <!-- Anonymous Radio Button -->
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input type="radio" value="0" v-model="filters.privacy" class="hidden peer"/>
+              <div class="w-4 h-4 rounded-full border border-gray-400 peer-checked:border-violet-500 peer-checked:bg-violet-500"></div>
+              <span class="text-gray-700">Anonymous</span>
+            </label>
+
+            <!-- Private Radio Button -->
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input type="radio" value="1" v-model="filters.privacy" class="hidden peer"/>
+              <div class="w-4 h-4 rounded-full border border-gray-400 peer-checked:border-violet-500 peer-checked:bg-violet-500"></div>
+              <span class="text-gray-700">Private</span>
+            </label>
+          </div>
+        </AppDropdown>
+
         <!-- Filter: Users -->
         <CategoryPicker v-model="category" @update:modelValue="setCategoryFilter" class="text-sm"/>
       </div>
@@ -154,6 +188,17 @@
             </button>
           </th>
 
+          <!-- Header: Privacy -->
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('privacy')" :class="[activeSort == 'privacy' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Privacy
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'privacy'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
           <!-- Header: Category -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
             <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
@@ -191,7 +236,7 @@
           <!-- Assets-->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
             <div class="flex items-center text-sm">
-              {{ funnel.snapshots[selectedDateRange.key].assets !== undefined ? funnel.snapshots[selectedDateRange.key].assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) : '' }}
+              {{ funnel.snapshots[selectedDateRange.key].assets !== null ? funnel.snapshots[selectedDateRange.key].assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) : '' }}
             </div>
           </td>
 
@@ -213,6 +258,13 @@
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
             <div class="flex items-center text-sm">
               {{ funnel.steps_count }}
+            </div>
+          </td>
+
+          <!-- Privacy -->
+          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              {{ funnel.organization.is_private ? 'Private' : 'Anonymous' }}
             </div>
           </td>
 
@@ -287,6 +339,7 @@ import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
 import AppDropdown from '@/app/components/dropdown/AppDropdown.vue'
 import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 import DatePickerSimple from '@/app/components/datepicker/DatePickerSimple.vue'
+import AppToggle from "../../app/components/base/forms/AppToggle.vue"
 
 const { selectedDateRange } = useDatePicker()
 
@@ -312,6 +365,7 @@ const filters = ref({
   conversion_rate: '',
   users: '',
   steps_count: '',
+  privacy: '',
   category: '',
   // created: ''
 })
