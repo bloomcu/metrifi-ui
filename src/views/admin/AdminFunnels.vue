@@ -28,6 +28,9 @@
         <div>Filters</div>
 
       <div class="flex items-center gap-3">
+        <AppButton v-if="hasActiveFilters" @click="clearFilters" size="sm" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700">
+            Clear filters
+        </AppButton>
         
         <!-- Filter: name -->
         <AppDropdown class="text-sm">
@@ -126,10 +129,6 @@
 
         <!-- Filter: Users -->
         <CategoryPicker v-model="category" @update:modelValue="setCategoryFilter" class="text-sm"/>
-
-        <AppButton @click="clearFilters" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700">
-            Clear filters
-        </AppButton>
       </div>
     </div>
 
@@ -432,8 +431,14 @@ function clearFilters() {
     category: '',
   };
 
+  category.value = null;
+
   updateQueryParams(); // Ensure the filters are applied immediately
 }
+
+const hasActiveFilters = computed(() => {
+  return Object.values(filters.value).some((filter) => filter !== null && filter !== '');
+});
 
 function setActiveSort(sort) {
     if (sort === 'category' || sort === 'privacy') {
