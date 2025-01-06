@@ -436,14 +436,18 @@ function clearFilters() {
 }
 
 function setActiveSort(sort) {
-    if (activeSort.value === sort) {
-        activeSortDirection.value = activeSortDirection.value === 'asc' ? 'desc' : 'asc'
+    if (sort === 'category' || sort === 'privacy') {
+        // Ensure the category and privacy sort starts with ascending order (A-Z)
+        activeSortDirection.value = activeSort.value === sort && activeSortDirection.value === 'asc' ? 'desc' : 'asc';
     } else {
-        activeSort.value = sort
-        activeSortDirection.value = 'desc'
+        if (activeSort.value === sort) {
+            activeSortDirection.value = activeSortDirection.value === 'asc' ? 'desc' : 'asc';
+        } else {
+            activeSortDirection.value = 'desc'; // Default to descending for other sorts
+        }
     }
-
-    updateQueryParams()
+    activeSort.value = sort;
+    updateQueryParams();
 }
 
 function updateQueryParams() {
