@@ -25,7 +25,7 @@
 
     <!-- Filters -->
     <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
-      Filters
+        <div>Filters</div>
 
       <div class="flex items-center gap-3">
         
@@ -126,6 +126,10 @@
 
         <!-- Filter: Users -->
         <CategoryPicker v-model="category" @update:modelValue="setCategoryFilter" class="text-sm"/>
+
+        <AppButton @click="clearFilters" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700">
+            Clear filters
+        </AppButton>
       </div>
     </div>
 
@@ -413,6 +417,24 @@ function setCategoryFilter(category) {
   filters.value.category = category.title
 }
 
+function updateFilters() {
+  updateQueryParams()
+}
+
+function clearFilters() {
+  filters.value = {
+    name: '',
+    assets: '',
+    conversion_rate: '',
+    users: '',
+    steps_count: '',
+    privacy: '',
+    category: '',
+  };
+
+  updateQueryParams(); // Ensure the filters are applied immediately
+}
+
 function setActiveSort(sort) {
     if (activeSort.value === sort) {
         activeSortDirection.value = activeSortDirection.value === 'asc' ? 'desc' : 'asc'
@@ -422,10 +444,6 @@ function setActiveSort(sort) {
     }
 
     updateQueryParams()
-}
-
-function updateFilters() {
-  updateQueryParams()
 }
 
 function updateQueryParams() {
@@ -445,15 +463,6 @@ function updateQueryParams() {
   };
 
   updateParams(queryParams);
-}
-
-function loadFunnels() {
-  isLoading.value = true
-
-  adminFunnelApi.index().then(response => {
-    isLoading.value = false
-    funnels.value = response.data.data
-  })
 }
 
 function snapshotAllFunnels() {
