@@ -22,7 +22,7 @@
               <AppInput v-model="inputs.email" label="Email" :errors="errorStore.errors.email" required />
               <AppInput v-model="inputs.organization_title" label="Organization name" :errors="errorStore.errors.organization_title" required />
               <AppInput v-model="inputs.organization_domain" label="Website domain" placeholder="acmecu.com" :errors="errorStore.errors.organization_domain" required />
-              <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Password" required />
+              <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Create password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
               <div class="flex items-center py-2">
                 <input v-model="inputs.accept_terms" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-600" />
