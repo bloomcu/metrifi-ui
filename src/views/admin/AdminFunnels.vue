@@ -45,18 +45,6 @@
           <input v-model="filters.name" @input="updateFilters" placeholder="Funnel name" class="w-full p-2 border-none focus:ring-0">
         </AppDropdown>
 
-        <!-- Filter: Assets -->
-        <AppDropdown class="text-sm">
-          <template #title>
-            <div v-if="filters.assets">
-                <span class="font-medium text-left">Assets: </span>
-                <span class="text-gray-500 text-left"> >= {{ computedAssets }}</span>
-              </div>
-              <span v-else class="text-gray-500 text-left">Assets</span>
-          </template>
-          <input v-model="computedAssets" placeholder=">=" :maxlength="18" class="w-full p-2 border-none focus:ring-0"/>
-        </AppDropdown>
-
         <!-- Filter: Conversion rate -->
         <AppDropdown class="text-sm">
           <template #title>
@@ -67,6 +55,18 @@
               <span v-else class="text-gray-500 text-left">Conversion rate</span>
           </template>
           <input v-model="filters.conversion_rate" @input="updateFilters" placeholder=">=" class="w-full p-2 border-none focus:ring-0">
+        </AppDropdown>
+
+        <!-- Filter: Assets -->
+        <AppDropdown class="text-sm">
+          <template #title>
+            <div v-if="filters.assets">
+                <span class="font-medium text-left">Assets: </span>
+                <span class="text-gray-500 text-left"> >= {{ computedAssets }}</span>
+              </div>
+              <span v-else class="text-gray-500 text-left">Assets</span>
+          </template>
+          <input v-model="computedAssets" placeholder=">=" :maxlength="18" class="w-full p-2 border-none focus:ring-0"/>
         </AppDropdown>
 
         <!-- Filter: Users -->
@@ -147,23 +147,23 @@
             </button>
           </th>
 
-          <!-- Header: Assets -->
-          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('assets')" :class="[activeSort == 'assets' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
-              Assets
-              <span class="inline-flex ml-2 rounded bg-violet-100">
-                <ChevronUpIcon v-if="activeSort == 'assets'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
-                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
-              </span>
-            </button>
-          </th>
-
           <!-- Header: Conversion rate -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
             <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Conversion rate
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'conversion_rate'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
+          <!-- Header: Assets -->
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('assets')" :class="[activeSort == 'assets' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Assets
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'assets'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                 <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
               </span>
             </button>
@@ -236,17 +236,17 @@
             </div>
           </td>
 
-          <!-- Assets-->
-          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
-            <div class="flex items-center text-sm">
-              {{ funnel.snapshots[selectedDateRange.key].assets !== null ? funnel.snapshots[selectedDateRange.key].assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) : '' }}
-            </div>
-          </td>
-
           <!-- Conversion rate -->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
             <div class="flex items-center text-sm">
               {{ funnel.snapshots[selectedDateRange.key].conversion_rate !== null ? funnel.snapshots[selectedDateRange.key].conversion_rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%' : '' }}
+            </div>
+          </td>
+          
+          <!-- Assets-->
+          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              {{ funnel.snapshots[selectedDateRange.key].assets !== null ? funnel.snapshots[selectedDateRange.key].assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) : '' }}
             </div>
           </td>
 
@@ -356,8 +356,8 @@ const {
 } = useInfiniteScroll(adminFunnelApi.index, {}, { sort: '' })
 
 
-const activeSort = ref('')
-const activeSortDirection = ref('asc')
+const activeSort = ref('conversion_rate')
+const activeSortDirection = ref('desc')
 
 const name = ref(null)
 const category = ref(null)
