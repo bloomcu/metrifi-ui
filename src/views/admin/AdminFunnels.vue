@@ -97,10 +97,10 @@
         <AppDropdown class="text-sm">
           <template #title>
             <div v-if="filters.privacy">
-                <span class="font-medium text-left">Privacy: </span>
+                <span class="font-medium text-left">Sharing: </span>
                 <span class="text-gray-500 text-left">{{ filters.privacy == '0' ? 'Anonymous' : 'Private' }}</span>
               </div>
-              <span v-else class="text-gray-500 text-left">Privacy</span>
+              <span v-else class="text-gray-500 text-left">Sharing</span>
           </template>
 
           <div class="p-3 space-y-2">
@@ -194,7 +194,7 @@
           <!-- Header: Privacy -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
             <button @click="setActiveSort('privacy')" :class="[activeSort == 'privacy' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
-              Privacy
+              Sharing
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'privacy'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                 <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
