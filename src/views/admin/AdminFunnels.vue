@@ -366,9 +366,9 @@ const filters = ref({
   name: '',
   assets: '',
   conversion_rate: '',
-  users: '',
-  steps_count: '',
-  privacy: '',
+  users: '100',
+  steps_count: '3',
+  privacy: '0',
   category: '',
   // created: ''
 })
