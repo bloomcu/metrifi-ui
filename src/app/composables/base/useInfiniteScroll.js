@@ -44,6 +44,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
     // Load more items using the provided API method
     const loadMore = async () => {
         isLoading.value = true
+
         try {
             const apiParams = {
                 ...params,
@@ -51,10 +52,14 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
             }
     
             const response = await apiMethod(apiParams)
-            // console.log(response.data.meta)
 
-            items.value.push(...response.data.data) // Assuming the API returns a `data` array
-            pagination.current_page += 1 // Increment the page number
+            if (pagination.current_page === 1) {
+                items.value = [] // Reset items on first load
+            }
+            
+            items.value.push(...response.data.data)
+
+            pagination.current_page += 1
             pagination.last_page = response.data.meta.last_page
         } catch (error) {
             console.error('Failed to load more items:', error)
@@ -66,7 +71,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
     // Function to update params and reset pagination
     const updateParams = (newParams) => {
         Object.assign(params, newParams) // Update params reactively
-        items.value = [] // Reset items
+        
         pagination.current_page = 1
         pagination.last_page = null
         loadMore() // Reload with updated params
