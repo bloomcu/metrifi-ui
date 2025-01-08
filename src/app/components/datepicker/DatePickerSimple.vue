@@ -35,6 +35,11 @@ import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { CalendarIcon } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import AppDropdown from '@/app/components/dropdown/AppDropdown.vue'
+import { onMounted } from 'vue'
 
 const { dateRangeOptions, selectedDateRange, selectDateRange, setCustomDataRange } = useDatePicker()
+
+onMounted(() => {
+  selectDateRange(dateRangeOptions[10])
+})
 </script>
