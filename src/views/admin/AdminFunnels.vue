@@ -15,7 +15,7 @@
 
           <div class="flex items-center gap-3 md:absolute md:right-0">
             <DatePickerSimple/>
-            <!-- <AppButton @click="snapshotAllFunnels()">Analyze all funnels</AppButton> -->
+            <AppButton @click="snapshotAllFunnels()">Analyze all funnels</AppButton>
           </div>
         </div>
 
