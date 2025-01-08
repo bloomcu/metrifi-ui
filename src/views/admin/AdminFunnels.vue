@@ -366,7 +366,7 @@
 
 <script setup>
 import moment from "moment"
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useInfiniteScroll } from '@/app/composables/base/useInfiniteScroll'
@@ -399,7 +399,7 @@ const activeSortDirection = ref('desc')
 const name = ref(null)
 const category = ref(null)
 
-const filters = ref({
+const filters = reactive({
   name: '',
   assets: '',
   conversion_rate: '',
@@ -412,7 +412,7 @@ const filters = ref({
 const computedAssets = computed({
   get: () => {
     // Convert to dollars
-    let value = filters.value.assets
+    let value = filters.assets
 
     // Format to dollars
     return value.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
@@ -435,50 +435,48 @@ const computedAssets = computed({
 
     // Handle edge cases
     if (isNaN(value)) {
-      filters.value.assets = 0;
+      filters.assets = 0;
     }
 
     // Convert to cents
-    filters.value.assets = value;
+    filters.assets = value;
   }
 })
 
 function setCategoryFilter(category) {
-    console.log('Selected category: ', category.title)
+    // console.log('Selected category: ', category.title)
     
 
   if (category === null) {
-    filters.value.category = ''
+    filters.category = ''
     return
   }
-  console.log('Filtering category before: ', filters.value.category)
-  filters.value.category = category.title
+//   console.log('Filtering category before: ', filters.category)
+  filters.category = category.title
 
-  console.log('Filtering category after: ', filters.value.category)
+//   console.log('Filtering category after: ', filters.category)
 }
 
 function updateFilters() {
-  updateQueryParams(filters.value)
+  updateQueryParams(filters)
 }
 
 function clearFilters() {
-  filters.value = {
-    name: '',
-    assets: '',
-    conversion_rate: '',
-    users: '',
-    steps_count: '',
-    privacy: '',
-    category: '',
-  };
+  filters.name = '';
+  filters.assets = '';
+  filters.conversion_rate = '';
+  filters.users = '';
+  filters.steps_count = '';
+  filters.privacy = '';
+  filters.category = '';
 
   category.value = null;
 
-  updateQueryParams(filters.value); // Ensure the filters are applied immediately
+  updateQueryParams(filters); // Ensure the filters are applied immediately
 }
 
 const hasActiveFilters = computed(() => {
-  return Object.values(filters.value).some((filter) => filter !== null && filter !== '');
+  return Object.values(filters).some((filter) => filter !== null && filter !== '');
 });
 
 function setActiveSort(sort) {
@@ -493,7 +491,7 @@ function setActiveSort(sort) {
         }
     }
     activeSort.value = sort;
-    updateQueryParams(filters.value);
+    updateQueryParams(filters);
 }
 
 function debounce(func, wait) {
@@ -507,15 +505,13 @@ function debounce(func, wait) {
 const updateQueryParams = debounce((filters) => {
   const sortParam = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
 
-//   console.log(filters)
-
   const formattedFilters = Object.fromEntries(
     Object.entries(filters)
       .filter(([_, value]) => value !== null && value !== undefined && value !== '') // Avoid empty values
       .map(([key, value]) => [`filter[${key}]`, value])
   );
 
-  console.log('Selected date range: ', selectedDateRange)    
+//   console.log('Selected date range: ', selectedDateRange)    
 
   const queryParams = {
     sort: sortParam,
@@ -540,17 +536,19 @@ function showFunnel(funnel) {
 }
 
 // watch activeSort
-watch(selectedDateRange.key, (newPeriod) => {
-  updateQueryParams(filters.value)
+watch(selectedDateRange, (newPeriod) => {
+    // console.log('Date range changed from: ', selectedDateRange.key)
+    // console.log('Date range changed to: ', newPeriod)
+  updateQueryParams(filters)
 })
 
 // watch filters
-watch(filters.value, (updatedFilters) => {
-    console.log('Filters updated: ', updatedFilters)
+watch(filters, (updatedFilters) => {
+    // console.log('Filters updated: ', updatedFilters)
   updateQueryParams(updatedFilters)
 })
 
 onMounted(() => {
-  updateQueryParams(filters.value)
+  updateQueryParams(filters)
 })
 </script>

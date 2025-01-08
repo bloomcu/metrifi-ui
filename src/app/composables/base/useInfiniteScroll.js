@@ -53,7 +53,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
         isLoading.value = true;
 
-        console.log('Params: ', params)
+        // console.log('Params: ', params)
 
         try {
             const apiParams = {
@@ -81,7 +81,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
                 // Disconnect the observer when the last page is reached
                 if (observer && loadMoreElement.value) {
                     observer.unobserve(loadMoreElement.value);
-                    console.log('Observer disconnected: All pages loaded');
+                    // console.log('Observer disconnected: All pages loaded');
                 }
             }
         } catch (error) {
@@ -112,7 +112,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
         // Reconnect the observer if it was previously disconnected
         if (observer && loadMoreElement.value) {
             observer.observe(loadMoreElement.value);
-            console.log('Observer reconnected: New parameters applied');
+            // console.log('Observer reconnected: New parameters applied');
         }
     };
 
