@@ -112,7 +112,7 @@
     
     <!-- Empty state: No benchmarks -->
     <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <ChartBarIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
+      <ChartBarIcon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No benchmarks</h2>
       <p class="mt-1 text-gray-400">Get started by creating a benchmark.</p>
     </div>

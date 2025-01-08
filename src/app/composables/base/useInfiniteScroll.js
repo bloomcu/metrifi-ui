@@ -53,6 +53,8 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
         isLoading.value = true;
 
+        console.log('Params: ', params)
+
         try {
             const apiParams = {
                 ...params,
@@ -96,6 +98,8 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
         // Assign the new parameters to params
         Object.assign(params, newParams);
+
+        // Object.assign(params, newParams); // Update params reactively
 
         // Reset pagination and items
         pagination.current_page = 1;

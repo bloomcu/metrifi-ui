@@ -57,15 +57,15 @@
 
     <!-- Empty state: No connections -->
     <!-- <div v-else class="text-center bg-slate-50 rounded-2xl py-12 px-2">
-      <CloudIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
+      <CloudIcon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-gray-900">No connection</h2>
       <p class="mt-1 text-gray-400">Get started by connecting Google Analytics.</p>
     </div> -->
 
     <!-- Empty state: No connections -->
     <div v-else @click="connectToGoogle()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
-      <CloudIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-violet-600">Connect Google Analytics</h2>
+      <CloudIcon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-violet-500">Connect Google Analytics</h2>
     </div>
 
     <DisconnectConnectionModal/>

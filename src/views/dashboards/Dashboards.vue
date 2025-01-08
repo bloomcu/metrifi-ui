@@ -14,7 +14,7 @@
       <!-- Force anonymous sharing -->
       <div v-else-if="organizationStore.organization && organizationStore.organization.is_private" class="fixed h-full w-full items-center bg-white bg-opacity-60 backdrop-blur-sm flex justify-center z-50">
         <div class="max-w-3xl lg:-ml-60 flex flex-col text-center items-center justify-center border rounded-xl bg-white shadow-xl mx-4 p-10">
-          <EyeIcon class="w-10 h-10 mb-4 text-violet-600" aria-hidden="true" />
+          <EyeIcon class="w-10 h-10 mb-4 text-violet-500" aria-hidden="true" />
           <h1 class="mb-2 text-3xl font-medium text-gray-900">Turn on anonymous sharing</h1>
           <p class="text-lg text-gray-700">In order to compare your analytics with other organizations, you need to share your data anonymously.</p>
 
@@ -24,13 +24,13 @@
               <RadioGroup v-model="organizationStore.organization.is_private" class="-space-y-px rounded-md bg-white">
                 <RadioGroupOption as="template" v-for="(setting, settingIdx) in privacySettings" :key="setting.name" :value="setting.value" :aria-label="setting.name" :aria-description="setting.description" v-slot="{ checked, active }">
                   <div :class="[settingIdx === 0 ? 'rounded-tl-md rounded-tr-md' : '', settingIdx === privacySettings.length - 1 ? 'rounded-bl-md rounded-br-md' : '', checked ? 'z-10 border-violet-200 bg-violet-50' : 'border-gray-200', 'relative flex cursor-pointer border p-5 focus:outline-none']">
-                    <span :class="[checked ? 'border-transparent bg-violet-600' : 'border-gray-300 bg-white', active ? 'ring-2 ring-violet-600 ring-offset-2' : '', 'mt-0.5 flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded-full border']" aria-hidden="true">
+                    <span :class="[checked ? 'border-transparent bg-violet-500' : 'border-gray-300 bg-white', active ? 'ring-2 ring-violet-600 ring-offset-2' : '', 'mt-0.5 flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded-full border']" aria-hidden="true">
                       <span class="h-1.5 w-1.5 rounded-full bg-white" />
                     </span>
                     <span class="ml-4 flex flex-col">
-                      <component :is="setting.icon" :class="[checked ? 'text-violet-600' : 'text-gray-500']" class="-ml-0.5 mb-2 h-5 w-5" aria-hidden="true" />
+                      <component :is="setting.icon" :class="[checked ? 'text-violet-500' : 'text-gray-500']" class="-ml-0.5 mb-2 h-5 w-5" aria-hidden="true" />
                       <span :class="[checked ? 'text-violet-700' : 'text-gray-900']" class="block text-sm font-medium mb-2">{{ setting.name }}</span>
-                      <span :class="[checked ? 'text-violet-600' : 'text-gray-500']" class="block text-sm">{{ setting.description }}</span>
+                      <span :class="[checked ? 'text-violet-500' : 'text-gray-500']" class="block text-sm">{{ setting.description }}</span>
                     </span>
                   </div>
                 </RadioGroupOption>
@@ -38,7 +38,7 @@
             </fieldset>
           </div>
 
-          <p class="text-gray-500">You can change this anytime in the <RouterLink :to="{name: 'settingsSharing'}" class="text-violet-600">Sharing</RouterLink> section of the settings menu.</p>
+          <p class="text-gray-500">You can change this anytime in the <RouterLink :to="{name: 'settingsSharing'}" class="text-violet-500">Sharing</RouterLink> section of the settings menu.</p>
         </div>
       </div>
     </template>
@@ -47,7 +47,7 @@
       <!-- Suggest anonymous sharing -->
       <!-- <div v-if="organizationStore.organization && organizationStore.organization.is_private" @click="router.push({name: 'settingsSharing'})" class="flex items-center justify-between rounded-lg bg-violet-50 p-6 mb-6 cursor-pointer hover:bg-violet-100">
         <div>
-          <h3 class="text-xl font-medium text-violet-600 mb-1">Turn on anonymous sharing</h3>      
+          <h3 class="text-xl font-medium text-violet-500 mb-1">Turn on anonymous sharing</h3>      
           <p class="text-gray-500">In order to compare your analytics with other organizations, you need to share your data anonymously.</p>
         </div>
         <AppButton>Enable anonymous sharing</AppButton>
@@ -70,8 +70,8 @@
         <!-- Analysis type tabs -->
         <nav class="flex justify-between mb-4">
           <div class="flex space-x-6">
-            <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-violet-500 text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Average</button>
-            <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-violet-500 text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Maximum</button>
+            <button @click="activeAnalysisType = 'median_analysis'" :class="[activeAnalysisType == 'median_analysis' ? 'border-violet-500 text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Average</button>
+            <button @click="activeAnalysisType = 'max_analysis'" :class="[activeAnalysisType == 'max_analysis' ? 'border-violet-500 text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Maximum</button>
           </div>
         </nav>
 
@@ -82,7 +82,7 @@
                 <p>Total assets</p>
                 <span class="text-2xl font-medium">{{ organizationStore.organization.assets.median.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
             </div>
-            <div class="flex flex-1 flex-col gap-0.5 text-violet-600 border-l px-4 py-3">
+            <div class="flex flex-1 flex-col gap-0.5 text-violet-500 border-l px-4 py-3">
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.median.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
@@ -96,7 +96,7 @@
                 <p>Total assets</p>
                 <span class="text-2xl font-medium">{{ organizationStore.organization.assets.max.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
             </div>
-            <div class="flex flex-1 flex-col gap-0.5 text-violet-600 border-l px-4 py-3">
+            <div class="flex flex-1 flex-col gap-0.5 text-violet-500 border-l px-4 py-3">
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.max.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
@@ -113,7 +113,7 @@
           <div class="hidden sm:block">
             <nav class="-mb-px flex justify-between">
               <div class="flex space-x-4">
-                <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Step opportunity
                   <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'bofi_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -121,7 +121,7 @@
                   </span>
                 </button>
 
-                <button @click="setActiveSort('subject_funnel_performance')" :class="[activeSort == 'subject_funnel_performance' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('subject_funnel_performance')" :class="[activeSort == 'subject_funnel_performance' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Conversion rate
                   <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'subject_funnel_performance'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -129,7 +129,7 @@
                   </span>
                 </button>
 
-                <button @click="setActiveSort('subject_funnel_users')" :class="[activeSort == 'subject_funnel_users' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap pr-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('subject_funnel_users')" :class="[activeSort == 'subject_funnel_users' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap pr-1 py-4 text-sm font-medium']">
                   Users
                   <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'subject_funnel_users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -137,7 +137,7 @@
                   </span>
                 </button>
 
-                <button @click="setActiveSort('bofi_asset_change')" :class="[activeSort == 'bofi_asset_change' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('bofi_asset_change')" :class="[activeSort == 'bofi_asset_change' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Potential assets
                   <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'bofi_asset_change'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -147,7 +147,7 @@
               </div>
 
               <div class="flex space-x-4">
-                <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Name
                   <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'name' " :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -155,7 +155,7 @@
                   </span>
                 </button>
 
-                <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Last modified
                   <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'updated_at'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -171,8 +171,8 @@
 
     <!-- Force funnel create first -->
     <div v-if="organizationStore.organization && organizationStore.organization.funnels_count === 0" @click="storeNewFunnel()" class="rounded-lg border border-dashed border-violet-400 p-6 pb-8 mb-8 hover:bg-violet-50 cursor-pointer">
-      <ChartBarIcon class="w-10 h-10 mb-6 text-violet-600" aria-hidden="true" />
-      <h3 class="mb-2 text-2xl font-medium text-violet-600">You need a funnel</h3>
+      <ChartBarIcon class="w-10 h-10 mb-6 text-violet-500" aria-hidden="true" />
+      <h3 class="mb-2 text-2xl font-medium text-violet-500">You need a funnel</h3>
       <p class="text-lg text-gray-700 mb-4">You need a funnel to compare before creating a dashboard.</p>
       <AppButton>Create a funnel</AppButton>
     </div>
@@ -194,7 +194,7 @@
           <!-- Card header -->
           <div :class="dashboard.median_analysis && dashboard.max_analysis ? 'border-b pb-4' : ''" class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <ChartBarIcon class="w-5 text-violet-600"/>
+              <ChartBarIcon class="w-5 text-violet-500"/>
               <h3 class="text-xl font-medium text-gray-900">{{ dashboard.name }}</h3>
             </div>
             
@@ -276,8 +276,8 @@
 
     <!-- Empty state: No dashboards -->
     <div v-else @click="storeNewDashboard()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
-      <Squares2X2Icon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-violet-600">Create a dashboard</h2>
+      <Squares2X2Icon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-violet-500">Create a dashboard</h2>
     </div>
   </LayoutWithSidebar>
 </template>

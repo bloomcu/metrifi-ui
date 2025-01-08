@@ -9,7 +9,7 @@
         </div>
       </div>
       <p class="mt-3 text-lg leading-8 text-gray-900">Your password has been reset.</p>
-      <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-violet-600 hover:text-violet-500">Return to sign in</RouterLink>
+      <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-violet-500 hover:text-violet-600">Return to sign in</RouterLink>
     </div>
 
     <!-- Form -->
@@ -32,7 +32,7 @@
 
     <div class="text-center mt-4">
       <p class="text-sm text-gray-500">
-        <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-violet-600 hover:text-violet-500">Return to sign in</RouterLink>
+        <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-violet-500 hover:text-violet-600">Return to sign in</RouterLink>
       </p>
     </div>
   </main>

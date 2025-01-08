@@ -50,11 +50,11 @@
             <!-- Instructions/recommendation toggler -->
             <div class="flex mb-6">
               <div class="p-1 border border-gray-300 rounded-lg flex space-x-1">
-                  <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-violet-100 text-violet-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                  <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                       <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="4" cy="6" r="1"></circle><circle cx="4" cy="12" r="1"></circle><circle cx="4" cy="18" r="1"></circle></svg> -->
                       <span class="text-sm">Instructions</span>
                   </button>
-                  <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-violet-100 text-violet-600' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                  <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                       <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg> -->
                       <span class="text-sm">Analysis</span>
                   </button>

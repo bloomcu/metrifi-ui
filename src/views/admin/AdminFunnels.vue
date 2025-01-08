@@ -7,7 +7,7 @@
           <div class="flex items-center gap-2">
             <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">All Funnels</h1>
           
-            <svg v-if="isLoading" class="inline w-6 h-6 ml-2 text-violet-600 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg v-if="isLoading" class="inline w-6 h-6 ml-2 text-violet-500 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#FFFFFF" fill-opacity="0"/>
                 <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
             </svg>
@@ -22,8 +22,8 @@
         <!-- Analysis type tabs -->
         <!-- <nav class="flex justify-between">
           <div class="flex space-x-6">
-            <button @click="selectedDateRange.key = 'last28Days'" :class="[selectedDateRange.key == 'last28Days' ? 'border-violet-500 text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Last 28 days</button>
-            <button @click="selectedDateRange.key = 'last90Days'" :class="[selectedDateRange.key == 'last90Days' ? 'border-violet-500 text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Last 90 days</button>
+            <button @click="selectedDateRange.key = 'last28Days'" :class="[selectedDateRange.key == 'last28Days' ? 'border-violet-500 text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Last 28 days</button>
+            <button @click="selectedDateRange.key = 'last90Days'" :class="[selectedDateRange.key == 'last90Days' ? 'border-violet-500 text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Last 90 days</button>
           </div>
         </nav> -->
       </div>
@@ -33,10 +33,10 @@
 
     <!-- Filters -->
     <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
-        <div>{{ funnels.length }} of {{ meta.total }} funnels</div>
+        <div>{{ meta.total }} funnels</div>
 
       <div class="flex items-center gap-2">
-        <AppButton v-if="hasActiveFilters" @click="clearFilters" size="sm" variant="simple" class="text-sm bg-gray-100 hover:bg-violet-100 text-violet-600">
+        <AppButton v-if="hasActiveFilters" @click="clearFilters" size="sm" variant="simple" class="text-sm bg-gray-100 hover:bg-violet-100 text-violet-500">
             Clear filters
         </AppButton>
         
@@ -99,7 +99,7 @@
             <div v-if="filters.steps_count">
                 <span class="font-medium text-left">Steps: </span>
                 <span class="text-gray-500 text-left"> >= {{ filters.steps_count }}</span>
-                <button @click.stop="filters.users = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
+                <button @click.stop="filters.steps_count = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
               </div>
               <span v-else class="text-gray-500 text-left">Steps</span>
           </template>
@@ -152,7 +152,7 @@
         <tr class="">
           <!-- Header: Name -->
           <th scope="col" class="py-3.5 pl-4 pr-4 sm:pl-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Name
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'name'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -163,7 +163,7 @@
 
           <!-- Header: Conversion rate -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Conversion rate
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'conversion_rate'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -174,7 +174,7 @@
 
           <!-- Header: Assets -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('assets')" :class="[activeSort == 'assets' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('assets')" :class="[activeSort == 'assets' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Assets
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'assets'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -185,7 +185,7 @@
 
           <!-- Header: Users -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('users')" :class="[activeSort == 'users' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('users')" :class="[activeSort == 'users' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Users
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -196,7 +196,7 @@
 
           <!-- Header: Steps -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('steps_count')" :class="[activeSort == 'steps_count' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('steps_count')" :class="[activeSort == 'steps_count' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Steps
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'steps_count'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -207,7 +207,7 @@
 
           <!-- Header: Privacy -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('privacy')" :class="[activeSort == 'privacy' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('privacy')" :class="[activeSort == 'privacy' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Sharing
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'privacy'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -218,7 +218,7 @@
 
           <!-- Header: Category -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Category
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'category'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -229,7 +229,7 @@
 
           <!-- Header: Created -->
           <!-- <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">
-            <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+            <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Created
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'created'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
@@ -407,7 +407,6 @@ const filters = ref({
   steps_count: '3',
   privacy: '0',
   category: '',
-  // created: ''
 })
 
 const computedAssets = computed({
@@ -445,12 +444,17 @@ const computedAssets = computed({
 })
 
 function setCategoryFilter(category) {
+    console.log('Selected category: ', category.title)
+    
+
   if (category === null) {
     filters.value.category = ''
     return
   }
-
+  console.log('Filtering category before: ', filters.value.category)
   filters.value.category = category.title
+
+  console.log('Filtering category after: ', filters.value.category)
 }
 
 function updateFilters() {
@@ -503,7 +507,7 @@ function debounce(func, wait) {
 const updateQueryParams = debounce((filters) => {
   const sortParam = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
 
-  console.log(filters)
+//   console.log(filters)
 
   const formattedFilters = Object.fromEntries(
     Object.entries(filters)
@@ -511,11 +515,11 @@ const updateQueryParams = debounce((filters) => {
       .map(([key, value]) => [`filter[${key}]`, value])
   );
 
-  console.log(formattedFilters)
+  console.log('Selected date range: ', selectedDateRange)    
 
   const queryParams = {
     sort: sortParam,
-    period: selectedDateRange.key,
+    period: selectedDateRange.value.key,
     ...formattedFilters,
   };
 
@@ -542,6 +546,7 @@ watch(selectedDateRange.key, (newPeriod) => {
 
 // watch filters
 watch(filters.value, (updatedFilters) => {
+    console.log('Filters updated: ', updatedFilters)
   updateQueryParams(updatedFilters)
 })
 

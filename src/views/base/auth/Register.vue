@@ -7,7 +7,7 @@
           <h2 class="mt-8 text-3xl font-medium leading-9 text-gray-900 tracking-tight sm:text-4xl sm:truncate">Register</h2>
           <p class="mt-3 leading-6 text-gray-500">
             Already have an account?
-            <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-violet-600 hover:text-violet-500">Sign in</RouterLink>
+            <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-violet-500 hover:text-violet-600">Sign in</RouterLink>
           </p>
         </div>
 
@@ -25,9 +25,9 @@
               <AppInput v-model="inputs.password" :errors="errorStore.errors.password" type="password" label="Create password" required />
               <AppPasswordChecker v-if="inputs.password" :password="inputs.password"/>
               <div class="flex items-center py-2">
-                <input v-model="inputs.accept_terms" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-600" />
+                <input v-model="inputs.accept_terms" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600" />
                 <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
-                  I agree to MetriFi's <a href="https://metrifi.com/legal/terms-of-service/" target="_blank" class="text-violet-600 hover:underline">Terms of Service</a> and <a href="https://metrifi.com/legal/privacy-policy/" target="_blank" class="text-violet-600 hover:underline">Privacy Policy</a>
+                  I agree to MetriFi's <a href="https://metrifi.com/legal/terms-of-service/" target="_blank" class="text-violet-500 hover:underline">Terms of Service</a> and <a href="https://metrifi.com/legal/privacy-policy/" target="_blank" class="text-violet-500 hover:underline">Privacy Policy</a>
                 </label>
               </div>
 

@@ -65,8 +65,8 @@
 
     <DisclosurePanel class="sm:hidden">
       <div class="space-y-1 pb-3 pt-2">
-        <!-- Current: "bg-violet-50 border-violet-500 text-violet-600", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
-        <RouterLink :to="{ name: 'sites', params: { organization: auth.organization.slug}}" class="block border-l-4 border-violet-500 bg-violet-50 py-2 pl-3 pr-4 text-base font-medium text-violet-600">Sites</RouterLink>
+        <!-- Current: "bg-violet-50 border-violet-500 text-violet-500", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
+        <RouterLink :to="{ name: 'sites', params: { organization: auth.organization.slug}}" class="block border-l-4 border-violet-500 bg-violet-50 py-2 pl-3 pr-4 text-base font-medium text-violet-500">Sites</RouterLink>
       </div>
       <div class="border-t border-gray-200 pb-3 pt-4">
         <div class="flex items-center px-4">

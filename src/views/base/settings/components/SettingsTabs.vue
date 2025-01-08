@@ -32,10 +32,10 @@ const tabs = [
 
 <style lang="scss" scoped>
 .router-link-active {
-  @apply border-violet-500 text-violet-600
+  @apply border-violet-500 text-violet-500
 }
 
 .router-link-active svg {
-  @apply text-violet-600
+  @apply text-violet-500
 }
 </style>

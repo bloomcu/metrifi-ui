@@ -48,9 +48,9 @@
     <fieldset class="mt-8" aria-label="Payment frequency">
       <RadioGroup v-model="frequency" class="w-fit grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-sm font-semibold ring-1 ring-inset ring-gray-200">
         <RadioGroupOption as="template" v-for="option in frequencies" :key="option.value" :value="option" v-slot="{ checked }">
-          <div :class="[checked ? 'bg-violet-600 text-white' : 'text-gray-500', 'cursor-pointer rounded-full px-6 py-2']">
+          <div :class="[checked ? 'bg-violet-500 text-white' : 'text-gray-500', 'cursor-pointer rounded-full px-6 py-2']">
             {{ option.label }}
-            <span v-if="option.value === 'yearly'" class="text-xs font-medium text-violet-600 py-0.5 px-2 ml-0.5 rounded-full bg-violet-100">Save 16%</span>
+            <span v-if="option.value === 'yearly'" class="text-xs font-medium text-violet-500 py-0.5 px-2 ml-0.5 rounded-full bg-violet-100">Save 16%</span>
           </div>
         </RadioGroupOption>
       </RadioGroup>
@@ -61,7 +61,7 @@
       <div v-for="(tier, index) in plans[frequency.value]" :key="index" :class="[organizationSubscriptionStore.subscription.plan.title == tier.fullTitle ? 'ring-2 ring-violet-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
         <div class="flex items-center justify-between gap-x-4">
           <h3 class="text-gray-900 text-lg font-semibold">{{ tier.title }}</h3>
-          <p v-if="organizationSubscriptionStore.subscription.plan.title == tier.fullTitle" class="rounded-full bg-violet-600/10 px-2.5 py-1 text-xs/5 font-semibold text-violet-600">Current plan</p>
+          <p v-if="organizationSubscriptionStore.subscription.plan.title == tier.fullTitle" class="rounded-full bg-violet-500/10 px-2.5 py-1 text-xs/5 font-semibold text-violet-500">Current plan</p>
         </div>
 
         <p class="mt-4 flex items-baseline gap-x-1">
@@ -73,21 +73,21 @@
 
         <ul role="list" class="mt-6 space-y-3 text-sm/6 text-gray-600">
           <li v-for="feature in tier.features" :key="feature" class="flex gap-x-2">
-            <CheckIcon class="h-6 w-5 flex-none text-violet-600" aria-hidden="true" />
+            <CheckIcon class="h-6 w-5 flex-none text-violet-500" aria-hidden="true" />
             {{ feature }}
           </li>
         </ul>
 
         <!-- <template> -->
-          <button v-if="tier.group == 'starter' && !organizationSubscriptionStore.subscription.subscribed" @click="selectPlan(tier.price_id)" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+          <button v-if="tier.group == 'starter' && !organizationSubscriptionStore.subscription.subscribed" @click="selectPlan(tier.price_id)" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to {{ tier.title }}
           </button>
-          <a v-if="tier.group == 'growth'" :href="tier.href" target="_blank" class="w-full bg-violet-600 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+          <a v-if="tier.group == 'growth'" :href="tier.href" target="_blank" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to {{ tier.title }}
           </a>
         <!-- </template> -->
 
-        <p v-if="tier.title === 'Starter Yearly'" class="text-center text-sm/6 text-violet-600 mt-6">Subscribe annually and get 2 months free</p>
+        <p v-if="tier.title === 'Starter Yearly'" class="text-center text-sm/6 text-violet-500 mt-6">Subscribe annually and get 2 months free</p>
       </div>
     </div>
   </AppCard>

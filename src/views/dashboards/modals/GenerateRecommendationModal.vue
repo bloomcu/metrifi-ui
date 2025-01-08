@@ -188,7 +188,7 @@
 
                   <!-- Select -->
                   <!-- <button class="absolute flex top-1 left-1 h-7 w-7 items-center justify-center text-gray-600 hover:text-gray-900">
-                    <input :checked="selected.includes(file.id)" type="checkbox" class="h-4 w-4 cursor-pointer rounded border-gray-300 text-violet-600 focus:ring-violet-600">
+                    <input :checked="selected.includes(file.id)" type="checkbox" class="h-4 w-4 cursor-pointer rounded border-gray-300 text-violet-500 focus:ring-violet-600">
                   </button> -->
 
                   <!-- Delete -->
@@ -214,7 +214,7 @@
           </div>
 
           <div class="flex gap-3">
-            <a @click.stop href="https://metrifi.com/secret-shop-your-website/" target="_blank" class="px-2.5 py-1.5 text-sm text-violet-600 bg-violet-50 hover:bg-violet-100 font-medium rounded-full active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-nonefocus-visible:outline-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Secret shop my website</a>
+            <a @click.stop href="https://metrifi.com/secret-shop-your-website/" target="_blank" class="px-2.5 py-1.5 text-sm text-violet-500 bg-violet-50 hover:bg-violet-100 font-medium rounded-full active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-nonefocus-visible:outline-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Secret shop my website</a>
             <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>' || recommendationStore.recommendation.secret_shopper_files.length" class="h-7 w-7 text-green-600"/>
           </div>
         </div>
