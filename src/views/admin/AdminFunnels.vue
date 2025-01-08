@@ -29,7 +29,7 @@
       </div>
     </template>
 
-    <pre>{{ filters }}</pre>
+    <!-- <pre>{{ filters }}</pre> -->
 
     <!-- Filters -->
     <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
