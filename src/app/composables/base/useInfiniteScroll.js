@@ -61,7 +61,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
             const response = await apiMethod(apiParams);
 
-            console.log('response', response.data.meta);
+            // console.log('response', response.data.links.first);
 
             if (pagination.current_page === 1) {
                 items.value = []; // Reset items on the first load
@@ -91,7 +91,11 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
     // Function to update params and reset pagination
     const updateParams = async (newParams) => {
-        Object.assign(params, newParams); // Update params reactively
+        // Clear all existing properties in the params object
+        Object.keys(params).forEach(key => delete params[key]);
+
+        // Assign the new parameters to params
+        Object.assign(params, newParams);
 
         // Reset pagination and items
         pagination.current_page = 1;

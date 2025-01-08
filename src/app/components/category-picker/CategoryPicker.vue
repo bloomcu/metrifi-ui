@@ -4,6 +4,7 @@
         <div v-if="modelValue">
           <span class="font-medium text-left">Category: </span>
           <span class="text-gray-500 text-left">{{ modelValue.title }}</span>
+          <button @click.stop="updateValue(null)" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
         </div>
         <span v-else class="text-gray-500 text-left">Category</span>
         <!-- <ChevronDownIcon class="ml-2 h-4 w-4 text-gray-400" /> -->

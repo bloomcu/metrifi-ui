@@ -29,14 +29,14 @@
       </div>
     </template>
 
-    <!-- <pre>{{ filters }}</pre> -->
+    <pre>{{ filters }}</pre>
 
     <!-- Filters -->
     <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
-        <div>Showing {{ funnels.length }} of {{ meta.total }} funnels</div>
+        <div>{{ funnels.length }} of {{ meta.total }} funnels</div>
 
-      <div class="flex items-center gap-3">
-        <AppButton v-if="hasActiveFilters" @click="clearFilters" size="sm" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700">
+      <div class="flex items-center gap-2">
+        <AppButton v-if="hasActiveFilters" @click="clearFilters" size="sm" variant="simple" class="text-sm bg-gray-100 hover:bg-violet-100 text-violet-600">
             Clear filters
         </AppButton>
         
@@ -46,6 +46,7 @@
             <div v-if="filters.name">
                 <span class="font-medium text-left">Name: </span>
                 <span class="text-gray-500 text-left">{{ filters.name }}</span>
+                <button @click.stop="filters.name = ''; updateFilters()" class="ml-2 text-md text-gray-400 hover:text-gray-600">&times;</button>
               </div>
               <span v-else class="text-gray-500 text-left">Name</span>
               <!-- <ChevronDownIcon class="ml-2 h-4 w-4 text-gray-400" /> -->
@@ -59,6 +60,7 @@
             <div v-if="filters.conversion_rate">
                 <span class="font-medium text-left">Conversion rate: </span>
                 <span class="text-gray-500 text-left"> >= {{ filters.conversion_rate }}%</span>
+                <button @click.stop="filters.conversion_rate = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
               </div>
               <span v-else class="text-gray-500 text-left">Conversion rate</span>
           </template>
@@ -71,6 +73,7 @@
             <div v-if="filters.assets">
                 <span class="font-medium text-left">Assets: </span>
                 <span class="text-gray-500 text-left"> >= {{ computedAssets }}</span>
+                <button @click.stop="filters.assets = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
               </div>
               <span v-else class="text-gray-500 text-left">Assets</span>
           </template>
@@ -83,6 +86,7 @@
             <div v-if="filters.users">
                 <span class="font-medium text-left">Users: </span>
                 <span class="text-gray-500 text-left"> >= {{ filters.users }}</span>
+                <button @click.stop="filters.users = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
               </div>
               <span v-else class="text-gray-500 text-left">Users</span>
           </template>
@@ -95,6 +99,7 @@
             <div v-if="filters.steps_count">
                 <span class="font-medium text-left">Steps: </span>
                 <span class="text-gray-500 text-left"> >= {{ filters.steps_count }}</span>
+                <button @click.stop="filters.users = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
               </div>
               <span v-else class="text-gray-500 text-left">Steps</span>
           </template>
@@ -107,6 +112,7 @@
             <div v-if="filters.privacy">
                 <span class="font-medium text-left">Sharing: </span>
                 <span class="text-gray-500 text-left">{{ filters.privacy == '0' ? 'Anonymous' : 'Private' }}</span>
+                <button @click.stop="filters.privacy = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
               </div>
               <span v-else class="text-gray-500 text-left">Sharing</span>
           </template>
@@ -135,7 +141,7 @@
           </div>
         </AppDropdown>
 
-        <!-- Filter: Users -->
+        <!-- Filter: Category -->
         <CategoryPicker v-model="category" @update:modelValue="setCategoryFilter" class="text-sm"/>
       </div>
     </div>
@@ -295,7 +301,7 @@
         <tr ref="loadMoreElement" class="sr-only h-1"></tr>
       </tbody>
 
-      <tbody v-else v-for="index in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]" class="divide-y divide-gray-200">
+      <tbody v-else-if="isLoading" v-for="index in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]" class="divide-y divide-gray-200">
         <tr class="hover:bg-gray-50 cursor-pointer">
           <!-- Funnel -->
           <td class="py-6 pr-2 text-sm w-2/5 sm:pl-4">
@@ -351,10 +357,10 @@
     </table>
 
     <!-- Empty state: No funnels -->
-    <!-- <div v-if="!funnels || funnels.length === 0" class="flex flex-col items-center justify-center bg-violet-50 rounded-lg py-6 px-2">
-      <ChartBarIcon class="mx-auto h-10 w-10 text-violet-600" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-violet-600">No funnels to show</h2>
-    </div> -->
+    <div v-if="!funnels || funnels.length === 0" class="flex flex-col items-center justify-center bg-gray-50 rounded-lg py-6 px-2">
+      <ChartBarIcon class="mx-auto h-10 w-10 text-gray-400" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-gray-400">No funnels to show</h2>
+    </div>
   </LayoutAdmin>
 </template>
 
@@ -448,7 +454,7 @@ function setCategoryFilter(category) {
 }
 
 function updateFilters() {
-  updateQueryParams()
+  updateQueryParams(filters.value)
 }
 
 function clearFilters() {
@@ -464,7 +470,7 @@ function clearFilters() {
 
   category.value = null;
 
-  updateQueryParams(); // Ensure the filters are applied immediately
+  updateQueryParams(filters.value); // Ensure the filters are applied immediately
 }
 
 const hasActiveFilters = computed(() => {
@@ -483,7 +489,7 @@ function setActiveSort(sort) {
         }
     }
     activeSort.value = sort;
-    updateQueryParams();
+    updateQueryParams(filters.value);
 }
 
 function debounce(func, wait) {
@@ -494,14 +500,18 @@ function debounce(func, wait) {
   };
 }
 
-const updateQueryParams = debounce(() => {
+const updateQueryParams = debounce((filters) => {
   const sortParam = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
 
+  console.log(filters)
+
   const formattedFilters = Object.fromEntries(
-    Object.entries(filters.value)
+    Object.entries(filters)
       .filter(([_, value]) => value !== null && value !== undefined && value !== '') // Avoid empty values
       .map(([key, value]) => [`filter[${key}]`, value])
   );
+
+  console.log(formattedFilters)
 
   const queryParams = {
     sort: sortParam,
@@ -527,15 +537,15 @@ function showFunnel(funnel) {
 
 // watch activeSort
 watch(selectedDateRange.key, (newPeriod) => {
-  updateQueryParams()
+  updateQueryParams(filters.value)
 })
 
 // watch filters
-watch(filters.value, () => {
-  updateQueryParams()
+watch(filters.value, (updatedFilters) => {
+  updateQueryParams(updatedFilters)
 })
 
 onMounted(() => {
-  updateQueryParams()
+  updateQueryParams(filters.value)
 })
 </script>
