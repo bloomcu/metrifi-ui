@@ -33,7 +33,7 @@
 
     <!-- Filters -->
     <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
-        <div>Filters</div>
+        <div>Showing {{ funnels.length }} of {{ meta.total }} funnels</div>
 
       <div class="flex items-center gap-3">
         <AppButton v-if="hasActiveFilters" @click="clearFilters" size="sm" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700">
@@ -382,7 +382,8 @@ const {
     loadMoreElement, 
     items: funnels, 
     isLoading, 
-    updateParams 
+    meta,
+    updateParams
 } = useInfiniteScroll(adminFunnelApi.index, {}, { sort: '' })
 
 
@@ -485,24 +486,31 @@ function setActiveSort(sort) {
     updateQueryParams();
 }
 
-function updateQueryParams() {
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+const updateQueryParams = debounce(() => {
   const sortParam = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
 
   const formattedFilters = Object.fromEntries(
-  Object.entries(filters.value)
-    .filter(([_, value]) => value !== null && value !== undefined) // Allow empty strings
-    .map(([key, value]) => [`filter[${key}]`, value]) // Format keys for Spatie QueryBuilder
-);
+    Object.entries(filters.value)
+      .filter(([_, value]) => value !== null && value !== undefined && value !== '') // Avoid empty values
+      .map(([key, value]) => [`filter[${key}]`, value])
+  );
 
   const queryParams = {
     sort: sortParam,
     period: selectedDateRange.key,
-    ...formattedFilters, // Inject formatted filters
-    // page: 0
+    ...formattedFilters,
   };
 
   updateParams(queryParams);
-}
+}, 300); // 300ms debounce delay
 
 function snapshotAllFunnels() {
   isLoading.value = true
