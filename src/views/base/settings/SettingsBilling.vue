@@ -79,10 +79,10 @@
         </ul>
 
         <!-- <template> -->
-          <button v-if="tier.group == 'starter' && !organizationSubscriptionStore.subscription.subscribed" @click="selectPlan(tier.price_id)" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+          <button v-if="tier.group == 'starter' && !organizationSubscriptionStore.subscription.subscribed" @click="selectPlan(tier.price_id)" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-600 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to {{ tier.title }}
           </button>
-          <a v-if="tier.group == 'growth'" :href="tier.href" target="_blank" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-500 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+          <a v-if="tier.group == 'growth'" :href="tier.href" target="_blank" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-600 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to {{ tier.title }}
           </a>
         <!-- </template> -->

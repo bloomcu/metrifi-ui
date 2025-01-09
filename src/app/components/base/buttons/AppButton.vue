@@ -67,7 +67,7 @@ const sizeClasses = {
 }
 
 const variantClasses = {
-  primary: 'text-white bg-violet-500 hover:bg-violet-500 shadow-sm',
+  primary: 'text-white bg-violet-500 hover:bg-violet-600 shadow-sm',
   secondary: 'text-violet-500 bg-violet-50 hover:bg-violet-100',
   tertiary: 'text-gray-900 bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 shadow-sm',
   danger: 'text-red-600 bg-white hover:bg-red-50 ring-1 ring-inset ring-red-300 shadow-sm',

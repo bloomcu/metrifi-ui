@@ -21,7 +21,7 @@
       :style="`height: ${height}%;`"
       :class="[
         updating ? 'animate-pulse' : '',
-        isProjection ? 'from-violet-400 to-violet-500' : 'from-violet-600 to-violet-600'
+        isProjection ? 'bg-violet-700 hover:bg-violet-800' : 'bg-violet-500 hover:bg-violet-600'
       ]"
       class="flex-1 rounded-lg transition duration-300 bg-gradient-to-b " 
     >
