@@ -12,7 +12,7 @@
         <!-- If invitation is found -->
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-12 sm:gap-24">
             <div>
-                <p class="text-lg leading-8 text-gray-500">Invitation</p>
+                <img width="140" src="/logo.svg" alt="MetriFi" class="mb-10"/>
 
                 <h1 class="mt-4 text-4xl font-medium tracking-tight text-gray-900 sm:text-5xl">
                     You've been invited to the <span class="text-violet-500">{{ invitationStore.invitation.organization.title }}</span> team.

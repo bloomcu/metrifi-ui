@@ -3,7 +3,7 @@
     <div class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-32">
       <div class="mx-auto w-full max-w-sm lg:w-96">
         <div>
-          <img width="44" src="/logo-mark.svg" alt="MetriFi" />
+          <img width="140" src="/logo.svg" alt="MetriFi" class="mb-20"/>
           <h2 class="mt-8 text-3xl font-medium leading-9 text-gray-900 tracking-tight sm:text-4xl sm:truncate">Sign in</h2>
           <p class="mt-3 leading-6 text-gray-500">
             Don't have an account?

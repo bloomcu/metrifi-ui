@@ -98,7 +98,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
     // }
 
     const getReport = debounce((funnel) => {
-        console.log('Getting report for funnel', funnel.id)
+        // console.log('Getting report for funnel', funnel.id)
         isLoading.value = true
 
         gaDataApi.funnelReport(funnel.id, {
@@ -107,7 +107,7 @@ export const useFunnelStore = defineStore('funnelStore', () => {
             endDate: selectedDateRange.value.endDate,
         }).then(response => {
             if (response.data.data.error) console.log(response.data.data.error)
-            console.log('Report', response.data.data.report)
+            // console.log('Report', response.data.data.report)
             funnel.report = response.data.data.report
             isLoading.value = false
         })
