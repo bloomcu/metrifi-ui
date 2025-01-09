@@ -10,14 +10,14 @@
                     <div class="flex flex-1 flex-col gap-0.5 -pl-2">
                         <div v-if="projection" @click="isEditConversionValueModalOpen = true" class="flex items-center gap-0.5 group cursor-pointer hover:text-violet-600">
                             <p>Assets</p>
-                            <PencilIcon class="inline h-5 w-5 text-violet-600 p-1 rounded-md group-hover:bg-violet-50"/>
+                            <PencilIcon class="inline h-5 w-5 text-violet-500 p-1 rounded-md group-hover:bg-violet-50"/>
                         </div>
                         <p v-else>Assets</p>
                         <span class="text-2xl font-medium">{{ funnel.report.assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}</span>
                     </div>
 
                     <!-- Projected assets -->
-                    <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-violet-600 border-l ml-4 pl-4">
+                    <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-violet-500 border-l ml-4 pl-4">
                         <p>Projected assets</p>
                         <p class="flex items-center gap-1 text-2xl font-medium">
                             {{ projectedAssets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
@@ -36,7 +36,7 @@
                     </div>
 
                     <!-- Projected conversion -->
-                    <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-violet-600 border-l ml-4 pl-4">
+                    <div v-if="projection && projection.length" class="flex flex-1 flex-col gap-0.5 text-violet-500 border-l ml-4 pl-4">
                         <p>Projected conversion</p>
                         <p class="flex items-center gap-1 text-2xl font-medium">
                             {{ projectedOverallConversionRate }}%
@@ -112,7 +112,7 @@
                                 <template #title>
                                     <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
                                         {{ Number(projection[index].users).toFixed() }} users
-                                        <PencilIcon class="inline ml-1 h-3 w-3 text-violet-600"/>
+                                        <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
                                     </p>
                                 </template>
                                 <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
@@ -128,7 +128,7 @@
                                         <!-- {{ projection[index].conversionRate }}% -->
                                         {{ Number(projection[index].conversionRate).toFixed(2) }}%
                                         <span>conversion</span>
-                                        <PencilIcon class="inline ml-1 h-3 w-3 text-violet-600"/>
+                                        <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
                                     </p>
                                 </template>
                                 <AppInput v-model="projection[index].conversionRate" @input="calculateProjectionUsers()" type="number"/>

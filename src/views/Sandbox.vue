@@ -18,7 +18,7 @@
                     <thead>
                     <tr>
                         <th scope="col" class="relative px-7 sm:w-12 sm:px-6">
-                        <input type="checkbox" class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-600" />
+                        <input type="checkbox" class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600" />
                         </th>
                         <th scope="col" class="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">Title & URL</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
@@ -33,7 +33,7 @@
                         <tr v-for="page in pages" :key="page.id">
                             <!-- Checkbox -->
                             <td class="relative px-7 sm:w-12 sm:px-6">
-                            <input type="checkbox" class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-600" :value="page.id" />
+                            <input type="checkbox" class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600" :value="page.id" />
                             </td>
 
                             <!-- Title & Url -->
@@ -58,7 +58,7 @@
 
                             <!-- Edit -->
                             <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium">
-                            <a href="#" class="text-violet-600 hover:text-violet-700">Edit</a>
+                            <a href="#" class="text-violet-500 hover:text-violet-700">Edit</a>
                             </td>
                         </tr>
                     </tbody>
@@ -80,19 +80,19 @@
 
         <div>
             <div class="mb-4 relative inline-block">
-                <button @click="teleport('#target1')" class="items-center rounded-md bg-violet-600 px-3 py-2 text-sm font-semibold text-white">Button One</button>
+                <button @click="teleport('#target1')" class="items-center rounded-md bg-violet-500 px-3 py-2 text-sm font-semibold text-white">Button One</button>
                 <div id="target1"></div>
             </div>
         </div>
         <div>
             <div class="mb-4 relative inline-block">
-                <button @click="teleport('#target2')" class="items-center rounded-md bg-violet-600 px-3 py-2 text-sm font-semibold text-white">Button Two</button>
+                <button @click="teleport('#target2')" class="items-center rounded-md bg-violet-500 px-3 py-2 text-sm font-semibold text-white">Button Two</button>
                 <div id="target2"></div>
             </div>
         </div>
         <div>
             <div class="mb-4 relative inline-block">
-                <button @click="teleport('#target3')" class="items-center rounded-md bg-violet-600 px-3 py-2 text-sm font-semibold text-white">Button Three</button>
+                <button @click="teleport('#target3')" class="items-center rounded-md bg-violet-500 px-3 py-2 text-sm font-semibold text-white">Button Three</button>
                 <div id="target3"></div>
             </div>
         </div>

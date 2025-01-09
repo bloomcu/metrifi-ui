@@ -3,10 +3,10 @@
     <div v-if="enableControls">
       <div class="absolute left-3 top-3 flex gap-1.5 invisible group-hover:visible">
         <button v-if="enableStepExpansion" @click="emit('stepExpanded')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-violet-100">
-          <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-violet-600" aria-hidden="true" />
+          <ArrowLeftEndOnRectangleIcon class="h-5 w-5 text-violet-500" aria-hidden="true" />
         </button>
         <button @click="emit('stepDisabled')" class="flex items-center gap-0.5 p-1 bg-white cursor-pointer border rounded-md hover:bg-violet-100">
-          <EyeSlashIcon class="h-5 w-5 text-violet-600" aria-hidden="true" />
+          <EyeSlashIcon class="h-5 w-5 text-violet-500" aria-hidden="true" />
         </button>
       </div>
 
@@ -21,7 +21,7 @@
       :style="`height: ${height}%;`"
       :class="[
         updating ? 'animate-pulse' : '',
-        isProjection ? 'from-violet-400 to-violet-500' : 'from-violet-600 to-violet-600'
+        isProjection ? 'bg-violet-700 hover:bg-violet-800' : 'bg-violet-500 hover:bg-violet-600'
       ]"
       class="flex-1 rounded-lg transition duration-300 bg-gradient-to-b " 
     >

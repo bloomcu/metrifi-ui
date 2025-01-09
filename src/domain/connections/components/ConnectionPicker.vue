@@ -12,7 +12,7 @@
       <button 
         v-for="connection in connections" 
         @click="emit('selected', connection)"
-        :class="connection == selected ? 'bg-gray-50 text-violet-600' : ''" 
+        :class="connection == selected ? 'bg-gray-50 text-violet-500' : ''" 
         class="mb-1 w-full text-left rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-50 hover:text-violet-600"
       >
         {{ connection.name }}

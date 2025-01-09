@@ -30,7 +30,7 @@
 
     <div class="text-center mt-4">
       <p class="text-sm text-gray-500">
-        <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-violet-600 hover:text-violet-500">Return to sign in</RouterLink>
+        <RouterLink :to="{ name: 'login' }" class="font-medium leading-6 text-violet-500 hover:text-violet-600">Return to sign in</RouterLink>
       </p>
     </div>
   </main>

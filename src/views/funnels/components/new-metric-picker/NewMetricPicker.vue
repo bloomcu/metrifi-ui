@@ -11,7 +11,7 @@
       <!-- Tabs -->
       <div class="relative">
           <nav class="flex space-x-2 p-2" aria-label="Tabs">
-            <button v-for="tab in tabs" :key="tab.name" @click.stop="selectTab(tab)" :class="selectedTab.metric == tab.metric ? 'bg-violet-100 text-violet-600 hover:bg-violet-100' : ''" class="text-gray-500 rounded-md px-3 py-2 text-sm font-medium hover:text-gray-700 hover:bg-gray-100">
+            <button v-for="tab in tabs" :key="tab.name" @click.stop="selectTab(tab)" :class="selectedTab.metric == tab.metric ? 'bg-violet-100 text-violet-500 hover:bg-violet-100' : ''" class="text-gray-500 rounded-md px-3 py-2 text-sm font-medium hover:text-gray-700 hover:bg-gray-100">
               <span>{{ tab.name }}</span>
             </button>
           </nav>

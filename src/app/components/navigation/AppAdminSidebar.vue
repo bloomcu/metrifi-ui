@@ -27,8 +27,8 @@
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
-                          <RouterLink :to="item.to" :class="[item.current ? 'bg-gray-50 text-violet-600' : 'text-gray-700 hover:text-violet-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium']">
-                            <component :is="item.icon" :class="[item.current ? 'text-violet-600' : 'text-gray-400 group-hover:text-violet-600', 'h-6 w-6 shrink-0']" aria-hidden="true" />
+                          <RouterLink :to="item.to" :class="[item.current ? 'bg-gray-50 text-violet-500' : 'text-gray-700 hover:text-violet-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-medium']">
+                            <component :is="item.icon" :class="[item.current ? 'text-violet-500' : 'text-gray-400 group-hover:text-violet-600', 'h-6 w-6 shrink-0']" aria-hidden="true" />
                             {{ item.name }}
                           </RouterLink>
                         </li>
@@ -146,10 +146,10 @@ const navigation = [
 
 <style lang="scss" scoped>
 .router-link-active {
-  @apply bg-gray-50 text-violet-600
+  @apply bg-gray-50 text-violet-500
 }
 
 .router-link-active svg {
-  @apply text-violet-600
+  @apply text-violet-500
 }
 </style>
