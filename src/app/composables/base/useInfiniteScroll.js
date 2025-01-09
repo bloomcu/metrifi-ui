@@ -53,7 +53,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
         isLoading.value = true;
 
-        // console.log('Params: ', params)
+        console.log('Params: ', params)
 
         try {
             const apiParams = {
