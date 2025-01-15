@@ -61,6 +61,9 @@
             <!-- <AppButton variant="tertiary">
               Analyze all dashboards
             </AppButton> -->
+            <AppButton @click="sendWeeklyAnalysisEmail()" variant="tertiary">
+              {{ organizationStore.emailButtonLabel }}
+            </AppButton>
             <AppButton v-if="organizationStore.organization && organizationStore.organization.funnels_count !== 0 && !organizationStore.organization.is_private" @click="storeNewDashboard()">
               Create dashboard
             </AppButton>
@@ -414,6 +417,10 @@ function loadDashboards() {
     isLoading.value = false
     dashboards.value = response.data.data
   })
+}
+
+function sendWeeklyAnalysisEmail() {
+  organizationStore.sendWeeklyAnalysisEmail(route.params.organization)
 }
 
 function storeNewDashboard() {

@@ -6,6 +6,7 @@ export const useOrganizationStore = defineStore('organizationStore', {
         organizations: [],
         organization: null,
         isLoading: true,
+        emailButtonLabel: "Send weekly email to Super Admins",
         createModalOpen: false,
         updateModalOpen: false,
         destroyModalOpen: false,
@@ -45,6 +46,25 @@ export const useOrganizationStore = defineStore('organizationStore', {
           })
       },
       
+      async sendWeeklyAnalysisEmail(organization_slug) {
+        this.emailButtonLabel = "Sending...";
+
+        try {
+            await OrganizationApi.sendWeeklyAnalysisEmail(organization_slug);
+
+            setTimeout(() => {
+                this.emailButtonLabel = "Email sent";
+            }, 1500);
+
+            setTimeout(() => {
+                this.emailButtonLabel = "Send weekly email to Super Admins";
+            }, 3000);
+        } catch (error) {
+            console.error("Failed to send email:", error);
+            this.emailButtonLabel = "Send weekly email to Super Admins";
+        }
+      },
+
       toggleCreateModal() {
         this.createModalOpen = !this.createModalOpen
       },
