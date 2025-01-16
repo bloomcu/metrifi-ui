@@ -89,7 +89,7 @@
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.median.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <span v-if="organizationStore.organization.assets.max.potential !== 0" class="text-sm">(+{{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</span>
+                    <span v-if="organizationStore.organization.assets.median.potential !== 0" class="text-sm">(+{{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</span>
                 </p>
             </div>
           </div>
