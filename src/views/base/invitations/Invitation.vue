@@ -1,13 +1,13 @@
 <template>
-    <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-20">
-        <!-- If invitation is not found -->
-        <div v-if="notFound" class="flex flex-col items-center justify-center rounded-lg py-8 px-4 cursor-pointer bg-violet-50">
-            <h1 class="mb-2 text-3xl font-medium text-gray-900">Invitation not found</h1>
-            <p class="text-lg text-gray-700 mb-4">The invitation you are looking for no longer exists. Please contact your organization for assistance.</p>
-        </div>
-  
+    <!-- If invitation is not found -->
+    <div v-if="notFound" class="flex flex-col items-center justify-center h-screen">
+        <h1 class="mb-6 text-4xl sm:text-6xl font-medium tracking-tight text-gray-900">Invitation not found</h1>
+        <p class="mb-10 text-base sm:text-lg leading-7 text-gray-600">The invitation you are looking for no longer exists. Please contact your organization for assistance.</p>
+    </div>
+
+    <main v-else class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-20">
         <!-- If invitation is loading -->
-        <InvitationSkeletonLoader v-else-if="invitationStore.isLoading" />
+        <InvitationSkeletonLoader v-if="invitationStore.isLoading" />
   
         <!-- If invitation is found -->
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-12 sm:gap-24">

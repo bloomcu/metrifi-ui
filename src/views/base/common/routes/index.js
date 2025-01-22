@@ -4,14 +4,14 @@ import NotAuthorized from '@/views/base/common/NotAuthorized.vue';
 
 export default [
   {
-    path: '/',
-    name: 'rootLander',
-    component: RootLander,
-  },
-  {
     path: '/:catchAll(.*)*',
     name: 'notFound',
     component: NotFound,
+  },
+  {
+    path: '/',
+    name: 'rootLander',
+    component: RootLander,
   },
   {
     path: '/not-found',

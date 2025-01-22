@@ -206,6 +206,13 @@
 
     <StepDetailsTray v-if="authStore.user.role === 'admin'"/>
   </LayoutDefault>
+
+  <!-- If dashboard is not found -->
+  <div v-else class="flex flex-col items-center justify-center h-screen">
+      <h1 class="mb-6 text-4xl sm:text-6xl font-medium tracking-tight text-gray-900">Dashboard not found</h1>
+      <p class="mb-10 text-base sm:text-lg leading-7 text-gray-600">We can't find this dashboard. It may have been archived.</p>
+      <AppButton :href="`/${route.params.organization}`" size="lg">View all dashboards</AppButton>
+  </div>
 </template>
 
 <script setup>

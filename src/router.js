@@ -33,10 +33,10 @@ const routes = [
   //   path: '/',
   //   redirect: '/admin/organizations'
   // },
-  { 
-    path: '/sandbox', 
-    component: Sandbox 
-  },
+//   { 
+//     path: '/sandbox', 
+//     component: Sandbox 
+//   },
   // { 
   //   path: '/flowchart', 
   //   component: Flowchart
