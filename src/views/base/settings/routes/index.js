@@ -3,6 +3,7 @@ import SettingsBilling from '@/views/base/settings/SettingsBilling.vue'
 import SettingsOrganization from '@/views/base/settings/SettingsOrganization.vue'
 import SettingsSharing from '@/views/base/settings/SettingsSharing.vue'
 import SettingsUsers from '@/views/base/settings/SettingsUsers.vue'
+import SettingsNotifications from '@/views/base/settings/SettingsNotifications.vue'
 
 export default [
   {
@@ -30,6 +31,11 @@ export default [
         path: "billing",
         name: "settingsBilling",
         component: SettingsBilling,
+      },
+      {
+        path: "notifications",
+        name: "settingsNotifications",
+        component: SettingsNotifications,
       },
     ]
   }

@@ -21,6 +21,31 @@ export const useUserStore = defineStore('users', () => {
       console.log('Error', error.response.data)
     })
   }
+
+  async function show(user_id) {
+    this.isLoading = true
+    this.user = null
+    
+    userApi.show(route.params.organization, user_id).then(response => {
+      user.value = response.data.data
+      isLoading.value = false
+    }).catch(error => {
+      console.log('Error', error.response.data)
+    })
+  }
+
+  async function update(user_id, user) {
+    this.isLoading = true
+    console.log('user_id', user_id)
+    console.log('user', user.settings.send_weekly_website_analysis)
+
+    userApi.update(route.params.organization, user_id, user).then(response => {
+      user.value = response.data.data
+      isLoading.value = false
+    }).catch(error => {
+      console.log('Error', error.response.data)
+    })
+  }
     
   async function destroy(id) {
     this.isLoading = true
@@ -36,6 +61,8 @@ export const useUserStore = defineStore('users', () => {
     user,
     isLoading,
     index,
+    show,
+    update,
     destroy,
   }
 })
