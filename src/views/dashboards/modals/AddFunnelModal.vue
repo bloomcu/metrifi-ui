@@ -33,6 +33,7 @@
               <th scope="col" class="py-3.5 pl-4 sm:pl-6">
                 <input 
                   @click="selectAllFunnels()" 
+                  :checked="isAllSelected"
                   class="h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600" 
                   type="checkbox" 
                 />
@@ -149,6 +150,14 @@ const search = debounce(() => {
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
+
+const isAllSelected = computed(() => {
+  // Check if every funnel in the current array is selected
+  return (
+    funnels.value.length > 0 && 
+    funnels.value.every(funnel => selected.value.includes(funnel.id))
+  );
+});
 
 function selectFunnel(funnelId) {
   const index = selected.value.indexOf(funnelId);
