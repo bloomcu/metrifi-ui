@@ -132,15 +132,6 @@ const isUpdating = ref(false)
 const isShowingOrganizations = inject('isShowingOrganizations')
 const selected = ref([])
 
-// const filteredFunnels = computed(() => {
-//   const term = input.value.toLowerCase()
-
-//   return funnels.value.filter(funnel => {
-//     return funnel.name.toLowerCase().indexOf(input.value) > -1 ||
-//            funnel.connection.name.toLowerCase().indexOf(input.value) > -1
-//   })
-// })
-
 const search = debounce(() => {
   if (!input.value) {
     listOwnFunnels()
@@ -170,13 +161,15 @@ function selectFunnel(funnelId) {
 }
 
 function selectAllFunnels() {
-  // selected.value.length == filteredFunnels.value.length ? 
-  //   selected.value = [] : 
-  //   selected.value = filteredFunnels.value.map((funnel) => funnel.id)
+  const currentSelection = new Set(selected.value); // Use a Set for efficient lookup
+  const allFunnelIds = funnels.value.map((funnel) => funnel.id);
 
-  selected.value.length == funnels.value.length ? 
-    selected.value = [] : 
-    selected.value = funnels.value.map((funnel) => funnel.id)
+  // Add any funnel IDs not already in the selected array
+  allFunnelIds.forEach((id) => {
+    if (!currentSelection.has(id)) {
+      selected.value.push(id);
+    }
+  });
 }
 
 function attachFunnels() {
