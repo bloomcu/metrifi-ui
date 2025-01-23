@@ -27,13 +27,18 @@ export const useOrganizationStore = defineStore('organizationStore', {
       },
       
       async update() {
-        this.isLoading = true
+        this.isLoading = true;
         
-        await OrganizationApi.update(this.organization.slug, this.organization)
-          .then(response => {
-            console.log('Site successfully updated')
-            this.isLoading = false
-          })
+        try {
+          const response = await OrganizationApi.update(this.organization.slug, this.organization);
+          console.log('Site successfully updated');
+          this.isLoading = false;
+          return Promise.resolve(response); // Explicitly return a resolved promise
+        } catch (error) {
+          console.error('Error updating organization:', error.response?.data || error);
+          this.isLoading = false;
+          return Promise.reject(error); // Explicitly return a rejected promise
+        }
       },
       
       async destroy(organization_slug) {
