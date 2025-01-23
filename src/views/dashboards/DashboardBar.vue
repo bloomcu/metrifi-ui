@@ -471,7 +471,8 @@ function loadDashboard() {
       } else {
         analysisStore.analysis = null
       }
-
+    })
+    .finally(() => {
       isInitialized.value = true
     })
 }
