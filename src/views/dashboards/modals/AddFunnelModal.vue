@@ -181,12 +181,20 @@ function selectAllFunnels() {
   const currentSelection = new Set(selected.value); // Use a Set for efficient lookup
   const allFunnelIds = funnels.value.map((funnel) => funnel.id);
 
-  // Add any funnel IDs not already in the selected array
-  allFunnelIds.forEach((id) => {
-    if (!currentSelection.has(id)) {
-      selected.value.push(id);
-    }
-  });
+  // Check if all current funnels are already selected
+  const allSelectedInCurrent = allFunnelIds.every((id) => currentSelection.has(id));
+
+  if (allSelectedInCurrent) {
+    // If all current funnels are selected, remove them from selected
+    selected.value = selected.value.filter((id) => !allFunnelIds.includes(id));
+  } else {
+    // Otherwise, add any current funnels not already selected
+    allFunnelIds.forEach((id) => {
+      if (!currentSelection.has(id)) {
+        selected.value.push(id);
+      }
+    });
+  }
 }
 
 function unselectAllFunnels() {
