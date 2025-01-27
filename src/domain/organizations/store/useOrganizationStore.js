@@ -6,6 +6,7 @@ export const useOrganizationStore = defineStore('organizationStore', {
         organizations: [],
         organization: null,
         isLoading: true,
+        // emailButtonLabel: "Send weekly email to Super Admins",
         createModalOpen: false,
         updateModalOpen: false,
         destroyModalOpen: false,
@@ -26,13 +27,18 @@ export const useOrganizationStore = defineStore('organizationStore', {
       },
       
       async update() {
-        this.isLoading = true
+        this.isLoading = true;
         
-        await OrganizationApi.update(this.organization.slug, this.organization)
-          .then(response => {
-            console.log('Site successfully updated')
-            this.isLoading = false
-          })
+        try {
+          const response = await OrganizationApi.update(this.organization.slug, this.organization);
+          console.log('Site successfully updated');
+          this.isLoading = false;
+          return Promise.resolve(response); // Explicitly return a resolved promise
+        } catch (error) {
+          console.error('Error updating organization:', error.response?.data || error);
+          this.isLoading = false;
+          return Promise.reject(error); // Explicitly return a rejected promise
+        }
       },
       
       async destroy(organization_slug) {
@@ -45,6 +51,25 @@ export const useOrganizationStore = defineStore('organizationStore', {
           })
       },
       
+    //   async sendWeeklyAnalysisEmail(organization_slug) {
+    //     this.emailButtonLabel = "Sending...";
+
+    //     try {
+    //         await OrganizationApi.sendWeeklyAnalysisEmail(organization_slug);
+
+    //         setTimeout(() => {
+    //             this.emailButtonLabel = "Email sent";
+    //         }, 1500);
+
+    //         setTimeout(() => {
+    //             this.emailButtonLabel = "Send weekly email to Super Admins";
+    //         }, 3000);
+    //     } catch (error) {
+    //         console.error("Failed to send email:", error);
+    //         this.emailButtonLabel = "Send weekly email to Super Admins";
+    //     }
+    //   },
+
       toggleCreateModal() {
         this.createModalOpen = !this.createModalOpen
       },

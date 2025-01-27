@@ -61,6 +61,9 @@
             <!-- <AppButton variant="tertiary">
               Analyze all dashboards
             </AppButton> -->
+            <!-- <AppButton @click="sendWeeklyAnalysisEmail()" variant="tertiary">
+              {{ organizationStore.emailButtonLabel }}
+            </AppButton> -->
             <AppButton v-if="organizationStore.organization && organizationStore.organization.funnels_count !== 0 && !organizationStore.organization.is_private" @click="storeNewDashboard()">
               Create dashboard
             </AppButton>
@@ -86,7 +89,7 @@
                 <p>Total potential assets</p>
                 <p class="flex items-center gap-1 text-2xl font-medium">
                     {{ organizationStore.organization.assets.median.total_potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }}
-                    <span v-if="organizationStore.organization.assets.max.potential !== 0" class="text-sm">(+{{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</span>
+                    <span v-if="organizationStore.organization.assets.median.potential !== 0" class="text-sm">(+{{ organizationStore.organization.assets.median.potential.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }})</span>
                 </p>
             </div>
           </div>
@@ -414,6 +417,10 @@ function loadDashboards() {
     isLoading.value = false
     dashboards.value = response.data.data
   })
+}
+
+function sendWeeklyAnalysisEmail() {
+  organizationStore.sendWeeklyAnalysisEmail(route.params.organization)
 }
 
 function storeNewDashboard() {

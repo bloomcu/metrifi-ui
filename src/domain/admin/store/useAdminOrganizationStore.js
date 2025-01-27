@@ -25,13 +25,15 @@ export const useAdminOrganizationStore = defineStore('adminOrganizationStore', {
         },
         
         async store(organization) {
-          await AdminOrganizationApi.store(organization)
-            .then(response => {
-              this.organizations.unshift(response.data.data)
-            }).catch(error => {
-              console.log('Error', error.response.data)
-            })
-        },
+            try {
+              const response = await AdminOrganizationApi.store(organization);
+              this.organizations.unshift(response.data.data);
+              return Promise.resolve(response); // Explicitly return a resolved promise
+            } catch (error) {
+              console.log('Error', error.response.data);
+              return Promise.reject(error); // Explicitly return a rejected promise
+            }
+          },
         
         
         toggleCreateModal() {

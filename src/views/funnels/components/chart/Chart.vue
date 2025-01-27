@@ -169,8 +169,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, onMounted } from 'vue'
-// import { useFunnels } from '@/domain/funnels/composables/useFunnels'
+import { computed, inject } from 'vue'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { PencilIcon } from '@heroicons/vue/24/solid'
@@ -196,16 +195,12 @@ const props = defineProps({
     },
 })
 
-const authStore = useAuthStore()
-const funnelStore = useFunnelStore()
 const projection = inject('projection', null)
 const isEditConversionValueModalOpen = inject('isEditConversionValueModalOpen', null)
 
 const emit = defineEmits(['stepSelected', 'stepDisabled', 'stepExpanded', 'generateRecommendation'])
 
 const calculateProjectionUsers = () => {
-    // console.log('Calculating projection users...')
-    
     projection.value.forEach((step, index) => {
         // Skip first step in funnel
         if (index === 0) return
@@ -215,8 +210,6 @@ const calculateProjectionUsers = () => {
         
         let users = (step.conversionRate * projection.value[index - 1].users) / 100
 
-        // step.users = Math.round(users)
-        // step.users = users.toFixed(2)
         step.users = users
     })
 }
@@ -228,37 +221,25 @@ const overallConversionRate = computed(() => {
     let lastStepUsers = props.funnel.report.steps[props.funnel.report.steps.length - 1].users
     let rate = (lastStepUsers / firstStepUsers) * 100
 
-    // if (isNaN(rate)) return "0.00%"
-    // return rate.toFixed(2) + "%"
-
     if (isNaN(rate)) return 0.00
     return rate.toFixed(2)
-    // return rate
 })
 
 const projectedOverallConversionRate = computed(() => {
     let firstStepUsers = projection.value[0].users
     let lastStepUsers = projection.value[projection.value.length - 1].users
-    // let rate = (Math.round(lastStepUsers) / firstStepUsers) * 100
     let rate = (lastStepUsers / firstStepUsers) * 100
-
-    // if (isNaN(rate)) return "0.00%"
-    // return rate.toFixed(2) + "%"
 
     if (isNaN(rate)) return 0.00
     return rate.toFixed(2)
-    // return rate
 })
 
 const projectedOverallConversionRateDifference = computed(() => {
     let diff = (projectedOverallConversionRate.value - overallConversionRate.value) / overallConversionRate.value * 100
-        // diff = diff.toFixed(2) // Trim decimals to 2 place
     
     let direction = diff > 0 ? "+" : ""
 
     return direction + diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) // Format with 2 decimal places
-    // return direction + diff.toFixed(2)
-    // return direction + diff
 })
 
 const projectedAssets = computed(() => {
@@ -278,37 +259,7 @@ const projectedAssetDifference = computed(() => {
     let direction = diff > 0 ? "+" : ""
 
     return direction + diff.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
-    // return direction + diff
 })
-
-// const assets = computed(() => {
-//     if (!props.funnel.report.steps.length) return "$0.00"
-
-//     let users = props.funnel.report.steps[props.funnel.report.steps.length - 1].users
-//     let value = props.conversion_value
-//     let assets = users * value
-
-//     return (assets / 100)
-// })
-
-// const profit = computed(() => {
-//     let assets = assets.value
-//     let profit = assets * (0.5 / 100)
-
-//     return profit
-// })  
-
-// const projectedProfit = computed(() => {
-//     let projectedAssets = projectedAssets.value
-//     let profit = projectedAssets * (0.5 / 100)
-
-//     return profit
-// })
-
-// const projectedProfitDifference = computed(() => {
-//     let diff = projectedProfit.value - profit.value
-//     return diff
-// })
 
 const maxValue = computed(() => {
     if (projection) {

@@ -8,8 +8,6 @@
           <p class="text-base">Loading funnel reports</p>
       </div>
     </div>
-
-    <!-- <pre>{{ dashboard }}</pre> -->
     
     <!-- Header -->
     <header class="pt-3 pb-4 flex items-center justify-between">
@@ -206,6 +204,13 @@
 
     <StepDetailsTray v-if="authStore.user.role === 'admin'"/>
   </LayoutDefault>
+
+  <!-- If dashboard is not found -->
+  <div v-else-if="isInitialized && !dashboard" class="flex flex-col items-center justify-center h-screen">
+      <h1 class="mb-6 text-4xl sm:text-6xl font-medium tracking-tight text-gray-900">Dashboard not found</h1>
+      <p class="mb-10 text-base sm:text-lg leading-7 text-gray-600">We can't find this dashboard. It may have been archived.</p>
+      <AppButton :href="`/${route.params.organization}`" size="lg">View all dashboards</AppButton>
+  </div>
 </template>
 
 <script setup>
@@ -232,7 +237,6 @@ import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecom
 import StepDetailsTray from '@/domain/funnels/components/step-details/StepDetailsTray.vue'
 import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
-// import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 
@@ -243,11 +247,11 @@ const authStore = useAuthStore()
 const analysisStore = useAnalysisStore()
 const funnelStore = useFunnelStore()
 
-// const { funnels, addFunnel, addFunnelJob, isReportLoading } = useFunnels()
 const { selectStep, openTray } = useStepDetailsTray()
 const { selectedDateRange } = useDatePicker()
 
 const dashboard = ref()
+const isInitialized = ref(false)
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isReporting = ref(false)
@@ -277,7 +281,6 @@ provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 provide('isShowingOrganizations', isShowingOrganizations)
 provide('funnelsAlreadyAttachedIds', funnelsAlreadyAttachedIds)
 provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
-// provide('recommendationStepIndex', recommendationStepIndex)
 
 function toggleNotes() {
   isShowingNotes.value = !isShowingNotes.value
@@ -307,16 +310,11 @@ function storeAnalysis() {
   let subjectFunnel = funnelStore.funnels[0]
   let comparisonFunnels = funnelStore.funnels.filter((funnel, index) => index !== 0)
 
-  // console.log(subjectFunnel)
-
   analysisStore.store(route.params.organization, route.params.dashboard, {
     subjectFunnelId: funnelStore.funnels.length ? funnelStore.funnels[0].id : null,
     subjectFunnel: subjectFunnel,
     comparisonFunnels: comparisonFunnels,
   }).then((response) => {
-    // showAnalysis()
-    // analysisStore.median_analysis = dashboard.value.median_analysis
-    // analysisStore.max_analysis = dashboard.value.max_analysis
     loadDashboard()
   })
 }
@@ -445,7 +443,7 @@ function removeGenerateRecommendationParam() {
 }
 
 function loadDashboard() {
-//   console.log('Loading dashboard...')
+  isInitialized.value = false
   funnelStore.funnels = []
   
   dashboardApi.show(route.params.organization, route.params.dashboard)
@@ -463,15 +461,14 @@ function loadDashboard() {
         analysisStore.analysis = null
       }
     })
+    .finally(() => {
+      isInitialized.value = true
+    })
 }
 
 watch(selectedDateRange, () => {
   console.log('Selectede date range changed')
   loadDashboard()
-
-//   dashboard.value.funnels.forEach(funnel => {
-//     funnelStore.addFunnel(funnel)
-//   })
 })
 
 watch(
