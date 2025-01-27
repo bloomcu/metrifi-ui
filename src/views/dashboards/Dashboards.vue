@@ -61,9 +61,9 @@
             <!-- <AppButton variant="tertiary">
               Analyze all dashboards
             </AppButton> -->
-            <AppButton @click="sendWeeklyAnalysisEmail()" variant="tertiary">
+            <!-- <AppButton @click="sendWeeklyAnalysisEmail()" variant="tertiary">
               {{ organizationStore.emailButtonLabel }}
-            </AppButton>
+            </AppButton> -->
             <AppButton v-if="organizationStore.organization && organizationStore.organization.funnels_count !== 0 && !organizationStore.organization.is_private" @click="storeNewDashboard()">
               Create dashboard
             </AppButton>
