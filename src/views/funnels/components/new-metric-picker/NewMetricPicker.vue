@@ -71,6 +71,25 @@
                       <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
                   </tr>
 
+                  <!-- Page title users -->
+                  <tr 
+                    v-if="selectedTab.metric === 'pageTitleUsers'" 
+                    v-for="row in reports[selectedTab.metric].rows" 
+                    @click="updateMetric({
+                      metric: selectedTab.metric,
+                      pageTitle: row.dimensionValues[0].value,
+                      hostname: row.dimensionValues[1].value,
+                    })" 
+                    class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
+                  >
+                      <!-- Page title -->
+                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                      <!-- Hostname -->
+                      <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/6">{{ row.dimensionValues[1].value }}</td>
+                      <!-- Users -->
+                      <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
+                  </tr>
+
                   <!-- Outbound link users -->
                   <tr 
                     v-if="selectedTab.metric === 'outboundLinkUsers'" 
@@ -217,7 +236,17 @@ const tabs = ref({
       { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
-  },  
+  },
+  pageTitleUsers: { 
+    name: 'Page title users',
+    metric: 'pageTitleUsers',
+    icon: EyeIcon,
+    columns: [
+      { name: 'pageTitle', displayName: 'Page title' },
+      { name: 'hostname', displayName: 'Hostname' },
+      { name: 'totalUsers', displayName: 'Users' },
+    ],
+  },
   outboundLinkUsers: { 
     name: 'Outbound link users',
     metric: 'outboundLinkUsers',

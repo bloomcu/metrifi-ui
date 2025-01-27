@@ -31,6 +31,16 @@ const gaDataApi = {
   },
 
   /**
+   * Fetch users by page title (pageTitle)
+   *
+   * @return promise
+   */
+  async pageTitleUsers(connectionId, request) {
+    // TODO: Breakup 'request' so we know what can be sent
+    return await HttpClient.post(`/ga/page-title-users/${connectionId}`, request)
+  },
+
+  /**
    * Fetch users by outbound click
    *
    * @return promise

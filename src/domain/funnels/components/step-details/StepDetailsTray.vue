@@ -51,6 +51,19 @@
                 </div>
               </div>
 
+              <!-- Page users metric -->
+              <div v-if="metric.metric === 'pageTitleUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2">
+                <div class="border-b pb-2">
+                  <p class="font-medium text-gray-900">Metric</p>
+                  <p class="text-gray-500">{{ metric.metric }}</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <p class="font-medium text-gray-900">Page title</p>
+                  <p class="text-gray-500">{{ metric.pageTitle }}</p>
+                </div>
+              </div>
+
               <!-- Outbound clicks metrics -->
               <div v-if="metric.metric === 'outboundLinkUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
                 <div class="border-b pb-4">
