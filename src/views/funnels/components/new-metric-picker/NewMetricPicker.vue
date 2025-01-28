@@ -218,7 +218,7 @@ const { reports, isReportLoading, runReport, resetReports } = useGoogleAnalytics
 
 const tabs = ref({
   pageUsers: { 
-    name: 'Page users',
+    name: 'Page path',
     metric: 'pageUsers',
     icon: EyeIcon,
     columns: [
@@ -228,7 +228,7 @@ const tabs = ref({
     ],
   },
   pagePlusQueryStringUsers: { 
-    name: 'Page + query string users',
+    name: 'Page path + query',
     metric: 'pagePlusQueryStringUsers',
     icon: EyeIcon,
     columns: [
@@ -238,7 +238,7 @@ const tabs = ref({
     ],
   },
   pageTitleUsers: { 
-    name: 'Page title users',
+    name: 'Page title',
     metric: 'pageTitleUsers',
     icon: EyeIcon,
     columns: [
@@ -248,7 +248,7 @@ const tabs = ref({
     ],
   },
   outboundLinkUsers: { 
-    name: 'Outbound link users',
+    name: 'Outbound link',
     metric: 'outboundLinkUsers',
     icon: EyeIcon,
     columns: [
@@ -259,7 +259,7 @@ const tabs = ref({
     ],
   },
   formUserSubmissions: { 
-    name: 'Form submission users',
+    name: 'Form submission',
     metric: 'formUserSubmissions',
     icon: EnvelopeIcon,
     columns: [
