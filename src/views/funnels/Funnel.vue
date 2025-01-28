@@ -154,6 +154,12 @@
                     <p class="text-xs uppercase">Page path + query string:</p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.pagePathPlusQueryString }}</p>
                   </div>
+
+                  <div v-if="metric.pageTitle" class="">
+                    <p class="text-xs uppercase">Page title:</p>
+                    <p class="text-gray-500 overflow-x-auto">{{ metric.pageTitle }}</p>
+                  </div>
+
                   
                   <div v-if="metric.linkUrl" class="">
                     <p class="text-xs uppercase">Link url:</p>

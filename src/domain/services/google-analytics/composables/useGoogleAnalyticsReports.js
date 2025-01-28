@@ -24,6 +24,7 @@ const reports = ref({
   query: null,
   pageUsers: null,
   pagePlusQueryStringUsers: null,
+  pageTitleUsers: null,
   outboundLinkUsers: null,
   formUserSubmissions: null,
 })
@@ -96,6 +97,7 @@ export function useGoogleAnalyticsReports() {
       query: null,
       pageUsers: null,
       pagePlusQueryStringUsers: null,
+      pageTitleUsers: null,
       outboundLinkUsers: null,
       formUserSubmissions: null,
     }
