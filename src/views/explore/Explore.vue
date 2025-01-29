@@ -57,7 +57,7 @@
           <tr class="divide-x divide-gray-200">
             <th v-for="column in selectedTab.columns" scope="col" class="py-3 px-3 text-left">
               <div class="text-sm font-semibold text-gray-900">
-                {{ column.displayName }}
+                <span>{{ column.displayName }}</span>
               </div>
               <div v-if="column.name === 'totalUsers'" class="text-sm font-semibold text-gray-900">
                 ({{ reports[selectedTab.metric].totals[0].metricValues[0].value }})
@@ -233,7 +233,7 @@ const tabs = ref({
     metric: 'pageUsers',
     icon: EyeIcon,
     columns: [
-      { name: 'pagePath', displayName: 'Page path' },
+      { name: 'pagePath', displayName: 'Page path'},
       { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],

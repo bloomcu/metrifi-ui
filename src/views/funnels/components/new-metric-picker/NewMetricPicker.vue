@@ -19,13 +19,19 @@
 
       <div class="flex transform-gpu divide-x divide-gray-100" as="div">
           <!-- Table container -->
-          <div class="min-h-[480px] min-w-[860px] h-[70vh] w-[80vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+          <div class="min-h-[480px] min-w-[860px] h-[70vh] w-[80vw] flex-none flex-col divide-y divide-gray-100 overflow-visible sm:flex relative">
             <table v-if="!isReportLoading && reports[selectedTab.metric]" class="table-fixedmin-w-full max-w-full divide-y divide-gray-300">
                 <thead>
                   <tr v-if="reports[selectedTab.metric].rows" class="divide-x divide-gray-200">
                       <th v-for="column in selectedTab.columns" scope="col" class="py-3 px-3 text-left">
-                        <div class="text-sm font-semibold text-gray-900">
-                          {{ column.displayName }}
+                        <div class="flex items-center gap-1 text-sm font-semibold text-gray-900">
+                          <span>{{ column.displayName }}</span>
+
+                          <AppTooltipWrapper v-if="column.tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 cursor-help text-gray-400"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" /></svg>
+                            <AppTooltip :text="column.tooltip" class="w-[350px]"/>
+                          </AppTooltipWrapper>
+
                           <span v-if="column.name === 'totalUsers'">({{ reports[selectedTab.metric].totals[0].metricValues[0].value }})</span>
                         </div>
                       </th>
@@ -204,6 +210,8 @@ import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/co
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import { EyeIcon, EnvelopeIcon, NoSymbolIcon } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
+import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
+import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
 
 const props = defineProps({
   modelValue: { 
@@ -251,7 +259,11 @@ const tabs = ref({
     metric: 'pageTitleUsers',
     icon: EyeIcon,
     columns: [
-      { name: 'pageTitle', displayName: 'Page title' },
+      { 
+        name: 'pageTitle', 
+        displayName: 'Page title',
+        tooltip: 'Page Path is shown for reference only and does not affect the funnel results. If multiple entries have the same Page Title but different Page Paths, choosing any of them will yield the same result in your funnel.'
+    },
       { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],

@@ -1,5 +1,5 @@
 <template>
-  <span :class="[variants[variant], alignments[alignment]]" class="pointer-events-none absolute -bottom-8 w-max rounded px-2 py-1 text-sm font-medium opacity-0 shadow transition-opacity group-hover/tooltip:opacity-100 z-10">
+  <span :class="[variants[variant], alignments[alignment]]" class="pointer-events-none absolute -bottom-8 w-max rounded px-2 py-1 text-sm font-medium opacity-0 shadow transition-opacity group-hover/tooltip:opacity-100 z-[9999]">
     {{ text }}
   </span>
 </template>
