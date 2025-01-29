@@ -67,7 +67,10 @@
                     class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
                   >
                       <!-- Page path + query string -->
-                      <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+                      <td class="py-3 px-3 text-sm break-all">
+                        <p class="font-semibold text-gray-700 mb-0.5">{{ row.dimensionValues[0].value }}</p>
+                        <p class="text-gray-500">{{ row.dimensionValues[2].value }}</p>
+                      </td>
                       <!-- Hostname -->
                       <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/5">{{ row.dimensionValues[1].value }}</td>
                       <!-- Users -->
