@@ -262,7 +262,7 @@ const tabs = ref({
       { 
         name: 'pageTitle', 
         displayName: 'Page title',
-        tooltip: 'Page Path is shown for reference only and does not affect the funnel results. If multiple entries have the same Page Title but different Page Paths, choosing any of them will yield the same result in your funnel.'
+        tooltip: 'Below the Page Titles, Page Paths are shown for reference only and do not affect the funnel results. If multiple entries have the same Page Title but different Page Paths, choosing any of them will yield the same result in your funnel.'
     },
       { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
