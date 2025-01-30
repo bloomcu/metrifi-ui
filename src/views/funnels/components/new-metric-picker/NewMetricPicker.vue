@@ -1,6 +1,6 @@
 <template>
   <!-- <div ref="picker" class="absolute left-full top-0 translate-x-2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg"> -->
-  <div ref="picker" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-50 sm:rounded-lg">
+  <div ref="picker" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-[9999] sm:rounded-lg">
     <div class="divide-y divide-gray-200">
       <!-- Search -->
       <div class="relative">
@@ -19,8 +19,8 @@
 
       <div class="flex transform-gpu divide-x divide-gray-100" as="div">
           <!-- Table container -->
-          <div class="min-h-[480px] min-w-[860px] h-[70vh] w-[80vw] flex-none flex-col divide-y divide-gray-100 overflow-visible sm:flex relative">
-            <table v-if="!isReportLoading && reports[selectedTab.metric]" class="table-fixedmin-w-full max-w-full divide-y divide-gray-300">
+          <div class="relative min-h-[480px] min-w-[860px] h-[70vh] w-[80vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+            <table v-if="!isReportLoading && reports[selectedTab.metric]" class="table-fixed min-w-full max-w-full divide-y divide-gray-300">
                 <thead>
                   <tr v-if="reports[selectedTab.metric].rows" class="divide-x divide-gray-200">
                       <th v-for="column in selectedTab.columns" scope="col" class="py-3 px-3 text-left">
@@ -29,7 +29,7 @@
 
                           <AppTooltipWrapper v-if="column.tooltip">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 cursor-help text-gray-400"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" /></svg>
-                            <AppTooltip :text="column.tooltip" class="w-[350px]"/>
+                            <AppTooltip class="max-w-[350px]" :text="column.tooltip"/>
                           </AppTooltipWrapper>
 
                           <span v-if="column.name === 'totalUsers'">({{ reports[selectedTab.metric].totals[0].metricValues[0].value }})</span>
