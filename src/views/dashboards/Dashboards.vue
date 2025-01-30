@@ -201,7 +201,7 @@
               <h3 class="text-xl font-medium text-gray-900">{{ dashboard.name }}</h3>
             </div>
             
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
               <!-- Users count -->
               <!-- <span v-if="dashboard.latest_analysis && dashboard.latest_analysis.subject_funnel_users" class="text-sm text-gray-500 border-r border-gray-300 pr-3">{{ dashboard.latest_analysis.subject_funnel_users }} users</span> -->
 
@@ -210,6 +210,13 @@
 
               <!-- Dashboard updated at -->
               <span class="text-sm text-gray-500 pr-3">Modified {{ moment(dashboard.updated_at).fromNow() }}</span>
+
+              <!-- Copy -->
+              <button @click.stop="replicateDashboard(dashboard.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+                </svg>
+              </button>
 
               <!-- Delete -->
               <button @click.stop="destroyDashboard(dashboard.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
@@ -433,6 +440,13 @@ function storeNewDashboard() {
     let dashboard = response.data.data
     router.push({ name: 'dashboard', params: { dashboard: dashboard.id } })
   })
+}
+
+function replicateDashboard(dashbaordId) {
+  dashboardApi.replicate(route.params.organization, dashbaordId)
+    .then(response => {
+      dashboards.value.unshift(response.data.data)
+    })
 }
 
 function destroyDashboard(dashboardId) {
