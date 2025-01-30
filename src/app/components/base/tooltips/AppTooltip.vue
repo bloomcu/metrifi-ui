@@ -1,7 +1,7 @@
 <template>
   <span 
     :class="[variants[variant], alignments[alignment]]" 
-    class="pointer-events-none absolute -bottom-8 w-max rounded px-2 py-1 text-sm font-medium opacity-0 shadow transition-opacity group-hover/tooltip:opacity-100 z-[999]"
+    class="pointer-events-none absolute w-max rounded px-2 py-1 text-sm font-medium opacity-0 shadow transition-opacity group-hover/tooltip:opacity-100 z-[999]"
   >
     {{ text }}
   </span>
@@ -25,6 +25,7 @@ const props = defineProps({
 
 const alignments = {
   left: 'left-0',
+  "left-bottom": 'left-0 bottom-0',
   center: 'left-1/2 transform -translate-x-1/2',
   right: 'right-0'
 }
