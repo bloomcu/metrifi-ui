@@ -57,7 +57,7 @@
           <tr class="divide-x divide-gray-200">
             <th v-for="column in selectedTab.columns" scope="col" class="py-3 px-3 text-left">
               <div class="text-sm font-semibold text-gray-900">
-                {{ column.displayName }}
+                <span>{{ column.displayName }}</span>
               </div>
               <div v-if="column.name === 'totalUsers'" class="text-sm font-semibold text-gray-900">
                 ({{ reports[selectedTab.metric].totals[0].metricValues[0].value }})
@@ -74,7 +74,10 @@
             class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
           >
               <!-- Page path -->
-              <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+              <td class="py-3 px-3 text-sm break-all">
+                <p class="font-semibold text-gray-700 mb-0.5">{{ row.dimensionValues[0].value }}</p>
+                <p class="text-gray-500">{{ row.dimensionValues[2].value }}</p>
+              </td>
               <!-- Hostname -->
               <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/5">{{ row.dimensionValues[1].value }}</td>
               <!-- Users -->
@@ -88,21 +91,27 @@
             class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
           >
               <!-- Page path + query string -->
-              <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td> 
+              <td class="py-3 px-3 text-sm break-all">
+                <p class="font-semibold text-gray-700 mb-0.5">{{ row.dimensionValues[0].value }}</p>
+                <p class="text-gray-500">{{ row.dimensionValues[2].value }}</p>
+              </td>
               <!-- Hostname -->
               <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/5">{{ row.dimensionValues[1].value }}</td>
               <!-- Users -->
               <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
           </tr>
 
-          <!-- Page users -->
+          <!-- Page title users -->
           <tr 
             v-if="selectedTab.metric === 'pageTitleUsers'" 
             v-for="row in reports[selectedTab.metric].rows" 
             class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
           >
               <!-- Page title -->
-              <td class="py-3 px-3 text-sm text-gray-500 break-all">{{ row.dimensionValues[0].value }}</td>
+              <td class="py-3 px-3 text-sm break-all">
+                <p class="font-semibold text-gray-700 mb-0.5">{{ row.dimensionValues[0].value }}</p>
+                <p class="text-gray-500">{{ row.dimensionValues[2].value }}</p>
+              </td>
               <!-- Hostname -->
               <td  class="py-3 px-3 text-sm text-gray-500 break-all w-1/5">{{ row.dimensionValues[1].value }}</td>
               <!-- Users -->
@@ -220,17 +229,17 @@ const { reports, isReportLoading, runReport, reportError } = useGoogleAnalyticsR
 
 const tabs = ref({
   pageUsers: { 
-    name: 'Page users',
+    name: 'Page path',
     metric: 'pageUsers',
     icon: EyeIcon,
     columns: [
-      { name: 'pagePath', displayName: 'Page path' },
+      { name: 'pagePath', displayName: 'Page path'},
       { name: 'hostname', displayName: 'Hostname' },
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },
   pagePlusQueryStringUsers: { 
-    name: 'Page + query string users',
+    name: 'Page path + query',
     metric: 'pagePlusQueryStringUsers',
     icon: EyeIcon,
     columns: [
@@ -240,7 +249,7 @@ const tabs = ref({
     ],
   },
   pageTitleUsers: { 
-    name: 'Page title users',
+    name: 'Page title',
     metric: 'pageTitleUsers',
     icon: EyeIcon,
     columns: [
@@ -250,7 +259,7 @@ const tabs = ref({
     ],
   },
   outboundLinkUsers: { 
-    name: 'Outbound link users',
+    name: 'Outbound link',
     metric: 'outboundLinkUsers',
     icon: EyeIcon,
     columns: [
@@ -261,7 +270,7 @@ const tabs = ref({
     ],
   },
   formUserSubmissions: { 
-    name: 'Form submission users',
+    name: 'Form submission',
     metric: 'formUserSubmissions',
     icon: EnvelopeIcon,
     columns: [

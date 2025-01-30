@@ -92,7 +92,6 @@
                 </button>
                 <span v-if="!step.metrics.length" class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
                   No metrics
-                  <!-- <InformationCircleIcon class="h-5 w-5 shrink-0 ml-0.5" /> -->
                 </span>
               </div>
             </div>
@@ -140,9 +139,20 @@
                       <p class="text-xs uppercase">Metric:</p>
                       <p class="text-gray-500">{{ metric.metric }}</p>
                     </div>
-                    <button @click.stop="deleteMetric(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
-                      <TrashIcon class="h-5 w-5 shrink-0" />
-                    </button>
+
+                    <div class="flex items-center gap-1">
+                        <AppTooltipWrapper v-if="metric.pageTitle">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 cursor-help text-gray-400"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" /></svg>
+                            <AppTooltip 
+                              class="max-w-[350px]" 
+                              text='<span style="font-weight: 800;">Why is the Page Path not included in this dimension?</span> In the Page Title tab of the dimension picker, Page Paths are shown for reference only and do not affect the funnel results. If multiple entries have the same Page Title but different Page Paths, choosing any of them will yield the same result in your funnel.'
+                            />
+                        </AppTooltipWrapper>
+
+                        <button @click.stop="deleteMetric(index)" class="ml-1.5 p-1 rounded-md text-gray-400 hover:text-pink-500 hover:bg-pink-100 active:translate-y-px">
+                        <TrashIcon class="h-5 w-5 shrink-0" />
+                        </button>
+                    </div>
                   </div>
 
                   <div v-if="metric.pagePath" class="">
