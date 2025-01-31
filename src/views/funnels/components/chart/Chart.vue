@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mb-32">
         <div v-if="funnel && funnel.report" class="flex flex-col gap-4">
             <!-- Top -->
             <div class="flex flex-row gap-3">
@@ -92,24 +92,23 @@
                             <ChartLabel :name="step.name" class="mb-0.5"/>
 
                             <!-- Metric: E.g., "1,000 users" -->
-                            <p class="px-1.5 pt-0.5 pb-1">
-                              {{ Number(step.users).toFixed() }} users
+                            <p class="px-1.5 py-1">
+                              <span class="font-semibold">{{ Number(step.users).toFixed() }}</span> users
                             </p>
 
                             <!-- Conversion rate: E.g., "100%" -->
-                            <p v-if="index != 0" class="px-1.5">
-                                {{ Number(step.conversionRate).toFixed(2) }}%
-                                <span>conversion</span>
+                            <p v-if="index != 0" class="px-1.5 py-1">
+                              <span class="font-semibold">{{ Number(step.conversionRate).toFixed(2) }}%</span> conversion
                             </p>
 
                             <!-- Assets per user -->
-                            <p class="px-1.5 pt-0.5 pb-1">
-                              {{ calculateAssetsPerUser(step.users, true) }} assets per user
+                            <p class="px-1.5 py-1">
+                              <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> assets per user
                             </p>
 
                             <!-- Profit per user -->
-                            <p class="px-1.5 pt-0.5 pb-1">
-                              {{ calculateProfitPerUser(step.users, 0.01, true) }} profit per user
+                            <p class="px-1.5 py-1">
+                              <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, 0.01, true) }}</span> profit per user
                             </p>
                         </div>
                         
@@ -120,29 +119,38 @@
                             <!-- Metric: E.g., "1,000 users" -->
                             <MetricModifier v-if="index == 0">
                                 <template #title>
-                                    <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
-                                        {{ Number(projection[index].users).toFixed() }} users
-                                        <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
+                                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-gray-900 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
+                                      <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
+                                      <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
                                     </p>
                                 </template>
                                 <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
                             </MetricModifier>
-                            <p v-else class="py-0.5">
-                                {{ Number(projection[index].users).toFixed() }} users
+                            <p v-else class="px-1.5 py-1">
+                              <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
                             </p>
 
                             <!-- Conversion rate: E.g., "100%" -->
                             <MetricModifier v-if="index != 0">
                                 <template #title>
-                                    <p class="cursor-pointer rounded-md border-0 -ml-1 pl-1 py-0.5 text-gray-900 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
+                                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-gray-900 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
                                         <!-- {{ projection[index].conversionRate }}% -->
-                                        {{ Number(projection[index].conversionRate).toFixed(2) }}%
-                                        <span>conversion</span>
+                                        <span class="font-semibold">{{ Number(projection[index].conversionRate).toFixed(2) }}%</span> conversion
                                         <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
                                     </p>
                                 </template>
                                 <AppInput v-model="projection[index].conversionRate" @input="calculateProjectionUsers()" type="number"/>
                             </MetricModifier>
+
+                            <!-- Assets per user -->
+                            <p class="px-1.5 py-1">
+                              <span class="font-semibold">{{ calculateAssetsPerUser(projection[index].users, projectedAssets, true) }}</span> assets per user
+                            </p>
+
+                            <!-- Profit per user -->
+                            <p class="px-1.5 py-1">
+                              <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, 0.01, true) }}</span> profit per user
+                            </p>
                         </div>
                     </template>
                 </div>
@@ -222,16 +230,16 @@ const calculateProjectionUsers = () => {
     })
 }
 
-const calculateAssetsPerUser = (stepUsers, format) => {
-  let assetsPerUser = props.funnel.report.assets / stepUsers
-  
+const calculateAssetsPerUser = (users, assets, format) => {
+  let assetsPerUser = assets / users
+
   if (format) return assetsPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
   return assetsPerUser
 }
 
 // Calculate profit per user by multiplying the assets per user by ROAA (return on average assets) of 1%
-const calculateProfitPerUser = (users, returnOnAssets, format) => {
-  let assetsPerUser = calculateAssetsPerUser(users, false)
+const calculateProfitPerUser = (users, assets, returnOnAssets, format) => {
+  let assetsPerUser = calculateAssetsPerUser(users, assets, false)
   let profitPerUser = assetsPerUser * returnOnAssets
 
   if (format) return profitPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
