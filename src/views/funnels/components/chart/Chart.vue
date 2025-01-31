@@ -243,7 +243,7 @@ const calculateProfitPerUser = (users, assets, format) => {
   let assetsPerUser = calculateAssetsPerUser(users, assets, false)
   let profitPerUser = assetsPerUser * (props.return_on_assets / 100)
 
-  if (format) return profitPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 2})
+  if (format) return profitPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2})
   return profitPerUser
 }
 
