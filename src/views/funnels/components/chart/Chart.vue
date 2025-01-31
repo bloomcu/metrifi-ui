@@ -92,14 +92,24 @@
                             <ChartLabel :name="step.name" class="mb-0.5"/>
 
                             <!-- Metric: E.g., "1,000 users" -->
-                            <!-- <p class="px-1.5 pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p> -->
-                            <p class="px-1.5 pt-0.5 pb-1">{{ Number(step.users).toFixed() }} users</p>
+                            <p class="px-1.5 pt-0.5 pb-1">
+                              {{ Number(step.users).toFixed() }} users
+                            </p>
 
                             <!-- Conversion rate: E.g., "100%" -->
                             <p v-if="index != 0" class="px-1.5">
-                                <!-- {{ step.conversionRate }}% -->
                                 {{ Number(step.conversionRate).toFixed(2) }}%
                                 <span>conversion</span>
+                            </p>
+
+                            <!-- Assets per user -->
+                            <p class="px-1.5 pt-0.5 pb-1">
+                              {{ calculateAssetsPerUser(step.users, true) }} assets per user
+                            </p>
+
+                            <!-- Profit per user -->
+                            <p class="px-1.5 pt-0.5 pb-1">
+                              {{ calculateProfitPerUser(step.users, 0.01, true) }} profit per user
                             </p>
                         </div>
                         
@@ -170,8 +180,6 @@
 
 <script setup>
 import { computed, inject } from 'vue'
-import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
-import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { PencilIcon } from '@heroicons/vue/24/solid'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
 import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
@@ -212,6 +220,22 @@ const calculateProjectionUsers = () => {
 
         step.users = users
     })
+}
+
+const calculateAssetsPerUser = (stepUsers, format) => {
+  let assetsPerUser = props.funnel.report.assets / stepUsers
+  
+  if (format) return assetsPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
+  return assetsPerUser
+}
+
+// Calculate profit per user by multiplying the assets per user by ROAA (return on average assets) of 1%
+const calculateProfitPerUser = (users, returnOnAssets, format) => {
+  let assetsPerUser = calculateAssetsPerUser(users, false)
+  let profitPerUser = assetsPerUser * returnOnAssets
+
+  if (format) return profitPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
+  return profitPerUser
 }
 
 const overallConversionRate = computed(() => {

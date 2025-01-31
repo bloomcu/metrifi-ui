@@ -245,8 +245,6 @@
           @stepSelected="selectStep"
         />
 
-        <!-- <ChartLine/> -->
-
         <!-- Automation running (TODO: Make a notification component for these) -->
         <div v-if="isGeneratingSteps" class="rounded-md bg-violet-50 p-4 mb-4">
           <div class="flex">
