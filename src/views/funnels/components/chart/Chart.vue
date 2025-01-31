@@ -92,22 +92,22 @@
                             <ChartLabel :name="step.name" class="mb-0.5"/>
 
                             <!-- Metric: E.g., "1,000 users" -->
-                            <p class="px-1.5 py-1">
+                            <p class="px-1.5 py-1 text-gray-700">
                               <span class="font-semibold">{{ Number(step.users).toFixed() }}</span> users
                             </p>
 
                             <!-- Conversion rate: E.g., "100%" -->
-                            <p v-if="index != 0" class="px-1.5 py-1">
+                            <p v-if="index != 0" class="px-1.5 py-1 text-gray-700">
                               <span class="font-semibold">{{ Number(step.conversionRate).toFixed(2) }}%</span> conversion
                             </p>
 
                             <!-- Assets per user -->
-                            <p class="px-1.5 py-1">
+                            <p class="px-1.5 py-1 text-gray-700">
                               <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> assets per user
                             </p>
 
                             <!-- Profit per user -->
-                            <p class="px-1.5 py-1">
+                            <p class="px-1.5 py-1 text-gray-700">
                               <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, 0.01, true) }}</span> profit per user
                             </p>
                         </div>
@@ -119,21 +119,21 @@
                             <!-- Metric: E.g., "1,000 users" -->
                             <MetricModifier v-if="index == 0">
                                 <template #title>
-                                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-gray-900 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
+                                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
                                       <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
                                       <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
                                     </p>
                                 </template>
                                 <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
                             </MetricModifier>
-                            <p v-else class="px-1.5 py-1">
+                            <p v-else class="px-1.5 py-1 text-gray-700">
                               <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
                             </p>
 
                             <!-- Conversion rate: E.g., "100%" -->
                             <MetricModifier v-if="index != 0">
                                 <template #title>
-                                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-gray-900 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
+                                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
                                         <!-- {{ projection[index].conversionRate }}% -->
                                         <span class="font-semibold">{{ Number(projection[index].conversionRate).toFixed(2) }}%</span> conversion
                                         <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
@@ -143,12 +143,12 @@
                             </MetricModifier>
 
                             <!-- Assets per user -->
-                            <p class="px-1.5 py-1">
+                            <p class="px-1.5 py-1 text-gray-700">
                               <span class="font-semibold">{{ calculateAssetsPerUser(projection[index].users, projectedAssets, true) }}</span> assets per user
                             </p>
 
                             <!-- Profit per user -->
-                            <p class="px-1.5 py-1">
+                            <p class="px-1.5 py-1 text-gray-700">
                               <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, 0.01, true) }}</span> profit per user
                             </p>
                         </div>
