@@ -108,7 +108,7 @@
 
                             <!-- Profit per user -->
                             <p class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, 0.01, true) }}</span> profit per user
+                              <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, true) }}</span> profit per user
                             </p>
                         </div>
                         
@@ -149,7 +149,7 @@
 
                             <!-- Profit per user -->
                             <p class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, 0.01, true) }}</span> profit per user
+                              <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, true) }}</span> profit per user
                             </p>
                         </div>
                     </template>
@@ -198,6 +198,7 @@ import MetricModifier from '@/views/funnels/components/metrics/MetricModifier.vu
 const props = defineProps({
     funnel: Object,
     conversion_value: [Number, String],
+    return_on_assets: [Number, String],
     startDate: String,
     endDate: String,
     zoom: Number,
@@ -238,9 +239,9 @@ const calculateAssetsPerUser = (users, assets, format) => {
 }
 
 // Calculate profit per user by multiplying the assets per user by ROAA (return on average assets) of 1%
-const calculateProfitPerUser = (users, assets, returnOnAssets, format) => {
+const calculateProfitPerUser = (users, assets, format) => {
   let assetsPerUser = calculateAssetsPerUser(users, assets, false)
-  let profitPerUser = assetsPerUser * returnOnAssets
+  let profitPerUser = assetsPerUser * (props.return_on_assets / 100)
 
   if (format) return profitPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 2})
   return profitPerUser

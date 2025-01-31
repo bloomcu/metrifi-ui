@@ -237,6 +237,7 @@
         <Chart 
           :funnel="funnelStore.funnel"
           :conversion_value="funnelStore.funnel.conversion_value"
+          :return_on_assets="organizationStore.organization.return_on_assets"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
           :zoom="funnelStore.funnel.zoom"

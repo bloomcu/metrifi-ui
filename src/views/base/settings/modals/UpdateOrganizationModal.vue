@@ -9,6 +9,7 @@
         <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Update organization</h3>
         <AppInput v-model="organizationStore.organization.title" label="Organization Name" :errors="errorStore.errors.title" required />
         <AppInput v-model="organizationStore.organization.domain" label="Website domain" :errors="errorStore.errors.domain" required />
+        <AppInput v-model="computedReturnOnAssets" label="Return on average assets" :errors="errorStore.errors.return_on_assets" :maxlength="100" required />
         <AppButton :loading="organizationStore.loading" class="w-full">Update</AppButton>
       </form>
     </div>
@@ -16,6 +17,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
@@ -33,4 +35,38 @@ function update() {
     });
 }
 
+const computedReturnOnAssets = computed({
+  get: () => {
+    // Convert to dollars
+    let value = organizationStore.organization.return_on_assets
+
+    // Format to dollars
+    return value + '%'
+  },
+  set: (value) => {
+    // Remove any non-digit character:
+    value = value.replace(/\D+/g, '')
+    
+    // Handle empty string non
+    if (value === '') {
+      value = 1
+    }
+
+    // Convert to integer
+    value = parseInt(value);
+
+    // Limit to max 100%
+    if (value > 100) {
+      value = 100
+    }
+
+    // Handle edge cases
+    if (isNaN(value)) {
+      organizationStore.organization.return_on_assets = 1;
+    }
+
+    // Convert to cents
+    organizationStore.organization.return_on_assets = value;
+  }
+})
 </script>
