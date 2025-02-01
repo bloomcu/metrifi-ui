@@ -103,12 +103,18 @@
 
                             <!-- Assets per user -->
                             <p class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> assets per user
+                              <AppTooltipWrapper>
+                                <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> APU
+                                <AppTooltip text="Assets per user" />
+                              </AppTooltipWrapper>
                             </p>
 
                             <!-- Profit per user -->
                             <p class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, true) }}</span> profit per user
+                              <AppTooltipWrapper>
+                                <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, true) }}</span> PPU
+                                <AppTooltip text="Profit per user" />
+                              </AppTooltipWrapper>
                             </p>
                         </div>
                         
@@ -144,12 +150,18 @@
 
                             <!-- Assets per user -->
                             <p class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ calculateAssetsPerUser(projection[index].users, projectedAssets, true) }}</span> assets per user
+                              <AppTooltipWrapper>
+                                <span class="font-semibold">{{ calculateAssetsPerUser(projection[index].users, projectedAssets, true) }}</span> APU
+                                <AppTooltip text="Assets per user" />
+                              </AppTooltipWrapper>
                             </p>
 
                             <!-- Profit per user -->
                             <p class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, true) }}</span> profit per user
+                              <AppTooltipWrapper>
+                                <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, true) }}</span> PPU
+                                <AppTooltip text="Profit per user" />
+                              </AppTooltipWrapper>
                             </p>
                         </div>
                     </template>
@@ -194,6 +206,8 @@ import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
 import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
 import AppInput from '@/app/components/base/forms/AppInput.vue'
 import MetricModifier from '@/views/funnels/components/metrics/MetricModifier.vue'
+import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
+import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
 
 const props = defineProps({
     funnel: Object,

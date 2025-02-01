@@ -78,6 +78,10 @@ export const useOrganizationStore = defineStore('organizationStore', {
         this.updateModalOpen = !this.updateModalOpen
       },
 
+      toggleUpdateROAAModal() {
+        this.updateROAAModalOpen = !this.updateROAAModalOpen
+      },
+
       toggleDestroyModal() {
         this.destroyModalOpen = !this.destroyModalOpen
       }
