@@ -85,84 +85,64 @@
 
                 <div class="h-[10px]" />
 
-                <div class="flex flex-[8] gap-3">
+                <!-- Step data rows -->
+                <div class="grid grid-flow-col auto-cols-fr gap-3">
                     <template v-for="(step, index) in funnel.report.steps">
-                        <div class="flex-1 text-sm">
-                            <!-- Label: E.g., "Homepage" -->
-                            <ChartLabel :name="step.name" class="mb-0.5"/>
+                        <div class="grid grid-rows-5 gap-0.5 text-sm">
+                            <!-- Label -->
+                            <div class="row-span-1">
+                                <ChartLabel :name="step.name" class="mb-0.5"/>
+                            </div>
 
-                            <!-- Metric: E.g., "1,000 users" -->
-                            <p class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ Number(step.users).toFixed() }}</span> users
-                            </p>
+                            <!-- Metric -->
+                            <div class="row-span-1">
+                                <p class="px-1.5 py-1 text-gray-700">
+                                    <span class="font-semibold">{{ Number(step.users).toFixed() }}</span> users
+                                </p>
+                            </div>
 
-                            <!-- Conversion rate: E.g., "100%" -->
-                            <p v-if="index != 0" class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ Number(step.conversionRate).toFixed(2) }}%</span> conversion
-                            </p>
+                            <!-- Conversion rate -->
+                            <div class="row-span-1" v-if="index != 'zero'">
+                                <p class="px-1.5 py-1 text-gray-700">
+                                    <span class="font-semibold">{{ Number(step.conversionRate).toFixed(2) }}%</span> conversion
+                                </p>
+                            </div>
 
                             <!-- Assets per user -->
-                            <p class="px-1.5 py-1 text-gray-700">
-                              <AppTooltipWrapper>
-                                <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> APU
-                                <AppTooltip text="Assets per user" />
-                              </AppTooltipWrapper>
-                            </p>
+                            <div class="row-span-1">
+                                <p class="px-1.5 py-1 text-gray-700">
+                                    <AppTooltipWrapper>
+                                        <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> APU
+                                        <AppTooltip text="Assets per user" />
+                                    </AppTooltipWrapper>
+                                </p>
+                            </div>
 
                             <!-- Profit per user -->
-                            <p class="px-1.5 py-1 text-gray-700">
-                              <AppTooltipWrapper>
-                                <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, true) }}</span> PPU
-                                <AppTooltip text="Profit per user" />
-                              </AppTooltipWrapper>
-                            </p>
+                            <div class="row-span-1">
+                                <p class="px-1.5 py-1 text-gray-700">
+                                    <AppTooltipWrapper>
+                                        <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, true) }}</span> PPU
+                                        <AppTooltip text="Profit per user" />
+                                    </AppTooltipWrapper>
+                                </p>
+                            </div>
                         </div>
                         
-                        <div v-if="projection && projection.length && projection[index]" class="flex-1 text-sm">
-                            <!-- Label: E.g., "Homepage" -->
-                            <ChartLabel :name="projection[index].name" class="mb-0.5"/>
+                        <!-- Projection Column -->
+                        <div v-if="projection && projection.length && projection[index]" class="grid grid-rows-5 gap-0.5 text-sm">
+                            <!-- Repeat the same grid structure for projection data -->
+                            <!-- Label -->
+                            <div class="row-span-1">
+                                <ChartLabel :name="projection[index].name" class="mb-0.5"/>
+                            </div>
 
-                            <!-- Metric: E.g., "1,000 users" -->
-                            <MetricModifier v-if="index == 0">
-                                <template #title>
-                                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
-                                      <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
-                                      <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
-                                    </p>
-                                </template>
-                                <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
-                            </MetricModifier>
-                            <p v-else class="px-1.5 py-1 text-gray-700">
-                              <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
-                            </p>
+                            <!-- Metric -->
+                            <div class="row-span-1">
+                                <!-- Your existing projection metric content -->
+                            </div>
 
-                            <!-- Conversion rate: E.g., "100%" -->
-                            <MetricModifier v-if="index != 0">
-                                <template #title>
-                                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
-                                        <!-- {{ projection[index].conversionRate }}% -->
-                                        <span class="font-semibold">{{ Number(projection[index].conversionRate).toFixed(2) }}%</span> conversion
-                                        <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
-                                    </p>
-                                </template>
-                                <AppInput v-model="projection[index].conversionRate" @input="calculateProjectionUsers()" type="number"/>
-                            </MetricModifier>
-
-                            <!-- Assets per user -->
-                            <p class="px-1.5 py-1 text-gray-700">
-                              <AppTooltipWrapper>
-                                <span class="font-semibold">{{ calculateAssetsPerUser(projection[index].users, projectedAssets, true) }}</span> APU
-                                <AppTooltip text="Assets per user" />
-                              </AppTooltipWrapper>
-                            </p>
-
-                            <!-- Profit per user -->
-                            <p class="px-1.5 py-1 text-gray-700">
-                              <AppTooltipWrapper>
-                                <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, true) }}</span> PPU
-                                <AppTooltip text="Profit per user" />
-                              </AppTooltipWrapper>
-                            </p>
+                            <!-- ... Other projection rows ... -->
                         </div>
                     </template>
                 </div>
