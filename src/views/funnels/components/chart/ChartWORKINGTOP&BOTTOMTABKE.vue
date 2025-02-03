@@ -105,13 +105,13 @@
                       @generateRecommendation="emit('generateRecommendation', index)"
                     />
                   </div>
-                </div>
-              </div>
 
-              <div v-if="projection && projection.length && projection[index]" class="table-cell relative p-0 w-[1%]">
-                <div class="relative flex h-full items-end gap-0.5">
                   <!-- Projection Bar -->
-                  <div class="relative flex-1" :style="{ height: `${(projection[index].users / maxValue) * 100}%` }">
+                  <div 
+                    v-if="projection && projection[index]"
+                    class="relative flex-1"
+                    :style="{ height: `${(projection[index].users / maxValue) * 100}%` }"
+                  >
                     <ChartBar 
                       v-if="projection && projection.length && projection[index]"
                       :value="projection[index].users" 
@@ -127,7 +127,10 @@
               </div>
             </template>
           </div>
+        </div>
 
+        <!-- Step data rows -->
+        <div class="table w-full border-collapse">
           <!-- Label Row -->
           <div class="table-row">
             <template v-for="(step, index) in funnel.report.steps" :key="step.id">
@@ -229,11 +232,6 @@
             </template>
           </div>
         </div>
-
-        <!-- Step data rows -->
-        <!-- <div class="table w-full border-collapse">
-          
-        </div> -->
 
       <!-- </div> -->
     </div>
