@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-32">
+  <div>
     <div v-if="funnel && funnel.report" class="flex flex-col gap-4">
       <!-- Top -->
       <div class="flex flex-row gap-3">
@@ -43,203 +43,157 @@
           </div>
         </div>
       </div>
-            
-      <!-- Barchart -->
-      <!-- <div class="flex flex-col w-full"> -->
 
-        <!-- Chart -->
-        <!-- <div class="relative flex h-[400px]">
-          <div class="absolute w-full h-full flex flex-col justify-between">
-            <ChartLine v-for="percentage in [100, 75, 50, 25, 0]" />
-          </div>
-
-          <div class="flex flex-[8] z-0">
-            <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <ChartBar 
-                :value="step.users" 
-                :max="maxValue" 
-                :zoom="zoom"
-                :updating="updating"
-                :enableControls="enableControls"
-                :enableStepExpansion="enableStepExpansion"
-                :enableGenerateRecommendation="enableGenerateRecommendation"
-                :enableCursorPointer="enableCursorPointer"
-                @stepSelected="emit('stepSelected', step)"
-                @stepDisabled="emit('stepDisabled', funnel, step)"
-                @stepExpanded="emit('stepExpanded', step)"
-                @generateRecommendation="emit('generateRecommendation', index)"
-              />
-              <ChartBar 
-                v-if="projection && projection.length && projection[index]"
-                :value="projection[index].users" 
-                :max="maxValue" 
-                :zoom="zoom"
-                :updating="updating"
-                :isProjection="true"
-                :enableCursorPointer="enableCursorPointer"
-                @stepSelected="emit('stepSelected', step)"
-              />
-            </template>
-          </div>
-        </div> -->
-
-        <!-- Chart Table -->
-        <div class="table w-full border-collapse h-full">
-          <div class="table-row h-[400px] align-bottom">
-            <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell relative p-0 w-[1%]">
-                <div class="relative flex h-full items-end gap-0.5">
-                  <div class="relative flex-1 h-full">
-                    <ChartBar 
-                      :value="step.users" 
-                      :max="maxValue" 
-                      :zoom="zoom"
-                      :updating="updating"
-                      :enableControls="enableControls"
-                      :enableStepExpansion="enableStepExpansion"
-                      :enableGenerateRecommendation="enableGenerateRecommendation"
-                      :enableCursorPointer="enableCursorPointer"
-                      @stepSelected="emit('stepSelected', step)"
-                      @stepDisabled="emit('stepDisabled', funnel, step)"
-                      @stepExpanded="emit('stepExpanded', step)"
-                      @generateRecommendation="emit('generateRecommendation', index)"
-                    />
-                  </div>
+      <!-- Chart Table -->
+      <div class="table w-full border-collapse h-full">
+        <div class="table-row h-[400px] align-bottom">
+          <template v-for="(step, index) in funnel.report.steps" :key="step.id">
+            <div class="table-cell relative p-0 w-[1%]">
+              <div class="relative flex h-full items-end gap-0.5">
+                <div class="relative flex-1 h-full">
+                  <ChartBar 
+                    :value="step.users" 
+                    :max="maxValue" 
+                    :zoom="zoom"
+                    :updating="updating"
+                    :enableControls="enableControls"
+                    :enableStepExpansion="enableStepExpansion"
+                    :enableGenerateRecommendation="enableGenerateRecommendation"
+                    :enableCursorPointer="enableCursorPointer"
+                    @stepSelected="emit('stepSelected', step)"
+                    @stepDisabled="emit('stepDisabled', funnel, step)"
+                    @stepExpanded="emit('stepExpanded', step)"
+                    @generateRecommendation="emit('generateRecommendation', index)"
+                  />
                 </div>
               </div>
+            </div>
 
-              <div v-if="projection && projection.length && projection[index]" class="table-cell relative p-0 w-[1%]">
-                <div class="relative flex h-full items-end gap-0.5">
-                  <!-- Projection Bar -->
-                  <div class="relative flex-1 h-full">
-                    <ChartBar 
-                      v-if="projection && projection.length && projection[index]"
-                      :value="projection[index].users" 
-                      :max="maxValue" 
-                      :zoom="zoom"
-                      :updating="updating"
-                      :isProjection="true"
-                      :enableCursorPointer="enableCursorPointer"
-                      @stepSelected="emit('stepSelected', step)"
-                    />
-                  </div>
+            <div v-if="projection && projection.length && projection[index]" class="table-cell relative p-0 w-[1%]">
+              <div class="relative flex h-full items-end gap-0.5">
+                <!-- Projection Bar -->
+                <div class="relative flex-1 h-full">
+                  <ChartBar 
+                    v-if="projection && projection.length && projection[index]"
+                    :value="projection[index].users" 
+                    :max="maxValue" 
+                    :zoom="zoom"
+                    :updating="updating"
+                    :isProjection="true"
+                    :enableCursorPointer="enableCursorPointer"
+                    @stepSelected="emit('stepSelected', step)"
+                  />
                 </div>
               </div>
-            </template>
-          </div>
-
-          <!-- Label Row -->
-          <div class="table-row">
-            <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 pt-4 pb-1">
-                <span class="font-semibold">{{ step.name }}</span>
-              </div>
-
-              <!-- Projection -->
-              <div class="table-cell align-middle px-1.5 pt-4 pb-1" v-if="projection && projection.length && projection[index]">
-                <span class="font-semibold">{{ projection[index].name }}</span>
-              </div>
-            </template>
-          </div>
-
-          <!-- Metric Row -->
-          <div class="table-row text-[0.95em]">
-            <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
-                <span class="font-semibold">{{ Number(step.users).toFixed() }}</span> users
-              </div>
-
-              <!-- Projection -->
-              <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
-                <MetricModifier v-if="index == 0">
-                  <template #title>
-                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1.5 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
-                      <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
-                      <PencilIcon class="inline ml-1 -mt-1 h-3 w-3 text-violet-500"/>
-                    </p>
-                  </template>
-                  <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
-                </MetricModifier>
-
-                <span v-else><span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users</span>
-              </div>
-            </template>
-          </div>
-
-          <!-- Conversion Rate Row -->
-          <div class="table-row text-[0.95em]">
-            <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
-                <template v-if="index !== 0">
-                  <span class="font-semibold">{{ Number(step.conversionRate).toFixed(2) }}%</span> conversion
-                </template>
-
-                <template v-else>-</template>
-              </div>
-
-              <!-- Projection -->
-              <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
-                <MetricModifier v-if="index != 0">
-                  <template #title>
-                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1.5 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
-                      <span class="font-semibold">{{ Number(projection[index].conversionRate).toFixed(2) }}%</span> conversion
-                      <PencilIcon class="inline ml-1 -mt-1 h-3 w-3 text-violet-500"/>
-                    </p>
-                  </template>
-                  <AppInput v-model="projection[index].conversionRate" @input="calculateProjectionUsers()" type="number"/>
-                </MetricModifier>
-
-                <template v-else>-</template>
-              </div>
-            </template>
-          </div>
-
-          <!-- Assets Per User Row -->
-          <div class="table-row text-[0.95em]">
-            <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
-                <AppTooltipWrapper>
-                  <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> APU
-                  <AppTooltip text="Assets per user" />
-                </AppTooltipWrapper>
-              </div>
-
-              <!-- Projection -->
-              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
-                <AppTooltipWrapper>
-                  <span class="font-semibold">{{ calculateAssetsPerUser(projection[index].users, projectedAssets, true) }}</span> APU
-                  <AppTooltip text="Assets per user" />
-                </AppTooltipWrapper>
-              </div>
-            </template>
-          </div>
-
-          <!-- Profit Per User Row -->
-          <div class="table-row text-[0.95em]">
-            <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700">
-                <AppTooltipWrapper>
-                  <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, true) }}</span> PPU
-                  <AppTooltip text="Profit per user" />
-                </AppTooltipWrapper>
-              </div>
-
-              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700" v-if="projection && projection.length && projection[index]">
-                <AppTooltipWrapper>
-                  <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, true) }}</span> PPU
-                  <AppTooltip text="Profit per user" />
-                </AppTooltipWrapper>
-              </div>
-            </template>
-          </div>
+            </div>
+          </template>
         </div>
 
-        <!-- Step data rows -->
-        <!-- <div class="table w-full border-collapse">
-          
-        </div> -->
+        <!-- Label Row -->
+        <div class="table-row">
+          <template v-for="(step, index) in funnel.report.steps" :key="step.id">
+            <div class="table-cell align-middle px-1.5 pt-4 pb-1">
+              <span class="font-semibold">{{ step.name }}</span>
+            </div>
 
-      <!-- </div> -->
+            <!-- Projection -->
+            <div class="table-cell align-middle px-1.5 pt-4 pb-1" v-if="projection && projection.length && projection[index]">
+              <span class="font-semibold">{{ projection[index].name }}</span>
+            </div>
+          </template>
+        </div>
+
+        <!-- Metric Row -->
+        <div class="table-row text-[0.95em]">
+          <template v-for="(step, index) in funnel.report.steps" :key="step.id">
+            <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
+              <span class="font-semibold">{{ Number(step.users).toFixed() }}</span> users
+            </div>
+
+            <!-- Projection -->
+            <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
+              <MetricModifier v-if="index == 0">
+                <template #title>
+                  <p class="cursor-pointer rounded-md border-0 px-1.5 py-1.5 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
+                    <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
+                    <PencilIcon class="inline ml-1 -mt-1 h-3 w-3 text-violet-500"/>
+                  </p>
+                </template>
+                <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
+              </MetricModifier>
+
+              <span v-else><span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users</span>
+            </div>
+          </template>
+        </div>
+
+        <!-- Conversion Rate Row -->
+        <div class="table-row text-[0.95em]">
+          <template v-for="(step, index) in funnel.report.steps" :key="step.id">
+            <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
+              <template v-if="index !== 0">
+                <span class="font-semibold">{{ Number(step.conversionRate).toFixed(2) }}%</span> conversion
+              </template>
+
+              <template v-else>-</template>
+            </div>
+
+            <!-- Projection -->
+            <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
+              <MetricModifier v-if="index != 0">
+                <template #title>
+                  <p class="cursor-pointer rounded-md border-0 px-1.5 py-1.5 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
+                    <span class="font-semibold">{{ Number(projection[index].conversionRate).toFixed(2) }}%</span> conversion
+                    <PencilIcon class="inline ml-1 -mt-1 h-3 w-3 text-violet-500"/>
+                  </p>
+                </template>
+                <AppInput v-model="projection[index].conversionRate" @input="calculateProjectionUsers()" type="number"/>
+              </MetricModifier>
+
+              <template v-else>-</template>
+            </div>
+          </template>
+        </div>
+
+        <!-- Assets Per User Row -->
+        <div class="table-row text-[0.95em]">
+          <template v-for="(step, index) in funnel.report.steps" :key="step.id">
+            <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
+              <AppTooltipWrapper>
+                <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> APU
+                <AppTooltip text="Assets per user" />
+              </AppTooltipWrapper>
+            </div>
+
+            <!-- Projection -->
+            <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
+              <AppTooltipWrapper>
+                <span class="font-semibold">{{ calculateAssetsPerUser(projection[index].users, projectedAssets, true) }}</span> APU
+                <AppTooltip text="Assets per user" />
+              </AppTooltipWrapper>
+            </div>
+          </template>
+        </div>
+
+        <!-- Profit Per User Row -->
+        <div class="table-row text-[0.95em]">
+          <template v-for="(step, index) in funnel.report.steps" :key="step.id">
+            <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700">
+              <AppTooltipWrapper>
+                <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, true) }}</span> PPU
+                <AppTooltip text="Profit per user" />
+              </AppTooltipWrapper>
+            </div>
+
+            <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700" v-if="projection && projection.length && projection[index]">
+              <AppTooltipWrapper>
+                <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, true) }}</span> PPU
+                <AppTooltip text="Profit per user" />
+              </AppTooltipWrapper>
+            </div>
+          </template>
+        </div>
+      </div>
     </div>
 
     <!-- State: Loading (TODO: Make into component, put into Chart component) -->
@@ -276,8 +230,6 @@
 import { computed, inject } from 'vue'
 import { PencilIcon } from '@heroicons/vue/24/solid'
 import ChartBar from '@/views/funnels/components/chart/ChartBar.vue'
-import ChartLine from '@/views/funnels/components/chart/ChartLine.vue'
-import ChartLabel from '@/views/funnels/components/chart/ChartLabel.vue'
 import AppInput from '@/app/components/base/forms/AppInput.vue'
 import MetricModifier from '@/views/funnels/components/metrics/MetricModifier.vue'
 import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
@@ -320,19 +272,19 @@ const calculateProjectionUsers = () => {
 }
 
 const calculateAssetsPerUser = (users, assets, format) => {
-let assetsPerUser = assets / users
+  let assetsPerUser = assets / users
 
-if (format) return assetsPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
-return assetsPerUser
+  if (format) return assetsPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
+  return assetsPerUser
 }
 
 // Calculate profit per user by multiplying the assets per user by ROAA (return on average assets) of 1%
 const calculateProfitPerUser = (users, assets, format) => {
-let assetsPerUser = calculateAssetsPerUser(users, assets, false)
-let profitPerUser = assetsPerUser * (props.return_on_assets / 100)
+  let assetsPerUser = calculateAssetsPerUser(users, assets, false)
+  let profitPerUser = assetsPerUser * (props.return_on_assets / 100)
 
-if (format) return profitPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2})
-return profitPerUser
+  if (format) return profitPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2})
+  return profitPerUser
 }
 
 const overallConversionRate = computed(() => {

@@ -221,7 +221,7 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
+      <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4 mb-32">
         <div class="ml-auto mb-2 z-0">
           <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary">
             {{ funnelStore.funnel.projections.length ? 'Show projection' : 'Create projection' }}

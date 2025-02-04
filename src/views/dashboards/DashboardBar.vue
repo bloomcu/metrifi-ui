@@ -153,7 +153,7 @@
       :list="funnelStore.funnels"
       :animation="150"
       @change="reorderFunnel($event)"
-      class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4"
+      class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4 mb-12"
     >
       <div v-for="(funnel, index) in funnelStore.funnels" :key="funnel.id" class="p-6 border-2 border-gray-200 rounded-xl bg-white">
         <!-- Funnel and organization name -->
@@ -166,6 +166,7 @@
         <Chart 
           :funnel="funnel" 
           :conversion_value="funnel.conversion_value"
+          :return_on_assets="funnel.organization.return_on_assets"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
           :updating="funnelStore.isLoading"
