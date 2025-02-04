@@ -84,12 +84,12 @@
         </div> -->
 
         <!-- Chart Table -->
-        <div class="table w-full border-collapse h-full mb-2">
+        <div class="table w-full border-collapse h-full">
           <div class="table-row h-[400px] align-bottom">
             <template v-for="(step, index) in funnel.report.steps" :key="step.id">
               <div class="table-cell relative p-0 w-[1%]">
                 <div class="relative flex h-full items-end gap-0.5">
-                  <div class="relative flex-1" :style="{ height: `${(step.users / maxValue) * 100}%` }">
+                  <div class="relative flex-1 h-full">
                     <ChartBar 
                       :value="step.users" 
                       :max="maxValue" 
@@ -111,7 +111,7 @@
               <div v-if="projection && projection.length && projection[index]" class="table-cell relative p-0 w-[1%]">
                 <div class="relative flex h-full items-end gap-0.5">
                   <!-- Projection Bar -->
-                  <div class="relative flex-1" :style="{ height: `${(projection[index].users / maxValue) * 100}%` }">
+                  <div class="relative flex-1 h-full">
                     <ChartBar 
                       v-if="projection && projection.length && projection[index]"
                       :value="projection[index].users" 
@@ -131,21 +131,21 @@
           <!-- Label Row -->
           <div class="table-row">
             <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1 border-b border-gray-200">
-                <ChartLabel :name="step.name" class="mb-0.5"/>
+              <div class="table-cell align-middle px-1.5 pt-4 pb-1">
+                <span class="font-semibold">{{ step.name }}</span>
               </div>
 
               <!-- Projection -->
-              <div class="table-cell align-middle px-1.5 py-1 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
-                <ChartLabel :name="projection[index].name" class="mb-0.5"/>
+              <div class="table-cell align-middle px-1.5 pt-4 pb-1" v-if="projection && projection.length && projection[index]">
+                <span class="font-semibold">{{ projection[index].name }}</span>
               </div>
             </template>
           </div>
 
           <!-- Metric Row -->
-          <div class="table-row">
+          <div class="table-row text-[0.95em]">
             <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200">
+              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
                 <span class="font-semibold">{{ Number(step.users).toFixed() }}</span> users
               </div>
 
@@ -153,47 +153,51 @@
               <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
                 <MetricModifier v-if="index == 0">
                   <template #title>
-                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
+                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1.5 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
                       <span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users
-                      <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
+                      <PencilIcon class="inline ml-1 -mt-1 h-3 w-3 text-violet-500"/>
                     </p>
                   </template>
                   <AppInput v-model="projection[index].users" @input="calculateProjectionUsers()" type="number"/>
                 </MetricModifier>
+
                 <span v-else><span class="font-semibold">{{ Number(projection[index].users).toFixed() }}</span> users</span>
               </div>
             </template>
           </div>
 
           <!-- Conversion Rate Row -->
-          <div class="table-row">
+          <div class="table-row text-[0.95em]">
             <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200">
+              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
                 <template v-if="index !== 0">
                   <span class="font-semibold">{{ Number(step.conversionRate).toFixed(2) }}%</span> conversion
                 </template>
-                <template v-else>&nbsp;</template>
+
+                <template v-else>-</template>
               </div>
 
               <!-- Projection -->
               <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
                 <MetricModifier v-if="index != 0">
                   <template #title>
-                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
+                    <p class="cursor-pointer rounded-md border-0 px-1.5 py-1.5 text-violet-700 bg-violet-50 hover:ring-2 focus:ring-2 hover:ring-violet-600 focus:ring-violet-600">
                       <span class="font-semibold">{{ Number(projection[index].conversionRate).toFixed(2) }}%</span> conversion
-                      <PencilIcon class="inline ml-1 h-3 w-3 text-violet-500"/>
+                      <PencilIcon class="inline ml-1 -mt-1 h-3 w-3 text-violet-500"/>
                     </p>
                   </template>
                   <AppInput v-model="projection[index].conversionRate" @input="calculateProjectionUsers()" type="number"/>
                 </MetricModifier>
+
+                <template v-else>-</template>
               </div>
             </template>
           </div>
 
           <!-- Assets Per User Row -->
-          <div class="table-row">
+          <div class="table-row text-[0.95em]">
             <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200">
+              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
                 <AppTooltipWrapper>
                   <span class="font-semibold">{{ calculateAssetsPerUser(step.users, funnel.report.assets, true) }}</span> APU
                   <AppTooltip text="Assets per user" />
@@ -201,7 +205,7 @@
               </div>
 
               <!-- Projection -->
-              <div class="table-cell align-middle px-1.5 py-1 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
+              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200" v-if="projection && projection.length && projection[index]">
                 <AppTooltipWrapper>
                   <span class="font-semibold">{{ calculateAssetsPerUser(projection[index].users, projectedAssets, true) }}</span> APU
                   <AppTooltip text="Assets per user" />
@@ -211,16 +215,16 @@
           </div>
 
           <!-- Profit Per User Row -->
-          <div class="table-row">
+          <div class="table-row text-[0.95em]">
             <template v-for="(step, index) in funnel.report.steps" :key="step.id">
-              <div class="table-cell align-middle px-1.5 py-1 text-gray-700">
+              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700">
                 <AppTooltipWrapper>
                   <span class="font-semibold">{{ calculateProfitPerUser(step.users, funnel.report.assets, true) }}</span> PPU
                   <AppTooltip text="Profit per user" />
                 </AppTooltipWrapper>
               </div>
 
-              <div class="table-cell align-middle px-1.5 py-1 text-gray-700" v-if="projection && projection.length && projection[index]">
+              <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700" v-if="projection && projection.length && projection[index]">
                 <AppTooltipWrapper>
                   <span class="font-semibold">{{ calculateProfitPerUser(projection[index].users, projectedAssets, true) }}</span> PPU
                   <AppTooltip text="Profit per user" />
