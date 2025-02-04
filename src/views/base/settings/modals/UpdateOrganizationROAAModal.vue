@@ -30,10 +30,10 @@ function update() {
 
   organizationStore.update()
     .then(() => {
-      organizationStore.toggleUpdateROAAModal();
+      organizationStore.toggleUpdateROAAModal()
+      organizationStore.analyzeOrganizationDashboards(organizationStore.organization.slug)
     })
     .catch(error => {
-      // Handle the error gracefully (e.g., show an error message)
       console.error('Failed to update organization:', error.response?.data || error);
     });
 }
