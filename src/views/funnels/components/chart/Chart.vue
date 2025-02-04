@@ -274,7 +274,7 @@ const calculateProjectionUsers = () => {
 const calculateAssetsPerUser = (users, assets, format) => {
   let assetsPerUser = assets / users
 
-  if (format) return assetsPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
+  if (format) return assetsPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2})
   return assetsPerUser
 }
 

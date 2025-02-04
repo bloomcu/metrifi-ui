@@ -49,6 +49,15 @@
         </p>
 
         <!-- 
+        Profit per user 
+        -->
+        <p class="mb-3">
+            <span class="font-semibold">Profit per user:</span>
+            {{ Number(analysis.subject_funnel_profit_per_user).toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
+            <!-- {{ analysis.subject_funnel_profit_per_user }} -->
+        </p>
+
+        <!-- 
         Potential assets 
         -->
         <!-- Assets not configured on the funnel -->
