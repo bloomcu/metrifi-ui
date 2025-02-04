@@ -31,7 +31,7 @@ export const useOrganizationStore = defineStore('organizationStore', {
         
         try {
           const response = await OrganizationApi.update(this.organization.slug, this.organization);
-          console.log('Site successfully updated');
+          console.log('Organization successfully updated');
           this.isLoading = false;
           return Promise.resolve(response); // Explicitly return a resolved promise
         } catch (error) {
@@ -76,6 +76,10 @@ export const useOrganizationStore = defineStore('organizationStore', {
 
       toggleUpdateModal() {
         this.updateModalOpen = !this.updateModalOpen
+      },
+
+      toggleUpdateROAAModal() {
+        this.updateROAAModalOpen = !this.updateROAAModalOpen
       },
 
       toggleDestroyModal() {

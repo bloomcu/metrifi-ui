@@ -1,141 +1,57 @@
 import { httpClient as HttpClient } from '@/app/api/base/httpClient'
 
 const funnelApi = {
-    /**
-     * List funnels
-     *
-     * @param Object params [Key/value params to query by]
-     * @return promise
-     */
-    async index(organization, params) {
-        return await HttpClient.get(`/${organization}/funnels`, { params: params })
-    },
-    
-    /**
-     * Store a funnel
-     *
-     * @param Object funnel [Properties to create funnel from]
-     * @return promise
-     */
-    async store(organization, funnel) {
-        return await HttpClient.post(`/${organization}/funnels`, funnel)
-    },
-    
-    /**
-     * Show a funnel
-     *
-     * @param Integer id [Id of the funnel you want to show]
-     * @return promise
-     */
-    async show(organization, id) {
-      return await HttpClient.get(`/${organization}/funnels/${id}`)
-    },
-    
-    /**
-     * Update a funnel
-     *
-     * @param Integer id [Id of the funnel you want to update]
-     * @param Object  funnel [Properties to update funnel with]
-     * @return promise
-     */
-    async update(organization, id, funnel) {
-      return await HttpClient.put(`/${organization}/funnels/${id}`, funnel)
-    },
-    
-    /**
-     * Destroy a funnel
-     *
-     * @param Integer id [Id of the file you want to destroy]
-     * @return promise
-     */
-    async destroy(organization, id) {
-        return await HttpClient.delete(`/${organization}/funnels/${id}`)
-    },
+  async index(organization, params) {
+    return await HttpClient.get(`/${organization}/funnels`, { params: params })
+  },
+  
+  async store(organization, funnel) {
+    return await HttpClient.post(`/${organization}/funnels`, funnel)
+  },
+  
+  async show(organization, id) {
+    return await HttpClient.get(`/${organization}/funnels/${id}`)
+  },
+  
+  async update(organization, id, funnel) {
+    return await HttpClient.put(`/${organization}/funnels/${id}`, funnel)
+  },
+  
+  async destroy(organization, id) {
+    return await HttpClient.delete(`/${organization}/funnels/${id}`)
+  },
 
-    /**
-     * Replicate a funnel
-     *
-     * @param Object funnel [Properties to create funnel from]
-     * @return promise
-     */
-    async replicate(organization, funnelId) {
-        return await HttpClient.post(`/${organization}/funnels-replicate/${funnelId}`)
-    },
+  async replicate(organization, funnelId) {
+    return await HttpClient.post(`/${organization}/funnels-replicate/${funnelId}`)
+  },
 
-    /**
-     * Store a funnel step
-     *
-     * @param Object funnel [Properties to create funnel from]
-     * @return promise
-     */
-    async storeStep(organization, id, step) {
-        return await HttpClient.post(`/${organization}/funnels/${id}/steps`, step)
-    },
+  async storeStep(organization, id, step) {
+    return await HttpClient.post(`/${organization}/funnels/${id}/steps`, step)
+  },
 
-    /**
-     * Update a step
-     *
-     * @param Integer id [Id of the funnel you want to update]
-     * @param Object  funnel [Properties to update funnel with]
-     * @return promise
-     */
-    async updateStep(organization, funnelId, stepId, step) {
-        return await HttpClient.put(`/${organization}/funnels/${funnelId}/steps/${stepId}`, step)
-    },
+  async updateStep(organization, funnelId, stepId, step) {
+    return await HttpClient.put(`/${organization}/funnels/${funnelId}/steps/${stepId}`, step)
+  },
 
-    /**
-     * Destroy a funnel step
-     *
-     * @param Integer id [Id of the file you want to destroy]
-     * @return promise
-     */
-    async destroyStep(organization, funnelId, stepId) {
-        return await HttpClient.delete(`/${organization}/funnels/${funnelId}/steps/${stepId}`)
-    },
+  async destroyStep(organization, funnelId, stepId) {
+    return await HttpClient.delete(`/${organization}/funnels/${funnelId}/steps/${stepId}`)
+  },
 
-    /**
-     * Generate funnels
-     *
-     * @param Object params [Key/value params to query by]
-     * @return promise
-     */
-    async generateFunnels(organization, connection, params) {
-        // TODO: Instead of params object, let's use the param variable directly
-        return await HttpClient.get(`/${organization}/generate/funnels/${connection}`, { params: params })
-    },
+  async generateFunnels(organization, connection, params) {
+    return await HttpClient.get(`/${organization}/generate/funnels/${connection}`, { params: params })
+  },
 
-    /**
-     * Generate funnel steps
-     *
-     * @param Object params [Key/value params to query by]
-     * @return promise
-     */
-    async generateSteps(organization, funnel, params) {
-        // TODO: Instead of params object, let's use the param variable directly
-        return await HttpClient.get(`/${organization}/generate/steps/${funnel}`, { params: params })
-    },
+  async generateSteps(organization, funnel, params) {
+    return await HttpClient.get(`/${organization}/generate/steps/${funnel}`, { params: params })
+  },
 
-    /**
-     * Generate funnel outbound links message
-     *
-     * @param Object params [Key/value params to query by]
-     * @return promise
-     */
-    async generateOutboundLinksMessage(organization, funnel) {
-        // TODO: Instead of params object, let's use the param variable directly
-        return await HttpClient.get(`/${organization}/generate/outbound-links/${funnel}`)
-    },
+  async generateOutboundLinksMessage(organization, funnel) {
+    return await HttpClient.get(`/${organization}/generate/outbound-links/${funnel}`)
+  },
 
-    /**
-     * Search all funnels (including public)
-     *
-     * @param Object params [Key/value params to query by]
-     * @param String params.term [Search term to find funnels by]
-     * @return promise
-     */
-    async search(organization, params) {
-        return await HttpClient.get(`/${organization}/funnels-search`, { params: params })
-    },
+  async search(organization, params) {
+    return await HttpClient.get(`/${organization}/funnels-search`, { params: params })
+  },
 }
 
 export { funnelApi }

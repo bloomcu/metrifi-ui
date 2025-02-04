@@ -16,6 +16,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
@@ -32,5 +33,4 @@ function update() {
       console.error('Failed to update organization:', error.response?.data || error);
     });
 }
-
 </script>

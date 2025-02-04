@@ -221,7 +221,7 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4">
+      <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4 mb-32">
         <div class="ml-auto mb-2 z-0">
           <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary">
             {{ funnelStore.funnel.projections.length ? 'Show projection' : 'Create projection' }}
@@ -237,6 +237,7 @@
         <Chart 
           :funnel="funnelStore.funnel"
           :conversion_value="funnelStore.funnel.conversion_value"
+          :return_on_assets="organizationStore.organization.return_on_assets"
           :startDate="selectedDateRange.startDate" 
           :endDate="selectedDateRange.endDate" 
           :zoom="funnelStore.funnel.zoom"
@@ -244,8 +245,6 @@
           :enableCursorPointer="true"
           @stepSelected="selectStep"
         />
-
-        <!-- <ChartLine/> -->
 
         <!-- Automation running (TODO: Make a notification component for these) -->
         <div v-if="isGeneratingSteps" class="rounded-md bg-violet-50 p-4 mb-4">

@@ -1,5 +1,32 @@
 <template>
     <div>
+      <!-- 
+        Potential assets 
+        -->
+        <!-- Assets not configured on the funnel -->
+        <p v-if="!analysis.subject_funnel_conversion_value" class="mb-4">
+            <span class="font-semibold">Potential assets: </span>
+            <span>Assets not configured at time of last analysis</span>
+        </p>
+
+        <!-- There's an opportunity in your steps -->
+        <p v-else-if="analysis.bofi_performance < 0" class="mb-4">
+            <span class="font-semibold">Potential assets: </span>
+            <span>{{ Number(analysis.bofi_asset_change).toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }} every {{ analysis.period }} if you get Step {{ analysis.bofi_step_index + 1 }} on par with the comparisons ({{ Number(analysis.bofi_median_of_comparisons).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)</span>
+        </p>
+
+        <!-- Funnel is better on all steps, so the asset change would be negative, thus not applicable -->
+        <p v-else-if="analysis.bofi_performance > 0" class="mb-4">
+            <span class="font-semibold">Potential assets: </span>
+            <span>Since all your funnel steps are better than the comparisons, we can't calculate potential assets.</span>
+        </p>
+
+        <!-- There is not an opportunity in your steps -->
+        <p v-else-if="analysis.bofi_performance == 0" class="mb-4">
+            <span class="font-semibold">Potential assets: </span>
+            <span>Since all your funnel steps are on par with the comparisons, we can't calculate potential assets.</span>
+        </p>
+        
         <!-- 
         Step opportunity 
         -->
@@ -49,30 +76,12 @@
         </p>
 
         <!-- 
-        Potential assets 
+        Profit per user 
         -->
-        <!-- Assets not configured on the funnel -->
-        <p v-if="!analysis.subject_funnel_conversion_value" class="mb-4">
-            <span class="font-semibold">Potential assets: </span>
-            <span>Assets not configured at time of last analysis</span>
-        </p>
-
-        <!-- There's an opportunity in your steps -->
-        <p v-else-if="analysis.bofi_performance < 0" class="mb-4">
-            <span class="font-semibold">Potential assets: </span>
-            <span>{{ Number(analysis.bofi_asset_change).toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) }} every {{ analysis.period }} if you get Step {{ analysis.bofi_step_index + 1 }} on par with the comparisons ({{ Number(analysis.bofi_median_of_comparisons).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}%)</span>
-        </p>
-
-        <!-- Funnel is better on all steps, so the asset change would be negative, thus not applicable -->
-        <p v-else-if="analysis.bofi_performance > 0" class="mb-4">
-            <span class="font-semibold">Potential assets: </span>
-            <span>Since all your funnel steps are better than the comparisons, we can't calculate potential assets.</span>
-        </p>
-
-        <!-- There is not an opportunity in your steps -->
-        <p v-else-if="analysis.bofi_performance == 0" class="mb-4">
-            <span class="font-semibold">Potential assets: </span>
-            <span>Since all your funnel steps are on par with the comparisons, we can't calculate potential assets.</span>
+        <p class="mb-3">
+            <span class="font-semibold">Profit per user:</span>
+            {{ Number(analysis.subject_funnel_profit_per_user).toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
+            <!-- {{ analysis.subject_funnel_profit_per_user }} -->
         </p>
     </div>
 </template>

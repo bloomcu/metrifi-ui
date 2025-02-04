@@ -116,6 +116,14 @@
           <div class="hidden sm:block">
             <nav class="-mb-px flex justify-between">
               <div class="flex space-x-4">
+                <button @click="setActiveSort('bofi_asset_change')" :class="[activeSort == 'bofi_asset_change' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                  Potential assets
+                  <span class="inline-flex ml-2 rounded bg-white border">
+                    <ChevronUpIcon v-if="activeSort == 'bofi_asset_change'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                    <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+                  </span>
+                </button>
+
                 <button @click="setActiveSort('bofi_performance')" :class="[activeSort == 'bofi_performance' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
                   Step opportunity
                   <span class="inline-flex ml-2 rounded bg-white border">
@@ -140,10 +148,10 @@
                   </span>
                 </button>
 
-                <button @click="setActiveSort('bofi_asset_change')" :class="[activeSort == 'bofi_asset_change' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
-                  Potential assets
+                <button @click="setActiveSort('subject_funnel_profit_per_user')" :class="[activeSort == 'subject_funnel_profit_per_user' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
+                  Profit per user
                   <span class="inline-flex ml-2 rounded bg-white border">
-                    <ChevronUpIcon v-if="activeSort == 'bofi_asset_change'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                    <ChevronUpIcon v-if="activeSort == 'subject_funnel_profit_per_user'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                   </span>
                 </button>
@@ -201,7 +209,7 @@
               <h3 class="text-xl font-medium text-gray-900">{{ dashboard.name }}</h3>
             </div>
             
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
               <!-- Users count -->
               <!-- <span v-if="dashboard.latest_analysis && dashboard.latest_analysis.subject_funnel_users" class="text-sm text-gray-500 border-r border-gray-300 pr-3">{{ dashboard.latest_analysis.subject_funnel_users }} users</span> -->
 
@@ -210,6 +218,13 @@
 
               <!-- Dashboard updated at -->
               <span class="text-sm text-gray-500 pr-3">Modified {{ moment(dashboard.updated_at).fromNow() }}</span>
+
+              <!-- Copy -->
+              <button @click.stop="replicateDashboard(dashboard.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+                </svg>
+              </button>
 
               <!-- Delete -->
               <button @click.stop="destroyDashboard(dashboard.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
@@ -311,8 +326,8 @@ const dashboards = ref()
 const isLoading = ref(false)
 
 const activeAnalysisType = ref('median_analysis')
-const activeSort = ref('bofi_performance')
-const activeSortDirection = ref('asc')
+const activeSort = ref('bofi_asset_change')
+const activeSortDirection = ref('desc')
 
 // Privacy toggle
 const privacySettings = [
@@ -338,16 +353,21 @@ const sortedDashboards = computed(() => {
   // console.log('Active sort: ', activeSort.value)
 
   // sort by analysis numerical columns
-  if (['subject_funnel_users', 'subject_funnel_performance', 'bofi_performance', 'bofi_asset_change'].includes(activeSort.value)) {
+  if (['bofi_asset_change', 'bofi_performance', 'subject_funnel_performance', 'subject_funnel_users', 'subject_funnel_profit_per_user'].includes(activeSort.value)) {
     return [...dashboards.value].sort(function (a, b) {
-      // console.log('A', a['median_analysis'])
-      // console.log('B', b['median_analysis'])
+      if (a.issue || b.issue) {
+        if (a.issue && !b.issue) {
+          return 1; // Place a after b
+        } else if (!a.issue && b.issue) {
+          return -1; // Place b after a
+        } else {
+          return 0; // Both have issues, maintain their order
+        }
+      }
 
       if (!a[activeAnalysisType.value] || !b[activeAnalysisType.value]) {
         return 0
       }
-
-      // console.log(parseInt(a['median_analysis'][activeSort.value], 10))
 
       var x = parseInt(a[activeAnalysisType.value][activeSort.value], 10)
       var y = parseInt(b[activeAnalysisType.value][activeSort.value], 10)
@@ -395,7 +415,7 @@ function setActiveSort(sort) {
   }
 
   // Default Users and Potential assets to desc
-  if (['subject_funnel_users', 'bofi_asset_change'].includes(sort)) {
+  if (['subject_funnel_users', 'bofi_asset_change', 'subject_funnel_profit_per_user'].includes(sort)) {
     activeSortDirection.value = 'desc'
     activeSort.value = sort
     return
@@ -433,6 +453,13 @@ function storeNewDashboard() {
     let dashboard = response.data.data
     router.push({ name: 'dashboard', params: { dashboard: dashboard.id } })
   })
+}
+
+function replicateDashboard(dashbaordId) {
+  dashboardApi.replicate(route.params.organization, dashbaordId)
+    .then(response => {
+      dashboards.value.unshift(response.data.data)
+    })
 }
 
 function destroyDashboard(dashboardId) {
