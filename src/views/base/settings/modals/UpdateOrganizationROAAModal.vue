@@ -15,14 +15,19 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
 const errorStore = useErrorStore()
 const organizationStore = useOrganizationStore()
+const inputValue = ref('');
 
 function update() {
+  // Update the org in store
+  let value = inputValue.value;
+  organizationStore.organization.return_on_assets = value.toFixed(2);
+
   organizationStore.update()
     .then(() => {
       organizationStore.toggleUpdateROAAModal();
@@ -33,17 +38,12 @@ function update() {
     });
 }
 
-const inputValue = ref('');
-
 const computedReturnOnAssets = computed({
   get: () => {
     // Show raw input if available, otherwise show stored value
     if (inputValue.value !== '') {
       return inputValue.value;
     }
-
-    const value = organizationStore.organization.return_on_assets;
-    return value !== null && value !== undefined ? value.toString() : '0';
   },
 
   set: (value) => {
@@ -61,18 +61,20 @@ const computedReturnOnAssets = computed({
 
     // Limit between 0 and 100
     if (isNaN(numericValue)) {
-      numericValue = 0;
+      numericValue = '';
     } else if (numericValue < 0) {
-      numericValue = 0;
+      numericValue = '';
     } else if (numericValue > 100) {
       numericValue = 100;
     }
 
-    // Update the store immediately
-    organizationStore.organization.return_on_assets = numericValue;
-
     // Store raw user input
-    inputValue.value = value;
+    inputValue.value = numericValue;
   }
+});
+
+onMounted(() => {
+  // Reset the input value when the modal is opened
+  inputValue.value = organizationStore.organization.return_on_assets;
 });
 </script>
