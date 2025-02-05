@@ -70,6 +70,15 @@ export const useOrganizationStore = defineStore('organizationStore', {
     //     }
     //   },
 
+    async analyzeOrganizationDashboards(organization_slug) {
+      this.isLoading = true
+      
+      await OrganizationApi.analyzeOrganizationDashboards(organization_slug)
+        .then(response => {
+          this.isLoading = false
+        })
+    },
+
       toggleCreateModal() {
         this.createModalOpen = !this.createModalOpen
       },

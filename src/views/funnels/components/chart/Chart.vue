@@ -104,7 +104,7 @@
         </div>
 
         <!-- Metric Row -->
-        <div class="table-row text-[0.95em]">
+        <div class="table-row text-[0.88em]">
           <template v-for="(step, index) in funnel.report.steps" :key="step.id">
             <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
               <span class="font-semibold">{{ Number(step.users).toFixed() }}</span> users
@@ -128,7 +128,7 @@
         </div>
 
         <!-- Conversion Rate Row -->
-        <div class="table-row text-[0.95em]">
+        <div class="table-row text-[0.88em]">
           <template v-for="(step, index) in funnel.report.steps" :key="step.id">
             <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
               <template v-if="index !== 0">
@@ -156,7 +156,7 @@
         </div>
 
         <!-- Assets Per User Row -->
-        <div class="table-row text-[0.95em]">
+        <div class="table-row text-[0.88em]">
           <template v-for="(step, index) in funnel.report.steps" :key="step.id">
             <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700 border-b border-gray-200">
               <AppTooltipWrapper>
@@ -176,7 +176,7 @@
         </div>
 
         <!-- Profit Per User Row -->
-        <div class="table-row text-[0.95em]">
+        <div class="table-row text-[0.88em]">
           <template v-for="(step, index) in funnel.report.steps" :key="step.id">
             <div class="table-cell align-middle px-1.5 py-1.5 text-gray-700">
               <AppTooltipWrapper>
