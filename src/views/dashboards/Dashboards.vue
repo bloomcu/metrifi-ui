@@ -58,9 +58,9 @@
         <div class="mb-5 md:flex md:items-center md:justify-between">
           <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Dashboards</h1>
           <div class="flex gap-3 md:absolute md:right-0">
-            <!-- <AppButton variant="tertiary">
+            <AppButton @click="analyzeAllDashboards()" :loading="isAnalyzingDashboards" variant="tertiary">
               Analyze all dashboards
-            </AppButton> -->
+            </AppButton>
             <!-- <AppButton @click="sendWeeklyAnalysisEmail()" variant="tertiary">
               {{ organizationStore.emailButtonLabel }}
             </AppButton> -->
@@ -324,6 +324,7 @@ const { connectToGoogle } = useConnections()
 const organizationStore = useOrganizationStore()
 const dashboards = ref()
 const isLoading = ref(false)
+const isAnalyzingDashboards = ref(false)
 
 const activeAnalysisType = ref('median_analysis')
 const activeSort = ref('bofi_asset_change')
@@ -434,8 +435,10 @@ function loadDashboards() {
   isLoading.value = true
 
   dashboardApi.index(route.params.organization).then(response => {
-    isLoading.value = false
-    dashboards.value = response.data.data
+    setTimeout(() => {
+      dashboards.value = response.data.data
+      isLoading.value = false
+    }, 400)
   })
 }
 
@@ -465,6 +468,17 @@ function replicateDashboard(dashbaordId) {
 function destroyDashboard(dashboardId) {
   dashboards.value = dashboards.value.filter(dashboard => dashboard.id !== dashboardId)
   dashboardApi.destroy(route.params.organization, dashboardId)
+}
+
+function analyzeAllDashboards() {
+  isAnalyzingDashboards.value = true
+  
+  organizationStore.analyzeOrganizationDashboards(organizationStore.organization.slug).then(() => {
+    setTimeout(() => {
+      loadDashboards()
+      isAnalyzingDashboards.value = false
+    }, 2000)
+  })
 }
 
 function handleDragEvent(e) {
