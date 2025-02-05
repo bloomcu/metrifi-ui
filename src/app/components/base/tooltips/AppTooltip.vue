@@ -1,7 +1,7 @@
 <template>
   <div 
     :class="[variants[variant], alignments[alignment]]" 
-    class="pointer-events-none absolute w-max rounded px-2 py-1 text-sm font-medium opacity-0 shadow transition-opacity group-hover/tooltip:opacity-100 z-[999]"
+    class="pointer-events-none absolute w-max rounded px-2 py-1 text-sm font-medium invisible shadow transition-opacity group-hover/tooltip:visible z-[999]"
   >
     <div v-html="text"></div>
   </div>
