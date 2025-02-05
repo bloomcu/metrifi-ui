@@ -4,7 +4,6 @@
     @closed="isOpen = false" 
     :open="isOpen"
   >
-    <!-- <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Edit</h3> -->
     <div class="p-6">
       <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-6 sm:truncate sm:text-2xl">Edit funnel</h3>
 
@@ -17,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed, onMounted, watch, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
@@ -25,14 +24,14 @@ import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 const route = useRoute()
 const loading = ref(false)
 const funnelStore = useFunnelStore()
-// const funnel = inject('funnel')
 const isUpdating = inject('isUpdating')
 const isOpen = inject('isEditConversionValueModalOpen')
+const inputValue = ref('')
 
 const computedValue = computed({
   get: () => {
     // Convert to dollars
-    let value = funnelStore.funnel.conversion_value / 100
+    let value = inputValue.value / 100
 
     // Format to dollars
     return value.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
@@ -58,20 +57,32 @@ const computedValue = computed({
       funnelStore.funnel.conversion_value = 0;
     }
 
-    // Convert to cents
-    funnelStore.funnel.conversion_value = value * 100;
+    inputValue.value = value * 100
   }
 })
 
 function updateFunnel() {
-  console.log('Updating funnel...')
   isUpdating.value = true
+  funnelStore.funnel.conversion_value = inputValue.value
 
   funnelApi.update(route.params.organization, route.params.funnel, {
-    conversion_value: funnelStore.funnel.conversion_value,
+    conversion_value: inputValue.value,
   }).then(() => {
     isOpen.value = false
+    funnelStore.addFunnelJob(funnelStore.funnel) // Refresh the funnel
     setTimeout(() => isUpdating.value = false, 500);
   })
 }
+
+// watch isOpen and reset the input value when modal is closed
+watch(isOpen, (open) => {
+  if (open === false) {
+    inputValue.value = funnelStore.funnel.conversion_value
+  }
+})
+
+onMounted(() => {
+  // Set the input value when model is opened
+  inputValue.value = funnelStore.funnel.conversion_value
+});
 </script>
