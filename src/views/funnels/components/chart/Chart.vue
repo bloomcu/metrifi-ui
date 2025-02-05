@@ -274,6 +274,8 @@ const calculateProjectionUsers = () => {
 const calculateAssetsPerUser = (users, assets, format) => {
   let assetsPerUser = assets / users
 
+  if (isNaN(assetsPerUser)) assetsPerUser = 0
+
   if (format) return assetsPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2})
   return assetsPerUser
 }
@@ -282,6 +284,8 @@ const calculateAssetsPerUser = (users, assets, format) => {
 const calculateProfitPerUser = (users, assets, format) => {
   let assetsPerUser = calculateAssetsPerUser(users, assets, false)
   let profitPerUser = assetsPerUser * (props.return_on_assets / 100)
+
+  if (isNaN(profitPerUser)) profitPerUser = 0
 
   if (format) return profitPerUser.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2})
   return profitPerUser
