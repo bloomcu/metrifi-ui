@@ -45,7 +45,7 @@
         </AppButton> -->
 
         <!-- Run analysis -->
-        <AppButton @click="runAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
+        <AppButton @click="runAnalysis()" :loading="dashboard.analysis_in_progress" variant="tertiary" size="base" class="flex items-center gap-2">
           Analyze dashboard
         </AppButton>
         
