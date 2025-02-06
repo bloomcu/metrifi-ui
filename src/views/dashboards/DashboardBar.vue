@@ -150,9 +150,13 @@
           <div v-if="isShowingReference" v-html="dashboard[activeAnalysisType].reference" class="prose prose-h2:mb-2 prose-h3:mb-1.5 prose-h3:underline prose-p:my-1 text-sm px-4 py-2 bg-gray-50 border rounded-lg mb-3"></div>
         </div>
 
-        <div class="divide-x divide-gray-300 border-t pt-4 text-sm text-gray-400">
+        <div class="flex divide-x divide-gray-300 border-t pt-4 text-sm text-gray-400">
           <span class="pr-2">Analysis created {{ moment(dashboard[activeAnalysisType].created_at).fromNow() }}</span> 
-          <span class="pl-2">28 day period {{ moment(dashboard[activeAnalysisType].start_date).format('MMM DD, Y') }} - {{ moment(dashboard[activeAnalysisType].end_date).format('MMM DD, Y') }}</span>
+          <span class="px-2">28 day period {{ moment(dashboard[activeAnalysisType].start_date).format('MMM DD, Y') }} - {{ moment(dashboard[activeAnalysisType].end_date).format('MMM DD, Y') }}</span>
+          <AppTooltipWrapper>
+            <span class="pl-2 underline decoration-dashed">Seeing variances?</span>
+            <AppTooltip class="w-[250px]" text="It's common to see minor discrepancies between the analysis and funnel data because Google Analytics can take 24-48 hours to process all user events." />
+          </AppTooltipWrapper>
         </div>
       </div>
     </div>
@@ -249,6 +253,8 @@ import DatePicker from '@/app/components/datepicker/DatePicker.vue'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
+import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
+import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
 
 const router = useRouter()
 const route = useRoute()
