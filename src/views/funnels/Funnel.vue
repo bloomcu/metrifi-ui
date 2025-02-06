@@ -221,7 +221,7 @@
       </aside>
 
       <!-- Right: Chart -->
-      <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4 mb-32">
+      <div class="flex flex-col mx-auto w-full max-w-8xl overflow-hidden px-10 py-4 pb-32">
         <div class="ml-auto mb-2 z-0">
           <AppButton v-if="!projection.length" @click="showProjection()" variant="secondary">
             {{ funnelStore.funnel.projections.length ? 'Show projection' : 'Create projection' }}
@@ -325,13 +325,12 @@ import { ref, computed, onMounted, watch, provide } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useConnections } from '@/domain/connections/composables/useConnections'
-// import { useFunnels } from '@/domain/funnels/composables/useFunnels'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
 import { useGoogleAnalyticsReports } from '@/domain/services/google-analytics/composables/useGoogleAnalyticsReports'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
-import { Bars2Icon, QueueListIcon, Cog6ToothIcon, TrashIcon, CursorArrowRippleIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
+import { Bars2Icon, QueueListIcon, TrashIcon, CursorArrowRippleIcon } from '@heroicons/vue/24/outline'
 import { ArrowLeftIcon, PlusIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import AppTooltip from '@/app/components/base/tooltips/AppTooltip.vue'
 import AppTooltipWrapper from '@/app/components/base/tooltips/AppTooltipWrapper.vue'
@@ -344,7 +343,6 @@ import Zoom from '@/views/funnels/components/zoom/Zoom.vue'
 import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
-// import AGChart from '@/views/funnels/components/chart-libraries/AGChart.vue'
 
 const route = useRoute()
 const authStore = useAuthStore()
@@ -363,12 +361,10 @@ const isEditConversionValueModalOpen = ref(false)
 const isGenerateStepsModalOpen = ref(false)
 
 const projection = ref([])
-// const showProjection = ref(false)
 
 const activeStepId = ref()
 const activeStep = computed(() => funnelStore.funnel.steps.find(step => step.id === activeStepId.value))
 
-// provide('funnel', funnel)
 provide('projection', projection)
 provide('isUpdating', isUpdating)
 provide('isGeneratingSteps', isGeneratingSteps)
@@ -379,7 +375,6 @@ provide('isGenerateStepsModalOpen', isGenerateStepsModalOpen)
 
 function showProjection() {
   // console.log('Showing projection...')
-
   if (funnelStore.funnel.projections.length) {
     projection.value = funnelStore.funnel.projections[0]
     return
@@ -396,14 +391,12 @@ function showProjection() {
 
 function saveProjection() {
   // console.log('Saving projection...')
-
   funnelStore.funnel.projections.push(projection.value)
   updateFunnel()
 }
 
 function deleteProjection() {
   // console.log('Deleting projection...')
-
   funnelStore.funnel.projections = []
   projection.value = []
   updateFunnel()
@@ -512,7 +505,6 @@ function addMetric() {
 
 function deleteMetric(index) {
   // console.log('Deleting metric...')
-
   activeStep.value.metrics.splice(index, 1)
   updateStepMetrics(activeStep.value)
   funnelStore.addFunnelJob(funnelStore.funnel)

@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 
@@ -73,8 +73,15 @@ const computedReturnOnAssets = computed({
   }
 });
 
+// watch modal open state and reset the input value when modal is closed
+watch(() => organizationStore.updateROAAModalOpen, (open) => {
+  if (open === false) {
+    inputValue.value = organizationStore.organization.return_on_assets
+  }
+})
+
 onMounted(() => {
   // Reset the input value when the modal is opened
-  inputValue.value = organizationStore.organization.return_on_assets;
+  inputValue.value = organizationStore.organization.return_on_assets
 });
 </script>
