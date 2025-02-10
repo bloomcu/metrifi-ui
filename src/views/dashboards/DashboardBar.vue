@@ -45,7 +45,7 @@
         </AppButton> -->
 
         <!-- Run analysis -->
-        <AppButton @click="runAnalysis()" :loading="analysisStore.isLoading" variant="tertiary" size="base" class="flex items-center gap-2">
+        <AppButton @click="runAnalysis()" :loading="dashboard.analysis_in_progress" variant="tertiary" size="base" class="flex items-center gap-2">
           Analyze dashboard
         </AppButton>
         
@@ -155,7 +155,7 @@
           <span class="px-2">28 day period {{ moment(dashboard[activeAnalysisType].start_date).format('MMM DD, Y') }} - {{ moment(dashboard[activeAnalysisType].end_date).format('MMM DD, Y') }}</span>
           <AppTooltipWrapper>
             <span class="pl-2 underline decoration-dashed">Seeing variances?</span>
-            <AppTooltip class="w-[250px]" text="It's common to see minor discrepancies between the analysis and funnel data because Google Analytics can take 24-48 hours to process all user events." />
+            <AppTooltip style="width: 200px;" text="It's common to see minor discrepancies between the analysis and funnel data because Google Analytics can take 24-48 hours to process all user events." />
           </AppTooltipWrapper>
         </div>
       </div>
