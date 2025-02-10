@@ -29,7 +29,7 @@
 
                           <AppTooltipWrapper v-if="column.tooltip" alignment="left-bottom">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 cursor-help text-gray-400"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" /></svg>
-                            <AppTooltip class="max-w-[350px]" :text="column.tooltip"/>
+                            <AppTooltip style="width: 350px;" :text="column.tooltip"/>
                           </AppTooltipWrapper>
 
                           <span v-if="column.name === 'totalUsers'">({{ reports[selectedTab.metric].totals[0].metricValues[0].value }})</span>
