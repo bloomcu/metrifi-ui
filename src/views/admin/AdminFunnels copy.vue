@@ -20,12 +20,119 @@
       </div>
     </template>
 
-    <!-- <pre>Meta: {{ meta }}</pre>
-    <pre>Filters: {{ filters }}</pre> -->
-
     <!-- Filters -->
-    <!-- <FunnelFilters :meta="meta" :filters="filters" @updateFilterParams="updateFilterParams" @clearFilters="clearFilters"/> -->
-    <FunnelFilters v-model="filters" :total="meta.total" @update:modelValue="buildParams()" />
+    <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
+        <div>{{ meta.total }} funnels</div>
+
+      <div class="flex items-center gap-2">
+        <AppButton v-if="hasActiveFilters" @click="clearFilters" size="sm" variant="simple" class="text-sm bg-gray-100 hover:bg-violet-100 text-violet-500">
+            Clear filters
+        </AppButton>
+        
+        <!-- Filter: name -->
+        <AppDropdown class="text-sm">
+          <template #title>
+            <div v-if="filters.name">
+                <span class="font-medium text-left">Name: </span>
+                <span class="text-gray-500 text-left">{{ filters.name }}</span>
+                <button @click.stop="filters.name = ''; updateFilters()" class="ml-2 text-md text-gray-400 hover:text-gray-600">&times;</button>
+              </div>
+              <span v-else class="text-gray-500 text-left">Name</span>
+          </template>
+          <input v-model="filters.name" @input="updateFilters" placeholder="Funnel name" class="w-full p-2 border-none focus:ring-0">
+        </AppDropdown>
+
+        <!-- Filter: Conversion rate -->
+        <AppDropdown class="text-sm">
+          <template #title>
+            <div v-if="filters.conversion_rate">
+                <span class="font-medium text-left">Conversion rate: </span>
+                <span class="text-gray-500 text-left"> >= {{ filters.conversion_rate }}%</span>
+                <button @click.stop="filters.conversion_rate = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
+              </div>
+              <span v-else class="text-gray-500 text-left">Conversion rate</span>
+          </template>
+          <input v-model="filters.conversion_rate" @input="updateFilters" placeholder=">=" class="w-full p-2 border-none focus:ring-0">
+        </AppDropdown>
+
+        <!-- Filter: Assets -->
+        <AppDropdown class="text-sm">
+          <template #title>
+            <div v-if="filters.assets">
+                <span class="font-medium text-left">Assets: </span>
+                <span class="text-gray-500 text-left"> >= {{ computedAssets }}</span>
+                <button @click.stop="filters.assets = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
+              </div>
+              <span v-else class="text-gray-500 text-left">Assets</span>
+          </template>
+          <input v-model="computedAssets" placeholder=">=" :maxlength="18" class="w-full p-2 border-none focus:ring-0"/>
+        </AppDropdown>
+
+        <!-- Filter: Users -->
+        <AppDropdown class="text-sm">
+          <template #title>
+            <div v-if="filters.users">
+                <span class="font-medium text-left">Users: </span>
+                <span class="text-gray-500 text-left"> >= {{ filters.users }}</span>
+                <button @click.stop="filters.users = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
+              </div>
+              <span v-else class="text-gray-500 text-left">Users</span>
+          </template>
+          <input v-model="filters.users" @input="updateFilters" placeholder=">=" class="w-full p-2 border-none focus:ring-0">
+        </AppDropdown>
+
+        <!-- Filter: Steps -->
+        <AppDropdown class="text-sm">
+          <template #title>
+            <div v-if="filters.steps_count">
+                <span class="font-medium text-left">Steps: </span>
+                <span class="text-gray-500 text-left"> >= {{ filters.steps_count }}</span>
+                <button @click.stop="filters.steps_count = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
+              </div>
+              <span v-else class="text-gray-500 text-left">Steps</span>
+          </template>
+          <input v-model="filters.steps_count" @input="updateFilters" placeholder=">=" class="w-full p-2 border-none focus:ring-0">
+        </AppDropdown>
+
+        <!-- Filter: Privacy -->
+        <AppDropdown class="text-sm">
+          <template #title>
+            <div v-if="filters.privacy">
+                <span class="font-medium text-left">Sharing: </span>
+                <span class="text-gray-500 text-left">{{ filters.privacy == '0' ? 'Anonymous' : 'Private' }}</span>
+                <button @click.stop="filters.privacy = ''; updateFilters()" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
+              </div>
+              <span v-else class="text-gray-500 text-left">Sharing</span>
+          </template>
+
+          <div class="p-3 space-y-2">
+            <!-- Anonymous Radio Button -->
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input type="radio" value="" v-model="filters.privacy" class="hidden peer"/>
+              <div class="w-4 h-4 rounded-full border border-gray-400 peer-checked:border-violet-500 peer-checked:bg-violet-500"></div>
+              <span class="text-gray-700">Any</span>
+            </label>
+
+            <!-- Anonymous Radio Button -->
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input type="radio" value="0" v-model="filters.privacy" class="hidden peer"/>
+              <div class="w-4 h-4 rounded-full border border-gray-400 peer-checked:border-violet-500 peer-checked:bg-violet-500"></div>
+              <span class="text-gray-700">Anonymous</span>
+            </label>
+
+            <!-- Private Radio Button -->
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input type="radio" value="1" v-model="filters.privacy" class="hidden peer"/>
+              <div class="w-4 h-4 rounded-full border border-gray-400 peer-checked:border-violet-500 peer-checked:bg-violet-500"></div>
+              <span class="text-gray-700">Private</span>
+            </label>
+          </div>
+        </AppDropdown>
+
+        <!-- Filter: Category -->
+        <CategoryPicker v-model="category" @update:modelValue="setCategoryFilter" class="text-sm"/>
+      </div>
+    </div>
 
     <!-- Funnels -->
     <table class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-4 sm:mx-0 sm:rounded-lg">
@@ -247,7 +354,7 @@
 
 <script setup>
 import moment from "moment"
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useInfiniteScroll } from '@/app/composables/base/useInfiniteScroll'
@@ -255,11 +362,14 @@ import { adminFunnelApi } from '@/domain/admin/api/adminFunnelApi.js'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
 import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
 import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
+import AppDropdown from '@/app/components/dropdown/AppDropdown.vue'
+import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 import DatePickerSimple from '@/app/components/datepicker/DatePickerSimple.vue'
-import FunnelFilters from '@/views/funnels/components/filters/FunnelFilters.vue'
+
+const { selectedDateRange } = useDatePicker()
 
 const router = useRouter()
-const { selectedDateRange } = useDatePicker()
+
 const { 
     loadMoreElement, 
     items: funnels, 
@@ -270,7 +380,9 @@ const {
 
 const activeSort = ref('conversion_rate')
 const activeSortDirection = ref('desc')
-const filters = ref({
+const category = ref(null)
+
+const filters = reactive({
   name: '',
   assets: '',
   conversion_rate: '',
@@ -280,14 +392,70 @@ const filters = ref({
   category: '',
 })
 
-// Utility function
-function debounce(func, wait) {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
+const computedAssets = computed({
+  get: () => {
+    // Convert to dollars
+    let value = filters.assets
+
+    // Format to dollars
+    return value.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0})
+  },
+  set: (value) => {
+    // Remove any non-digit character:
+    value = value.replace(/\D+/g, '')
+    
+    // Handle empty string non
+    if (value === '') {
+      value = 0
+    }
+    // Convert to integer
+    value = parseInt(value);
+
+    // Limit to max 1 trillion dollars ($1,000,000,000,000
+    if (value > 1000000000000) {
+      value = 1000000000000 // in cents
+    }
+
+    // Handle edge cases
+    if (isNaN(value)) {
+      filters.assets = 0;
+    }
+
+    // Convert to cents
+    filters.assets = value;
+  }
+})
+
+function setCategoryFilter(category) {
+  if (category === null) {
+    filters.category = ''
+    return
+  }
+
+  filters.category = category.title
 }
+
+function updateFilters() {
+  updateQueryParams(filters)
+}
+
+function clearFilters() {
+  filters.name = '';
+  filters.assets = '';
+  filters.conversion_rate = '';
+  filters.users = '';
+  filters.steps_count = '';
+  filters.privacy = '';
+  filters.category = '';
+
+  category.value = null;
+
+  updateQueryParams(filters); // Ensure the filters are applied immediately
+}
+
+const hasActiveFilters = computed(() => {
+  return Object.values(filters).some((filter) => filter !== null && filter !== '');
+});
 
 function setActiveSort(sort) {
     if (sort === 'category' || sort === 'privacy') {
@@ -301,38 +469,59 @@ function setActiveSort(sort) {
         }
     }
     activeSort.value = sort;
-    buildParams();
+    updateQueryParams(filters);
 }
 
-const buildParams = debounce(() => {
-  console.log('Building params')
-  const formattedSort = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+const updateQueryParams = debounce((filters) => {
+  const sortParam = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
 
   const formattedFilters = Object.fromEntries(
-    Object.entries(filters.value)
+    Object.entries(filters)
       .filter(([_, value]) => value !== null && value !== undefined && value !== '') // Avoid empty values
       .map(([key, value]) => [`filter[${key}]`, value])
   );
 
-  const params = {
-    sort: formattedSort,
+  const queryParams = {
+    sort: sortParam,
     period: selectedDateRange.value.key,
     ...formattedFilters,
   };
 
-  updateParams(params);
+  updateParams(queryParams);
 }, 300); // 300ms debounce delay
+
+function snapshotAllFunnels() {
+  isLoading.value = true
+
+  adminFunnelApi.snapshotAll().then(response => {
+    isLoading.value = false
+  })
+}
 
 function showFunnel(funnel) {
   const route = router.resolve({name: 'funnel', params: {funnel: funnel.id, organization: funnel.organization.slug}});
   window.open(route.href, '_blank');
 }
 
-watch(selectedDateRange, () => {
-  buildParams()
+// watch activeSort
+watch(selectedDateRange, (newPeriod) => {
+  updateQueryParams(filters)
+})
+
+// watch filters
+watch(filters, (updatedFilters) => {
+  updateQueryParams(updatedFilters)
 })
 
 onMounted(() => {
-  buildParams()
+  updateQueryParams(filters)
 })
 </script>

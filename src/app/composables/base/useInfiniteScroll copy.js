@@ -1,4 +1,4 @@
-import { ref, onMounted, watch, reactive } from 'vue'
+import { ref, shallowRef, onMounted, watch, reactive } from 'vue'
 
 // Global state
 const items = ref([])
@@ -75,7 +75,6 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
             pagination.last_page = response.data.meta.last_page;
             meta.total = response.data.meta.total;
-            console.log('Total: ', response.data.meta.total);
 
             // Only increment if there's another page to load
             if (pagination.current_page < pagination.last_page) {
