@@ -15,21 +15,10 @@
 
           <div class="flex items-center gap-3 md:absolute md:right-0">
             <DatePickerSimple/>
-            <!-- <AppButton @click="snapshotAllFunnels()">Analyze all funnels</AppButton> -->
           </div>
         </div>
-
-        <!-- Analysis type tabs -->
-        <!-- <nav class="flex justify-between">
-          <div class="flex space-x-6">
-            <button @click="selectedDateRange.key = 'last28Days'" :class="[selectedDateRange.key == 'last28Days' ? 'border-violet-500 text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Last 28 days</button>
-            <button @click="selectedDateRange.key = 'last90Days'" :class="[selectedDateRange.key == 'last90Days' ? 'border-violet-500 text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap border-b-2 pt-3 pb-1 text-lg font-medium']">Last 90 days</button>
-          </div>
-        </nav> -->
       </div>
     </template>
-
-    <!-- <pre>{{ filters }}</pre> -->
 
     <!-- Filters -->
     <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
@@ -49,7 +38,6 @@
                 <button @click.stop="filters.name = ''; updateFilters()" class="ml-2 text-md text-gray-400 hover:text-gray-600">&times;</button>
               </div>
               <span v-else class="text-gray-500 text-left">Name</span>
-              <!-- <ChevronDownIcon class="ml-2 h-4 w-4 text-gray-400" /> -->
           </template>
           <input v-model="filters.name" @input="updateFilters" placeholder="Funnel name" class="w-full p-2 border-none focus:ring-0">
         </AppDropdown>
@@ -228,7 +216,7 @@
           </th>
 
           <!-- Header: Created -->
-          <!-- <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">
+          <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">
             <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
               Created
               <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -236,7 +224,7 @@
                 <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
               </span>
             </button>
-          </th> -->
+          </th>
         </tr>
       </thead>
 
@@ -293,9 +281,9 @@
           </td>
 
           <!-- Created -->
-          <!-- <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
+          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
             {{ moment(funnel.created_at).fromNow() }}
-          </td> -->
+          </td>
         </tr>
 
         <tr ref="loadMoreElement" class="sr-only h-1"></tr>
@@ -371,14 +359,12 @@ import { useRouter } from 'vue-router'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useInfiniteScroll } from '@/app/composables/base/useInfiniteScroll'
 import { adminFunnelApi } from '@/domain/admin/api/adminFunnelApi.js'
-import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
 import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
 import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
 import AppDropdown from '@/app/components/dropdown/AppDropdown.vue'
 import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 import DatePickerSimple from '@/app/components/datepicker/DatePickerSimple.vue'
-import AppToggle from "../../app/components/base/forms/AppToggle.vue"
 
 const { selectedDateRange } = useDatePicker()
 
@@ -392,11 +378,8 @@ const {
     updateParams
 } = useInfiniteScroll(adminFunnelApi.index, {}, { sort: '' })
 
-
 const activeSort = ref('conversion_rate')
 const activeSortDirection = ref('desc')
-
-const name = ref(null)
 const category = ref(null)
 
 const filters = reactive({
@@ -444,17 +427,12 @@ const computedAssets = computed({
 })
 
 function setCategoryFilter(category) {
-    // console.log('Selected category: ', category.title)
-    
-
   if (category === null) {
     filters.category = ''
     return
   }
-//   console.log('Filtering category before: ', filters.category)
-  filters.category = category.title
 
-//   console.log('Filtering category after: ', filters.category)
+  filters.category = category.title
 }
 
 function updateFilters() {
@@ -511,8 +489,6 @@ const updateQueryParams = debounce((filters) => {
       .map(([key, value]) => [`filter[${key}]`, value])
   );
 
-//   console.log('Selected date range: ', selectedDateRange)    
-
   const queryParams = {
     sort: sortParam,
     period: selectedDateRange.value.key,
@@ -537,14 +513,11 @@ function showFunnel(funnel) {
 
 // watch activeSort
 watch(selectedDateRange, (newPeriod) => {
-    // console.log('Date range changed from: ', selectedDateRange.key)
-    // console.log('Date range changed to: ', newPeriod)
   updateQueryParams(filters)
 })
 
 // watch filters
 watch(filters, (updatedFilters) => {
-    // console.log('Filters updated: ', updatedFilters)
   updateQueryParams(updatedFilters)
 })
 
