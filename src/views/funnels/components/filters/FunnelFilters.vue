@@ -8,7 +8,7 @@
       </AppButton>
       
       <!-- Filter: name -->
-      <AppDropdown class="text-sm">
+      <AppDropdown v-if="'name' in modelValue" class="text-sm">
         <template #title>
           <div v-if="modelValue.name">
             <span class="font-medium text-left">Name: </span>
@@ -21,7 +21,7 @@
       </AppDropdown>
 
       <!-- Filter: Conversion rate -->
-      <AppDropdown class="text-sm">
+      <AppDropdown v-if="'conversion_rate' in modelValue" class="text-sm">
         <template #title>
           <div v-if="modelValue.conversion_rate">
             <span class="font-medium text-left">Conversion rate: </span>
@@ -34,7 +34,7 @@
       </AppDropdown>
 
       <!-- Filter: Assets -->
-      <AppDropdown class="text-sm">
+      <AppDropdown v-if="'assets' in modelValue" class="text-sm">
         <template #title>
           <div v-if="modelValue.assets">
             <span class="font-medium text-left">Assets: </span>
@@ -47,7 +47,7 @@
       </AppDropdown>
 
       <!-- Filter: Users -->
-      <AppDropdown class="text-sm">
+      <AppDropdown v-if="'users' in modelValue" class="text-sm">
         <template #title>
           <div v-if="modelValue.users">
             <span class="font-medium text-left">Users: </span>
@@ -60,7 +60,7 @@
       </AppDropdown>
 
       <!-- Filter: Steps -->
-      <AppDropdown class="text-sm">
+      <AppDropdown v-if="'steps_count' in modelValue" class="text-sm">
         <template #title>
           <div v-if="modelValue.steps_count">
             <span class="font-medium text-left">Steps: </span>
@@ -73,7 +73,7 @@
       </AppDropdown>
 
       <!-- Filter: Privacy -->
-      <AppDropdown class="text-sm">
+      <AppDropdown v-if="'privacy' in modelValue" class="text-sm">
         <template #title>
           <div v-if="modelValue.privacy">
             <span class="font-medium text-left">Sharing: </span>
@@ -108,7 +108,7 @@
       </AppDropdown>
 
       <!-- Filter: Category -->
-      <CategoryPicker v-model="category" @update:modelValue="setCategoryFilter" class="text-sm"/>
+      <CategoryPicker v-if="'category' in modelValue" v-model="category" @update:modelValue="setCategoryFilter" class="text-sm"/>
     </div>
   </div>
 </template>

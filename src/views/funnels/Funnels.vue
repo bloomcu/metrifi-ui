@@ -16,6 +16,7 @@
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Funnels</h1>
         <div class="flex gap-2">
+          <!-- <DatePickerSimple/> -->
           <AppButton v-if="organizationStore.organization && organizationStore.organization.connections_count !== 0" @click="storeNewFunnel()">
             Create blank funnel
           </AppButton>
@@ -58,147 +59,258 @@
       </div>
     </div>
 
-    <!-- Filters -->
-    <div class="flex gap-3 mb-4">
-      <AppInput v-model="search" placeholder="Filter" class="w-4/12"/>
-      <CategoryPicker v-model="category"/>
-    </div>
+    <!-- <pre>Daterange: {{ selectedDateRange }}</pre>
+    <pre>Meta: {{ meta }}</pre>
+    <pre>Filters: {{ filters }}</pre> -->
 
-    <!-- List funnels -->
-    <table v-if="funnels && funnels.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-20 sm:mx-0 sm:rounded-lg">
+    <!-- Filters -->
+    <FunnelFilters v-model="filters" :total="meta.total" @update:modelValue="buildParams()" />
+
+    <!-- Funnels -->
+    <table class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-4 sm:mx-0 sm:rounded-lg">
       <thead>
         <tr class="">
-          <th scope="col" class="py-3.5 pl-4 pr-4 sm:pl-4 text-left text-sm font-medium text-gray-900">Funnel</th>
-          <!-- <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">Conversion</th> -->
-          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">Category</th>
-          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">Connection</th>
-          <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">Updated</th>
+          <!-- Header: Name -->
+          <th scope="col" class="py-3.5 pl-4 pr-4 sm:pl-4 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Name
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'name'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
+          <!-- Header: Conversion rate -->
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Conversion rate
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'conversion_rate'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
+          <!-- Header: Assets -->
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('assets')" :class="[activeSort == 'assets' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Assets
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'assets'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
+          <!-- Header: Users -->
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('users')" :class="[activeSort == 'users' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Users
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'users'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
+          <!-- Header: Steps -->
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('steps_count')" :class="[activeSort == 'steps_count' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Steps
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'steps_count'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
+          <!-- Header: Category -->
+          <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Category
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'category'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
+          <!-- Header: Created -->
+          <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">
+            <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+              Created
+              <span class="inline-flex ml-2 rounded bg-violet-100">
+                <ChevronUpIcon v-if="activeSort == 'created'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
+          </th>
+
+          <!-- Actions -->
           <th scope="col" class="py-3.5"></th>
         </tr>
       </thead>
 
-      <tbody class="divide-y divide-gray-200">
-        <tr v-for="funnel in filteredFunnels" :key="funnel.id" @click="router.push({name: 'funnel', params: {funnel: funnel.id}})" class="hover:bg-gray-50 cursor-pointer">
+      <tbody v-if="funnels && funnels.length" class="divide-y divide-gray-200">
+        <tr v-for="funnel in funnels" :key="funnel.id" @click="showFunnel(funnel)" class="hover:bg-gray-50 cursor-pointer">
           <!-- Funnel -->
           <td class="py-4 pr-2 text-sm w-2/5 sm:pl-4">
             <div class="flex-auto">
-              <p v-html="highlightSearchedText(funnel.name)" class="mb-1 text-base font-medium leading-6 text-gray-900"></p>
-
-              <div class="flex gap-2">
-                <div v-if="funnel.automation_msg" class="flex items-center text-sm leading-5 text-pink-600">
-                  <p>{{ funnel.automation_msg }}</p>
-                </div>
-
-                <!-- <p v-else class="text-sm leading-5 text-gray-400">{{ funnel.steps.length }} steps</p> -->
-
-                <p v-if="funnel.messages.length" class="text-sm leading-5">
-                  <span class="mr-1.5 text-gray-400">•</span>
-                  <span class="text-green-500">{{ funnel.messages.length }} notification</span>
-                </p>
-              </div>
+              <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
             </div>
           </td>
 
-          <!-- Conversion -->
-          <!-- <td class="whitespace-nowrap py-4 pr-4 text-sm text-gray-400">
-            <p class="mb-0.5">{{ funnel.snapshots ? funnel.snapshots.last28Days.conversionRate + '%' : '' }}</p>
-            <p class="text-xs">last 28 days</p>
-          </td> -->
+          <!-- Conversion rate -->
+          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              {{ funnel.snapshots[selectedDateRange.key].conversion_rate !== null ? funnel.snapshots[selectedDateRange.key].conversion_rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%' : '' }}
+            </div>
+          </td>
+
+          <!-- Assets-->
+          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              {{ funnel.snapshots[selectedDateRange.key].assets !== null ? funnel.snapshots[selectedDateRange.key].assets.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}) : '' }}
+            </div>
+          </td>
+
+          <!-- Users -->
+          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              {{ funnel.snapshots[selectedDateRange.key].users !== null ? funnel.snapshots[selectedDateRange.key].users.toLocaleString() : '' }}
+            </div>
+          </td>
+
+          <!-- Steps -->
+          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              {{ funnel.steps_count }}
+            </div>
+          </td>
 
           <!-- Category -->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
-            <div class="flex items-center text-sm mr-2">
+            <div class="flex items-center text-sm">
               {{ funnel.category ? funnel.category.title : '' }}
             </div>
           </td>
 
-          <!-- Connection -->
+          <!-- Created -->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
-            <div class="flex items-center text-sm">
-              <svg class="w-4 h-4 mr-2" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
-              {{ funnel.connection.name }}
+            {{ moment(funnel.created_at).fromNow() }}
+          </td>
+
+          <!-- Actions -->
+          <td class="py-4 px-3 flex gap-1.5">
+            <!-- Copy -->
+            <button @click.stop="replicateFunnel(funnel.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+              </svg>
+            </button>
+
+            <!-- Delete -->
+            <button @click.stop="destroyFunnel(funnel.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr ref="loadMoreElement" class="sr-only h-1"></tr>
+      </tbody>
+
+      <tbody v-else-if="isLoading" v-for="index in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]" class="divide-y divide-gray-200">
+        <tr class="hover:bg-gray-50 cursor-pointer">
+          <!-- Funnel -->
+          <td class="py-6 pr-2 text-sm w-2/5 sm:pl-4">
+            <div class="flex-auto">
+                <div class="h-2.5 bg-gray-200 rounded-full w-48 animate-pulse mb-4"></div>
+                <div class="h-2.5 bg-gray-200 rounded-full w-20 animate-pulse"></div>
             </div>
           </td>
 
-          <!-- Updated -->
-          <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
-            {{ moment(funnel.updated_at).fromNow() }}
+          <!-- Conversion rate -->
+          <td class="whitespace-nowrap py-6 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              <div class="h-2.5 bg-gray-200 rounded-full w-10 animate-pulse"></div>
+            </div>
           </td>
 
-          <!-- Options -->
-          <td scope="col" class="py-4 pr-4">
-            <div class="flex justify-end gap-2">
-              <AppButton @click.stop="replicateFunnel(funnel.id)" variant="tertiary">Copy</AppButton>
-              <AppButton @click.stop="destroyFunnel(funnel.id)" variant="tertiary">Delete</AppButton>
+          <!-- Assets-->
+          <td class="whitespace-nowrap py-6 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              <div class="h-2.5 bg-gray-200 rounded-full w-10 animate-pulse"></div>
+            </div>
+          </td>
+
+          <!-- Users -->
+          <td class="whitespace-nowrap py-6 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              <div class="h-2.5 bg-gray-200 rounded-full w-10 animate-pulse"></div>
+            </div>
+          </td>
+
+          <!-- Steps -->
+          <td class="whitespace-nowrap py-6 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              <div class="h-2.5 bg-gray-200 rounded-full w-10 animate-pulse"></div>
+            </div>
+          </td>
+
+          <!-- Privacy -->
+          <td class="whitespace-nowrap py-6 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              <div class="h-2.5 bg-gray-200 rounded-full w-10 animate-pulse"></div>
+            </div>
+          </td>
+
+          <!-- Category -->
+          <td class="whitespace-nowrap py-6 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              <div class="h-2.5 bg-gray-200 rounded-full w-10 animate-pulse"></div>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <!-- State: Loading -->
-    <div v-else-if="isLoading" class="animate-pulse space-y-4">
-      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-    </div>
-
     <!-- Empty state: No funnels -->
-    <div v-else @click="storeNewFunnel()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
-      <ChartBarIcon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-violet-500">Create a funnel</h2>
+    <div v-if="!funnels || funnels.length === 0" class="flex flex-col items-center justify-center bg-gray-50 rounded-lg py-6 px-2">
+      <ChartBarIcon class="mx-auto h-10 w-10 text-gray-400" aria-hidden="true" />
+      <h2 class="mt-2 text-lg text-gray-400">No funnels to show</h2>
     </div>
     
-    <GenerateFunnelsModal :open="isModalOpen" @done="loadFunnels()"/>
+    <GenerateFunnelsModal :open="isModalOpen" @done="buildParams()"/>
   </LayoutWithSidebar>
 </template>
 
 <script setup>
 import moment from 'moment'
-import { ref, watch, onMounted, provide, computed } from 'vue'
+import { ref, watch, onMounted, provide } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
+import { useInfiniteScroll } from '@/app/composables/base/useInfiniteScroll'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { funnelApi } from '@/domain/funnels/api/funnelApi.js'
 import { ChartBarIcon } from '@heroicons/vue/24/outline'
-import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
+import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
+// import DatePickerSimple from '@/app/components/datepicker/DatePickerSimple.vue'
+import FunnelFilters from '@/views/funnels/components/filters/FunnelFilters.vue'
 import GenerateFunnelsModal from '@/views/funnels/modals/GenerateFunnelsModal.vue'
 
 const route = useRoute()
 const router = useRouter()
-
+const { selectedDateRange } = useDatePicker()
 const { connectToGoogle } = useConnections()
 
 const organizationStore = useOrganizationStore()
 
-const funnels = ref()
-const isLoading = ref(false)
+
 const isModalOpen = ref(false)
 const isAutomating = ref(false)
 const automationError = ref()
@@ -207,28 +319,78 @@ provide('isModalOpen', isModalOpen)
 provide('isAutomating', isAutomating)
 provide('automationError', automationError)
 
-const search = ref(null)
-const category = ref(null)
-const filteredFunnels = computed(() => {
-  if (!search.value) {
-    return funnels.value
-  }
+const { 
+    loadMoreElement, 
+    items: funnels, 
+    isLoading, 
+    meta,
+    updateParams
+} = useInfiniteScroll(
+  funnelApi.index, 
+  {}, 
+  { sort: '' },
+  route.params.organization
+)
 
-  return funnels.value.filter(funnel => {
-    return funnel.name.toLowerCase().indexOf(search.value.toLowerCase()) > -1
-  })
+const activeSort = ref('created')
+const activeSortDirection = ref('desc')
+const filters = ref({
+  name: '',
+  conversion_rate: '',
+  assets: '',
+  users: '',
+  steps_count: '',
+  category: '',
 })
 
-function highlightSearchedText(text) {
-  if (!search.value) return text
-  return text.replaceAll(search.value, `<span style="background-color: #fde047; padding: 2px 5px; border-radius: 5px;">${search.value}</span>`)
+// Utility function
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
 }
+
+function setActiveSort(sort) {
+    if (sort === 'category' || sort === 'privacy') {
+        // Ensure the category and privacy sort starts with ascending order (A-Z)
+        activeSortDirection.value = activeSort.value === sort && activeSortDirection.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        if (activeSort.value === sort) {
+            activeSortDirection.value = activeSortDirection.value === 'asc' ? 'desc' : 'asc';
+        } else {
+            activeSortDirection.value = 'desc'; // Default to descending for other sorts
+        }
+    }
+    activeSort.value = sort;
+    buildParams();
+}
+
+const buildParams = debounce(() => {
+  console.log('Building params')
+  const formattedSort = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
+
+  const formattedFilters = Object.fromEntries(
+    Object.entries(filters.value)
+      .filter(([_, value]) => value !== null && value !== undefined && value !== '') // Avoid empty values
+      .map(([key, value]) => [`filter[${key}]`, value])
+  );
+
+  const params = {
+    sort: formattedSort,
+    period: selectedDateRange.value.key,
+    ...formattedFilters,
+  };
+
+  updateParams(params);
+}, 300); // 300ms debounce delay
 
 let pollInterval = 0
 function poll() {
   pollInterval = setTimeout(async() => {
     console.log('Polling...')
-    await loadFunnels()
+    await buildParams()
   }, 2000)
 }
 
@@ -246,18 +408,6 @@ function pollOrganization() {
       isAutomating.value = false
       stopPoll()
     }
-  })
-}
-
-function loadFunnels() {
-  isLoading.value = true
-
-  funnelApi.index(route.params.organization, {
-    'filter[category.id]': category.value ? category.value.id : null,
-  }).then(response => {
-    isLoading.value = false
-    funnels.value = response.data.data
-    // pollOrganization()
   })
 }
 
@@ -289,12 +439,8 @@ function toggleModal() {
   isModalOpen.value = !isModalOpen.value 
 }
 
-watch(category, () => {
-  loadFunnels()
-})
-
 onMounted(() => {
-  loadFunnels()
+  buildParams()
   organizationStore.show(route.params.organization)
 })
 </script>

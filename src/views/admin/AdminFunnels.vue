@@ -20,11 +20,11 @@
       </div>
     </template>
 
-    <!-- <pre>Meta: {{ meta }}</pre>
+    <!-- <pre>Daterange: {{ selectedDateRange }}</pre>
+    <pre>Meta: {{ meta }}</pre>
     <pre>Filters: {{ filters }}</pre> -->
 
     <!-- Filters -->
-    <!-- <FunnelFilters :meta="meta" :filters="filters" @updateFilterParams="updateFilterParams" @clearFilters="clearFilters"/> -->
     <FunnelFilters v-model="filters" :total="meta.total" @update:modelValue="buildParams()" />
 
     <!-- Funnels -->
@@ -169,7 +169,7 @@
           <!-- Category -->
           <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
             <div class="flex items-center text-sm">
-              <span @click.stop="filters.category = funnel.category.title"  class="cursor-pointer border border-transparent hover:bg-violet-50 hover:border-violet-600">{{ funnel.category ? funnel.category.title : '' }}</span>
+              {{ funnel.category ? funnel.category.title : '' }}
             </div>
           </td>
 
@@ -240,14 +240,14 @@
     <!-- Empty state: No funnels -->
     <div v-if="!funnels || funnels.length === 0" class="flex flex-col items-center justify-center bg-gray-50 rounded-lg py-6 px-2">
       <ChartBarIcon class="mx-auto h-10 w-10 text-gray-400" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-gray-400">No funnels to show</h2>
+      <h2 class="mt-2 text-lg text-gray-400">No funnels to show</h2>
     </div>
   </LayoutAdmin>
 </template>
 
 <script setup>
 import moment from "moment"
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDatePicker } from '@/app/components/datepicker/useDatePicker'
 import { useInfiniteScroll } from '@/app/composables/base/useInfiniteScroll'
@@ -266,14 +266,19 @@ const {
     isLoading, 
     meta,
     updateParams
-} = useInfiniteScroll(adminFunnelApi.index, {}, { sort: '' })
+} = useInfiniteScroll(
+  adminFunnelApi.index, 
+  {}, 
+  { sort: '' }, 
+  null
+)
 
 const activeSort = ref('conversion_rate')
 const activeSortDirection = ref('desc')
 const filters = ref({
   name: '',
-  assets: '',
   conversion_rate: '',
+  assets: '',
   users: '100',
   steps_count: '3',
   privacy: '0',

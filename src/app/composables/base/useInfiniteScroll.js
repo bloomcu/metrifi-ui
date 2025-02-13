@@ -14,7 +14,12 @@ const meta = reactive({
   total: 0,
 })
 
-export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, baseParams = {}) {
+export function useInfiniteScroll(
+  apiMethod, 
+  options = { rootMargin: '50px' }, 
+  baseParams = {},
+  organization = null
+) {
     // Reference to the element that triggers loading more
     const loadMoreElement = ref(null)
 
@@ -63,7 +68,12 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
                 page: pagination.current_page,
             };
 
-            const response = await apiMethod(apiParams);
+            let response;
+            if (organization) {
+              response = await apiMethod(organization, apiParams);
+            } else {
+              response = await apiMethod(apiParams);
+            }
 
             // console.log('response', response.data.links.first);
 
