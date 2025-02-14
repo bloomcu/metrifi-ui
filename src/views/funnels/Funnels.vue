@@ -262,6 +262,13 @@
               <div class="h-2.5 bg-gray-200 rounded-full w-10 animate-pulse"></div>
             </div>
           </td>
+
+          <!-- Actions -->
+          <td class="whitespace-nowrap py-6 pr-2 text-sm text-gray-400">
+            <div class="flex items-center text-sm">
+              <div class="h-2.5 bg-gray-200 rounded-full w-10 animate-pulse"></div>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
