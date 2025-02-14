@@ -328,6 +328,7 @@ const {
   route.params.organization
 )
 
+// Filtering and sorting states
 const activeSort = ref('created')
 const activeSortDirection = ref('desc')
 const filters = ref({
