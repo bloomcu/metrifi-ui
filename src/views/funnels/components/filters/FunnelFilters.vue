@@ -1,6 +1,9 @@
 <template>
   <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
-    <div>{{ total }} funnels</div>
+    <div class="flex items-center gap-4">
+        {{ total }} funnels
+        <AppButton @click="$emit('unselect')" class="text-sm text-violet-500" variant="text">Unselect all</AppButton>
+    </div>
 
     <div class="flex items-center gap-2">
       <AppButton v-if="hasActiveFilters" @click="clearFilters" size="sm" variant="simple" class="text-sm bg-gray-100 hover:bg-violet-100 text-violet-500">
@@ -123,7 +126,10 @@ const props = defineProps({
   total: Number
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits([
+    'update:modelValue', 
+    'unselect'
+]);
 
 const localFilters = reactive({ ...props.modelValue })
 const category = ref(null)

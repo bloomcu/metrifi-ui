@@ -20,27 +20,25 @@
         </div>
       </nav>
 
-      <!-- Show/hide organizations -->
-      <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2">
-        <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600" />
-        <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
-          Show organizations
-        </label>
+      <div class="flex items-center gap-6">
+        <!-- Show/hide organizations -->
+        <div v-if="authStore.user.role === 'admin'" class="flex items-center py-2">
+            <input v-model="isShowingOrganizations" required id="agree" name="agree" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600" />
+            <label for="agree" class="ml-2 block text-sm leading-6 text-gray-900">
+                Show organizations
+            </label>
+        </div>
+
+        <!-- Attach funnels -->
+        <AppButton v-if="selected.length" @click="attachFunnels()" :disabled="!selected.length" class="w-[150px]">
+            Add {{ selected.length ? selected.length : '' }} {{ selected.length > 1 ? 'funnels' : 'funnel' }}
+        </AppButton>
       </div>
     </div>
 
     <div class="px-6">
       <!-- Filters -->
-      <FunnelFilters v-model="filters" :total="meta.total" @update:modelValue="buildParams()" />
-
-      <!-- Selected and attach button -->
-      <div v-if="selected.length" class="flex items-center gap-3 mb-4">
-        <AppButton @click="attachFunnels()" :disabled="!selected.length" class="w-[150px]">
-          Add {{ selected.length ? selected.length : '' }} {{ selected.length > 1 ? 'funnels' : 'funnel' }}
-        </AppButton>
-
-        <AppButton @click="unselectAllFunnels()" class="text-sm text-violet-500" variant="text">Unselect all</AppButton>
-      </div>
+      <FunnelFilters v-model="filters" :total="meta.total" @update:modelValue="buildParams()" @unselect="unselectAllFunnels()"/>
 
       <!-- Funnels -->
       <table class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-32 sm:mx-0 sm:rounded-lg">
