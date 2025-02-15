@@ -135,6 +135,9 @@ const emit = defineEmits([
 const localFilters = reactive({ ...props.modelValue })
 const category = ref(null)
 
+// Store initial filter state
+const initialFilters = { ...props.modelValue }
+
 function setCategoryFilter(category) {
   console.log('Category', category)
   localFilters.category = category ? category.title : '';
@@ -149,7 +152,7 @@ function clearFilters() {
 }
 
 const hasActiveFilters = computed(() => {
-  return Object.values(localFilters).some((filter) => filter !== null && filter !== '');
+  return Object.keys(localFilters).some(key => localFilters[key] !== initialFilters[key]);
 });
 
 const computedAssets = computed({
