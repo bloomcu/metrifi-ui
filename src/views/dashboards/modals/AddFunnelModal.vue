@@ -40,6 +40,10 @@
       <!-- Filters -->
       <FunnelFilters v-model="filters" :total="meta.total" :selected="selected.length" @update:modelValue="buildParams()" @unselect="unselectAllFunnels()"/>
 
+      <div v-if="selected.length >= MAX_FUNNEL_SELECTION" class="mb-4 p-4 bg-yellow-50 rounded-lg">
+        <p class="text-sm text-yellow-700">You've reached the maximum limit of {{ MAX_FUNNEL_SELECTION }} funnels. Deselect some funnels to add new ones.</p>
+      </div>
+
       <!-- Funnels -->
       <table class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-32 sm:mx-0 sm:rounded-lg">
         <thead>
@@ -301,6 +305,8 @@ const {
     updateParams
 } = useInfiniteScroll(funnelApi.search, {}, { sort: '' }, route.params.organization)
 
+const MAX_FUNNEL_SELECTION = 30;
+
 // Filtering and sorting states
 const activeSort = ref('conversion_rate')
 const activeSortDirection = ref('desc')
@@ -375,6 +381,9 @@ function selectFunnel(funnelId) {
   const index = selected.value.indexOf(funnelId);
 
   if (index === -1) {
+    if (selected.value.length >= MAX_FUNNEL_SELECTION) {
+      return;
+    }
     selected.value.push(funnelId);
   } else {
     selected.value.splice(index, 1);
@@ -382,22 +391,16 @@ function selectFunnel(funnelId) {
 }
 
 function selectAllFunnels() {
-  const currentSelection = new Set(selected.value); // Use a Set for efficient lookup
-  const allFunnelIds = funnels.value.map((funnel) => funnel.id);
+  const currentSelection = new Set(selected.value);
+  const availableFunnels = funnels.value
+    .filter(funnel => !funnelsAlreadyAttachedIds.value.includes(funnel.id))
+    .map(funnel => funnel.id)
+    .slice(0, MAX_FUNNEL_SELECTION);
 
-  // Check if all current funnels are already selected
-  const allSelectedInCurrent = allFunnelIds.every((id) => currentSelection.has(id));
-
-  if (allSelectedInCurrent) {
-    // If all current funnels are selected, remove them from selected
-    selected.value = selected.value.filter((id) => !allFunnelIds.includes(id));
+  if (currentSelection.size === availableFunnels.length) {
+    selected.value = [];
   } else {
-    // Otherwise, add any current funnels not already selected
-    allFunnelIds.forEach((id) => {
-      if (!currentSelection.has(id)) {
-        selected.value.push(id);
-      }
-    });
+    selected.value = availableFunnels;
   }
 }
 
