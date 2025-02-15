@@ -73,7 +73,7 @@
           <!-- Header: Conversion rate -->
           <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
             <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
-              Conversion rate
+              Conversion
               <span class="inline-flex ml-2 rounded bg-violet-100">
                 <ChevronUpIcon v-if="activeSort == 'conversion_rate'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                 <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />

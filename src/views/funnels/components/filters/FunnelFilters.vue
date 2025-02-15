@@ -2,7 +2,7 @@
   <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
     <div class="flex items-center gap-4">
         {{ total }} funnels
-        <AppButton @click="$emit('unselect')" class="text-sm text-violet-500" variant="text">Unselect all</AppButton>
+        <AppButton v-if="selected" @click="$emit('unselect')" class="text-sm text-violet-500" variant="text">Unselect all</AppButton>
     </div>
 
     <div class="flex items-center gap-2">
@@ -27,11 +27,11 @@
       <AppDropdown v-if="'conversion_rate' in modelValue" class="text-sm">
         <template #title>
           <div v-if="modelValue.conversion_rate">
-            <span class="font-medium text-left">Conversion rate: </span>
+            <span class="font-medium text-left">Conversion: </span>
             <span class="text-gray-500 text-left"> >= {{ modelValue.conversion_rate }}%</span>
             <button @click.stop="modelValue.conversion_rate = ''" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
           </div>
-          <span v-else class="text-gray-500 text-left">Conversion rate</span>
+          <span v-else class="text-gray-500 text-left">Conversion</span>
         </template>
         <input v-model="modelValue.conversion_rate" placeholder=">=" class="w-full p-2 border-none focus:ring-0">
       </AppDropdown>
@@ -123,7 +123,8 @@ import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 
 const props = defineProps({
   modelValue: Object, // This replaces `filters`,
-  total: Number
+  total: Number,
+  selected: 0
 });
 
 const emit = defineEmits([
