@@ -54,7 +54,7 @@
             <!-- Select -->
             <th scope="col" class="py-2.5 pl-4 sm:pl-6">
               <input 
-                @click="selectAllFunnels()" 
+                @change="selectAllFunnels()" 
                 :checked="isAllSelected"
                 class="h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600" 
                 type="checkbox" 
@@ -155,9 +155,10 @@
             <td class="py-4 pl-4 sm:pl-6">
               <input 
                 v-if="!funnelsAlreadyAttachedIds.includes(funnel.id)"
-                @select="selectFunnel(funnel.id)" 
+                @click.stop="selectFunnel(funnel.id)" 
                 :checked="selected.includes(funnel.id)" 
-                class="h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600" 
+                :disabled="selected.length >= MAX_FUNNEL_SELECTION && !selected.includes(funnel.id)" 
+                class="h-4 w-4 rounded border-gray-300 text-violet-500 focus:ring-violet-600 disabled:cursor-not-allowed disabled:opacity-50" 
                 type="checkbox" 
               />
             </td>
@@ -373,12 +374,13 @@ const buildParams = debounce(() => {
 }, 300); // 300ms debounce delay
 
 const isAllSelected = computed(() => {
-  // Check if every funnel in the current array is selected
-  return (
-    funnels.value.length > 0 && 
-    funnels.value.every(funnel => selected.value.includes(funnel.id))
-  );
+  const availableFunnels = funnels.value
+    .filter(funnel => !funnelsAlreadyAttachedIds.value.includes(funnel.id))
+    .map(funnel => funnel.id);
+
+  return availableFunnels.length > 0 && selected.value.length === availableFunnels.length;
 });
+
 
 function selectFunnel(funnelId) {
   const index = selected.value.indexOf(funnelId);
@@ -394,18 +396,19 @@ function selectFunnel(funnelId) {
 }
 
 function selectAllFunnels() {
-  const currentSelection = new Set(selected.value);
   const availableFunnels = funnels.value
     .filter(funnel => !funnelsAlreadyAttachedIds.value.includes(funnel.id))
-    .map(funnel => funnel.id)
-    .slice(0, MAX_FUNNEL_SELECTION);
+    .map(funnel => funnel.id);
 
-  if (currentSelection.size === availableFunnels.length) {
+  if (selected.value.length === availableFunnels.length) {
+    // If all are selected, deselect everything
     selected.value = [];
   } else {
-    selected.value = availableFunnels;
+    // Otherwise, select up to MAX_FUNNEL_SELECTION
+    selected.value = availableFunnels.slice(0, MAX_FUNNEL_SELECTION);
   }
 }
+
 
 function unselectAllFunnels() {
     selected.value = [];
