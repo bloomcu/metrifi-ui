@@ -383,8 +383,12 @@ const isAllSelected = computed(() => {
 
 
 function selectFunnel(funnelId) {
-  const index = selected.value.indexOf(funnelId);
+  if (funnelsAlreadyAttachedIds.value.includes(funnelId)) {
+    return; // Prevent selecting an already attached funnel
+  }
 
+  const index = selected.value.indexOf(funnelId);
+  
   if (index === -1) {
     if (selected.value.length >= MAX_FUNNEL_SELECTION) {
       return;
