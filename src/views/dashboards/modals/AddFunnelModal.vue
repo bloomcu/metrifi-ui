@@ -4,7 +4,7 @@
     @closed="isAddFunnelsModalOpen = false"
     :open="isAddFunnelsModalOpen"
   >
-    <div class="flex items-center justify-between mb-3 px-6 pt-6">
+    <div class="flex items-center justify-between mb-3 px-8 pt-6">
       <!-- Modal title -->
       <!-- <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Add funnel</h3> -->
 
@@ -36,20 +36,23 @@
       </div>
     </div>
 
-    <div class="px-6">
+    <div class="relative px-8">
       <!-- Filters -->
-      <FunnelFilters v-model="filters" :total="meta.total" :selected="selected.length" @update:modelValue="buildParams()" @unselect="unselectAllFunnels()"/>
-
-      <div v-if="selected.length >= MAX_FUNNEL_SELECTION" class="mb-4 p-4 bg-yellow-50 rounded-lg">
-        <p class="text-sm text-yellow-700">You've reached the maximum limit of {{ MAX_FUNNEL_SELECTION }} funnels. Deselect some funnels to add new ones.</p>
-      </div>
+      <FunnelFilters v-model="filters" :total="meta.total" :selected="selected.length" @update:modelValue="buildParams()" @unselect="unselectAllFunnels()" class="sticky -top-4 z-50" />
 
       <!-- Funnels -->
-      <table class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 mb-32 sm:mx-0 sm:rounded-lg">
-        <thead>
-          <tr class="">
+      <table class="min-w-full table-fixed mb-24 sm:mx-0">
+        <thead class="sticky top-10 bg-white ring-1 ring-gray-200 ring-inset overflow-hidden z-10">
+          <tr v-if="selected.length >= MAX_FUNNEL_SELECTION" >
+            <td colspan="8">
+              <div class="p-3 bg-violet-600">
+                <p class="text-sm text-white">You've reached the maximum limit of {{ MAX_FUNNEL_SELECTION }} funnels. Deselect some funnels to add new ones.</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
             <!-- Select -->
-            <th scope="col" class="py-3.5 pl-4 sm:pl-6">
+            <th scope="col" class="py-2.5 pl-4 sm:pl-6">
               <input 
                 @click="selectAllFunnels()" 
                 :checked="isAllSelected"
@@ -59,7 +62,7 @@
             </th>
 
             <!-- Header: Name -->
-            <th scope="col" class="py-3.5 pl-4 pr-4 sm:pl-4 text-left text-sm font-medium text-gray-900">
+            <th scope="col" class="py-2.5 pl-4 pr-4 sm:pl-4 text-left text-sm font-medium text-gray-900">
               <button @click="setActiveSort('name')" :class="[activeSort == 'name' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
                 Name
                 <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -70,7 +73,7 @@
             </th>
 
             <!-- Header: Conversion rate -->
-            <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <th scope="col" class="py-2.5 pr-4 text-left text-sm font-medium text-gray-900">
               <button @click="setActiveSort('conversion_rate')" :class="[activeSort == 'conversion_rate' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
                 Conversion
                 <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -81,7 +84,7 @@
             </th>
 
             <!-- Header: Assets -->
-            <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <th scope="col" class="py-2.5 pr-4 text-left text-sm font-medium text-gray-900">
               <button @click="setActiveSort('assets')" :class="[activeSort == 'assets' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
                 Assets
                 <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -92,7 +95,7 @@
             </th>
 
             <!-- Header: Users -->
-            <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <th scope="col" class="py-2.5 pr-4 text-left text-sm font-medium text-gray-900">
               <button @click="setActiveSort('users')" :class="[activeSort == 'users' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
                 Users
                 <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -103,7 +106,7 @@
             </th>
 
             <!-- Header: Steps -->
-            <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <th scope="col" class="py-2.5 pr-4 text-left text-sm font-medium text-gray-900">
               <button @click="setActiveSort('steps_count')" :class="[activeSort == 'steps_count' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
                 Steps
                 <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -114,7 +117,7 @@
             </th>
 
             <!-- Header: Category -->
-            <th scope="col" class="py-3.5 pr-4 text-left text-sm font-medium text-gray-900">
+            <th scope="col" class="py-2.5 pr-4 text-left text-sm font-medium text-gray-900">
               <button @click="setActiveSort('category')" :class="[activeSort == 'category' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
                 Category
                 <span class="inline-flex ml-2 rounded bg-violet-100">
@@ -125,7 +128,7 @@
             </th>
 
             <!-- Header: Created -->
-            <th scope="col" class="py-3.5 text-left text-sm font-medium text-gray-900">
+            <th scope="col" class="py-2.5 text-left text-sm font-medium text-gray-900">
               <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
                 Created
                 <span class="inline-flex ml-2 rounded bg-violet-100">

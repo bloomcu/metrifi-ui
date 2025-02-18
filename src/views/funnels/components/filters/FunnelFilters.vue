@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4 rounded-lg mb-4">
+  <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4">
     <div class="flex items-center gap-4">
         {{ total }} funnels
         <AppButton v-if="selected" @click="$emit('unselect')" class="text-sm text-violet-500" variant="text">Unselect all</AppButton>
@@ -117,7 +117,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, defineProps, defineEmits } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import AppDropdown from '@/app/components/dropdown/AppDropdown.vue'
 import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 

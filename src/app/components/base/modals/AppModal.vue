@@ -48,7 +48,7 @@
               <button
                 type="button"
                 @click="close()"
-                class="absolute top-4 right-6 text-gray-500 hover:text-gray-700 focus:outline-none"
+                class="absolute top-4 right-5 text-gray-500 hover:text-gray-700 focus:outline-none"
               >
                 <XMarkIcon class="h-7 w-7 text-gray-600"/>
               </button>
