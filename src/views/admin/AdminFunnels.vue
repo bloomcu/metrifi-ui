@@ -26,7 +26,7 @@
 
     <div class="relative">
       <!-- Filters -->
-      <FunnelFilters v-model="filters" :total="meta.total" @update:modelValue="buildParams()" class="sticky top-0 z-50" />
+      <FunnelFilters v-model="filters" :total="meta.total + ' funnels'" @update:modelValue="buildParams()" class="sticky top-0 z-50" />
 
       <!-- Funnels -->
       <table class="min-w-full table-fixed mb-24 sm:mx-0">

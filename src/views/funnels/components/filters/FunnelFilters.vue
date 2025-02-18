@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center justify-between gap-3 bg-violet-50 py-3 px-4">
     <div class="flex items-center gap-4">
-        {{ total }} funnels
+        {{ total }}
         <AppButton v-if="selected" @click="$emit('unselect')" class="text-sm text-violet-500" variant="text">Unselect all</AppButton>
     </div>
 

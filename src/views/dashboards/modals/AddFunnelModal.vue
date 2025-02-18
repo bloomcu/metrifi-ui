@@ -38,7 +38,7 @@
 
     <div class="relative px-8">
       <!-- Filters -->
-      <FunnelFilters v-model="filters" :total="meta.total" :selected="selected.length" @update:modelValue="buildParams()" @unselect="unselectAllFunnels()" class="sticky -top-4 z-50" />
+      <FunnelFilters v-model="filters" :total="displayedFunnelCount" :selected="selected.length" @update:modelValue="buildParams()" @unselect="unselectAllFunnels()" class="sticky -top-4 z-50" />
 
       <!-- Funnels -->
       <table class="min-w-full table-fixed mb-24 sm:mx-0">
@@ -381,6 +381,9 @@ const isAllSelected = computed(() => {
   return availableFunnels.length > 0 && selected.value.length === availableFunnels.length;
 });
 
+const displayedFunnelCount = computed(() => {
+  return selected.value.length > 0 ? selected.value.length + ' funnels selected' : meta.total + ' funnels';
+});
 
 function selectFunnel(funnelId) {
   if (funnelsAlreadyAttachedIds.value.includes(funnelId)) {

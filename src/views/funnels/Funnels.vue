@@ -50,7 +50,7 @@
 
     <!-- Funnels -->
     <div class="relative">
-      <FunnelFilters v-model="filters" :total="meta.total" @update:modelValue="buildParams()" class="sticky top-0 z-50" />
+      <FunnelFilters v-model="filters" :total="meta.total + ' funnels'" @update:modelValue="buildParams()" class="sticky top-0 z-50" />
       
       <table class="min-w-full table-fixed mb-24 sm:mx-0">
         <thead class="sticky top-14 bg-white ring-1 ring-gray-200 ring-inset overflow-hidden z-10">
