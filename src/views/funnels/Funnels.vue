@@ -121,12 +121,12 @@
               </button>
             </th>
 
-            <!-- Header: Created -->
+            <!-- Header: updated -->
             <th scope="col" class="py-2.5 text-left text-sm font-medium text-gray-900">
-              <button @click="setActiveSort('created')" :class="[activeSort == 'created' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
-                Created
+              <button @click="setActiveSort('updated')" :class="[activeSort == 'updated' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap py-2 text-sm font-medium']">
+                Updated
                 <span class="inline-flex ml-2 rounded bg-violet-100">
-                  <ChevronUpIcon v-if="activeSort == 'created'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                  <ChevronUpIcon v-if="activeSort == 'updated'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                   <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
@@ -181,9 +181,9 @@
               </div>
             </td>
 
-            <!-- Created -->
+            <!-- Updated -->
             <td class="whitespace-nowrap py-4 pr-2 text-sm text-gray-400">
-              {{ moment(funnel.created_at).fromNow() }}
+              {{ moment(funnel.updated_at).fromNow() }}
             </td>
 
             <!-- Actions -->
@@ -327,7 +327,7 @@ const {
 )
 
 // Filtering and sorting states
-const activeSort = ref('created')
+const activeSort = ref('updated')
 const activeSortDirection = ref('desc')
 const filters = ref({
   name: '',
