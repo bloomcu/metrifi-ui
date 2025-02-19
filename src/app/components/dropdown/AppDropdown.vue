@@ -8,13 +8,13 @@
             v-show="isOpen" 
             class="absolute right-0 z-50 flex flex-col mt-2 p-1 rounded-md bg-white border-0 text-gray-900 shadow-md ring-1 ring-gray-300 whitespace-nowrap min-w-max"
         >
-            <slot @click.stop="toggle" />
+            <slot />
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, provide, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted, provide } from 'vue';
 
 const props = defineProps({
   title: {
@@ -26,7 +26,6 @@ const isOpen = ref(false);
 const dropdown = ref(null);
 
 const toggle = async () => {
-    await nextTick(); // Ensures the DOM updates before checking for outside clicks
     isOpen.value = !isOpen.value;
 };
 
