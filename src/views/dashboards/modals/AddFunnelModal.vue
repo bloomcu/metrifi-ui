@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="relative px-8">
+    <div class="relative mx-8">
       <!-- Filters -->
       <FunnelFilters v-model="filters" :total="displayedFunnelCount" :selected="selected.length" @update:modelValue="buildParams()" @unselect="unselectAllFunnels()" class="sticky -top-4 z-50" />
 
