@@ -1,15 +1,15 @@
 <template>
-    <AppDropdown>
-      <template #title>
-        <div v-if="modelValue">
-          <span class="font-medium text-left">Category: </span>
-          <span class="text-gray-500 text-left">{{ modelValue.title }}</span>
-          <button @click.stop="updateValue(null)" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
-        </div>
-        <span v-else class="text-gray-500 text-left">Category</span>
-        <!-- <ChevronDownIcon class="ml-2 h-4 w-4 text-gray-400" /> -->
-      </template>
+  <AppDropdown>
+    <template #title>
+      <div v-if="modelValue">
+        <span class="font-medium text-left">Category: </span>
+        <span class="text-gray-500 text-left">{{ modelValue.title }}</span>
+        <button @click.stop="updateValue(null)" class="ml-2 text-gray-400 hover:text-gray-600">&times;</button>
+      </div>
+      <span v-else class="text-gray-500 text-left">Category</span>
+    </template>
 
+    <div class="flex flex-col max-h-96 overflow-y-auto">
       <button @click="updateValue(null)" class="w-full text-left rounded-md p-2 leading-6 text-gray-400 hover:bg-gray-50 hover:text-violet-600">
         Unselect
       </button>
@@ -35,7 +35,8 @@
           {{ child.title }}
         </button>
       </div>
-    </AppDropdown>
+    </div>
+  </AppDropdown>
 </template>
 
 <script setup>
