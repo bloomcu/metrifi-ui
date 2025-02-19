@@ -7,6 +7,8 @@
         <div 
             v-show="isOpen" 
             class="absolute right-0 z-50 flex flex-col mt-2 p-1 rounded-md bg-white border-0 text-gray-900 shadow-md ring-1 ring-gray-300 whitespace-nowrap min-w-max"
+            @click="handleSlotClick"
+            @keydown="handleSlotKeydown"
         >
             <slot />
         </div>
@@ -25,12 +27,24 @@ const props = defineProps({
 const isOpen = ref(false);
 const dropdown = ref(null);
 
-const toggle = async () => {
+const toggle = () => {
     isOpen.value = !isOpen.value;
 };
 
 const handleClickOutside = (event) => {
   if (dropdown.value && !dropdown.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+const handleSlotClick = (event) => {
+  if (event.target.tagName === 'BUTTON') {
+    isOpen.value = false;
+  }
+};
+
+const handleSlotKeydown = (event) => {
+  if (event.key === 'Enter' && event.target.tagName === 'INPUT') {
     isOpen.value = false;
   }
 };
