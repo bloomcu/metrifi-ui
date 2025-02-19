@@ -35,7 +35,7 @@
         </AppButton>
       </div>
     </div>
-
+{{ isAllSelected }}
     <div class="relative mx-8">
       <!-- Filters -->
       <FunnelFilters v-model="filters" :total="displayedFunnelCount" :selected="selected.length" @update:modelValue="buildParams()" @unselect="unselectAllFunnels()" class="sticky -top-4 z-50" />
@@ -348,7 +348,7 @@ function setActiveSort(sort) {
 }
 
 const buildParams = debounce(() => {
-  console.log('Building params')
+  // console.log('Building params')
   const formattedSort = activeSortDirection.value === 'desc' ? `-${activeSort.value}` : activeSort.value;
 
   // Handle organization filter
@@ -374,11 +374,7 @@ const buildParams = debounce(() => {
 }, 300); // 300ms debounce delay
 
 const isAllSelected = computed(() => {
-  const availableFunnels = funnels.value
-    .filter(funnel => !funnelsAlreadyAttachedIds.value.includes(funnel.id))
-    .map(funnel => funnel.id);
-
-  return availableFunnels.length > 0 && selected.value.length === availableFunnels.length;
+  return meta.all_ids.length === selected.value.length
 });
 
 const displayedFunnelCount = computed(() => {
@@ -400,16 +396,16 @@ function selectFunnel(funnelId) {
 }
 
 function selectAllFunnels() {
-  const availableFunnels = meta.all_ids
+  const selectableFunnels = meta.all_ids
     .filter(id => !funnelsAlreadyAttachedIds.value.includes(id))
     .map(id => id);
 
-  if (selected.value.length === availableFunnels.length) {
+  if (selected.value.length === selectableFunnels.length) {
     // If all are selected, deselect everything
     selected.value = [];
   } else {
     // Otherwise, select up to MAX_FUNNEL_SELECTION
-    selected.value = availableFunnels;
+    selected.value = selectableFunnels;
   }
 }
 
@@ -425,7 +421,7 @@ function attachFunnels() {
 
 watch(isOnlyShowMyFunnels, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    console.log('isOnlyShowMyFunnels changed:', newValue);
+    // console.log('isOnlyShowMyFunnels changed:', newValue);
     buildParams()
   }
 });

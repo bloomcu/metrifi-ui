@@ -61,7 +61,7 @@ export function useInfiniteScroll(
 
         isLoading.value = true;
 
-        console.log('Params: ', params)
+        // console.log('Params: ', params)
 
         try {
             const apiParams = {
@@ -87,7 +87,7 @@ export function useInfiniteScroll(
             pagination.last_page = response.data.meta.last_page;
             meta.total = response.data.meta.total;
             meta.all_ids = response.data.meta.all_ids;
-            console.log('Total: ', response.data.meta.total);
+            // console.log('Total: ', response.data.meta.total);
 
             // Only increment if there's another page to load
             if (pagination.current_page < pagination.last_page) {
