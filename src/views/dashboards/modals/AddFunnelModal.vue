@@ -377,12 +377,6 @@ const isAllSelected = computed(() => {
     .filter(id => !funnelsAlreadyAttachedIds.value.includes(id))
     .map(id => id);
 
-  console.log('selectableFunnels:', selectableFunnels.length)
-  console.log('selected length:', selected.value.length)
-  console.log('is all selected:', meta.all_ids.length === selected.value.length)
-
-  
-
   return selectableFunnels.length === selected.value.length
 });
 
