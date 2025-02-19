@@ -30,7 +30,7 @@
         </div>
 
         <!-- Attach funnels -->
-        <AppButton v-if="selected.length" @click="attachFunnels()" :disabled="!selected.length" class="w-[150px]">
+        <AppButton :disabled="selected.length >= MAX_FUNNEL_SELECTION + 1" @click="attachFunnels()" class="w-[150px]">
             Add {{ selected.length ? selected.length : '' }} {{ selected.length > 1 ? 'funnels' : 'funnel' }}
         </AppButton>
       </div>
@@ -43,10 +43,10 @@
       <!-- Funnels -->
       <table class="min-w-full table-fixed mb-24 sm:mx-0">
         <thead class="sticky top-10 bg-white ring-1 ring-gray-200 ring-inset overflow-hidden z-10">
-          <tr v-if="selected.length >= MAX_FUNNEL_SELECTION" >
+          <tr v-if="selected.length >= MAX_FUNNEL_SELECTION + 1" >
             <td colspan="8">
-              <div class="p-3 bg-violet-600">
-                <p class="text-sm text-white">You've reached the maximum limit of {{ MAX_FUNNEL_SELECTION }} funnels. Deselect some funnels to add new ones.</p>
+              <div class="p-3 bg-violet-500">
+                <p class="text-sm text-white">You can add up to {{ MAX_FUNNEL_SELECTION }} funnels at a time. You have selected {{ selected.length }}.</p>
               </div>
             </td>
           </tr>
@@ -304,8 +304,8 @@ const { selectedDateRange } = useDatePicker()
 const { 
     loadMoreElement, 
     items: funnels, 
-    isLoading, 
     meta,
+    isLoading, 
     updateParams
 } = useInfiniteScroll(funnelApi.search, {}, { sort: '' }, route.params.organization)
 
@@ -393,9 +393,6 @@ function selectFunnel(funnelId) {
   const index = selected.value.indexOf(funnelId);
   
   if (index === -1) {
-    if (selected.value.length >= MAX_FUNNEL_SELECTION) {
-      return;
-    }
     selected.value.push(funnelId);
   } else {
     selected.value.splice(index, 1);
@@ -403,19 +400,18 @@ function selectFunnel(funnelId) {
 }
 
 function selectAllFunnels() {
-  const availableFunnels = funnels.value
-    .filter(funnel => !funnelsAlreadyAttachedIds.value.includes(funnel.id))
-    .map(funnel => funnel.id);
+  const availableFunnels = meta.all_ids
+    .filter(id => !funnelsAlreadyAttachedIds.value.includes(id))
+    .map(id => id);
 
   if (selected.value.length === availableFunnels.length) {
     // If all are selected, deselect everything
     selected.value = [];
   } else {
     // Otherwise, select up to MAX_FUNNEL_SELECTION
-    selected.value = availableFunnels.slice(0, MAX_FUNNEL_SELECTION);
+    selected.value = availableFunnels;
   }
 }
-
 
 function unselectAllFunnels() {
     selected.value = [];
