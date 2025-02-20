@@ -166,7 +166,7 @@
             <!-- Funnel -->
             <td class="py-4 pr-2 text-sm w-2/5 sm:pl-4">
               <div class="flex items-center gap-2">
-                <p class="mb-1 text-base font-medium leading-6 text-gray-900">{{ funnel.name }}</p>
+                <p class="mb-1 text-base font-medium leading-6 text-gray-900">(Id: {{ funnel.id }}) {{ funnel.name }}</p>
                 <span v-if="funnelsAlreadyAttachedIds.includes(funnel.id)" class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">Already in use</span>
               </div>
               <span v-if="isShowingOrganizations" class="text-gray-500">{{ funnel.organization.title }}</span>
@@ -312,6 +312,7 @@ const MAX_FUNNEL_SELECTION = 30;
 
 // Filtering and sorting states
 const activeSort = ref('conversion_rate')
+// const activeSort = ref('name')
 const activeSortDirection = ref('desc')
 const filters = ref({
   name: '',
