@@ -1,12 +1,14 @@
 <template>
     <div ref="dropdown" class="relative">
-        <button @click="toggle" class="flex items-center justify-between w-full cursor-pointer rounded-full px-3 py-1 bg-white hover:bg-gray-50 border-0 ring-1 ring-gray-300 sm:leading-6 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+        <button @click.stop="toggle" class="flex items-center justify-between w-full cursor-pointer rounded-full px-3 py-1 bg-white hover:bg-gray-50 border-0 ring-1 ring-gray-300 sm:leading-6 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
             <slot name="title">{{ title }}</slot>
         </button>
 
         <div 
             v-show="isOpen" 
             class="absolute right-0 z-50 flex flex-col mt-2 p-1 rounded-md bg-white border-0 text-gray-900 shadow-md ring-1 ring-gray-300 whitespace-nowrap min-w-max"
+            @click="handleSlotClick"
+            @keydown="handleSlotKeydown"
         >
             <slot />
         </div>
@@ -35,12 +37,24 @@ const handleClickOutside = (event) => {
   }
 };
 
+const handleSlotClick = (event) => {
+  if (event.target.tagName === 'BUTTON') {
+    isOpen.value = false;
+  }
+};
+
+const handleSlotKeydown = (event) => {
+  if (event.key === 'Enter' && event.target.tagName === 'INPUT') {
+    isOpen.value = false;
+  }
+};
+
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
+  document.addEventListener('mousedown', handleClickOutside);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener('mousedown', handleClickOutside);
 });
 
 provide("isOpen", isOpen);

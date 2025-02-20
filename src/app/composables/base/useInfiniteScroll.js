@@ -1,20 +1,28 @@
 import { ref, onMounted, watch, reactive } from 'vue'
 
-export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, baseParams = {}) {
+// Global state
+const items = ref([])
+
+const isLoading = ref(false)
+
+const pagination = reactive({
+    current_page: 1,
+    last_page: null, // Will be set after the first API response
+})
+
+const meta = reactive({
+  total: 0,
+  all_ids: [],
+})
+
+export function useInfiniteScroll(
+  apiMethod, 
+  options = { rootMargin: '50px' }, 
+  baseParams = {},
+  organization = null
+) {
     // Reference to the element that triggers loading more
     const loadMoreElement = ref(null)
-
-    // Data state
-    const items = ref([])
-    const isLoading = ref(false)
-    const pagination = reactive({
-        current_page: 1,
-        last_page: null, // Will be set after the first API response
-    })
-
-    const meta = reactive({
-        total: 0,
-    })
 
     const params = reactive({ ...baseParams }) // Custom parameters for API
 
@@ -53,7 +61,7 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
         isLoading.value = true;
 
-        console.log('Params: ', params)
+        // console.log('Params: ', params)
 
         try {
             const apiParams = {
@@ -61,7 +69,12 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
                 page: pagination.current_page,
             };
 
-            const response = await apiMethod(apiParams);
+            let response;
+            if (organization) {
+              response = await apiMethod(organization, apiParams);
+            } else {
+              response = await apiMethod(apiParams);
+            }
 
             // console.log('response', response.data.links.first);
 
@@ -73,6 +86,8 @@ export function useInfiniteScroll(apiMethod, options = { rootMargin: '50px' }, b
 
             pagination.last_page = response.data.meta.last_page;
             meta.total = response.data.meta.total;
+            meta.all_ids = response.data.meta.all_ids;
+            // console.log('Total: ', response.data.meta.total);
 
             // Only increment if there's another page to load
             if (pagination.current_page < pagination.last_page) {

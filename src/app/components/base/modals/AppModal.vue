@@ -32,18 +32,31 @@
           >
             <DialogPanel
               :class="sizeClasses[size]"
-              class="relative overflow-x-hidden bg-white text-left shadow-xl transition-transform w-full overflow-y-auto"
+              class="
+                relative 
+                mx-auto 
+                text-left 
+                transition-transform 
+                w-full 
+                overflow-hidden 
+                bg-white 
+                shadow-lg 
+                rounded-lg
+              "
             >
               <!-- Close Button -->
               <button
                 type="button"
                 @click="close()"
-                class="absolute top-7 right-6 text-gray-500 hover:text-gray-700 focus:outline-none"
+                class="absolute top-4 right-7 text-gray-500 hover:text-gray-700 focus:outline-none"
               >
                 <XMarkIcon class="h-7 w-7 text-gray-600"/>
               </button>
 
-              <slot />
+              <!-- Scrollable Content Wrapper -->
+              <div class="max-h-[100vh] overflow-y-auto p-4">
+                <slot />
+              </div>
             </DialogPanel>
           </TransitionChild>
         </div>
@@ -75,15 +88,17 @@ function close() {
 }
 
 const sizeClasses = {
-  sm: 'sm:max-w-sm mx-auto top-10 rounded-2xl max-h-screen',
-  md: 'sm:max-w-md mx-auto top-10 rounded-2xl max-h-screen',
-  lg: 'sm:max-w-lg mx-auto top-10 rounded-2xl max-h-screen',
-  xl: 'sm:max-w-xl mx-auto top-10 rounded-2xl max-h-screen',
-  '2xl': 'sm:max-w-2xl mx-auto top-10 rounded-2xl max-h-screen',
-  '3xl': 'sm:max-w-3xl mx-auto top-10 rounded-2xl max-h-screen',
-  '4xl': 'sm:max-w-4xl mx-auto top-10 rounded-2xl max-h-screen',
-  '5xl': 'sm:max-w-5xl mx-auto top-10 rounded-2xl max-h-screen',
-  '6xl': 'sm:max-w-6xl mx-auto top-10 rounded-2xl max-h-screen',
+  sm: 'sm:max-w-sm top-10 max-h-screen',
+  md: 'sm:max-w-md top-10 max-h-screen',
+  lg: 'sm:max-w-lg top-10 max-h-screen',
+  xl: 'sm:max-w-xl top-10 max-h-screen',
+  '2xl': 'sm:max-w-2xl top-10max-h-screen',
+  '3xl': 'sm:max-w-3xl top-10 max-h-screen',
+  '4xl': 'sm:max-w-4xl top-10 max-h-screen',
+  '5xl': 'sm:max-w-5xl top-10 max-h-screen',
+  '6xl': 'sm:max-w-6xl top-10 max-h-screen',
+  '7xl': 'sm:max-w-7xl top-10 max-h-screen',
+  'super': 'sm:max-w-[1800px] top-[3vh] max-h-[93vh] mx-10 pb-10',
   'full': 'h-screen', // No max-width or centering for full width
 }
 </script>

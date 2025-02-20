@@ -167,7 +167,7 @@
                 </button>
 
                 <button @click="setActiveSort('updated_at')" :class="[activeSort == 'updated_at' ? 'text-violet-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'flex items-center whitespace-nowrap px-1 py-4 text-sm font-medium']">
-                  Last modified
+                  Updated
                   <span class="inline-flex ml-2 rounded bg-white border">
                     <ChevronUpIcon v-if="activeSort == 'updated_at'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
                     <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
