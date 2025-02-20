@@ -235,6 +235,10 @@
             </div>
           </div>
 
+          <!-- Issue -->
+          <AnalysisWarning v-if="dashboard.warning" :warning="dashboard.warning" class="py-2"/>
+          <AnalysisIssue v-if="dashboard.issue" :issue="dashboard.issue"/>
+
           <!-- Analysis in progress -->
           <div v-if="dashboard.analysis_in_progress" class="mb-3">
             <svg aria-hidden="true" role="status" class="inline w-4 h-4 mr-3 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -244,11 +248,8 @@
             Analysis in progress...
           </div>
 
-          <!-- Issue -->
-          <AnalysisIssue v-else-if="dashboard.issue" :issue="dashboard.issue"/>
-
           <!-- Analysis -->
-          <div v-else-if="dashboard[activeAnalysisType]">
+          <div v-else-if="!dashboard.issue && dashboard[activeAnalysisType]">
             <AnalysisExcerpt :analysis="dashboard[activeAnalysisType]"/>
 
             <div class="divide-x divide-gray-300 border-t pt-3 text-sm text-gray-400">
@@ -315,6 +316,7 @@ import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
 import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
+import AnalysisWarning from '@/domain/analyses/components/AnalysisWarning.vue'
 
 const route = useRoute()
 const router = useRouter()
