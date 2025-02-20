@@ -42,6 +42,6 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 #sentry-feedback { display: none; }
 </style>
