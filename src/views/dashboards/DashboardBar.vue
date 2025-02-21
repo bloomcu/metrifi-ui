@@ -171,9 +171,14 @@
       @change="reorderFunnel($event)"
       class="grid grid-cols-1 gap-y-2 xl:grid-cols-2 xl:gap-x-4 xl:gap-y-4 mb-12"
     >
-      <div v-for="(funnel, index) in funnelStore.funnels" :key="funnel.id" class="p-6 border-2 border-gray-200 rounded-xl bg-white">
+      <div v-for="(funnel, index) in funnelStore.funnels" :key="funnel.id" class="py-6 border-2 border-gray-200 rounded-xl bg-white">
+        <!-- Funnel issue -->
+        <div v-if="funnel.pivot.issue" class="-mt-2 px-6 border-b mb-6">
+          <AnalysisIssue :issue="funnel.pivot.issue" class="mb-4"/>
+        </div>
+
         <!-- Funnel and organization name -->
-        <div class="flex items-center justify-between">
+        <div class="px-6 flex items-center justify-between">
           <p class="text-xl font-medium leading-6 text-gray-900 tracking-tight">{{ funnel.name }}</p>
           <p v-if="isShowingOrganizations" class="text-gray-400">{{ funnel.organization.title }}</p>
         </div>
@@ -192,22 +197,15 @@
           @stepDisabled="disableFunnelStep"
           @stepExpanded="expandFunnelStep"
           @generateRecommendation="toggleGenerateRecommendationModal"
+          class="px-6"
         />
 
-        <!-- <AppButton @click="duplicateFunnel(funnel)" variant="tertiary" class="mt-2 mr-2 text-xs">Duplicate</AppButton> -->
-
-        <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
-
-        <AppButton 
-          v-if="authStore.user.role === 'admin' || authStore.user.organization.slug === funnel.organization.slug"
-          @click="openFunnel(funnel)" 
-          variant="secondary" 
-          class="mt-4 mr-2 text-xs"
-        >
-          Edit
-        </AppButton>
-
-        <AppButton v-if="funnel.pivot.disabled_steps.length" @click="enableFunnelSteps(funnel)" variant="secondary" class="mt-4 text-xs">Enable steps ({{ funnel.pivot.disabled_steps.length }})</AppButton>
+        <!-- Funnel controls -->
+        <div class="px-6">
+          <AppButton @click="detachFunnel(index, funnel.id)" variant="secondary" class="mt-4 mr-2 text-xs">Remove</AppButton>
+          <AppButton v-if="authStore.user.role === 'admin' || authStore.user.organization.slug === funnel.organization.slug" @click="openFunnel(funnel)" variant="secondary" class="mt-4 mr-2 text-xs">Edit</AppButton>
+          <AppButton v-if="funnel.pivot.disabled_steps.length" @click="enableFunnelSteps(funnel)" variant="secondary" class="mt-4 text-xs">Enable steps ({{ funnel.pivot.disabled_steps.length }})</AppButton>
+        </div>
       </div>
 
       <div @click="toggleAddFunnelModal()" class="flex items-center justify-center border border-violet-400 border-dashed rounded-xl py-8 px-2 cursor-pointer hover:bg-violet-50">
