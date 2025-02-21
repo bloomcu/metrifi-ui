@@ -280,7 +280,7 @@ const isAddFunnelsModalOpen = ref(false)
 const isShowingOrganizations = ref(false)
 const isShowingNotes = ref(false)
 const isEditingNotes = ref(false)
-const isShowingAnalysis = ref(false)
+const isShowingAnalysis = ref(true)
 const isEditingAnalysis = ref(false)
 const isShowingReference = ref(false)
 
