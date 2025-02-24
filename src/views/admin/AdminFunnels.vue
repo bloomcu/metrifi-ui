@@ -38,6 +38,7 @@
                 Name
                 <span class="inline-flex ml-2 rounded bg-violet-100">
                   <ChevronUpIcon v-if="activeSort == 'name'" :class="activeSortDirection == 'desc' ? 'rotate-180' : ''" class="text-violet-700 h-5 w-5" aria-hidden="true" />
+                  
                   <MinusIcon v-else class="text-violet-300 h-5 w-5" aria-hidden="true" />
                 </span>
               </button>
@@ -297,8 +298,8 @@ function debounce(func, wait) {
 }
 
 function setActiveSort(sort) {
-    if (sort === 'category' || sort === 'privacy') {
-        // Ensure the category and privacy sort starts with ascending order (A-Z)
+    if (sort === 'name' || sort === 'category' || sort === 'privacy') {
+        // Ensure the name, category and privacy sort starts with ascending order (A-Z)
         activeSortDirection.value = activeSort.value === sort && activeSortDirection.value === 'asc' ? 'desc' : 'asc';
     } else {
         if (activeSort.value === sort) {
