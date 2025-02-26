@@ -45,25 +45,25 @@
       <!-- Container -->
       <div class="flex flex-grow h-0">
         <!-- Left Side (Collapsible) -->
-        <div :class="toggled ? 'w-1/3 min-w-[420px]' : 'min-w-[36px]'" class="pb-20 max-w-[560px] h-full overflow-y-auto bg-white">
+        <div :class="[toggled ? 'min-w-[420px]' : 'max-w-[36px]', show === 'code' ? 'w-1/2' : 'w-1/3 max-w-[560px]']" class="pb-20 h-full overflow-y-auto bg-white">
           <div v-if="toggled" class="px-8 py-6">
-            <!-- Instructions/recommendation toggler -->
+            <!-- Tabs -->
             <div class="flex mb-6">
               <div class="p-1 border border-gray-300 rounded-lg flex space-x-1">
                   <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
-                      <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="4" cy="6" r="1"></circle><circle cx="4" cy="12" r="1"></circle><circle cx="4" cy="18" r="1"></circle></svg> -->
-                      <span class="text-sm">Instructions</span>
+                    <span class="text-sm">Instructions</span>
                   </button>
                   <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
-                      <!-- <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg> -->
-                      <span class="text-sm">Analysis</span>
+                    <span class="text-sm">Analysis</span>
+                  </button>
+                  <button @click="show = 'code'" :class="show === 'code' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                    <span class="text-sm">Code</span>
                   </button>
               </div>
             </div>
 
-            <!-- Instructions -->
+            <!-- Prompt -->
             <div v-if="show === 'prompt'">
-
               <!-- Accordion 1 - UI analysis -->
               <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
                 <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion1')">
@@ -191,10 +191,19 @@
               </div>
             </div>
 
-            <!-- Recommendation content -->
+            <!-- Recommendation -->
             <div v-if="show === 'recommendation'" class="border border-gray-300 rounded-lg p-4">
               <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
               <p v-else>Awaiting analysis...</p>
+            </div>
+
+            <!-- Code -->
+            <div v-if="show === 'code'" class="h-[100vh] overflow-y-auto flex flex-col">
+              <CodeEditor 
+                v-if="recommendationStore.recommendation.prototype" 
+                v-model="recommendationStore.recommendation.prototype" 
+              />
+              <p v-else>Awaiting prototype code...</p>
             </div>
           </div>
         </div>
@@ -243,6 +252,7 @@ import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/u
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { ArrowLeftIcon, ChevronLeftIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
+import CodeEditor from '@/views/recommendations/components/CodeEditor.vue'
 import Prototype from '@/views/recommendations/components/Prototype.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecommendationModal.vue'
