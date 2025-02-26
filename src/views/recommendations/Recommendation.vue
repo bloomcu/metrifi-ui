@@ -56,6 +56,9 @@
                   <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                     <span class="text-sm">Analysis</span>
                   </button>
+                  <button @click="show = 'chat'" :class="show === 'chat' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                    <span class="text-sm">Chat</span>
+                  </button>
                   <button @click="show = 'code'" :class="show === 'code' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                     <span class="text-sm">Code</span>
                   </button>
@@ -197,6 +200,11 @@
               <p v-else>Awaiting analysis...</p>
             </div>
 
+            <!-- Chat -->
+            <div v-if="show === 'chat'">
+              
+            </div>
+
             <!-- Code -->
             <div v-if="show === 'code'" class="h-[100vh] overflow-y-auto flex flex-col">
               <CodeEditor 
@@ -231,7 +239,11 @@
 
           <div v-if="recommendationStore.recommendation.prototype">
             <p class="text-xl font-semibold mb-4">Prototype</p>
-            <Prototype :html="recommendationStore.recommendation.prototype"/>
+            <p>Clicked element: {{ clickedElement }}</p>
+            <Prototype 
+              :html="recommendationStore.recommendation.prototype"
+              @element-clicked="handleElementClick"
+            />
             <!-- <div v-html="recommendationStore.recommendation.prototype" class="relative overflow-hidden rounded-xl shadow"></div> -->
           </div>
 
@@ -292,6 +304,11 @@ const toggleAccordion = (accordionName) => {
 
 provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
+
+const clickedElement = ref('')
+const handleElementClick = (htmlString) => {
+  clickedElement.value = htmlString
+}
 
 const updatePrototype = debounce(() => {
   console.log('Updating prototype...')
