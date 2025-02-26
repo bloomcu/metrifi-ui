@@ -1,6 +1,6 @@
 <template>
     <!-- <div ref="shadowContainer"></div> -->
-     <div v-html="html" class="relative overflow-hidden rounded-xl shadow"></div>
+     <div v-html="html" class="relative overflow-hidden rounded-md shadow-md border"></div>
 </template>
 
 <script setup>

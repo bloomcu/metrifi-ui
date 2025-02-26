@@ -44,6 +44,16 @@ export const useRecommendationStore = defineStore('recommendationStore', {
           })
       },
 
+      async update(organizationSlug, dashboardId, id, params) {
+        this.isLoading = true
+
+        await RecommendationsApi.update(organizationSlug, dashboardId, id, params)
+          .then(response => {
+            // this.recommendation = response.data.data
+            this.isLoading = false
+          })
+      },
+
       async attachFile(organizationSlug, recommendationId, fileIds, type) {
         return await RecommendationsApi.attachFile(organizationSlug, recommendationId, fileIds, type)
           .then(response => {

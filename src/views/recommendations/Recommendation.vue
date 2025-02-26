@@ -202,6 +202,7 @@
               <CodeEditor 
                 v-if="recommendationStore.recommendation.prototype" 
                 v-model="recommendationStore.recommendation.prototype" 
+                @update:modelValue="updatePrototype"
               />
               <p v-else>Awaiting prototype code...</p>
             </div>
@@ -216,7 +217,7 @@
         </div>
 
         <!-- Right Side (2/3 of the screen) -->
-        <div class="pb-40 flex-1 h-full overflow-y-auto px-12 pt-5 bg-gray-100">
+        <div class="pb-40 flex-1 h-full overflow-y-auto px-8 pt-5 bg-white">
           <!-- Loading content -->
           <div v-if="recommendationStore.recommendation.status != 'done'" class="p-6">
             <div class="flex items-center justify-center mb-6">
@@ -246,6 +247,7 @@
 
 <script setup>
 import moment from "moment"
+import debounce from 'lodash.debounce'
 import { ref, reactive, watch, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
@@ -264,9 +266,7 @@ const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const recommendationStore = useRecommendationStore()
 
 const isLoading = ref(false)
-
 const isRecommendationsListPanelOpen = ref(false)
-
 const isGenerateRecommendationModalOpen = ref(false)
 const recommendationStepIndex = ref(null)
 const recommendationPrompt = ref('')
@@ -282,16 +282,27 @@ const accordionStates = reactive({
   accordion1: false,
   accordion2: false,
   accordion3: false,
-});
+})
 
 const toggleAccordion = (accordionName) => {
   if (accordionStates.hasOwnProperty(accordionName)) {
-    accordionStates[accordionName] = !accordionStates[accordionName];
+    accordionStates[accordionName] = !accordionStates[accordionName]
   }
-};
+}
 
 provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
+
+const updatePrototype = debounce(() => {
+  console.log('Updating prototype...')
+  isLoading.value = true
+
+  recommendationStore.update(route.params.organization, route.params.dashboard, route.params.recommendation, { 
+    prototype: recommendationStore.recommendation.prototype 
+  }).then(() => {
+    setTimeout(() => isLoading.value = false, 800)
+  })
+}, 800)
 
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
@@ -300,8 +311,6 @@ const steps = [
   { status: 'anonymizer_in_progress', text: 'Reviewing analysis', completed: false },
   { status: 'content_writer_in_progress', text: 'Writing new content', completed: false },
   { status: 'section_counter_in_progress', text: 'Counting sections', completed: false },
-  // { status: 'section_categorizer_in_progress', text: 'Categorizing sections', completed: false },
-  // { status: 'component_picker_in_progress', text: 'Picking webpage components', completed: false },
   { status: 'page_builder_in_progress', text: 'Building component', completed: false },
   { status: 'page_builder_completed', text: 'Queuing next component', completed: false },
   { status: 'done', text: 'All done', completed: false },
@@ -324,88 +333,61 @@ const progressWidth = computed(() => {
 })
 
 function fetchRecommendation() {
-  isLoading.value = true;
-
+  isLoading.value = true
   recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
     .then(response => {
-      const recommendation = recommendationStore.recommendation;
+      const recommendation = recommendationStore.recommendation
       setTimeout(() => isLoading.value = false, 800)
       
-      // if (hasShownAnalysisToUser.value === false && recommendation.content) {
-      //   toggled.value = true;
-      // } 
-
       if (hasShownAnalysisToUser.value === false && recommendation.content) {
-        hasShownAnalysisToUser.value = true;
+        hasShownAnalysisToUser.value = true
         show.value = 'recommendation'
       }
 
-      // Update the current step based on the recommendation status
-      const currentStepIdx = steps.findIndex(step => step.status === recommendation.status);
+      const currentStepIdx = steps.findIndex(step => step.status === recommendation.status)
       if (currentStepIdx !== -1) {
-        currentStepIndex.value = currentStepIdx;
-        setTimeout(() => isLoading.value = false, 800) // move into store
-      }
-
-      // Continue polling if the recommendation status is null or queued
-      if (recommendation.status === null || recommendation.status === 'queued') {
-        return;
-      }
-      
-      // Stop polling if the recommendation process is completed
-      if (recommendation.status === 'done') {
-        clearInterval(interval);
+        currentStepIndex.value = currentStepIdx
         setTimeout(() => isLoading.value = false, 800)
       }
 
-      // Stop polling if the recommendation process has softly failed
+      if (recommendation.status === null || recommendation.status === 'queued') {
+        return
+      }
+      
+      if (recommendation.status === 'done') {
+        clearInterval(interval)
+        setTimeout(() => isLoading.value = false, 800)
+      }
+
       if (['requires_action', 'cancelled', 'failed', 'expired'].some(status => recommendation.status.includes(status))) {
-        clearInterval(interval);
-        issue.value = recommendation.status;
+        clearInterval(interval)
+        issue.value = recommendation.status
         setTimeout(() => isLoading.value = false, 800)
       }
     })
     .catch(error => {
-      console.error('Error fetching recommendation status:', error);
-    });
+      console.error('Error fetching recommendation status:', error)
+    })
 }
-
-// Watch the route param 'recommendation' for changes
-// watch(() => route.params.recommendation, (recommendationId) => {
-//   if (recommendationId) {
-//     fetchRecommendation()
-//   }
-// })
 
 const tailwind = ref('tailwind')
 let tailwindScript = null
 
 onMounted(() => {
-  // Initial fetch for recommendation status
   fetchRecommendation()
-
-  // Poll recommendation status every 3 seconds
   interval = setInterval(fetchRecommendation, 3000)
 
-  // Load Tailwind play css
   tailwindScript = document.createElement('script')
   tailwindScript.src = 'https://cdn.tailwindcss.com'
   tailwind.value.appendChild(tailwindScript)
 
-  // Hydrate the organization subscription store
   organizationSubscriptionStore.show(route.params.organization)
 })
 
 onUnmounted(() => {
-  // Clear loader interval
   if (interval) {
     clearInterval(interval)
   }
-
-  // Unload Tailwind play css
-  // if (tailwindScript && tailwindScript.parentNode) {
-  //   document.head.removeChild(tailwindScript)
-  // }
 })
 </script>
 

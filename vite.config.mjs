@@ -22,10 +22,13 @@ export default defineConfig({
       }
   },
 
-  plugins: [vue(), sentryVitePlugin({
-    org: "metrifi",
-    project: "javascript-vue"
-  })],
+  plugins: [
+    vue(), 
+    sentryVitePlugin({
+      org: "metrifi",
+      project: "javascript-vue"
+    }),
+  ],
 
   // Compile time flags - https://vuejs.org/api/compile-time-flags
   define: {
