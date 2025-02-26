@@ -45,11 +45,11 @@
       <!-- Container -->
       <div class="flex flex-grow h-0">
         <!-- Left Side (Collapsible) -->
-        <div :class="[toggled ? 'min-w-[420px]' : 'max-w-[36px]', show === 'code' ? 'w-1/2' : 'w-1/3 max-w-[560px]']" class="pb-20 h-full overflow-y-auto bg-white">
+        <div :class="[toggled ? 'min-w-[420px]' : 'max-w-[36px]', show === 'code' ? 'w-1/2' : 'w-1/3 max-w-[560px]']" class="pb-20 h-full overflow-y-auto bg-gray-50 border-r">
           <div v-if="toggled" class="px-8 py-6">
             <!-- Tabs -->
             <div class="flex mb-6">
-              <div class="p-1 border border-gray-300 rounded-lg flex space-x-1">
+              <div class="p-1 border border-gray-300 bg-white rounded-lg flex space-x-1">
                   <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                     <span class="text-sm">Instructions</span>
                   </button>
@@ -62,7 +62,7 @@
               </div>
             </div>
 
-            <!-- Prompt -->
+            <!-- Instructions (prompt) -->
             <div v-if="show === 'prompt'">
               <!-- Accordion 1 - UI analysis -->
               <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
@@ -191,8 +191,8 @@
               </div>
             </div>
 
-            <!-- Recommendation -->
-            <div v-if="show === 'recommendation'" class="border border-gray-300 rounded-lg p-4">
+            <!-- Analysis (recommendation) -->
+            <div v-if="show === 'recommendation'" class="border border-gray-300 bg-white rounded-lg p-4">
               <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
               <p v-else>Awaiting analysis...</p>
             </div>
