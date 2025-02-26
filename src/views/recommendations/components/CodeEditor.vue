@@ -4,19 +4,6 @@
 
 <script setup>
 import { ref, onMounted, watch, onUnmounted } from 'vue'
-import * as monaco from 'monaco-editor'
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
-
-// Configure Monaco environment to use workers
-self.MonacoEnvironment = {
-  getWorker(_, label) {
-    if (label === 'html') {
-      return new htmlWorker()
-    }
-    return new editorWorker()
-  }
-}
 
 const props = defineProps({
   modelValue: {
@@ -30,7 +17,22 @@ const emit = defineEmits(['update:modelValue'])
 const editorRef = ref()
 let editorInstance = null
 
-onMounted(() => {
+onMounted(async () => {
+  // Dynamically import Monaco
+  const monaco = await import('monaco-editor')
+  const editorWorker = await import('monaco-editor/esm/vs/editor/editor.worker?worker')
+  const htmlWorker = await import('monaco-editor/esm/vs/language/html/html.worker?worker')
+
+  // Configure Monaco environment
+  self.MonacoEnvironment = {
+    getWorker(_, label) {
+      if (label === 'html') {
+        return new htmlWorker.default()
+      }
+      return new editorWorker.default()
+    }
+  }
+
   // Configure HTML formatting options
   monaco.languages.html.htmlDefaults.setOptions({
     format: {
@@ -59,7 +61,6 @@ onMounted(() => {
     acceptSuggestionOnEnter: 'on'
   })
 
-  // Sync editor changes with parent
   editorInstance.onDidChangeModelContent(() => {
     emit('update:modelValue', editorInstance.getValue())
   })
