@@ -201,8 +201,68 @@
             </div>
 
             <!-- Chat -->
-            <div v-if="show === 'chat'">
+            <div v-if="show === 'chat'" class="h-[calc(100vh-200px)] flex flex-col">
+              <!-- Chat Messages -->
+              <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
+                <div v-for="(message, index) in messages" :key="index" 
+                    :class="[message.role === 'user' ? 'ml-auto' : 'mr-auto', 'chat-message transition-all duration-200 ease-in-out hover:opacity-90']" 
+                    class="max-w-[70%]">
+                  <div :class="message.role === 'user' ? 'bg-violet-100' : 'bg-gray-100'" 
+                      class="rounded-lg p-3">
+                    <p class="text-sm">{{ message.content }}</p>
+                    <!-- Attached Elements -->
+                    <div v-if="message.elements?.length" class="mt-2 space-y-2">
+                      <div v-for="element in message.elements" :key="element.html" 
+                          class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
+                        <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
+                          <span class="text-xs">{{ element.tag }}</span>
+                        </div>
+                        <span class="text-xs truncate flex-1">{{ element.html }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="text-xs text-gray-500 block mt-1">
+                    {{ message.timestamp }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Chat Input -->
+              <!-- Current Attachments -->
+              <div v-if="currentElements.length" class="mb-2 space-y-2">
+                <div v-for="(element, index) in currentElements" :key="element.html" class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
+                    <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
+                      <span class="text-xs">{{ element.tag }}</span>
+                    </div>
+                  <span class="text-xs truncate flex-1">{{ element.html }}</span>
+                  <button 
+                    @click="currentElements.splice(index, 1)" 
+                    class="text-red-500 bg-red-100 hover:bg-red-200 p-1 rounded-full transition-colors duration-200 flex items-center justify-center w-6 h-6"
+                    title="Remove attachment"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
               
+              <!-- Input Area -->
+              <div class="flex gap-2">
+                <textarea
+                  v-model="newMessage"
+                  @keydown.enter.prevent="sendMessage"
+                  placeholder="Request changes to the prototype"
+                  class="flex-1 p-2 border border-gray-300 rounded resize-none h-12 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                ></textarea>
+                <button 
+                  @click="sendMessage"
+                  :disabled="!newMessage.trim()"
+                  class="px-4 py-2 bg-violet-500 text-white rounded disabled:bg-gray-300"
+                >
+                  Send
+                </button>
+              </div>
             </div>
 
             <!-- Code -->
@@ -239,7 +299,6 @@
 
           <div v-if="recommendationStore.recommendation.prototype">
             <p class="text-xl font-semibold mb-4">Prototype</p>
-            <p>Clicked element: {{ clickedElement }}</p>
             <Prototype 
               :html="recommendationStore.recommendation.prototype"
               @element-clicked="handleElementClick"
@@ -295,7 +354,6 @@ const accordionStates = reactive({
   accordion2: false,
   accordion3: false,
 })
-
 const toggleAccordion = (accordionName) => {
   if (accordionStates.hasOwnProperty(accordionName)) {
     accordionStates[accordionName] = !accordionStates[accordionName]
@@ -305,22 +363,7 @@ const toggleAccordion = (accordionName) => {
 provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
 provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 
-const clickedElement = ref('')
-const handleElementClick = (htmlString) => {
-  clickedElement.value = htmlString
-}
-
-const updatePrototype = debounce(() => {
-  console.log('Updating prototype...')
-  isLoading.value = true
-
-  recommendationStore.update(route.params.organization, route.params.dashboard, route.params.recommendation, { 
-    prototype: recommendationStore.recommendation.prototype 
-  }).then(() => {
-    setTimeout(() => isLoading.value = false, 800)
-  })
-}, 800)
-
+// Generating recommendation states
 const steps = [
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
   { status: 'comparison_analyzer_in_progress', text: 'Analyzing comparisons', completed: false },
@@ -332,6 +375,77 @@ const steps = [
   { status: 'page_builder_completed', text: 'Queuing next component', completed: false },
   { status: 'done', text: 'All done', completed: false },
 ]
+
+/** 
+ * Chat functionality
+ * --------------------
+ */
+const messages = reactive([])
+const newMessage = ref('')
+const currentElements = reactive([])
+
+// Add chat methods
+const sendMessage = async () => {
+  if (!newMessage.value.trim()) return
+
+  const userMessage = {
+    role: 'user',
+    content: newMessage.value,
+    elements: [...currentElements],
+    timestamp: new Date().toLocaleTimeString()
+  }
+  
+  messages.push(userMessage)
+  
+  // Simulate Grok response (replace with actual API call)
+  const grokResponse = {
+    role: 'assistant',
+    content: `Analyzing your message${currentElements.length ? ' and attached elements' : ''}`,
+    timestamp: new Date().toLocaleTimeString()
+  }
+  
+  setTimeout(() => messages.push(grokResponse), 1000)
+  
+  // Clear inputs
+  newMessage.value = ''
+  currentElements.length = 0
+}
+
+const removeElement = (messageIndex, element) => {
+  const message = messages[messageIndex]
+  if (message.elements) {
+    const index = message.elements.findIndex(e => e.html === element.html)
+    if (index !== -1) message.elements.splice(index, 1)
+  }
+}
+
+// Prototype clicked elements state
+const clickedElement = ref('')
+const handleElementClick = (htmlString) => {
+  show.value = 'chat'
+
+  clickedElement.value = htmlString
+  const tag = htmlString.match(/^<([a-zA-Z]+)/)?.[1] || 'element'
+  currentElements.push({
+    html: htmlString,
+    tag: tag
+  })
+}
+
+/** 
+ * Prototype CRUD functionality
+ * --------------------
+ */
+const updatePrototype = debounce(() => {
+  console.log('Updating prototype...')
+  isLoading.value = true
+
+  recommendationStore.update(route.params.organization, route.params.dashboard, route.params.recommendation, { 
+    prototype: recommendationStore.recommendation.prototype 
+  }).then(() => {
+    setTimeout(() => isLoading.value = false, 800)
+  })
+}, 800)
 
 function toggleGenerateRecommendationModal() { 
   isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 
@@ -387,6 +501,10 @@ function fetchRecommendation() {
     })
 }
 
+/** 
+ * Embedded Tailwind CSS
+ * --------------------
+ */
 const tailwind = ref('tailwind')
 let tailwindScript = null
 

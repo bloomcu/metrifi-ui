@@ -58,9 +58,10 @@ onMounted(() => {
   const style = document.createElement('style')
   style.textContent = `
     .highlight-element {
-      background-color: rgba(255, 255, 0, 0.2);
-      outline: 2px solid rgba(255, 255, 0, 0.5);
-      transition: all 0.2s ease;
+      background-color: rgba(237, 234, 255, 1);
+      outline: 2px solid rgba(139, 92, 246, 1) !important;
+      transition: all 0.4s ease;
+      cursor: pointer;
     }
   `
   document.head.appendChild(style)
