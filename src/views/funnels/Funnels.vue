@@ -348,8 +348,8 @@ function debounce(func, wait) {
 }
 
 function setActiveSort(sort) {
-    if (sort === 'category' || sort === 'privacy') {
-        // Ensure the category and privacy sort starts with ascending order (A-Z)
+  if (sort === 'name' || sort === 'category' || sort === 'privacy') {
+        // Ensure the name, category and privacy sort starts with ascending order (A-Z)
         activeSortDirection.value = activeSort.value === sort && activeSortDirection.value === 'asc' ? 'desc' : 'asc';
     } else {
         if (activeSort.value === sort) {
