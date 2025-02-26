@@ -425,7 +425,7 @@ const handleElementClick = (htmlString) => {
   show.value = 'chat'
 
   clickedElement.value = htmlString
-  const tag = htmlString.match(/^<([a-zA-Z]+)/)?.[1] || 'element'
+  const tag = htmlString.match(/^<([a-zA-Z][a-zA-Z0-9]*)/)?.[1] || 'element'
   currentElements.push({
     html: htmlString,
     tag: tag
