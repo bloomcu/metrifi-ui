@@ -254,13 +254,21 @@
                   @keydown.enter.prevent="sendMessage"
                   placeholder="Request changes to the prototype"
                   class="flex-1 p-2 border border-gray-300 rounded resize-none h-12 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  :disabled="isSending"
                 ></textarea>
                 <button 
                   @click="sendMessage"
-                  :disabled="!newMessage.trim()"
-                  class="px-4 py-2 bg-violet-500 text-white rounded disabled:bg-gray-300"
+                  :disabled="!newMessage.trim() || isSending"
+                  class="px-4 py-2 bg-violet-500 text-white rounded disabled:bg-gray-300 relative"
                 >
-                  Send
+                  <span v-if="isSending" class="flex items-center gap-2">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                  </span>
+                  <span v-else>Send</span>
                 </button>
               </div>
             </div>
@@ -321,6 +329,7 @@ import moment from "moment"
 import debounce from 'lodash.debounce'
 import { ref, reactive, watch, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { chatsApi } from '@/domain/chats/api/chatsApi.js'
 import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { ArrowLeftIcon, ChevronLeftIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
@@ -380,6 +389,7 @@ const steps = [
  * Chat functionality
  * --------------------
  */
+const isSending = ref(false)
 const messages = reactive([])
 const newMessage = ref('')
 const currentElements = reactive([])
@@ -388,6 +398,9 @@ const currentElements = reactive([])
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return
 
+  isSending.value = true
+
+  // Create user message object
   const userMessage = {
     role: 'user',
     content: newMessage.value,
@@ -395,20 +408,51 @@ const sendMessage = async () => {
     timestamp: new Date().toLocaleTimeString()
   }
   
+  // Add to local messages array for immediate UI update
   messages.push(userMessage)
-  
-  // Simulate Grok response (replace with actual API call)
-  const grokResponse = {
-    role: 'assistant',
-    content: `Analyzing your message${currentElements.length ? ' and attached elements' : ''}`,
-    timestamp: new Date().toLocaleTimeString()
+
+  try {
+    // Prepare the data for Grok
+    const chatRequest = {
+      message: newMessage.value,
+      prototype_html: recommendationStore.recommendation.prototype,
+      attached_elements: currentElements.map(element => element.html),
+      response_format: 'JSON with the structure { code: string }.',
+    }
+
+    // Send to Grok via API
+    const response = await chatsApi.store(route.params.organization, chatRequest)
+    console.log('Grok response:', response)
+
+    // Add Grok's response to messages
+    const grokResponse = {
+      role: 'assistant',
+      content: response.data.message || 'Changes processed successfully',
+      timestamp: new Date().toLocaleTimeString()
+    }
+    
+    messages.push(grokResponse)
+
+    // Update the prototype
+    if (response.data.data.code) {
+      recommendationStore.recommendation.prototype = response.data.data.code
+      // updatePrototype()
+    }
+  } catch (error) {
+    console.error('Error sending message to Grok:', error)
+    
+    // Add error message to chat
+    messages.push({
+      role: 'assistant',
+      content: 'Sorry, there was an error processing your request. Please try again.',
+      timestamp: new Date().toLocaleTimeString()
+    })
+  } finally {
+    // Clear inputs
+    isSending.value = false
+    newMessage.value = ''
+    currentElements.length = 0
   }
-  
-  setTimeout(() => messages.push(grokResponse), 1000)
-  
-  // Clear inputs
-  newMessage.value = ''
-  currentElements.length = 0
 }
 
 const removeElement = (messageIndex, element) => {
