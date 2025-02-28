@@ -130,24 +130,21 @@ const sendMessage = async () => {
     let originalPrototype = recommendationStore.recommendation.prototype || ''
     let lastValidPrototype = originalPrototype
 
-    // Function to replace an element in the HTML string by index
     function replaceElementByStringIndex(htmlString, newElement, index) {
-      // Match top-level divs and sections, avoiding nested ones
-      const elementRegex = /<(div|section)[^>]*>[\s\S]*?(?=<\/\1>|$)/gi;
+      // Match top-level divs and sections with proper tag closure
+      const elementRegex = /<(div|section)[^>]*>[\s\S]*?<\/\1>/gi;
       let elements = [];
       let match;
       let lastIndex = 0;
 
       // Collect top-level elements with their positions
       while ((match = elementRegex.exec(htmlString)) !== null) {
-        const fullMatch = match[0] + htmlString.substring(match.index + match[0].length, htmlString.indexOf(`</${match[1]}>`, match.index) + `</${match[1]}>`.length);
         elements.push({
-          content: fullMatch,
+          content: match[0],
           start: match.index,
-          end: match.index + fullMatch.length
+          end: elementRegex.lastIndex
         });
-        lastIndex = match.index + fullMatch.length;
-        elementRegex.lastIndex = lastIndex; // Update the lastIndex to continue searching
+        lastIndex = elementRegex.lastIndex;
       }
 
       // Validate the index

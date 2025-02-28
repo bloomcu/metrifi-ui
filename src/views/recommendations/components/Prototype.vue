@@ -102,8 +102,9 @@ onMounted(() => {
   const style = document.createElement('style')
   style.textContent = `
     .highlight-element {
-      background-color: rgba(237, 234, 255, 1);
-      outline: 2px solid rgba(139, 92, 246, 1) !important;
+      background-color: rgba(237, 234, 255, 1) !important;
+      background-image: linear-gradient(rgba(237, 234, 255, 1), rgba(237, 234, 255, 1)) !important;
+      outline: 1px solid rgba(139, 92, 246, 1) !important;
       transition: all 0.4s ease;
       cursor: pointer;
     }
