@@ -239,7 +239,7 @@
 
           <div v-if="recommendationStore.recommendation.prototype">
             <p class="text-xl font-semibold mb-4">Prototype</p>
-            <pre>{{ recommendationStore.clickedElement }}</pre>
+            <!-- <pre>{{ recommendationStore.clickedElement }}</pre> -->
             <Prototype 
               :html="recommendationStore.recommendation.prototype"
               @element-clicked="handleElementClick"
@@ -295,7 +295,7 @@ const recommendationSecretShopperPrompt = ref('')
 // Tabs state
 const hasShownAnalysisToUser = ref(false)
 const toggled = ref(true)
-const show = ref('prompt')
+const show = ref('chat')
 
 // Accordions state
 const accordionStates = reactive({
@@ -494,10 +494,10 @@ function fetchRecommendation() {
       const recommendation = recommendationStore.recommendation
       setTimeout(() => isLoading.value = false, 800)
       
-      if (hasShownAnalysisToUser.value === false && recommendation.content) {
-        hasShownAnalysisToUser.value = true
-        show.value = 'recommendation'
-      }
+      // if (hasShownAnalysisToUser.value === false && recommendation.content) {
+      //   hasShownAnalysisToUser.value = true
+      //   show.value = 'recommendation'
+      // }
 
       const currentStepIdx = steps.findIndex(step => step.status === recommendation.status)
       if (currentStepIdx !== -1) {

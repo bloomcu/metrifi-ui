@@ -105,7 +105,7 @@ const sendMessage = async () => {
   let accumulatedHtml = ''
   let assistantMessage = null
   let originalPrototype = recommendationStore.recommendation.prototype || ''
-  let lastValidPrototype = originalPrototype // Declare here to be in scope for catch
+  let lastValidPrototype = originalPrototype
 
   try {
     const stream = await openai.chat.completions.create({
@@ -156,7 +156,6 @@ const sendMessage = async () => {
       );
     }
 
-    // Stream only to chat interface
     for await (const chunk of stream) {
       const content = chunk.choices[0].delta.content
       if (content) {
@@ -176,11 +175,17 @@ const sendMessage = async () => {
       }
     }
 
-    // After streaming is complete, update the prototype
+    // Clean the HTML and remove the highlight-element class
     const cleanedHtml = accumulatedHtml.replace(/```html\s*|\s*```/g, '').trim()
+    const withoutHighlight = cleanedHtml.replace(/class=["']([^"']*)\bhighlight-element\b([^"']*)["']/i, (match, before, after) => {
+      const newClass = `${before || ''}${after || ''}`.trim();
+      return newClass ? `class="${newClass}"` : '';
+    }).replace(/class=["']\s*["']/g, ''); // Remove empty class attributes
+
+    // Update the prototype with the cleaned HTML
     lastValidPrototype = replaceElementByStringIndex(
       originalPrototype,
-      cleanedHtml,
+      withoutHighlight,
       recommendationStore.clickedElement?.index || 0
     )
     recommendationStore.recommendation.prototype = lastValidPrototype
@@ -193,7 +198,6 @@ const sendMessage = async () => {
       { prototype: lastValidPrototype }
     )
 
-    // Clear the clicked element after successful update
     recommendationStore.clearClickedElement()
 
   } catch (error) {
@@ -203,7 +207,7 @@ const sendMessage = async () => {
       content: `Error processing request: ${error.message}`,
       timestamp: new Date().toLocaleTimeString()
     })
-    recommendationStore.recommendation.prototype = lastValidPrototype // Now accessible
+    recommendationStore.recommendation.prototype = lastValidPrototype
   } finally {
     isSending.value = false
     newMessage.value = ''
