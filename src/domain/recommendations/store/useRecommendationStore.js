@@ -6,6 +6,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         recommendation: null,
         recommendations: [],
         isLoading: false,
+        clickedElements: [],
     }),
     
     actions: {
@@ -62,6 +63,18 @@ export const useRecommendationStore = defineStore('recommendationStore', {
             console.log('Error error attaching file', error.response.data)
           })
       },
+
+      addClickedElement(element) {
+        this.clickedElements.push(element)
+      },
+
+      setClickedElements(elements) {
+          this.clickedElements = elements
+      },
+
+      clearClickedElements() {
+          this.clickedElements = []
+      }
     }
 })
 

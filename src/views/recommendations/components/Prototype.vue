@@ -11,14 +11,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 
 // Define props
 const props = defineProps({
   html: String
 })
 
-// Define emits
-const emit = defineEmits(['element-clicked'])
+// Initialize store
+const recommendationStore = useRecommendationStore()
 
 // References
 const container = ref(null)
@@ -47,9 +48,15 @@ const clearHighlight = () => {
 const handleClick = (event) => {
   const target = event.target
   if (target !== container.value) {
-    // Get the outer HTML of the clicked element
+    // Get the outer HTML and tag of the clicked element
     const elementHtml = target.outerHTML
-    emit('element-clicked', elementHtml)
+    const tag = target.tagName.toLowerCase()
+    
+    // Add clicked element directly to the store
+    recommendationStore.addClickedElement({
+      html: elementHtml,
+      tag: tag
+    })
   }
 }
 
