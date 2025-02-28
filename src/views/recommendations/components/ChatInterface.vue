@@ -26,8 +26,8 @@
     </div>
 
     <!-- Current Attachments -->
-    <div v-if="currentElements.length" class="mb-2 space-y-2 px-4">
-      <div v-for="(element, index) in currentElements" :key="element.html" 
+    <div v-if="recommendationStore.clickedElements.length" class="mb-2 space-y-2 px-4">
+      <div v-for="(element, index) in recommendationStore.clickedElements" :key="element.html" 
           class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
         <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
           <span class="text-xs">{{ element.tag }}</span>
@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import OpenAI from 'openai'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useRoute } from 'vue-router'
@@ -91,12 +91,6 @@ const recommendationStore = useRecommendationStore()
 const isSending = ref(false)
 const messages = reactive([])
 const newMessage = ref('')
-const currentElements = reactive([])
-
-watch(() => recommendationStore.clickedElements, (newElements) => {
-  currentElements.length = 0
-  newElements.forEach(element => currentElements.push({ ...element }))
-}, { deep: true })
 
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return
@@ -106,7 +100,7 @@ const sendMessage = async () => {
   const userMessage = {
     role: 'user',
     content: newMessage.value,
-    elements: [...currentElements],
+    elements: [...recommendationStore.clickedElements],
     timestamp: new Date().toLocaleTimeString()
   }
   messages.push(userMessage)
@@ -126,7 +120,7 @@ const sendMessage = async () => {
           content: JSON.stringify({
             message: newMessage.value,
             prototype_html: recommendationStore.recommendation.prototype,
-            elements_to_be_changed_in_the_prototype: currentElements.map(element => element.html),
+            elements_to_be_changed_in_the_prototype: recommendationStore.clickedElements.map(element => element.html),
           })
         }
       ],
@@ -178,18 +172,13 @@ const sendMessage = async () => {
   } finally {
     isSending.value = false
     newMessage.value = ''
-    currentElements.length = 0
     recommendationStore.clearClickedElements()
   }
 }
 
 const removeElement = (index) => {
-  currentElements.splice(index, 1)
-  recommendationStore.setClickedElements([...currentElements])
+  const updatedElements = [...recommendationStore.clickedElements]
+  updatedElements.splice(index, 1)
+  recommendationStore.setClickedElements(updatedElements)
 }
-
-onMounted(() => {
-  currentElements.length = 0
-  recommendationStore.clickedElements.forEach(element => currentElements.push({ ...element }))
-})
 </script>
