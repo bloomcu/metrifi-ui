@@ -424,8 +424,8 @@ const sendMessage = async () => {
         { 
           role: "system", 
           content: "You are a coding expert. I am requesting changes to an HTML prototype. " +
-            "Stream the updated prototype HTML as a raw string. " +
-            "Do NOT return JSON, objects, or Markdown. Return only the raw HTML string."
+            "Stream the updated prototype HTML as a raw string. Not just the updated parts of the prototype, the whole prototype as a raw string." +
+            "Do NOT stream JSON, objects, or Markdown. I don't want to see any backticks. Stream only the raw HTML string."
         },
         { 
           role: "user",
