@@ -45,8 +45,8 @@
       <!-- Container -->
       <div class="flex flex-grow h-0">
         <!-- Left Side (Collapsible) -->
-        <div :class="[toggled ? 'min-w-[420px]' : 'max-w-[36px]', show === 'code' ? 'w-1/2' : 'w-1/3 max-w-[560px]']" class="pb-20 h-full overflow-y-auto bg-gray-50 border-r">
-          <div v-if="toggled" class="px-8 py-6">
+        <div :class="[toggled ? 'min-w-[420px]' : 'max-w-[36px]', show === 'code' ? 'w-1/2' : 'w-1/3 max-w-[560px]']" class="pb-20 h-full overflow-y-auto bg-white border-r">
+          <div v-if="toggled" class="px-4 pt-6">
             <!-- Tabs -->
             <div class="flex mb-6">
               <div class="p-1 border border-gray-300 bg-white rounded-lg flex space-x-1">

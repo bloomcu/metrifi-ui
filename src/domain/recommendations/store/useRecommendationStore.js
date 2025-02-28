@@ -6,7 +6,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         recommendation: null,
         recommendations: [],
         isLoading: false,
-        clickedElements: [],
+        clickedElement: null,
     }),
     
     actions: {
@@ -65,15 +65,15 @@ export const useRecommendationStore = defineStore('recommendationStore', {
       },
 
       addClickedElement(element) {
-        this.clickedElements.push(element)
+        this.clickedElement = element;
       },
 
-      setClickedElements(elements) {
-          this.clickedElements = elements
+      setClickedElement(element) {
+          this.clickedElement = element;
       },
 
-      clearClickedElements() {
-          this.clickedElements = []
+      clearClickedElement() {
+          this.clickedElement = null;
       }
     }
 })

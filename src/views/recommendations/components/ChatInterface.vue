@@ -1,21 +1,20 @@
 <template>
   <div class="h-[calc(100vh-200px)] flex flex-col">
     <!-- Chat Messages -->
-    <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
+    <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
       <div v-for="(message, index) in messages" :key="index" 
           :class="[message.role === 'user' ? 'ml-auto' : 'mr-auto', 'chat-message transition-all duration-200 ease-in-out hover:opacity-90']" 
           class="max-w-[70%]">
         <div :class="message.role === 'user' ? 'bg-violet-100' : 'bg-gray-100'" 
-            class="rounded-lg p-3">
+            class="rounded-lg p-3 overflow-hidden">
           <p class="text-sm">{{ message.content }}</p>
-          <!-- Attached Elements -->
-          <div v-if="message.elements?.length" class="mt-2 space-y-2">
-            <div v-for="element in message.elements" :key="element.html" 
-                class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
+          <!-- Attached Element (singular) -->
+          <div v-if="message.element" class="mt-2 space-y-2">
+            <div class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
               <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
-                <span class="text-xs">{{ element.tag }}</span>
+                <span class="text-xs">{{ message.element.tag }}</span>
               </div>
-              <span class="text-xs truncate flex-1">{{ element.html }}</span>
+              <span class="text-xs truncate flex-1">{{ message.element.html }}</span>
             </div>
           </div>
         </div>
@@ -25,16 +24,15 @@
       </div>
     </div>
 
-    <!-- Current Attachments -->
-    <div v-if="recommendationStore.clickedElements.length" class="mb-2 space-y-2 px-4">
-      <div v-for="(element, index) in recommendationStore.clickedElements" :key="element.html" 
-          class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
+    <!-- Current Attachment (singular) -->
+    <div v-if="recommendationStore.clickedElement" class="mb-2 space-y-2 px-4">
+      <div class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
         <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
-          <span class="text-xs">{{ element.tag }}</span>
+          <span class="text-xs">{{ recommendationStore.clickedElement.tag }}</span>
         </div>
-        <span class="text-xs truncate flex-1">{{ element.html }}</span>
+        <span class="text-xs truncate flex-1">{{ recommendationStore.clickedElement.html }}</span>
         <button 
-          @click="removeElement(index)" 
+          @click="removeElement" 
           class="text-red-500 bg-red-100 hover:bg-red-200 p-1 rounded-full transition-colors duration-200 flex items-center justify-center w-6 h-6"
           title="Remove attachment"
         >
@@ -78,7 +76,6 @@ import OpenAI from 'openai'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useRoute } from 'vue-router'
 
-// Initialize OpenAI client
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_GROK_API_KEY,
   baseURL: "https://api.x.ai/v1",
@@ -100,7 +97,7 @@ const sendMessage = async () => {
   const userMessage = {
     role: 'user',
     content: newMessage.value,
-    elements: [...recommendationStore.clickedElements],
+    element: recommendationStore.clickedElement, // Changed from elements array to single element
     timestamp: new Date().toLocaleTimeString()
   }
   messages.push(userMessage)
@@ -120,7 +117,7 @@ const sendMessage = async () => {
           content: JSON.stringify({
             message: newMessage.value,
             prototype_html: recommendationStore.recommendation.prototype,
-            elements_to_be_changed_in_the_prototype: recommendationStore.clickedElements.map(element => element.html),
+            element_to_be_changed_in_the_prototype: recommendationStore.clickedElement?.html || null // Changed to singular
           })
         }
       ],
@@ -172,13 +169,11 @@ const sendMessage = async () => {
   } finally {
     isSending.value = false
     newMessage.value = ''
-    recommendationStore.clearClickedElements()
+    recommendationStore.clearClickedElement() // Updated to singular
   }
 }
 
-const removeElement = (index) => {
-  const updatedElements = [...recommendationStore.clickedElements]
-  updatedElements.splice(index, 1)
-  recommendationStore.setClickedElements(updatedElements)
+const removeElement = () => { // Updated to handle single element
+  recommendationStore.setClickedElement(null) // Updated to singular
 }
 </script>

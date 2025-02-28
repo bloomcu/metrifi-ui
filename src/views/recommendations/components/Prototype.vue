@@ -13,54 +13,59 @@
 import { ref, onMounted } from 'vue'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 
-// Define props
 const props = defineProps({
   html: String
 })
 
-// Initialize store
 const recommendationStore = useRecommendationStore()
-
-// References
 const container = ref(null)
 const highlightedElement = ref(null)
 
-// Hover handling
+// Add a reference to track the currently selected element
+const selectedElement = ref(null)
+
 const handleHover = (event) => {
-  clearHighlight() // Clear previous highlight
+  clearHighlight()
   
   const target = event.target
   if (target !== container.value) {
-    // Add highlight styling
     target.classList.add('highlight-element')
     highlightedElement.value = target
   }
 }
 
 const clearHighlight = () => {
-  if (highlightedElement.value) {
+  if (highlightedElement.value && highlightedElement.value !== selectedElement.value) {
     highlightedElement.value.classList.remove('highlight-element')
     highlightedElement.value = null
   }
 }
 
-// Click handling
 const handleClick = (event) => {
   const target = event.target
   if (target !== container.value) {
-    // Get the outer HTML and tag of the clicked element
+    // Remove selected styling from previously selected element
+    if (selectedElement.value) {
+      selectedElement.value.classList.remove('highlight-element')
+    }
+
+    // Set new selected element
     const elementHtml = target.outerHTML
     const tag = target.tagName.toLowerCase()
     
-    // Add clicked element directly to the store
     recommendationStore.addClickedElement({
       html: elementHtml,
       tag: tag
     })
+
+    // Update selected element reference
+    selectedElement.value = target
+    
+    // Ensure the selected element stays highlighted
+    target.classList.add('highlight-element')
   }
 }
 
-// Add CSS styles
 onMounted(() => {
   const style = document.createElement('style')
   style.textContent = `
