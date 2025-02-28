@@ -239,14 +239,14 @@
 
           <div v-if="recommendationStore.recommendation.prototype">
             <p class="text-xl font-semibold mb-4">Prototype</p>
+            <pre>{{ recommendationStore.clickedElement }}</pre>
             <Prototype 
               :html="recommendationStore.recommendation.prototype"
               @element-clicked="handleElementClick"
             />
-            <!-- <div v-html="recommendationStore.recommendation.prototype" class="relative overflow-hidden rounded-xl shadow"></div> -->
           </div>
 
-          <!-- <p v-else>The complete HTML was not generated</p> -->
+          <p v-else>The complete HTML was not generated</p>
         </div>
       </div>
     </div>

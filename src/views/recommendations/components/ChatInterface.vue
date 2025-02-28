@@ -97,7 +97,7 @@ const sendMessage = async () => {
   const userMessage = {
     role: 'user',
     content: newMessage.value,
-    element: recommendationStore.clickedElement, // Changed from elements array to single element
+    element: recommendationStore.clickedElement,
     timestamp: new Date().toLocaleTimeString()
   }
   messages.push(userMessage)
@@ -108,16 +108,17 @@ const sendMessage = async () => {
       messages: [
         { 
           role: "system", 
-          content: "You are a coding expert. I am requesting changes to an HTML prototype. " +
-            "Stream the updated prototype HTML as a raw string. Not just the updated parts of the prototype, the whole prototype as a raw string." +
-            "Do NOT stream JSON, objects, or Markdown. I don't want to see any backticks. Stream only the raw HTML string."
+          content: "You are a coding expert. I am requesting changes to an HTML element (a div or section). " +
+            "Modify the provided element_to_be_changed_in_the_prototype based on the user's request. " +
+            "Stream back ONLY the updated element as a raw HTML string. " +
+            "Do NOT wrap the output in Markdown, code blocks (like ```html), JSON, objects, or any other formatting. " +
+            "Stream ONLY the raw HTML string of the modified element."
         },
         { 
           role: "user",
           content: JSON.stringify({
             message: newMessage.value,
-            prototype_html: recommendationStore.recommendation.prototype,
-            element_to_be_changed_in_the_prototype: recommendationStore.clickedElement?.html || null // Changed to singular
+            element_to_be_changed_in_the_prototype: recommendationStore.clickedElement?.html || null
           })
         }
       ],
@@ -126,7 +127,45 @@ const sendMessage = async () => {
 
     let accumulatedHtml = ''
     let assistantMessage = null
-    let lastValidHtml = recommendationStore.recommendation.prototype || ''
+    let originalPrototype = recommendationStore.recommendation.prototype || ''
+    let lastValidPrototype = originalPrototype
+
+    // Function to replace an element in the HTML string by index
+    function replaceElementByStringIndex(htmlString, newElement, index) {
+      // Match top-level divs and sections, avoiding nested ones
+      const elementRegex = /<(div|section)[^>]*>[\s\S]*?(?=<\/\1>|$)/gi;
+      let elements = [];
+      let match;
+      let lastIndex = 0;
+
+      // Collect top-level elements with their positions
+      while ((match = elementRegex.exec(htmlString)) !== null) {
+        const fullMatch = match[0] + htmlString.substring(match.index + match[0].length, htmlString.indexOf(`</${match[1]}>`, match.index) + `</${match[1]}>`.length);
+        elements.push({
+          content: fullMatch,
+          start: match.index,
+          end: match.index + fullMatch.length
+        });
+        lastIndex = match.index + fullMatch.length;
+        elementRegex.lastIndex = lastIndex; // Update the lastIndex to continue searching
+      }
+
+      // Validate the index
+      if (index < 0 || index >= elements.length) {
+        console.error('Invalid element index:', index, 'Elements found:', elements.length);
+        return htmlString; // Return original if index is invalid
+      }
+
+      // Replace the element at the specified index
+      const elementToReplace = elements[index];
+      const result = (
+        htmlString.substring(0, elementToReplace.start) +
+        newElement +
+        htmlString.substring(elementToReplace.end)
+      );
+
+      return result;
+    }
 
     for await (const chunk of stream) {
       const content = chunk.choices[0].delta.content
@@ -145,8 +184,14 @@ const sendMessage = async () => {
           messages[messages.length - 1] = { ...assistantMessage }
         }
 
-        lastValidHtml = accumulatedHtml
-        recommendationStore.recommendation.prototype = lastValidHtml
+        // Clean up any residual Markdown and replace the element
+        const cleanedHtml = accumulatedHtml.replace(/```html\s*|\s*```/g, '').trim()
+        lastValidPrototype = replaceElementByStringIndex(
+          originalPrototype,
+          cleanedHtml,
+          recommendationStore.clickedElement?.index || 0
+        )
+        recommendationStore.recommendation.prototype = lastValidPrototype
         recommendationStore.recommendation = { ...recommendationStore.recommendation }
       }
     }
@@ -155,7 +200,7 @@ const sendMessage = async () => {
       route.params.organization,
       route.params.dashboard,
       route.params.recommendation,
-      { prototype: lastValidHtml }
+      { prototype: lastValidPrototype }
     )
 
   } catch (error) {
@@ -165,11 +210,11 @@ const sendMessage = async () => {
       content: `Error processing request: ${error.message}`,
       timestamp: new Date().toLocaleTimeString()
     })
-    recommendationStore.recommendation.prototype = lastValidHtml
+    recommendationStore.recommendation.prototype = lastValidPrototype
   } finally {
     isSending.value = false
     newMessage.value = ''
-    recommendationStore.clearClickedElement() // Updated to singular
+    recommendationStore.clearClickedElement()
   }
 }
 

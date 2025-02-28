@@ -22,26 +22,31 @@ const container = ref(null)
 const highlightedElement = ref(null)
 const selectedElement = ref(null)
 
-// Helper function to find the topmost selectable parent (div or section)
-const findTopmostParent = (element) => {
+// Get top-level divs and sections from the live DOM
+const getTopLevelElements = () => {
+  if (!container.value) return []
+  return Array.from(container.value.children).filter(
+    el => el.tagName.toLowerCase() === 'div' || el.tagName.toLowerCase() === 'section'
+  )
+}
+
+// Helper function to find the topmost selectable parent (div or section) and its index
+const findTopmostParentWithIndex = (element) => {
   let currentElement = element
-  let lastValidParent = null
-  
+  const topLevelElements = getTopLevelElements()
+
   while (currentElement && currentElement !== container.value) {
     const tagName = currentElement.tagName.toLowerCase()
     // Check if it's a top-level div or section
-    if ((tagName === 'div' && currentElement.parentElement === container.value) || 
-        tagName === 'section') {
-      return currentElement
-    }
-    if (tagName === 'div' || tagName === 'section') {
-      lastValidParent = currentElement
+    if ((tagName === 'div' || tagName === 'section') && 
+        currentElement.parentElement === container.value) {
+      const index = topLevelElements.indexOf(currentElement)
+      return { element: currentElement, index }
     }
     currentElement = currentElement.parentElement
   }
-  
-  // If we found a valid parent (section) but not at the top level, return it
-  return lastValidParent
+
+  return { element: null, index: -1 }
 }
 
 const handleHover = (event) => {
@@ -49,10 +54,10 @@ const handleHover = (event) => {
   
   const target = event.target
   if (target !== container.value) {
-    const topmostParent = findTopmostParent(target)
-    if (topmostParent) {
-      topmostParent.classList.add('highlight-element')
-      highlightedElement.value = topmostParent
+    const { element } = findTopmostParentWithIndex(target)
+    if (element) {
+      element.classList.add('highlight-element')
+      highlightedElement.value = element
     }
   }
 }
@@ -67,28 +72,29 @@ const clearHighlight = () => {
 const handleClick = (event) => {
   const target = event.target
   if (target !== container.value) {
-    const topmostParent = findTopmostParent(target)
-    if (!topmostParent) return
+    const { element, index } = findTopmostParentWithIndex(target)
+    if (!element) return
 
     // Remove selected styling from previously selected element
     if (selectedElement.value) {
       selectedElement.value.classList.remove('highlight-element')
     }
 
-    // Set new selected element
-    const elementHtml = topmostParent.outerHTML
-    const tag = topmostParent.tagName.toLowerCase()
+    // Set new selected element with index
+    const elementHtml = element.outerHTML
+    const tag = element.tagName.toLowerCase()
     
     recommendationStore.addClickedElement({
       html: elementHtml,
-      tag: tag
+      tag: tag,
+      index: index
     })
 
     // Update selected element reference
-    selectedElement.value = topmostParent
+    selectedElement.value = element
     
     // Ensure the selected element stays highlighted
-    topmostParent.classList.add('highlight-element')
+    element.classList.add('highlight-element')
   }
 }
 
