@@ -102,6 +102,11 @@ const sendMessage = async () => {
   }
   messages.push(userMessage)
 
+  let accumulatedHtml = ''
+  let assistantMessage = null
+  let originalPrototype = recommendationStore.recommendation.prototype || ''
+  let lastValidPrototype = originalPrototype // Declare here to be in scope for catch
+
   try {
     const stream = await openai.chat.completions.create({
       model: "grok-beta",
@@ -125,45 +130,33 @@ const sendMessage = async () => {
       stream: true
     })
 
-    let accumulatedHtml = ''
-    let assistantMessage = null
-    let originalPrototype = recommendationStore.recommendation.prototype || ''
-    let lastValidPrototype = originalPrototype
-
     function replaceElementByStringIndex(htmlString, newElement, index) {
-      // Match top-level divs and sections with proper tag closure
       const elementRegex = /<(div|section)[^>]*>[\s\S]*?<\/\1>/gi;
       let elements = [];
       let match;
-      let lastIndex = 0;
 
-      // Collect top-level elements with their positions
       while ((match = elementRegex.exec(htmlString)) !== null) {
         elements.push({
           content: match[0],
           start: match.index,
           end: elementRegex.lastIndex
         });
-        lastIndex = elementRegex.lastIndex;
       }
 
-      // Validate the index
       if (index < 0 || index >= elements.length) {
         console.error('Invalid element index:', index, 'Elements found:', elements.length);
-        return htmlString; // Return original if index is invalid
+        return htmlString;
       }
 
-      // Replace the element at the specified index
       const elementToReplace = elements[index];
-      const result = (
+      return (
         htmlString.substring(0, elementToReplace.start) +
         newElement +
         htmlString.substring(elementToReplace.end)
       );
-
-      return result;
     }
 
+    // Stream only to chat interface
     for await (const chunk of stream) {
       const content = chunk.choices[0].delta.content
       if (content) {
@@ -180,18 +173,18 @@ const sendMessage = async () => {
           assistantMessage.content = accumulatedHtml
           messages[messages.length - 1] = { ...assistantMessage }
         }
-
-        // Clean up any residual Markdown and replace the element
-        const cleanedHtml = accumulatedHtml.replace(/```html\s*|\s*```/g, '').trim()
-        lastValidPrototype = replaceElementByStringIndex(
-          originalPrototype,
-          cleanedHtml,
-          recommendationStore.clickedElement?.index || 0
-        )
-        recommendationStore.recommendation.prototype = lastValidPrototype
-        recommendationStore.recommendation = { ...recommendationStore.recommendation }
       }
     }
+
+    // After streaming is complete, update the prototype
+    const cleanedHtml = accumulatedHtml.replace(/```html\s*|\s*```/g, '').trim()
+    lastValidPrototype = replaceElementByStringIndex(
+      originalPrototype,
+      cleanedHtml,
+      recommendationStore.clickedElement?.index || 0
+    )
+    recommendationStore.recommendation.prototype = lastValidPrototype
+    recommendationStore.recommendation = { ...recommendationStore.recommendation }
 
     await recommendationStore.update(
       route.params.organization,
@@ -200,6 +193,9 @@ const sendMessage = async () => {
       { prototype: lastValidPrototype }
     )
 
+    // Clear the clicked element after successful update
+    recommendationStore.clearClickedElement()
+
   } catch (error) {
     console.error('Error streaming from Grok:', error)
     messages.push({
@@ -207,7 +203,7 @@ const sendMessage = async () => {
       content: `Error processing request: ${error.message}`,
       timestamp: new Date().toLocaleTimeString()
     })
-    recommendationStore.recommendation.prototype = lastValidPrototype
+    recommendationStore.recommendation.prototype = lastValidPrototype // Now accessible
   } finally {
     isSending.value = false
     newMessage.value = ''
