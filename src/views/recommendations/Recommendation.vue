@@ -423,9 +423,9 @@ const sendMessage = async () => {
       messages: [
         { 
           role: "system", 
-          content: "You are a coding expert. I am requesting changes to an HTML prototype. Stream the updated prototype HTML as you generate it. " +
-            "Return responses in raw JSON format with two keys: 'message' (string for natural language response) and 'data' (object with { code: string }). " +
-            "Do NOT use Markdown backticks (```) or any Markdown formatting around the JSON. Return only the raw JSON string."
+          content: "You are a coding expert. I am requesting changes to an HTML prototype. " +
+            "Stream the updated prototype HTML as a raw string. " +
+            "Do NOT return JSON, objects, or Markdown. Return only the raw HTML string."
         },
         { 
           role: "user",
@@ -439,71 +439,32 @@ const sendMessage = async () => {
       stream: true
     })
 
-    let accumulatedResponse = ''
+    let accumulatedHtml = ''
     let assistantMessage = null
-    let lastValidCode = recommendationStore.recommendation.prototype || ''
+    let lastValidHtml = recommendationStore.recommendation.prototype || ''
 
     for await (const chunk of stream) {
       const content = chunk.choices[0].delta.content
       if (content) {
-        accumulatedResponse += content
-
-        // Clean up potential Markdown if it slips through
-        let cleanedResponse = accumulatedResponse
-        if (cleanedResponse.startsWith('```json')) {
-          cleanedResponse = cleanedResponse.replace(/^```json\n?/, '').replace(/\n?```$/, '')
-        } else if (cleanedResponse.startsWith('```')) {
-          cleanedResponse = cleanedResponse.replace(/^```\n?/, '').replace(/\n?```$/, '')
-        }
+        accumulatedHtml += content
 
         // Initialize assistant message if not already done
         if (!assistantMessage) {
           assistantMessage = {
             role: 'assistant',
-            content: cleanedResponse || 'Processing your request...',
+            content: accumulatedHtml || 'Processing your request...',
             timestamp: new Date().toLocaleTimeString()
           }
           messages.push(assistantMessage)
         } else {
-          // Always update chat with the latest cleaned response
-          assistantMessage.content = cleanedResponse
+          // Update chat with the latest HTML
+          assistantMessage.content = accumulatedHtml
         }
 
-        try {
-          // Parse the cleaned response as JSON
-          const parsedResponse = JSON.parse(cleanedResponse)
-
-          // Update assistant message with parsed message if available
-          if (parsedResponse.message) {
-            assistantMessage.content = parsedResponse.message
-          }
-
-          // Update prototype with valid code as it streams in
-          if (parsedResponse.data?.code) {
-            lastValidCode = parsedResponse.data.code
-            recommendationStore.recommendation.prototype = lastValidCode
-            recommendationStore.recommendation = { ...recommendationStore.recommendation }
-          }
-
-        } catch (e) {
-          // Handle partial JSON: extract last valid JSON object
-          const lastValidJsonMatch = cleanedResponse.match(/({[\s\S]*?})\s*$/)
-          if (lastValidJsonMatch) {
-            try {
-              const partialParsed = JSON.parse(lastValidJsonMatch[1])
-              if (partialParsed.message) {
-                assistantMessage.content = partialParsed.message
-              }
-              if (partialParsed.data?.code) {
-                lastValidCode = partialParsed.data.code
-                recommendationStore.recommendation.prototype = lastValidCode
-                recommendationStore.recommendation = { ...recommendationStore.recommendation }
-              }
-            } catch (innerError) {
-              // Continue showing raw stream if partial parsing fails
-            }
-          }
-        }
+        // Update prototype with the streamed HTML
+        lastValidHtml = accumulatedHtml
+        recommendationStore.recommendation.prototype = lastValidHtml
+        recommendationStore.recommendation = { ...recommendationStore.recommendation }
 
         // Force reactivity for chat updates
         messages[messages.length - 1] = { ...assistantMessage }
@@ -511,14 +472,14 @@ const sendMessage = async () => {
     }
 
     // Persist final version to backend
-    if (lastValidCode !== recommendationStore.recommendation.prototype) {
-      recommendationStore.recommendation.prototype = lastValidCode
+    if (lastValidHtml !== recommendationStore.recommendation.prototype) {
+      recommendationStore.recommendation.prototype = lastValidHtml
     }
     await recommendationStore.update(
       route.params.organization,
       route.params.dashboard,
       route.params.recommendation,
-      { prototype: lastValidCode }
+      { prototype: lastValidHtml }
     )
 
   } catch (error) {
@@ -533,7 +494,7 @@ const sendMessage = async () => {
       assistantMessage.content = `Error processing request: ${error.message}`
       messages[messages.length - 1] = { ...assistantMessage }
     }
-    recommendationStore.recommendation.prototype = lastValidCode
+    recommendationStore.recommendation.prototype = lastValidHtml
   } finally {
     isSending.value = false
     newMessage.value = ''
