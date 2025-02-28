@@ -34,6 +34,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.34",
     "monaco-editor": "^0.52.2",
+    "openai": "^4.86.1",
     "pinia": "^2.0.14",
     "pusher-js": "^7.5.0",
     "tiptap-markdown": "^0.8.10",

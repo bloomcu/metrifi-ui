@@ -326,7 +326,6 @@
 
 <script setup>
 import moment from "moment"
-import OpenAI from "openai"
 import debounce from 'lodash.debounce'
 import { ref, reactive, watch, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -339,13 +338,6 @@ import CodeEditor from '@/views/recommendations/components/CodeEditor.vue'
 import Prototype from '@/views/recommendations/components/Prototype.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecommendationModal.vue'
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_GROK_API_KEY,
-  baseURL: "https://api.x.ai/v1",
-  dangerouslyAllowBrowser: true,
-});
 
 const router = useRouter()
 const route = useRoute()
@@ -408,133 +400,55 @@ const sendMessage = async () => {
 
   isSending.value = true
 
-  // Add user message to chat
+  // Create user message object
   const userMessage = {
     role: 'user',
     content: newMessage.value,
     elements: [...currentElements],
     timestamp: new Date().toLocaleTimeString()
   }
+  
+  // Add to local messages array for immediate UI update
   messages.push(userMessage)
 
   try {
-    const stream = await openai.chat.completions.create({
-      model: "grok-beta",
-      messages: [
-        { 
-          role: "system", 
-          content: "You are a coding expert. I am requesting changes to an HTML prototype. Stream the updated prototype HTML as you generate it. " +
-            "Return responses in raw JSON format with two keys: 'message' (string for natural language response) and 'data' (object with { code: string }). " +
-            "Do NOT use Markdown backticks (```) or any Markdown formatting around the JSON. Return only the raw JSON string."
-        },
-        { 
-          role: "user",
-          content: JSON.stringify({
-            message: newMessage.value,
-            prototype_html: recommendationStore.recommendation.prototype,
-            elements_to_be_changed_in_the_prototype: currentElements.map(element => element.html),
-          })
-        }
-      ],
-      stream: true
-    })
-
-    let accumulatedResponse = ''
-    let assistantMessage = null
-    let lastValidCode = recommendationStore.recommendation.prototype || ''
-
-    for await (const chunk of stream) {
-      const content = chunk.choices[0].delta.content
-      if (content) {
-        accumulatedResponse += content
-
-        // Clean up potential Markdown if it slips through
-        let cleanedResponse = accumulatedResponse
-        if (cleanedResponse.startsWith('```json')) {
-          cleanedResponse = cleanedResponse.replace(/^```json\n?/, '').replace(/\n?```$/, '')
-        } else if (cleanedResponse.startsWith('```')) {
-          cleanedResponse = cleanedResponse.replace(/^```\n?/, '').replace(/\n?```$/, '')
-        }
-
-        // Initialize assistant message if not already done
-        if (!assistantMessage) {
-          assistantMessage = {
-            role: 'assistant',
-            content: cleanedResponse || 'Processing your request...',
-            timestamp: new Date().toLocaleTimeString()
-          }
-          messages.push(assistantMessage)
-        } else {
-          // Always update chat with the latest cleaned response
-          assistantMessage.content = cleanedResponse
-        }
-
-        try {
-          // Parse the cleaned response as JSON
-          const parsedResponse = JSON.parse(cleanedResponse)
-
-          // Update assistant message with parsed message if available
-          if (parsedResponse.message) {
-            assistantMessage.content = parsedResponse.message
-          }
-
-          // Update prototype with valid code as it streams in
-          if (parsedResponse.data?.code) {
-            lastValidCode = parsedResponse.data.code
-            recommendationStore.recommendation.prototype = lastValidCode
-            recommendationStore.recommendation = { ...recommendationStore.recommendation }
-          }
-
-        } catch (e) {
-          // Handle partial JSON: extract last valid JSON object
-          const lastValidJsonMatch = cleanedResponse.match(/({[\s\S]*?})\s*$/)
-          if (lastValidJsonMatch) {
-            try {
-              const partialParsed = JSON.parse(lastValidJsonMatch[1])
-              if (partialParsed.message) {
-                assistantMessage.content = partialParsed.message
-              }
-              if (partialParsed.data?.code) {
-                lastValidCode = partialParsed.data.code
-                recommendationStore.recommendation.prototype = lastValidCode
-                recommendationStore.recommendation = { ...recommendationStore.recommendation }
-              }
-            } catch (innerError) {
-              // Continue showing raw stream if partial parsing fails
-            }
-          }
-        }
-
-        // Force reactivity for chat updates
-        messages[messages.length - 1] = { ...assistantMessage }
-      }
+    // Prepare the data for Grok
+    const chatRequest = {
+      message: newMessage.value,
+      prototype_html: recommendationStore.recommendation.prototype,
+      attached_elements: currentElements.map(element => element.html),
+      response_format: 'JSON with the structure { code: string }.',
     }
 
-    // Persist final version to backend
-    if (lastValidCode !== recommendationStore.recommendation.prototype) {
-      recommendationStore.recommendation.prototype = lastValidCode
-    }
-    await recommendationStore.update(
-      route.params.organization,
-      route.params.dashboard,
-      route.params.recommendation,
-      { prototype: lastValidCode }
-    )
+    // Send to Grok via API
+    const response = await chatsApi.store(route.params.organization, chatRequest)
+    console.log('Grok response:', response)
 
+    // Add Grok's response to messages
+    const grokResponse = {
+      role: 'assistant',
+      content: response.data.message || 'Changes processed successfully',
+      timestamp: new Date().toLocaleTimeString()
+    }
+    
+    messages.push(grokResponse)
+
+    // Update the prototype
+    if (response.data.data.code) {
+      recommendationStore.recommendation.prototype = response.data.data.code
+      // updatePrototype()
+    }
   } catch (error) {
-    console.error('Error streaming from Grok:', error)
-    if (!assistantMessage) {
-      messages.push({
-        role: 'assistant',
-        content: `Error processing request: ${error.message}`,
-        timestamp: new Date().toLocaleTimeString()
-      })
-    } else {
-      assistantMessage.content = `Error processing request: ${error.message}`
-      messages[messages.length - 1] = { ...assistantMessage }
-    }
-    recommendationStore.recommendation.prototype = lastValidCode
+    console.error('Error sending message to Grok:', error)
+    
+    // Add error message to chat
+    messages.push({
+      role: 'assistant',
+      content: 'Sorry, there was an error processing your request. Please try again.',
+      timestamp: new Date().toLocaleTimeString()
+    })
   } finally {
+    // Clear inputs
     isSending.value = false
     newMessage.value = ''
     currentElements.length = 0
