@@ -20,17 +20,40 @@ const props = defineProps({
 const recommendationStore = useRecommendationStore()
 const container = ref(null)
 const highlightedElement = ref(null)
-
-// Add a reference to track the currently selected element
 const selectedElement = ref(null)
+
+// Helper function to find the topmost selectable parent (div or section)
+const findTopmostParent = (element) => {
+  let currentElement = element
+  let lastValidParent = null
+  
+  while (currentElement && currentElement !== container.value) {
+    const tagName = currentElement.tagName.toLowerCase()
+    // Check if it's a top-level div or section
+    if ((tagName === 'div' && currentElement.parentElement === container.value) || 
+        tagName === 'section') {
+      return currentElement
+    }
+    if (tagName === 'div' || tagName === 'section') {
+      lastValidParent = currentElement
+    }
+    currentElement = currentElement.parentElement
+  }
+  
+  // If we found a valid parent (section) but not at the top level, return it
+  return lastValidParent
+}
 
 const handleHover = (event) => {
   clearHighlight()
   
   const target = event.target
   if (target !== container.value) {
-    target.classList.add('highlight-element')
-    highlightedElement.value = target
+    const topmostParent = findTopmostParent(target)
+    if (topmostParent) {
+      topmostParent.classList.add('highlight-element')
+      highlightedElement.value = topmostParent
+    }
   }
 }
 
@@ -44,14 +67,17 @@ const clearHighlight = () => {
 const handleClick = (event) => {
   const target = event.target
   if (target !== container.value) {
+    const topmostParent = findTopmostParent(target)
+    if (!topmostParent) return
+
     // Remove selected styling from previously selected element
     if (selectedElement.value) {
       selectedElement.value.classList.remove('highlight-element')
     }
 
     // Set new selected element
-    const elementHtml = target.outerHTML
-    const tag = target.tagName.toLowerCase()
+    const elementHtml = topmostParent.outerHTML
+    const tag = topmostParent.tagName.toLowerCase()
     
     recommendationStore.addClickedElement({
       html: elementHtml,
@@ -59,10 +85,10 @@ const handleClick = (event) => {
     })
 
     // Update selected element reference
-    selectedElement.value = target
+    selectedElement.value = topmostParent
     
     // Ensure the selected element stays highlighted
-    target.classList.add('highlight-element')
+    topmostParent.classList.add('highlight-element')
   }
 }
 
