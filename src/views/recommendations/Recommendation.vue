@@ -475,12 +475,12 @@ const sendMessage = async () => {
     if (lastValidHtml !== recommendationStore.recommendation.prototype) {
       recommendationStore.recommendation.prototype = lastValidHtml
     }
-    await recommendationStore.update(
-      route.params.organization,
-      route.params.dashboard,
-      route.params.recommendation,
-      { prototype: lastValidHtml }
-    )
+    // await recommendationStore.update(
+    //   route.params.organization,
+    //   route.params.dashboard,
+    //   route.params.recommendation,
+    //   { prototype: lastValidHtml }
+    // )
 
   } catch (error) {
     console.error('Error streaming from Grok:', error)
