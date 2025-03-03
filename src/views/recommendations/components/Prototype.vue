@@ -22,31 +22,32 @@ const container = ref(null)
 const highlightedElement = ref(null)
 const selectedElement = ref(null)
 
-// Get top-level divs and sections from the live DOM
-const getTopLevelElements = () => {
+// Get top-level sections from the live DOM
+const getTopLevelSections = () => {
   if (!container.value) return []
   return Array.from(container.value.children).filter(
-    el => el.tagName.toLowerCase() === 'div' || el.tagName.toLowerCase() === 'section'
+    el => el.tagName.toLowerCase() === 'section' && el.id
   )
 }
 
-// Helper function to find the topmost selectable parent (div or section) and its index
-const findTopmostParentWithIndex = (element) => {
+// Helper function to find the topmost section parent and its id
+const findTopmostSection = (element) => {
   let currentElement = element
-  const topLevelElements = getTopLevelElements()
+  const topLevelSections = getTopLevelSections()
 
   while (currentElement && currentElement !== container.value) {
-    const tagName = currentElement.tagName.toLowerCase()
-    // Check if it's a top-level div or section
-    if ((tagName === 'div' || tagName === 'section') && 
+    if (currentElement.tagName.toLowerCase() === 'section' && 
+        currentElement.id && 
         currentElement.parentElement === container.value) {
-      const index = topLevelElements.indexOf(currentElement)
-      return { element: currentElement, index }
+      return { 
+        element: currentElement, 
+        id: currentElement.id 
+      }
     }
     currentElement = currentElement.parentElement
   }
 
-  return { element: null, index: -1 }
+  return { element: null, id: null }
 }
 
 const handleHover = (event) => {
@@ -54,7 +55,7 @@ const handleHover = (event) => {
   
   const target = event.target
   if (target !== container.value) {
-    const { element } = findTopmostParentWithIndex(target)
+    const { element } = findTopmostSection(target)
     if (element) {
       element.classList.add('highlight-element')
       highlightedElement.value = element
@@ -72,22 +73,22 @@ const clearHighlight = () => {
 const handleClick = (event) => {
   const target = event.target
   if (target !== container.value) {
-    const { element, index } = findTopmostParentWithIndex(target)
-    if (!element) return
+    const { element, id } = findTopmostSection(target)
+    if (!element || !id) return
 
     // Remove selected styling from previously selected element
     if (selectedElement.value) {
       selectedElement.value.classList.remove('highlight-element')
     }
 
-    // Set new selected element with index
+    // Set new selected element with id
     const elementHtml = element.outerHTML
     const tag = element.tagName.toLowerCase()
     
     recommendationStore.addClickedElement({
       html: elementHtml,
       tag: tag,
-      index: index
+      id: id
     })
 
     // Update selected element reference
