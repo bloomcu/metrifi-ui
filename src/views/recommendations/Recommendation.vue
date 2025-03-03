@@ -57,10 +57,10 @@
                     <span class="text-sm">Analysis</span>
                   </button>
                   <button @click="show = 'chat'" :class="show === 'chat' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
-                    <span class="text-sm">Chat</span>
+                    <span class="text-sm">AI editor</span>
                   </button>
                   <button @click="show = 'code'" :class="show === 'code' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
-                    <span class="text-sm">Code</span>
+                    <span class="text-sm">Code editor</span>
                   </button>
               </div>
             </div>
