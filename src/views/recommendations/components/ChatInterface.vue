@@ -1,5 +1,11 @@
 <template>
   <div class="h-[calc(100vh-200px)] flex flex-col">
+    <!-- Instructions -->
+    <div class="p-4 bg-white rounded-md border">
+      <p class="text-sm mb-1 text-gray-700 font-medium">How to use the AI editor</p>
+      <p class="text-sm text-gray-500">Click on the part of the page you want to change, then enter your request below.</p>
+    </div>
+
     <!-- Chat Messages -->
     <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
       <div v-for="(message, index) in messages" :key="index" 
@@ -26,11 +32,11 @@
 
     <!-- Current Attachment (singular) -->
     <div v-if="recommendationStore.clickedElement" class="mb-2 space-y-2 px-4">
-      <div class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
-        <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
+      <div class="flex items-center gap-2 bg-white border shadow-sm p-2 pr-3 rounded-md w-full">
+        <div class="h-8 bg-violet-500 text-white rounded flex items-center justify-center flex-shrink-0 px-2">
           <span class="text-xs">{{ recommendationStore.clickedElement.tag }}</span>
         </div>
-        <span class="text-xs truncate flex-1">{{ recommendationStore.clickedElement.html }}</span>
+        <span class="text-xs text-gray-700 truncate flex-1">{{ recommendationStore.clickedElement.html }}</span>
         <button 
           @click="removeElement" 
           class="text-red-500 bg-red-100 hover:bg-red-200 p-1 rounded-full transition-colors duration-200 flex items-center justify-center w-6 h-6"
@@ -45,17 +51,17 @@
     
     <!-- Input Area -->
     <div class="flex gap-2 px-4">
-      <textarea
+      <input
         v-model="newMessage"
         @keydown.enter.prevent="sendMessage"
         placeholder="Request changes to the prototype"
-        class="flex-1 p-2 border border-gray-300 rounded resize-none h-12 focus:outline-none focus:ring-2 focus:ring-violet-500"
+        class="flex-1 p-2 text-sm border border-gray-300 rounded-lg resize-none h-12 focus:outline-none focus:ring-1 focus:ring-violet-400"
         :disabled="isSending"
-      ></textarea>
+      ></input>
       <button 
         @click="sendMessage"
         :disabled="!newMessage.trim() || isSending"
-        class="px-4 py-2 bg-violet-500 text-white rounded disabled:bg-gray-300 relative"
+        class="px-4 py-2 bg-violet-500 text-white rounded-lg disabled:bg-gray-300 relative"
       >
         <span v-if="isSending" class="flex items-center gap-2">
           <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

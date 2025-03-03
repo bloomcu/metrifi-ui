@@ -49,7 +49,7 @@
           <div v-if="toggled" class="px-4 pt-6">
             <!-- Tabs -->
             <div class="flex mb-6">
-              <div class="p-1 border border-gray-300 bg-white rounded-lg flex space-x-1">
+              <div class="p-1 border bg-white rounded-lg flex space-x-1 text-gray-700 font-medium">
                   <button @click="show = 'prompt'" :class="show === 'prompt' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                     <span class="text-sm">Instructions</span>
                   </button>
