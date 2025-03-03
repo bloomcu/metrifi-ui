@@ -246,7 +246,7 @@
             />
           </div>
 
-          <p v-else>The complete HTML was not generated</p>
+          <!-- <p v-else>The complete HTML was not generated</p> -->
         </div>
       </div>
     </div>
