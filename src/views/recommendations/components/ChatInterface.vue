@@ -7,7 +7,7 @@
     </div>
 
     <!-- Chat Messages -->
-    <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
+    <div ref="messagesContainer" class="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
       <div v-for="(message, index) in messages" :key="index" 
           :class="[message.role === 'user' ? 'ml-auto' : 'mr-auto', 'chat-message transition-all duration-200 ease-in-out hover:opacity-90']" 
           class="max-w-[70%]">
@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, nextTick } from 'vue'
 import OpenAI from 'openai'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useRoute } from 'vue-router'
@@ -91,9 +91,18 @@ const openai = new OpenAI({
 const route = useRoute()
 const recommendationStore = useRecommendationStore()
 
+const messagesContainer = ref(null) // Reference to messages container
 const isSending = ref(false)
 const messages = reactive([])
 const newMessage = ref('')
+
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (messagesContainer.value) {
+      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+    }
+  })
+}
 
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return
@@ -107,6 +116,7 @@ const sendMessage = async () => {
     timestamp: new Date().toLocaleTimeString()
   }
   messages.push(userMessage)
+  scrollToBottom() // Scroll when user message is added
 
   let accumulatedHtml = ''
   let assistantMessage = null
@@ -170,6 +180,7 @@ const sendMessage = async () => {
           assistantMessage.content = accumulatedHtml
           messages[messages.length - 1] = { ...assistantMessage }
         }
+        scrollToBottom() // Scroll on each stream update
       }
     }
 
@@ -205,11 +216,13 @@ const sendMessage = async () => {
       content: `Error processing request: ${error.message}`,
       timestamp: new Date().toLocaleTimeString()
     })
+    scrollToBottom() // Scroll for error message
     recommendationStore.recommendation.prototype = lastValidPrototype
   } finally {
     isSending.value = false
     newMessage.value = ''
     recommendationStore.clearClickedElement()
+    scrollToBottom() // Final scroll
   }
 }
 
