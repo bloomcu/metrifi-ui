@@ -16,7 +16,7 @@
 
     <!-- Step tabs -->
     <AppCard v-if="benchmark" padding="none" class="flex mb-6">
-      <VueApexCharts :options="chart.options" :series="series"></VueApexCharts>
+      <!-- <VueApexCharts :options="chart.options" :series="series"></VueApexCharts> -->
     </AppCard>
 
     <pre v-if="benchmark">{{ series }}</pre>
@@ -26,7 +26,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import VueApexCharts from "vue3-apexcharts";
+// import VueApexCharts from "vue3-apexcharts";
 import useBenchmarks from '@/domain/benchmarks/composables/useBenchmarks'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'

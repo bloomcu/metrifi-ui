@@ -6,6 +6,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         recommendation: null,
         recommendations: [],
         isLoading: false,
+        clickedElement: null,
     }),
     
     actions: {
@@ -44,6 +45,16 @@ export const useRecommendationStore = defineStore('recommendationStore', {
           })
       },
 
+      async update(organizationSlug, dashboardId, id, params) {
+        this.isLoading = true
+
+        await RecommendationsApi.update(organizationSlug, dashboardId, id, params)
+          .then(response => {
+            // this.recommendation = response.data.data
+            this.isLoading = false
+          })
+      },
+
       async attachFile(organizationSlug, recommendationId, fileIds, type) {
         return await RecommendationsApi.attachFile(organizationSlug, recommendationId, fileIds, type)
           .then(response => {
@@ -52,6 +63,18 @@ export const useRecommendationStore = defineStore('recommendationStore', {
             console.log('Error error attaching file', error.response.data)
           })
       },
+
+      addClickedElement(element) {
+        this.clickedElement = element;
+      },
+
+      setClickedElement(element) {
+          this.clickedElement = element;
+      },
+
+      clearClickedElement() {
+          this.clickedElement = null;
+      }
     }
 })
 
