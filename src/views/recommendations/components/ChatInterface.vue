@@ -18,7 +18,7 @@
           <div v-if="message.element" class="mt-2 space-y-2">
             <div class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
               <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
-                <span class="text-xs">{{ message.element.tag }}</span>
+                <span class="text-xs ">{{ message.element.tag }}</span>
               </div>
               <span class="text-xs truncate flex-1">{{ message.element.html }}</span>
             </div>
@@ -33,10 +33,10 @@
     <!-- Current Attachment (singular) -->
     <div v-if="recommendationStore.clickedElement" class="mb-2 space-y-2 px-4">
       <div class="flex items-center gap-2 bg-white border shadow-sm p-2 pr-3 rounded-md w-full">
-        <div class="h-8 bg-violet-500 text-white rounded flex items-center justify-center flex-shrink-0 px-2">
+        <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
           <span class="text-xs">{{ recommendationStore.clickedElement.tag }}</span>
         </div>
-        <span class="text-xs text-gray-700 truncate flex-1">{{ recommendationStore.clickedElement.html }}</span>
+        <span class="text-xs truncate flex-1">{{ recommendationStore.clickedElement.html }}</span>
         <button 
           @click="removeElement" 
           class="text-red-500 bg-red-100 hover:bg-red-200 p-1 rounded-full transition-colors duration-200 flex items-center justify-center w-6 h-6"
