@@ -6,6 +6,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         recommendation: null,
         recommendations: [],
         isLoading: false,
+        isPushToWordPressPanelOpen: false,
         clickedElement: null,
     }),
     

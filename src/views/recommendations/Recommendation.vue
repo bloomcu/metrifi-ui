@@ -20,6 +20,10 @@
           Regenerate
         </AppButton>
 
+        <AppButton @click="recommendationStore.isPushToWordPressPanelOpen = true" variant="secondary" size="base" class="flex items-center gap-2">
+          Push to WordPress
+        </AppButton>
+
         <AppButton @click="isRecommendationsListPanelOpen = true" variant="tertiary" size="base" class="flex items-center gap-2">
           Recommendations
         </AppButton>
@@ -253,6 +257,7 @@
 
     <GenerateRecommendationModal :stepIndex="recommendationStepIndex" :prompt="recommendationPrompt" :secret-shopper-prompt="recommendationSecretShopperPrompt" :open="isGenerateRecommendationModalOpen"/>
     <RecommendationsListPanel/>
+    <PushToWordPressPanel/>
   </div>
 </template>
 
@@ -269,6 +274,7 @@ import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import CodeEditor from '@/views/recommendations/components/CodeEditor.vue'
 import Prototype from '@/views/recommendations/components/Prototype.vue'
 import ChatInterface from '@/views/recommendations/components/ChatInterface.vue'
+import PushToWordPressPanel from '@/views/recommendations/components/PushToWordPressPanel.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecommendationModal.vue'
 
@@ -303,6 +309,7 @@ const accordionStates = reactive({
   accordion2: false,
   accordion3: false,
 })
+
 const toggleAccordion = (accordionName) => {
   if (accordionStates.hasOwnProperty(accordionName)) {
     accordionStates[accordionName] = !accordionStates[accordionName]
