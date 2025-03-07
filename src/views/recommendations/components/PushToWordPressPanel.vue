@@ -110,7 +110,7 @@ const waitForRunComplete = async (threadId, runId, maxAttempts = 60, delayMs = 1
 };
 
 // Function to process HTML and get layout type from OpenAI assistant
-const processHtmlWithAssistant = async (htmlContent, retries = 3) => {
+const processHtmlWithAssistant = async (htmlContent, retries = 6) => {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       attempts.value = `(attempt ${attempt}/${retries})`
