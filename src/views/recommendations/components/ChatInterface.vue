@@ -77,8 +77,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, nextTick } from 'vue'
 import OpenAI from 'openai'
+import { ref, reactive, nextTick } from 'vue'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useRoute } from 'vue-router'
 
