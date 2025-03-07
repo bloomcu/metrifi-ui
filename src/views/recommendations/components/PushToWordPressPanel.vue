@@ -24,7 +24,6 @@ const waitForRunComplete = async (threadId, runId, maxAttempts = 60, delayMs = 1
   for (let attempts = 0; attempts < maxAttempts; attempts++) {
     const runStatus = await openai.beta.threads.runs.retrieve(threadId, runId);
     
-    // console.log(`Run status check ${attempts + 1}/${maxAttempts}: ${runStatus.status}`);
     status.value = `Thread status check ${attempts + 1}/${maxAttempts} (${runStatus.status})`
     
     if (runStatus.status === 'completed') {
@@ -46,7 +45,6 @@ const waitForRunComplete = async (threadId, runId, maxAttempts = 60, delayMs = 1
 const processHtmlWithAssistant = async (htmlContent, retries = 3) => {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      // console.log(`Processing HTML (attempt ${attempt}/${retries})...`);
       attempts.value = `(attempt ${attempt}/${retries})`
       
       // Create a thread and start a run
@@ -108,17 +106,23 @@ const predictCMSBlocks = async () => {
   try {
     // Process items sequentially to maintain order
     for (const [index, item] of sections.entries()) {
-      // console.log(`Processing item ${index + 1} of ${sections.length}`);
-      progress.value = `Predicting section ${index + 1} of ${sections.length}`
+      progress.value = `Predicting section ${index + 1} of ${sections.length}`;
       
-      const response = await processHtmlWithAssistant(item.html);
-
-      console.log('Response:', response);
-      
-      // Add the result in the same index position
-      blocks.value.push({
-        layout: response['data-block-id']
-      });
+      try {
+        const response = await processHtmlWithAssistant(item.html);
+        console.log('Response:', response);
+        
+        // Add the result in the same index position
+        blocks.value.push({
+          layout: response['data-block-id']
+        });
+      } catch (err) {
+        console.error(`Failed to process item ${index + 1}:`, err);
+        // Instead of throwing, add an error object to blocks
+        blocks.value.push({
+          error: `Failed to process: ${err.message}`
+        });
+      }
 
       // Optional: Add a delay between requests to avoid rate limiting
       if (index < sections.length - 1) {
@@ -129,7 +133,9 @@ const predictCMSBlocks = async () => {
     
     console.log('Processing complete:', blocks.value);
   } catch (err) {
-    error.value = 'Error processing items: ' + err.message;
+    // This catch block is now redundant since we're handling errors per item,
+    // but we'll keep it to set a general error message if needed
+    error.value = 'Some items failed to process. See details in the CMS blocks section.';
     console.error('Full error:', err);
   } finally {
     isLoading.value = false;
@@ -160,73 +166,6 @@ function getSectionsFromPrototype() {
     
     return sections;
 }
-
-/**
- * Push to WordPress
- * --------------------
- */
-const createPageInWordPress = async () => {
-  const wordpressUrl = 'https://base.bloomcudev.com/wp-json/metrifi/v1/create-page';
-  const username = 'admin-base';
-  const appPassword = 'ZEh4 V0zI Ihxx iJR4 D9RZ dUb3';
-
-  try {
-    const response = await axios.post(
-      wordpressUrl,
-      {
-        title: 'New page from MetriFi',
-        content: 'This is the page content from MetriFi',
-        status: 'publish',
-        acf: {
-          content_blocks: blocks.value
-        }
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Basic ' + btoa(`${username}:${appPassword}`)
-        }
-      }
-    );
-
-    console.log('Post created successfully!');
-    console.log('Post data:', response.data);
-  } catch (error) {
-    console.log('Failed to create post');
-    console.error('Error:', error.response ? error.response.data : error.message);
-  }
-}
-
-const updatePageInWordPress = async (pageId, flexibleContent) => {
-  const wordpressUrl = `https://base.bloomcudev.com/wp-json/metrifi/v1/update-page${pageId}`;
-  const username = 'admin-base';
-  const appPassword = 'ZEh4 V0zI Ihxx iJR4 D9RZ dUb3';
-
-  try {
-    const response = await axios.post(
-      wordpressUrl,
-      {
-        acf: {
-          content_blocks: flexibleContent
-        }
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Basic ' + btoa(`${username}:${appPassword}`)
-        }
-      }
-    );
-
-    console.log('Page flexible content updated successfully!');
-    console.log('Updated page data:', response.data);
-    return response.data;
-  } catch (error) {
-    console.log('Failed to update page flexible content');
-    console.error('Error:', error.response ? error.response.data : error.message);
-    throw error;
-  }
-};
 </script>
 
 <template>
@@ -257,6 +196,7 @@ const updatePageInWordPress = async (pageId, flexibleContent) => {
                 <p class="text-lg font-medium mb-2">CMS</p>
                 <div v-for="block in blocks" class="border rounded-lg p-2 mb-2">
                   <p class="text-gray-900">Layout: {{ block.layout }}</p>
+                  <p v-if="block.error" class="text-red-500">Error: {{ block.error }}</p>
                 </div>
               </div>
           </div>
