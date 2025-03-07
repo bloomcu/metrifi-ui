@@ -14,6 +14,9 @@ const openai = new OpenAI({
 // Array to store the processed results
 const blocks = ref([]);
 const isLoading = ref(false);
+const attempts = ref('');
+const progress = ref('');
+const status = ref('');
 const error = ref(null);
 
 // Function to wait for a run to complete
@@ -21,7 +24,8 @@ const waitForRunComplete = async (threadId, runId, maxAttempts = 60, delayMs = 1
   for (let attempts = 0; attempts < maxAttempts; attempts++) {
     const runStatus = await openai.beta.threads.runs.retrieve(threadId, runId);
     
-    console.log(`Run status check ${attempts + 1}/${maxAttempts}: ${runStatus.status}`);
+    // console.log(`Run status check ${attempts + 1}/${maxAttempts}: ${runStatus.status}`);
+    status.value = `Thread status check ${attempts + 1}/${maxAttempts} (${runStatus.status})`
     
     if (runStatus.status === 'completed') {
       return runStatus;
@@ -42,7 +46,8 @@ const waitForRunComplete = async (threadId, runId, maxAttempts = 60, delayMs = 1
 const processHtmlWithAssistant = async (htmlContent, retries = 3) => {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      console.log(`Processing HTML (attempt ${attempt}/${retries})...`);
+      // console.log(`Processing HTML (attempt ${attempt}/${retries})...`);
+      attempts.value = `(attempt ${attempt}/${retries})`
       
       // Create a thread and start a run
       const run = await openai.beta.threads.createAndRun({
@@ -103,7 +108,8 @@ const predictCMSBlocks = async () => {
   try {
     // Process items sequentially to maintain order
     for (const [index, item] of sections.entries()) {
-      console.log(`Processing item ${index + 1} of ${sections.length}`);
+      // console.log(`Processing item ${index + 1} of ${sections.length}`);
+      progress.value = `Predicting section ${index + 1} of ${sections.length}`
       
       const response = await processHtmlWithAssistant(item.html);
 
@@ -255,12 +261,13 @@ const updatePageInWordPress = async (pageId, flexibleContent) => {
               </div>
           </div>
 
-          <AppButton @click="predictCMSBlocks()" variant="primary" size="base" class="flex items-center gap-2 mt-6">
+          <AppButton v-if="!isLoading" @click="predictCMSBlocks()" variant="primary" size="base" class="flex items-center gap-2 mt-6">
             Predict CMS Blocks
           </AppButton>  
 
-          <div v-if="isLoading" class="text-center">
-            <p>Predicting CMS blocks... Please wait</p>
+          <div v-if="isLoading" class="mt-4">
+            <p>{{ progress }} {{ attempts }}</p>
+            <p>{{ status }}</p>
           </div>
 
           <div v-if="error" class="text-red-500 mb-4">
