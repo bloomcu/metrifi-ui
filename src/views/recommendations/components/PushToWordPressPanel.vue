@@ -25,8 +25,8 @@
             <div>
               <p class="text-lg font-medium mb-2">CMS</p>
               <div v-for="block in blocks" class="border rounded-lg p-2 mb-2">
-                <p class="text-gray-900">{{ block.acf_fc_layout }}--{{ block.layout }}</p>
-                <p v-if="block.error" class="text-red-500">Error: {{ block.error }}</p>
+                <p v-if="block.error" class="text-red-500">{{ block.error }}</p>
+                <p v-else class="text-gray-900">{{ block.acf_fc_layout }}--{{ block.layout }}</p>
               </div>
             </div>
         </div>
@@ -88,7 +88,7 @@ const status = ref('');
 const error = ref(null);
 
 // Function to wait for a run to complete
-const waitForRunComplete = async (threadId, runId, maxAttempts = 60, delayMs = 1000) => {
+const waitForRunComplete = async (threadId, runId, maxAttempts = 120, delayMs = 1000) => {
   for (let attempts = 0; attempts < maxAttempts; attempts++) {
     const runStatus = await openai.beta.threads.runs.retrieve(threadId, runId);
     
