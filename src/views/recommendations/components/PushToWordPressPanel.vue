@@ -17,7 +17,7 @@
             <div>
               <p class="text-lg font-medium mb-2">Prototype</p>
               <div v-for="section in getSectionsFromPrototype()" class="border rounded-lg p-2 mb-2">
-                <p class="text-gray-900">ID: {{ section.id }}</p>
+                <p class="text-gray-900">{{ section.id }}</p>
               </div>
             </div>
 
@@ -25,7 +25,7 @@
             <div>
               <p class="text-lg font-medium mb-2">CMS</p>
               <div v-for="block in blocks" class="border rounded-lg p-2 mb-2">
-                <p class="text-gray-900">Layout: {{ block.layout }}</p>
+                <p class="text-gray-900">{{ block.acf_fc_layout }}--{{ block.layout }}</p>
                 <p v-if="block.error" class="text-red-500">Error: {{ block.error }}</p>
               </div>
             </div>
@@ -69,8 +69,16 @@ const openai = new OpenAI({
 // Array to store the processed results
 const blocks = ref([
   // {
-  //   acf_fc_layout: 'hero--center',
-  //   layout: 'hero--center',
+  //   acf_fc_layout: 'hero',
+  //   layout: 'default',
+  // },
+  // {
+  //   acf_fc_layout: 'hero',
+  //   layout: 'center',
+  // },
+  // {
+  //   acf_fc_layout: 'feature',
+  //   layout: 'default',
   // }
 ]);
 const isLoading = ref(false);
@@ -172,7 +180,7 @@ const predictCMSBlocks = async () => {
         const response = await processHtmlWithAssistant(item.html);
         
         let splitResponse = response['data-block-id'].split('--');
-
+        
         blocks.value.push({
           acf_fc_layout: splitResponse[0],
           layout: splitResponse[1],
