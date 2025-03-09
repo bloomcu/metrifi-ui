@@ -73,13 +73,19 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 })
 
+// Helper function to introduce delay
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
 const writeContentForAllBlocks = async () => {
   isLoading.value = true
   error.value = null
 
   try {
-    const promises = wordpressStore.blocks.map(block => writeBlockContent(block))
-    await Promise.all(promises)
+    // Process blocks sequentially with a delay between each
+    for (const block of wordpressStore.blocks) {
+      await writeBlockContent(block)
+      await delay(1000) // Add a 1-second delay between requests (adjust as needed)
+    }
   } catch (err) {
     error.value = 'An error occurred while processing blocks'
     console.error('Batch processing error:', err)
@@ -98,9 +104,8 @@ const writeBlockContent = async (block) => {
       messages: [
         { 
           role: "system", 
-          content: `You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in.
-          PLEASE: Skip over the images and icons in the schema.
-          IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text.`
+          content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
+                   "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
         },
         { 
           role: "user",
