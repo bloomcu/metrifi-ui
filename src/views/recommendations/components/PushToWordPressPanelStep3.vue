@@ -16,7 +16,7 @@
     </AppButton>
   </div>
 
-  <div v-for="block in wordpressStore.keys" class="border rounded-lg mb-2 relative">
+  <div v-for="block in wordpressStore.blocks" class="border rounded-lg mb-2 relative">
     <p v-if="block.error" class="text-red-500 p-2">{{ block.error }}</p>
     <div v-else>
       <div class="text-gray-900 p-2">{{ block.acf_fc_layout }}--{{ block.layout }}</div>
@@ -44,7 +44,7 @@
   </div>
 
   <!-- Global loading indicator -->
-  <div v-if="isLoading && !wordpressStore.keys.some(block => block.isWritingContent)" class="mt-4">
+  <div v-if="isLoading && !wordpressStore.blocks.some(block => block.isWritingContent)" class="mt-4">
     <div class="flex items-center justify-center">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
       <span class="ml-2 text-gray-700">Processing blocks...</span>
@@ -78,7 +78,7 @@ const writeContentForAllBlocks = async () => {
   error.value = null
 
   try {
-    const promises = wordpressStore.keys.map(block => writeBlockContent(block))
+    const promises = wordpressStore.blocks.map(block => writeBlockContent(block))
     await Promise.all(promises)
   } catch (err) {
     error.value = 'An error occurred while processing blocks'
@@ -136,9 +136,9 @@ const createPageInWordPress = async () => {
   
   // Create a new array from blocks.value array where each member 
   // of the new array is an object with only the schema_with_content property
-  const blocksWithSchemaWithContent = wordpressStore.keys.map(block => (JSON.parse(block.schema_with_content)));
+  const blocksWithSchemaWithContent = wordpressStore.blocks.map(block => (JSON.parse(block.schema_with_content)));
 
-  console.log('blocks:', wordpressStore.keys);
+  console.log('blocks:', wordpressStore.blocks);
   console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
 
   try {
