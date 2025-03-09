@@ -6,7 +6,7 @@
     <p v-if="block.error" class="text-red-500 p-2">{{ block.error }}</p>
     <div v-else>
       <div class="text-gray-900 p-2">{{ block.acf_fc_layout }}--{{ block.layout }}</div>
-      <p v-if="block.schema" class="text-gray-500 text-sm border-t line-clamp-3 pt-2 px-2 pb-1">{{ block.schema }}</p>
+      <p v-if="block.schema" class="text-gray-500 text-sm border-t line-clamp-4 pt-2 px-2 pb-1"><span class="text-gray-800 font-medium">Schema:</span> <br>{{ block.schema }}</p>
     </div>
   </div>
 
