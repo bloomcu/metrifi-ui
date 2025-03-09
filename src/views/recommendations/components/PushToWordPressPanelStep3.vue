@@ -80,11 +80,17 @@ const writeContentForAllBlocks = async () => {
   isLoading.value = true
   error.value = null
 
+  const batchSize = 3 // Process 3 blocks at a time
+  const delayMs = 1000 // 1-second delay between batches (adjust as needed)
+
   try {
-    // Process blocks sequentially with a delay between each
-    for (const block of wordpressStore.blocks) {
-      await writeBlockContent(block)
-      await delay(1000) // Add a 1-second delay between requests (adjust as needed)
+    for (let i = 0; i < wordpressStore.blocks.length; i += batchSize) {
+      const batch = wordpressStore.blocks.slice(i, i + batchSize)
+      const promises = batch.map(block => writeBlockContent(block))
+      await Promise.all(promises)
+      if (i + batchSize < wordpressStore.blocks.length) {
+        await delay(delayMs) // Add delay between batches
+      }
     }
   } catch (err) {
     error.value = 'An error occurred while processing blocks'
