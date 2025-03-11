@@ -77,7 +77,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
     },
 
     // Function to process HTML and get layout type from OpenAI assistant
-    async predictCMSBlockWithAssistant(htmlContent, retries = 6) {
+    async predictCMSBlockWithAssistant(htmlContent, retries = 3) {
       // Static variable to track if this is the first call
       if (!this.constructor.hasCalledBefore) {
         this.constructor.hasCalledBefore = true;
