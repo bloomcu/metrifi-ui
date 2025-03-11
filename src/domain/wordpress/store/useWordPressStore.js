@@ -64,12 +64,12 @@ export const useWordPressStore = defineStore('wordpressStore', {
         const failedBlocks = results.filter(result => !result.success);
         if (failedBlocks.length > 0) {
           console.warn(`${failedBlocks.length} blocks failed to process.`);
-          this.error = 'Some blocks failed to process. See details in the CMS blocks section.';
+          this.error = 'Some blocks failed to match.';
         }
         
-        console.log('Processing complete:', this.blocks);
+        console.log('Matching CMS blocks complete:', this.blocks);
       } catch (err) {
-        this.error = 'An unexpected error occurred during processing.';
+        this.error = 'An unexpected error occurred while matching CMS blocks.';
         console.error('Full error:', err);
       } finally {
         this.isLoading = false;

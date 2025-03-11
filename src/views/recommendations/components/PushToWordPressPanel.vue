@@ -50,12 +50,7 @@
 
       <div v-if="wordpressStore.wordpressPageUrl" class="mt-4 p-4 bg-violet-50 rounded-lg">
         <p class="text-violet-700 font-medium mb-2">WordPress page created successfully!</p>
-        <a 
-          :href="wordpressStore.wordpressPageUrl" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-        >
+        <a :href="wordpressStore.wordpressPageUrl" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
           View WordPress Page
         </a>
       </div>
