@@ -203,7 +203,33 @@ export const useWordPressStore = defineStore('wordpressStore', {
             ],
           })
       
-          block.schema_with_content = response.choices[0].message.content
+          // Clean the response to ensure it's valid JSON
+          let content = response.choices[0].message.content.trim();
+          
+          // Try to validate if it's proper JSON
+          try {
+            JSON.parse(content);
+            block.schema_with_content = content;
+          } catch (jsonError) {
+            // If it's not valid JSON, try to clean it up
+            console.warn('Received invalid JSON from Grok, attempting to clean:', jsonError);
+            
+            // Remove any markdown code block indicators if present
+            if (content.startsWith('```json')) {
+              content = content.replace(/^```json\n/, '').replace(/\n```$/, '');
+            } else if (content.startsWith('```')) {
+              content = content.replace(/^```\n/, '').replace(/\n```$/, '');
+            }
+            
+            // Try parsing again after cleaning
+            try {
+              JSON.parse(content);
+              block.schema_with_content = content;
+            } catch (secondJsonError) {
+              console.error('Failed to clean JSON:', secondJsonError);
+              throw new Error('Invalid JSON response from Grok');
+            }
+          }
       
         } catch (error) {
           console.error('Error from Grok:', error)
@@ -224,12 +250,26 @@ export const useWordPressStore = defineStore('wordpressStore', {
         
         // Create a new array from blocks.value array where each member 
         // of the new array is an object with only the schema_with_content property
-        const blocksWithSchemaWithContent = this.blocks.map(block => (
-            JSON.parse(block.schema_with_content)
-        ));
+        const blocksWithSchemaWithContent = this.blocks.map(block => {
+            try {
+                return JSON.parse(block.schema_with_content);
+            } catch (error) {
+                console.error(`Error parsing JSON for block:`, error);
+                console.log('Problematic content:', block.schema_with_content);
+                // Return a placeholder or null instead of failing completely
+                this.error = `Error parsing block content: ${error.message}`;
+                return null;
+            }
+        }).filter(block => block !== null); // Filter out any blocks that failed to parse
       
         console.log('blocks:', this.blocks);
         console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
+      
+        if (blocksWithSchemaWithContent.length === 0) {
+            this.error = 'No valid blocks to send to WordPress';
+            this.isDeploying = false;
+            return;
+        }
       
         try {
           const response = await axios.post(wordpressUrl,
@@ -244,9 +284,14 @@ export const useWordPressStore = defineStore('wordpressStore', {
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Basic ' + btoa(`${username}:${appPassword}`)
-              }
+              },
+              timeout: 30000 // 30 second timeout
             }
           );
+
+          if (!response.data || !response.data.link) {
+            throw new Error('WordPress API returned an invalid response (missing page link)');
+          }
 
           this.wordpressPageUrl = response.data.link
       
@@ -257,9 +302,30 @@ export const useWordPressStore = defineStore('wordpressStore', {
           console.error('Error:', error.response ? error.response.data : error.message);
           
           // Store the error in the store's error state
-          this.error = error.response ? 
-            `Failed to create WordPress page: ${error.response.data?.message || error.response.statusText || 'Unknown error'}` : 
-            `Failed to create WordPress page: ${error.message || 'Unknown error'}`;
+          if (error.code === 'ECONNABORTED') {
+            this.error = 'Connection timeout: WordPress server took too long to respond. Please try again later.';
+          } else if (error.code === 'ERR_NETWORK') {
+            this.error = 'Network error: Unable to connect to WordPress. Please check your internet connection and try again.';
+          } else if (error.response) {
+            // Server responded with an error status code
+            const statusCode = error.response.status;
+            const errorData = error.response.data;
+            
+            if (statusCode === 401 || statusCode === 403) {
+              this.error = 'Authentication error: WordPress credentials are invalid or expired.';
+            } else if (statusCode === 404) {
+              this.error = 'WordPress API endpoint not found. Please contact support.';
+            } else if (statusCode >= 500) {
+              this.error = `WordPress server error (${statusCode}): The server encountered an issue. Please try again later.`;
+            } else {
+              // Get the most specific error message possible
+              const errorMessage = errorData?.message || errorData?.error || errorData?.code || error.response.statusText || 'Unknown error';
+              this.error = `Failed to create WordPress page: ${errorMessage}`;
+            }
+          } else {
+            // Something happened in setting up the request that triggered an error
+            this.error = `Failed to create WordPress page: ${error.message || 'Unknown error'}`;
+          }
         } finally {
           // Open the wordpress page in a new tab
           this.isDeploying = false; // Set deploying state back to false

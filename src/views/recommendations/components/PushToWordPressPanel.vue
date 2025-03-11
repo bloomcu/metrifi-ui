@@ -55,6 +55,15 @@
         </a>
       </div>
 
+      <div v-else class="mt-4 p-4 bg-violet-50 rounded-lg">
+        <p class="text-violet-700 font-medium mb-2">WordPress page in progress</p>
+        <p class="text-violet-600 text-sm">Once the page is created, the URL will appear here.</p>
+      </div>
+      <!-- <div v-else class="mt-4 p-4 bg-gray-50 rounded-lg">
+        <p class="text-gray-700 font-medium mb-2">WordPress page creation in progress</p>
+        
+      </div> -->
+
       <div v-if="wordpressStore.error" class="mt-4 p-4 bg-red-50 rounded-lg">
         <p class="text-red-700 font-medium">Error:</p>
         <p class="text-red-600">{{ wordpressStore.error }}</p>
