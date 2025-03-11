@@ -5,7 +5,7 @@
     <p class="text-lg font-medium">CMS blocks</p>
 
     <AppButton 
-      @click="createPageInWordPress()" 
+      @click="createPageInWordPress()"
       variant="primary" 
       size="base"
       class="flex items-center gap-2"
