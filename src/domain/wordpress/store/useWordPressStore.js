@@ -91,6 +91,16 @@ export const useWordPressStore = defineStore('wordpressStore', {
         try {
           this.attempts = `(attempt ${attempt}/${retries})`
           
+          // Update the block status to show retry attempts
+          const block = this.blocks.find(b => b.html === htmlContent);
+          if (block) {
+            if (attempt === 1) {
+              block.status = 'Matching block';
+            } else {
+              block.status = `Retrying match (${attempt}/${retries})`;
+            }
+          }
+          
           // Create a thread and start a run
           const run = await openai.beta.threads.createAndRun({
             assistant_id: 'asst_jjPmiRkOknWPAYxPdyfQLpvJ',
