@@ -8,11 +8,11 @@ const openai = new OpenAI({
     dangerouslyAllowBrowser: true,
 })
 
-const grok = new OpenAI({
-    apiKey: import.meta.env.VITE_GROK_API_KEY,
-    baseURL: "https://api.x.ai/v1",
-    dangerouslyAllowBrowser: true,
-})
+// const grok = new OpenAI({
+//     apiKey: import.meta.env.VITE_GROK_API_KEY,
+//     baseURL: "https://api.x.ai/v1",
+//     dangerouslyAllowBrowser: true,
+// })
 
 export const useWordPressStore = defineStore('wordpressStore', {
   state: () => ({
@@ -194,8 +194,8 @@ export const useWordPressStore = defineStore('wordpressStore', {
         await this.getBlockSchema(block)
 
         try {
-          const response = await grok.chat.completions.create({
-            model: "grok-beta",
+          const response = await openai.chat.completions.create({
+            model: 'gpt-4o',
             messages: [
               { 
                 role: "system", 
@@ -222,7 +222,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
             block.schema_with_content = content;
           } catch (jsonError) {
             // If it's not valid JSON, try to clean it up
-            console.warn('Received invalid JSON from Grok, attempting to clean:', jsonError);
+            console.warn('Received invalid JSON from OpenAi, attempting to clean:', jsonError);
             
             // Remove any markdown code block indicators if present
             if (content.startsWith('```json')) {
@@ -237,12 +237,12 @@ export const useWordPressStore = defineStore('wordpressStore', {
               block.schema_with_content = content;
             } catch (secondJsonError) {
               console.error('Failed to clean JSON:', secondJsonError);
-              throw new Error('Invalid JSON response from Grok');
+              throw new Error('Invalid JSON response from OpenAi');
             }
           }
       
         } catch (error) {
-          console.error('Error from Grok:', error)
+          console.error('Error from OpenAi:', error)
           block.error = `Error writing content: ${error.message}`
       
         } finally {
