@@ -30,6 +30,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
     async predictCMSBlocks() {
         this.error = null
         this.wordpressPageUrl = null
+        this.isDeploying = true;
       try {
         // Process all blocks simultaneously using Promise.all
         const blockPromises = this.blocks.map(async (block, index) => {
@@ -37,12 +38,15 @@ export const useWordPressStore = defineStore('wordpressStore', {
           
           try {
             const response = await this.predictCMSBlockWithAssistant(block.html);
-            
-            let splitResponse = response['data-block-id'].split('--');
-            
-            block.acf_fc_layout = splitResponse[0];
-            block.layout = splitResponse[1];
             block.status = null;
+
+            // Set the wordpress category from the response
+            block.wordpress_category = response['data-block-id'];
+
+            // Split the wordpress category into acf_fc_layout and layout
+            let splitCategory = response['data-block-id'].split('--');
+            block.acf_fc_layout = splitCategory[0];
+            block.layout = splitCategory[1];
 
             this.writeBlockContent(block)
             
@@ -77,7 +81,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
     },
 
     // Function to process HTML and get layout type from OpenAI assistant
-    async predictCMSBlockWithAssistant(htmlContent, retries = 3) {
+    async predictCMSBlockWithAssistant(htmlContent, retries = 5) {
       // Static variable to track if this is the first call
       if (!this.constructor.hasCalledBefore) {
         this.constructor.hasCalledBefore = true;

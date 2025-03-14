@@ -27,7 +27,7 @@
             <div class="flex items-center gap-3">
                 <div class="text-gray-900 font-semibold">Block {{ index + 1 }}</div>
                 <div v-if="block.acf_fc_layout" class="inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20">
-                    {{ block.acf_fc_layout.charAt(0).toUpperCase() + block.acf_fc_layout.slice(1) }}
+                    {{ block.acf_fc_layout }}
                 </div>
             </div>
 
@@ -79,32 +79,10 @@ import { useWordPressStore } from '@/domain/wordpress/store/useWordPressStore'
 const recommendationStore = useRecommendationStore()
 const wordpressStore = useWordPressStore()
 
-/**
- * Get Sections with ID from Prototype
- * --------------------
- */
- async function getSectionsFromPrototype() {
-    const prototype = await recommendationStore.recommendation.prototype
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(prototype, 'text/html');
-    const elements = doc.getElementsByTagName('section');
-    const sections = Array.from(elements).map(element => {
-        return {
-          id: element.id,
-          html: element.outerHTML,
-        };
-    });
-
-    wordpressStore.blocks = sections;
-}
-
 watch(() => recommendationStore.isPushToWordPressPanelOpen, async (newVal) => {
   if (newVal && !wordpressStore.isDeploying) {
-    getSectionsFromPrototype().then(() => {
-      console.log('Got sections from protottype')
-      wordpressStore.predictCMSBlocks();
-      wordpressStore.isDeploying = true;
-    });
+    wordpressStore.blocks = recommendationStore.recommendation.latest_page.blocks;
+    wordpressStore.predictCMSBlocks();
   }
 });
 
