@@ -8,6 +8,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         isLoading: false,
         isPushToWordPressPanelOpen: false,
         clickedElement: null,
+        selectedBlock: null,
     }),
     
     actions: {

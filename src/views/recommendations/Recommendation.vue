@@ -241,13 +241,8 @@
             </div>
           </div>
 
-          <div v-if="recommendationStore.recommendation.prototype">
-            <p class="text-xl font-semibold mb-4">Prototype</p>
-            <!-- <pre>{{ recommendationStore.clickedElement }}</pre> -->
-            <Prototype 
-              :html="recommendationStore.recommendation.prototype"
-              @element-clicked="handleElementClick"
-            />
+          <div>
+            <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length"/>
           </div>
 
           <!-- <p v-else>The complete HTML was not generated</p> -->
