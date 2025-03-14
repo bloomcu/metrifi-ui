@@ -60,11 +60,11 @@
                   <button @click="show = 'recommendation'" :class="show === 'recommendation' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                     <span class="text-sm">Analysis</span>
                   </button>
-                  <button @click="show = 'chat'" :class="show === 'chat' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
-                    <span class="text-sm">AI editor</span>
-                  </button>
                   <button @click="show = 'code'" :class="show === 'code' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
                     <span class="text-sm">Code editor</span>
+                  </button>
+                  <button @click="show = 'chat'" :class="show === 'chat' ? 'bg-violet-100 text-violet-500' : ''" class="px-3 py-2 rounded-md flex items-center space-x-1">
+                    <span class="text-sm">AI editor</span>
                   </button>
               </div>
             </div>
@@ -204,11 +204,6 @@
               <p v-else>Awaiting analysis...</p>
             </div>
 
-            <!-- Chat -->
-            <div v-if="show === 'chat'" class="h-[calc(100vh-200px)] flex flex-col">
-              <ChatInterface />
-            </div>
-
             <!-- Code -->
             <div v-if="show === 'code'" class="h-[100vh] overflow-y-auto flex flex-col">
               <CodeEditor 
@@ -221,6 +216,11 @@
                 <p class="text-sm mb-1 text-gray-700 font-medium">How to use the code editor</p>
                 <p class="text-sm text-gray-500">Click a block in the prototype to view and edit its code.</p>
               </div>
+            </div>
+
+            <!-- Chat -->
+            <div v-if="show === 'chat'" class="h-[calc(100vh-200px)] flex flex-col">
+              <ChatInterface />
             </div>
           </div>
         </div>
