@@ -370,11 +370,6 @@ function fetchRecommendation() {
       const recommendation = recommendationStore.recommendation
       setTimeout(() => isLoading.value = false, 800)
       
-      // if (hasShownAnalysisToUser.value === false && recommendation.content) {
-      //   hasShownAnalysisToUser.value = true
-      //   show.value = 'recommendation'
-      // }
-
       const currentStepIdx = steps.findIndex(step => step.status === recommendation.status)
       if (currentStepIdx !== -1) {
         currentStepIndex.value = currentStepIdx
@@ -385,9 +380,17 @@ function fetchRecommendation() {
         return
       }
       
-      if (recommendation.status === 'done') {
+      // Check if all blocks have their HTML attribute not null
+      const allBlocksHaveHtml = recommendation?.latest_page?.blocks?.length > 0 && 
+        recommendation.latest_page.blocks.every(block => block.html !== null);
+      
+      // Only clear interval when both conditions are met: status is 'done' AND all blocks have HTML
+      if (recommendation.status === 'done' && allBlocksHaveHtml) {
         clearInterval(interval)
         setTimeout(() => isLoading.value = false, 800)
+      } else if (recommendation.status === 'done' && !allBlocksHaveHtml) {
+        // If status is done but not all blocks have HTML, continue polling
+        console.log('Recommendation status is done but waiting for all blocks to have HTML')
       }
 
       if (['requires_action', 'cancelled', 'failed', 'expired'].some(status => recommendation.status.includes(status))) {
@@ -400,7 +403,6 @@ function fetchRecommendation() {
       console.error('Error fetching recommendation status:', error)
     })
 }
-
 /** 
  * Embedded Tailwind CSS
  * --------------------
