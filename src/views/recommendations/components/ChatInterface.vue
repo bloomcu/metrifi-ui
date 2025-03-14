@@ -1,7 +1,7 @@
 <template>
   <div class="h-[calc(100vh-200px)] flex flex-col">
     <!-- Instructions -->
-    <div v-if="!recommendationStore.clickedElement" class="p-4 bg-white rounded-md border">
+    <div v-if="!recommendationStore.selectedBlock" class="p-4 bg-white rounded-md border">
       <p class="text-sm mb-1 text-gray-700 font-medium">How to use the AI editor</p>
       <p class="text-sm text-gray-500">Click on the part of the page you want to change, then enter your request below.</p>
     </div>
@@ -18,7 +18,7 @@
           <div v-if="message.element" class="mt-2 space-y-2">
             <div class="flex items-center gap-2 bg-white border shadow-sm p-2 rounded w-full">
               <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
-                <span class="text-xs ">{{ message.element.tag }}</span>
+                <span class="text-xs ">{{ message.element.type }}</span>
               </div>
               <span class="text-xs truncate flex-1">{{ message.element.html }}</span>
             </div>
@@ -31,14 +31,14 @@
     </div>
 
     <!-- Current Attachment (singular) -->
-    <div v-if="recommendationStore.clickedElement" class="mb-2 space-y-2 px-4">
+    <div v-if="recommendationStore.selectedBlock" class="mb-2 space-y-2 px-4">
       <div class="flex items-center gap-2 bg-white border shadow-sm p-2 pr-3 rounded-md w-full">
         <div class="h-8 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 px-2">
-          <span class="text-xs">{{ recommendationStore.clickedElement.tag }}</span>
+            <span class="text-xs ">{{ recommendationStore.selectedBlock.type }}</span>
         </div>
-        <span class="text-xs truncate flex-1">{{ recommendationStore.clickedElement.html }}</span>
+        <span class="text-xs truncate flex-1">{{ recommendationStore.selectedBlock.html }}</span>
         <button 
-          @click="removeElement" 
+          @click="recommendationStore.selectedBlock = null" 
           class="text-red-500 bg-red-100 hover:bg-red-200 p-1 rounded-full transition-colors duration-200 flex items-center justify-center w-6 h-6"
           title="Remove attachment"
         >
@@ -57,7 +57,7 @@
         placeholder="Request changes to the prototype"
         class="flex-1 p-2 text-sm border border-gray-300 rounded-lg resize-none h-12 focus:outline-none focus:ring-1 focus:ring-violet-400"
         :disabled="isSending"
-      ></input>
+      />
       <button 
         @click="sendMessage"
         :disabled="!newMessage.trim() || isSending"
@@ -81,6 +81,7 @@ import OpenAI from 'openai'
 import { ref, reactive, nextTick } from 'vue'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useRoute } from 'vue-router'
+import { blocksApi } from '@/domain/blocks/api/blocksApi'
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_GROK_API_KEY,
@@ -112,7 +113,7 @@ const sendMessage = async () => {
   const userMessage = {
     role: 'user',
     content: newMessage.value,
-    element: recommendationStore.clickedElement,
+    element: recommendationStore.selectedBlock,
     timestamp: new Date().toLocaleTimeString()
   }
   messages.push(userMessage)
@@ -120,8 +121,6 @@ const sendMessage = async () => {
 
   let accumulatedHtml = ''
   let assistantMessage = null
-  let originalPrototype = recommendationStore.recommendation.prototype || ''
-  let lastValidPrototype = originalPrototype
 
   try {
     const stream = await openai.chat.completions.create({
@@ -139,30 +138,12 @@ const sendMessage = async () => {
           role: "user",
           content: JSON.stringify({
             message: newMessage.value,
-            element_to_be_changed_in_the_prototype: recommendationStore.clickedElement?.html || null
+            element_to_be_changed_in_the_prototype: recommendationStore.selectedBlock?.html || null
           })
         }
       ],
       stream: true
     })
-
-    function replaceElementById(htmlString, newElement, id) {
-      // Create a regex pattern to match a section with the specific id
-      const elementRegex = new RegExp(
-        `<section[^>]*id=["']${id}["'][^>]*>[\\s\\S]*?<\\/section>`,
-        'gi'
-      );
-      
-      const match = elementRegex.exec(htmlString);
-      if (!match) {
-        console.error('Element with ID not found:', id);
-        return htmlString;
-      }
-
-      return htmlString.substring(0, match.index) +
-             newElement +
-             htmlString.substring(elementRegex.lastIndex);
-    }
 
     for await (const chunk of stream) {
       const content = chunk.choices[0].delta.content
@@ -186,28 +167,16 @@ const sendMessage = async () => {
 
     // Clean the HTML and remove the highlight-element class
     const cleanedHtml = accumulatedHtml.replace(/```html\s*|\s*```/g, '').trim()
-    const withoutHighlight = cleanedHtml.replace(/class=["']([^"']*)\bhighlight-element\b([^"']*)["']/i, (match, before, after) => {
-      const newClass = `${before || ''}${after || ''}`.trim();
-      return newClass ? `class="${newClass}"` : '';
-    }).replace(/class=["']\s*["']/g, ''); // Remove empty class attributes
 
-    // Update the prototype with the cleaned HTML using ID
-    lastValidPrototype = replaceElementById(
-      originalPrototype,
-      withoutHighlight,
-      recommendationStore.clickedElement?.id
-    )
-    recommendationStore.recommendation.prototype = lastValidPrototype
-    recommendationStore.recommendation = { ...recommendationStore.recommendation }
-
-    await recommendationStore.update(
+    // Update the selectedBlock's html property directly
+    recommendationStore.selectedBlock.html = cleanedHtml
+    
+    // Update the block in the backend
+    await blocksApi.update(
       route.params.organization,
-      route.params.dashboard,
-      route.params.recommendation,
-      { prototype: lastValidPrototype }
+      recommendationStore.selectedBlock.id,
+      { html: cleanedHtml }
     )
-
-    recommendationStore.clearClickedElement()
 
   } catch (error) {
     console.error('Error streaming from Grok:', error)
@@ -217,16 +186,11 @@ const sendMessage = async () => {
       timestamp: new Date().toLocaleTimeString()
     })
     scrollToBottom() // Scroll for error message
-    recommendationStore.recommendation.prototype = lastValidPrototype
   } finally {
     isSending.value = false
     newMessage.value = ''
-    recommendationStore.clearClickedElement()
+    recommendationStore.selectedBlock = null
     scrollToBottom() // Final scroll
   }
-}
-
-const removeElement = () => {
-  recommendationStore.setClickedElement(null)
 }
 </script>

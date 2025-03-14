@@ -212,11 +212,15 @@
             <!-- Code -->
             <div v-if="show === 'code'" class="h-[100vh] overflow-y-auto flex flex-col">
               <CodeEditor 
-                v-if="recommendationStore.recommendation.prototype" 
-                v-model="recommendationStore.recommendation.prototype" 
-                @update:modelValue="updatePrototype"
+                v-if="recommendationStore.selectedBlock" 
+                v-model="recommendationStore.selectedBlock.html" 
+                @update:modelValue="updateBlock"
               />
-              <p v-else>Awaiting prototype code...</p>
+
+              <div v-else class="p-4 bg-white rounded-md border">
+                <p class="text-sm mb-1 text-gray-700 font-medium">How to use the code editor</p>
+                <p class="text-sm text-gray-500">Click a block in the prototype to view and edit its code.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -259,8 +263,9 @@
 import moment from "moment"
 import OpenAI from "openai"
 import debounce from 'lodash.debounce'
-import { ref, reactive, watch, provide, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { ArrowLeftIcon, ChevronLeftIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
@@ -325,149 +330,19 @@ const steps = [
   { status: 'page_builder_completed', text: 'Queuing next component', completed: false },
   { status: 'done', text: 'All done', completed: false },
 ]
-
 /** 
- * Chat functionality
+ * Block CRUD functionality
  * --------------------
  */
-// const isSending = ref(false)
-// const messages = reactive([])
-// const newMessage = ref('')
-// const currentElements = reactive([])
-
-// // Add chat methods
-// const sendMessage = async () => {
-//   if (!newMessage.value.trim()) return
-
-//   isSending.value = true
-
-//   // Add user message to chat
-//   const userMessage = {
-//     role: 'user',
-//     content: newMessage.value,
-//     elements: [...currentElements],
-//     timestamp: new Date().toLocaleTimeString()
-//   }
-//   messages.push(userMessage)
-
-//   try {
-//     const stream = await openai.chat.completions.create({
-//       model: "grok-beta",
-//       messages: [
-//         { 
-//           role: "system", 
-//           content: "You are a coding expert. I am requesting changes to an HTML prototype. " +
-//             "Stream the updated prototype HTML as a raw string. Not just the updated parts of the prototype, the whole prototype as a raw string." +
-//             "Do NOT stream JSON, objects, or Markdown. I don't want to see any backticks. Stream only the raw HTML string."
-//         },
-//         { 
-//           role: "user",
-//           content: JSON.stringify({
-//             message: newMessage.value,
-//             prototype_html: recommendationStore.recommendation.prototype,
-//             elements_to_be_changed_in_the_prototype: currentElements.map(element => element.html),
-//           })
-//         }
-//       ],
-//       stream: true
-//     })
-
-//     let accumulatedHtml = ''
-//     let assistantMessage = null
-//     let lastValidHtml = recommendationStore.recommendation.prototype || ''
-
-//     for await (const chunk of stream) {
-//       const content = chunk.choices[0].delta.content
-//       if (content) {
-//         accumulatedHtml += content
-
-//         // Initialize assistant message if not already done
-//         if (!assistantMessage) {
-//           assistantMessage = {
-//             role: 'assistant',
-//             content: accumulatedHtml || 'Processing your request...',
-//             timestamp: new Date().toLocaleTimeString()
-//           }
-//           messages.push(assistantMessage)
-//         } else {
-//           // Update chat with the latest HTML
-//           assistantMessage.content = accumulatedHtml
-//         }
-
-//         // Update prototype with the streamed HTML
-//         lastValidHtml = accumulatedHtml
-//         recommendationStore.recommendation.prototype = lastValidHtml
-//         recommendationStore.recommendation = { ...recommendationStore.recommendation }
-
-//         // Force reactivity for chat updates
-//         messages[messages.length - 1] = { ...assistantMessage }
-//       }
-//     }
-
-//     // Persist final version to backend
-//     if (lastValidHtml !== recommendationStore.recommendation.prototype) {
-//       recommendationStore.recommendation.prototype = lastValidHtml
-//     }
-    
-//     await recommendationStore.update(
-//       route.params.organization,
-//       route.params.dashboard,
-//       route.params.recommendation,
-//       { prototype: lastValidHtml }
-//     )
-
-//   } catch (error) {
-//     console.error('Error streaming from Grok:', error)
-//     if (!assistantMessage) {
-//       messages.push({
-//         role: 'assistant',
-//         content: `Error processing request: ${error.message}`,
-//         timestamp: new Date().toLocaleTimeString()
-//       })
-//     } else {
-//       assistantMessage.content = `Error processing request: ${error.message}`
-//       messages[messages.length - 1] = { ...assistantMessage }
-//     }
-//     recommendationStore.recommendation.prototype = lastValidHtml
-//   } finally {
-//     isSending.value = false
-//     newMessage.value = ''
-//     currentElements.length = 0
-//   }
-// }
-
-// const removeElement = (messageIndex, element) => {
-//   const message = messages[messageIndex]
-//   if (message.elements) {
-//     const index = message.elements.findIndex(e => e.html === element.html)
-//     if (index !== -1) message.elements.splice(index, 1)
-//   }
-// }
-
-// // Prototype clicked elements state
-// const clickedElement = ref('')
-// const handleElementClick = (htmlString) => {
-//   show.value = 'chat'
-
-//   clickedElement.value = htmlString
-//   const tag = htmlString.match(/^<([a-zA-Z][a-zA-Z0-9]*)/)?.[1] || 'element'
-//   currentElements.push({
-//     html: htmlString,
-//     tag: tag
-//   })
-// }
-
-/** 
- * Prototype CRUD functionality
- * --------------------
- */
-const updatePrototype = debounce(() => {
-  console.log('Updating prototype...')
+const updateBlock = debounce(() => {
+  console.log('Updating block...')
   isLoading.value = true
 
-  recommendationStore.update(route.params.organization, route.params.dashboard, route.params.recommendation, { 
-    prototype: recommendationStore.recommendation.prototype 
-  }).then(() => {
+  blocksApi.update(
+      route.params.organization,
+      recommendationStore.selectedBlock.id,
+      { html: recommendationStore.selectedBlock.html }
+  ).then(() => {
     setTimeout(() => isLoading.value = false, 800)
   })
 }, 800)
