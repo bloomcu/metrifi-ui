@@ -102,7 +102,7 @@
                 recommendationStore.selectedBlock === block ? 'border-2 border-violet-700' : ''
               ]"
             ></div>
-            <div v-else class="m-2 border rounded-md p-3 bg-gray-300 animate-pulse">{{ block.type ? block.type : 'Matching block...' }}</div>
+            <div v-else class="m-2 border rounded-md p-3 bg-gray-300 animate-pulse">{{ block.type ? block.type : 'Building block' }}</div>
           </div>
         </div>
       </div>
