@@ -241,9 +241,8 @@
             </div>
           </div>
 
-          <div>
-            <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length"/>
-          </div>
+          <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length"/>
+          
 
           <!-- <p v-else>The complete HTML was not generated</p> -->
         </div>
