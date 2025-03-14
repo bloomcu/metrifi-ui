@@ -1,4 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
+import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import wordpressBlockSchemas from '@/domain/wordpress/store/wordpressBlockSchemas.js'
 import OpenAI from 'openai'
 import axios from 'axios'
@@ -37,14 +38,18 @@ export const useWordPressStore = defineStore('wordpressStore', {
           block.status = 'Matching block';
           
           try {
-            const response = await this.predictCMSBlockWithAssistant(block.html);
+            const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block.html);
             block.status = null;
 
-            // Set the wordpress category from the response
-            block.wordpress_category = response['data-block-id'];
+            // Update the block wordpress_category in the database
+            blocksApi.update(
+                block.organization.slug,
+                block.id,
+                { wordpress_category:  predictedCMSBlockCategory['data-block-id'] }
+            )
 
             // Split the wordpress category into acf_fc_layout and layout
-            let splitCategory = response['data-block-id'].split('--');
+            let splitCategory = predictedCMSBlockCategory['data-block-id'].split('--');
             block.acf_fc_layout = splitCategory[0];
             block.layout = splitCategory[1];
 
