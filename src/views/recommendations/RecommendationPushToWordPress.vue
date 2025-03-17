@@ -4,7 +4,7 @@
       <!-- <h2 class="text-base text-gray-400 text-center">Push to WordPress</h2> -->
       
       <!-- Warning message -->
-      <div class="mb-6 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
+      <div v-if="!wordpressStore.wordpressPageUrl" class="mb-6 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
         <p class="text-yellow-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
         <p class="text-yellow-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
       </div>
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div v-else class="mt-4 p-4 bg-violet-50 rounded-lg">
-        <p class="text-violet-700 font-medium mb-2 text-center">WordPress page in progress</p>
+        <!-- <p class="text-violet-700 font-medium mb-2 text-center">WordPress page in progress</p> -->
         <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
       </div>
 
@@ -60,7 +60,7 @@
       </div>
       
       <!-- Cancel button -->
-      <div class="mt-6 flex justify-center">
+      <div v-if="!wordpressStore.wordpressPageUrl" class="mt-6 flex justify-center">
         <button 
           @click="closeTab" 
           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
