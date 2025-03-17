@@ -209,7 +209,8 @@ export const useWordPressStore = defineStore('wordpressStore', {
               { 
                 role: "system", 
                 content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
-                         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
+                        "IMPORTANT: Don't fill in gaps in the content. That's not your job. You only job is to delete placeholder content and transfer existing content. Don't do anything else." +
+                        "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
               },
               { 
                 role: "user",
