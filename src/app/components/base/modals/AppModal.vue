@@ -92,7 +92,7 @@ const sizeClasses = {
   md: 'sm:max-w-md top-10 max-h-screen',
   lg: 'sm:max-w-lg top-10 max-h-screen',
   xl: 'sm:max-w-xl top-10 max-h-screen',
-  '2xl': 'sm:max-w-2xl top-10max-h-screen',
+  '2xl': 'sm:max-w-2xl top-10 max-h-screen',
   '3xl': 'sm:max-w-3xl top-10 max-h-screen',
   '4xl': 'sm:max-w-4xl top-10 max-h-screen',
   '5xl': 'sm:max-w-5xl top-10 max-h-screen',

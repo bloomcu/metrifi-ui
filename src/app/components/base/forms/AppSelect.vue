@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col gap-1">
-      <label v-if="label" class="block text-sm font-medium text-gray-900" :for="label">{{ label }}</label>
+      <label v-if="label" class="block text-sm font-medium text-gray-700" :for="label">{{ label }}</label>
       <span v-if="hint" class="text-sm text-gray-400">{{ hint }}</span>
       <select 
         @input="updateValue($event.target.value)" 

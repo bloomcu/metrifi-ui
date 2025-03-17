@@ -10,8 +10,7 @@
     <table v-if="connections && connections.length" class="min-w-full table-fixed overflow-hidden divide-y divide-gray-300 ring-1 ring-gray-300 sm:mx-0 sm:rounded-lg">
       <thead>
         <tr>
-          <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900 sm:pl-6">Id</th>
-          <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Service</th>
+          <th scope="col" class="py-3.5 pl-4 pr-12 text-left text-sm font-semibold text-gray-900 sm:pl-6">Service</th>
           <th scope="col" class="py-3.5 pr-12 text-left text-sm font-semibold text-gray-900">Connected</th>
           <th scope="col" class="py-3.5 text-left text-sm font-semibold text-gray-900">Refreshed</th>
           <th scope="col" class="py-3.5"></th>
@@ -20,16 +19,12 @@
 
       <tbody class="divide-y divide-gray-200">
         <tr v-for="(connection, index) in connections" :key="connection.id">
-          <!-- Id -->
-          <td class="whitespace-nowrap py-4 pl-4 pr-6 text-gray-400 sm:pl-6">
-            <p>{{ connection.id }}</p>
-          </td>
-
           <!-- Service -->
-          <td class="whitespace-nowrap flex items-center gap-6 py-4 pr-6 text-sm">
-            <svg class="w-6 h-6" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+          <td class="whitespace-nowrap flex items-center gap-5 text-sm py-4 pl-4 pr-6 sm:pl-6">
+            <svg v-if="connection.service === 'Google Analytics - Property'" class="w-6 h-6" viewBox="-14 0 284 284" preserveAspectRatio="xMidYMid"><path d="M256.003 247.933a35.224 35.224 0 0 1-39.376 35.161c-18.044-2.67-31.266-18.371-30.826-36.606V36.845C185.365 18.591 198.62 2.881 216.687.24A35.221 35.221 0 0 1 256.003 35.4v212.533Z" fill="#F9AB00"/><path d="M35.101 213.193c19.386 0 35.101 15.716 35.101 35.101 0 19.386-15.715 35.101-35.101 35.101S0 267.68 0 248.295c0-19.386 15.715-35.102 35.101-35.102Zm92.358-106.387c-19.477 1.068-34.59 17.406-34.137 36.908v94.285c0 25.588 11.259 41.122 27.755 44.433a35.161 35.161 0 0 0 42.146-34.56V142.089a35.222 35.222 0 0 0-35.764-35.282Z" fill="#E37400"/></svg>
+            <svg v-else-if="connection.service === 'WordPress Website'" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512"><path fill="currentColor" d="M256 8C119.3 8 8 119.2 8 256c0 136.7 111.3 248 248 248s248-111.3 248-248C504 119.2 392.7 8 256 8M33 256c0-32.3 6.9-63 19.3-90.7l106.4 291.4C84.3 420.5 33 344.2 33 256m223 223c-21.9 0-43-3.2-63-9.1l66.9-194.4l68.5 187.8c.5 1.1 1 2.1 1.6 3.1c-23.1 8.1-48 12.6-74 12.6m30.7-327.5c13.4-.7 25.5-2.1 25.5-2.1c12-1.4 10.6-19.1-1.4-18.4c0 0-36.1 2.8-59.4 2.8c-21.9 0-58.7-2.8-58.7-2.8c-12-.7-13.4 17.7-1.4 18.4c0 0 11.4 1.4 23.4 2.1l34.7 95.2L200.6 393l-81.2-241.5c13.4-.7 25.5-2.1 25.5-2.1c12-1.4 10.6-19.1-1.4-18.4c0 0-36.1 2.8-59.4 2.8c-4.2 0-9.1-.1-14.4-.3C109.6 73 178.1 33 256 33c58 0 110.9 22.2 150.6 58.5c-1-.1-1.9-.2-2.9-.2c-21.9 0-37.4 19.1-37.4 39.6c0 18.4 10.6 33.9 21.9 52.3c8.5 14.8 18.4 33.9 18.4 61.5c0 19.1-7.3 41.2-17 72.1l-22.2 74.3zm81.4 297.2l68.1-196.9c12.7-31.8 17-57.2 17-79.9c0-8.2-.5-15.8-1.5-22.9c17.4 31.8 27.3 68.2 27.3 107c0 82.3-44.6 154.1-110.9 192.7"/></svg>
             <div class="flex-auto">
-              <p class="mb-1 text-sm leading-5 text-gray-400">{{ connection.account_name }}</p>
+              <p class="mb-1 text-sm leading-5 text-gray-400">{{ connection.service }}</p>
               <p class="text-base font-medium leading-6 text-gray-900">{{ connection.name }}</p>
             </div>
           </td>
@@ -82,9 +77,7 @@
                     <p class="text-base font-medium text-gray-900">Google Analytics</p>
                 </div>
                 <div @click="selectConnectionType('wordpress')" class="flex flex-col items-center justify-center border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-violet-50 hover:border-violet-400">
-                    <svg class="w-10 h-10 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.486 2 2 6.486 2 12C2 17.514 6.486 22 12 22C17.514 22 22 17.514 22 12C22 6.486 17.514 2 12 2ZM3.3 12C3.3 11.172 3.447 10.374 3.704 9.619L7.276 19.979C4.923 18.404 3.3 15.409 3.3 12ZM12 20.7C11.332 20.7 10.689 20.622 10.069 20.486L12.144 14.439L14.271 20.258C14.277 20.276 14.286 20.293 14.294 20.31C13.569 20.565 12.799 20.7 12 20.7ZM13.119 8.844C13.617 8.822 14.051 8.766 14.051 8.766C14.499 8.715 14.446 8.067 13.998 8.093C13.998 8.093 12.644 8.169 11.766 8.169C10.969 8.169 9.588 8.093 9.588 8.093C9.139 8.067 9.088 8.741 9.536 8.766C9.536 8.766 9.944 8.822 10.391 8.844L11.673 12.293L10.107 16.9L7.325 8.844C7.823 8.822 8.258 8.766 8.258 8.766C8.706 8.715 8.655 8.067 8.206 8.093C8.206 8.093 6.852 8.169 5.974 8.169C5.827 8.169 5.665 8.167 5.493 8.163C6.911 5.441 9.29 3.6 12 3.6C13.972 3.6 15.784 4.369 17.129 5.632C17.097 5.63 17.064 5.626 17.031 5.626C16.234 5.626 15.65 6.32 15.65 7.066C15.65 7.766 16.057 8.349 16.488 9.039C16.825 9.597 17.212 10.307 17.212 11.322C17.212 12.019 16.986 12.812 16.623 13.839L15.885 16.196L13.119 8.844ZM16.546 19.812L18.702 13.434C19.136 12.26 19.279 11.276 19.279 10.402C19.279 10.007 19.256 9.634 19.213 9.283C19.893 10.109 20.3 11.149 20.3 12.3C20.3 15.416 18.834 18.163 16.546 19.812Z" fill="#21759B"/>
-                    </svg>
+                    <svg class="w-10 h-10 mb-2" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512"><path fill="currentColor" d="M256 8C119.3 8 8 119.2 8 256c0 136.7 111.3 248 248 248s248-111.3 248-248C504 119.2 392.7 8 256 8M33 256c0-32.3 6.9-63 19.3-90.7l106.4 291.4C84.3 420.5 33 344.2 33 256m223 223c-21.9 0-43-3.2-63-9.1l66.9-194.4l68.5 187.8c.5 1.1 1 2.1 1.6 3.1c-23.1 8.1-48 12.6-74 12.6m30.7-327.5c13.4-.7 25.5-2.1 25.5-2.1c12-1.4 10.6-19.1-1.4-18.4c0 0-36.1 2.8-59.4 2.8c-21.9 0-58.7-2.8-58.7-2.8c-12-.7-13.4 17.7-1.4 18.4c0 0 11.4 1.4 23.4 2.1l34.7 95.2L200.6 393l-81.2-241.5c13.4-.7 25.5-2.1 25.5-2.1c12-1.4 10.6-19.1-1.4-18.4c0 0-36.1 2.8-59.4 2.8c-4.2 0-9.1-.1-14.4-.3C109.6 73 178.1 33 256 33c58 0 110.9 22.2 150.6 58.5c-1-.1-1.9-.2-2.9-.2c-21.9 0-37.4 19.1-37.4 39.6c0 18.4 10.6 33.9 21.9 52.3c8.5 14.8 18.4 33.9 18.4 61.5c0 19.1-7.3 41.2-17 72.1l-22.2 74.3zm81.4 297.2l68.1-196.9c12.7-31.8 17-57.2 17-79.9c0-8.2-.5-15.8-1.5-22.9c17.4 31.8 27.3 68.2 27.3 107c0 82.3-44.6 154.1-110.9 192.7"/></svg>
                     <p class="text-base font-medium text-gray-900">WordPress Website</p>
                 </div>
             </div>
@@ -101,30 +94,10 @@
             <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Connect WordPress Website</h3>
             <form @submit.prevent="connectWordPress" class="mt-6">
                 <div class="space-y-4">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700">Website Name</label>
-                        <div class="mt-1">
-                            <input type="text" id="name" v-model="wordpressForm.name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm" placeholder="Primary website" />
-                        </div>
-                    </div>
-                    <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700">Website url</label>
-                        <div class="mt-1">
-                            <input type="text" id="username" v-model="wordpressForm.token.wordpress_url" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm" />
-                        </div>
-                    </div>
-                    <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                        <div class="mt-1">
-                            <input type="text" id="username" v-model="wordpressForm.token.username" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm" />
-                        </div>
-                    </div>
-                    <div>
-                        <label for="app_password" class="block text-sm font-medium text-gray-700">App Password</label>
-                        <div class="mt-1">
-                            <input type="text" id="app_password" v-model="wordpressForm.token.app_password" autocomplete="off" class="block w-full text-gray-500 rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm mask-password" />
-                        </div>
-                    </div>
+                    <AppInput v-model="wordpressForm.name" label="Website name" :errors="errorStore.errors.name" required />
+                    <AppInput v-model="wordpressForm.token.wordpress_url" label="Website url" :errors="errorStore.errors['token.wordpress_url']" required />
+                    <AppInput v-model="wordpressForm.token.username" label="Username" :errors="errorStore.errors['token.username']" required />
+                    <AppInput v-model="wordpressForm.token.app_password" label="App password" type="password" :errors="errorStore.errors['token.app_password']" required/>
                 </div>
                 <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                     <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm" @click="showWordPressModal = false">
@@ -147,11 +120,14 @@ import { ref, onMounted, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
 import { useConnections } from '@/domain/connections/composables/useConnections'
+import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { CloudIcon } from '@heroicons/vue/24/outline'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 import DisconnectConnectionModal from '@/views/connections/modals/DisconnectConnectionModal.vue'
 
 const route = useRoute()
+
+const errorStore = useErrorStore()
 
 const connections = ref([])
 const isModalOpen = ref(false)
@@ -215,14 +191,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style>
-.mask-password {
-  /* Use a font that renders all characters as bullets or similar */
-  font-family: "text-security-disc";
-  -webkit-text-security: disc; /* For Safari */
-  -moz-text-security: disc; /* For Firefox */
-  text-security: disc; /* Standard (not widely supported yet) */
-  letter-spacing: 2px;
-}
-</style>
