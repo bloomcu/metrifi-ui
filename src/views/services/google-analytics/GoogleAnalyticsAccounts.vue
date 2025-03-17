@@ -86,14 +86,14 @@ function storeConnection(accountName, property) {
     if (organizationStore.organization.onboarding['onboardingComplete'] == false) {
       router.push({ name: 'welcome', params: { organization: state.value } })
     } else {
-      router.push({ name: 'connections', params: { organization: state.value } })
+      router.push({ name: 'settingsConnections', params: { organization: state.value } })
     }
   })
 }
 
 onMounted(() => {
   if (route.query.error) {
-    router.push({ name: 'connections', params: { organization: route.query.state } })
+    router.push({ name: 'settingsConnections', params: { organization: route.query.state } })
     return
   }
     
