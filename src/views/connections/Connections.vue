@@ -2,8 +2,8 @@
   <LayoutWithSidebar>
     <template #topbar>
       <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Connection</h1>
-        <AppButton @click="showConnectionTypeModal = true">Create connection</AppButton>
+        <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Connections</h1>
+        <AppButton @click="showConnectionTypeModal = true">Add connection</AppButton>
       </div>
     </template>
 
