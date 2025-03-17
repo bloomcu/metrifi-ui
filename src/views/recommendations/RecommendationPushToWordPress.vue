@@ -1,6 +1,14 @@
 <template>
-  <div class="">
-    <h2 class="text-base text-gray-400">Push to WordPress</h2>
+  <div class="flex flex-col items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-3xl">
+      <!-- <h2 class="text-base text-gray-400 text-center">Push to WordPress</h2> -->
+      
+      <!-- Warning message -->
+      <div class="mb-6 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
+        <p class="text-yellow-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
+        <p class="text-yellow-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
+      </div>
+      
       <!-- Blocks -->
       <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" class="border rounded-lg mb-2">
         <p v-if="block.error" class="text-red-500 p-3">{{ block.error }}</p>
@@ -34,20 +42,33 @@
 
       <!-- WordPress page link -->
       <div v-if="wordpressStore.wordpressPageUrl" class="mt-4 p-4 bg-violet-50 rounded-lg">
-        <p class="text-violet-700 font-medium mb-2">WordPress page created successfully!</p>
-        <a :href="wordpressStore.wordpressPageUrl" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-          View WordPress Page
-        </a>
+        <p class="text-violet-700 font-medium mb-2 text-center">WordPress page created successfully!</p>
+        <div class="flex justify-center">
+          <a :href="wordpressStore.wordpressPageUrl" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+            View WordPress Page
+          </a>
+        </div>
       </div>
       <div v-else class="mt-4 p-4 bg-violet-50 rounded-lg">
-        <p class="text-violet-700 font-medium mb-2">WordPress page in progress</p>
-        <p class="text-violet-600 text-sm">Once the page is created, the URL will appear here.</p>
+        <p class="text-violet-700 font-medium mb-2 text-center">WordPress page in progress</p>
+        <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
       </div>
 
       <div v-if="wordpressStore.error" class="mt-4 p-4 bg-red-50 rounded-lg">
-        <p class="text-red-700 font-medium">Error:</p>
-        <p class="text-red-600">{{ wordpressStore.error }}</p>
+        <p class="text-red-700 font-medium text-center">Error:</p>
+        <p class="text-red-600 text-center">{{ wordpressStore.error }}</p>
       </div>
+      
+      <!-- Cancel button -->
+      <div class="mt-6 flex justify-center">
+        <button 
+          @click="closeTab" 
+          class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+        >
+          Cancel and close tab
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -60,6 +81,11 @@ import { useWordPressStore } from '@/domain/wordpress/store/useWordPressStore'
 const route = useRoute()
 const recommendationStore = useRecommendationStore()
 const wordpressStore = useWordPressStore()
+
+// Function to close the tab
+const closeTab = () => {
+  window.close()
+}
 
 // Watch the blocks array in the WordPress store
 // When all blocks have schema_with_content, create the WordPress page
