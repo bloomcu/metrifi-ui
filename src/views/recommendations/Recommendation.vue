@@ -20,7 +20,7 @@
           Regenerate
         </AppButton>
 
-        <AppButton @click="recommendationStore.isPushToWordPressPanelOpen = true" variant="secondary" size="base" class="flex items-center gap-2">
+        <AppButton @click="pushToWordPress()" variant="secondary" size="base" class="flex items-center gap-2">
           Push to WordPress
         </AppButton>
 
@@ -330,6 +330,17 @@ const steps = [
   { status: 'page_builder_completed', text: 'Queuing next component', completed: false },
   { status: 'done', text: 'All done', completed: false },
 ]
+
+/**
+ * Push to WordPress functionality
+ * ------------------------------
+ */
+
+function pushToWordPress() {
+  let route = router.resolve({name: 'recommendation-push-to-wordpress'})
+  window.open(route.href, '_blank')
+}
+
 /** 
  * Block CRUD functionality
  * --------------------
@@ -403,6 +414,7 @@ function fetchRecommendation() {
       console.error('Error fetching recommendation status:', error)
     })
 }
+
 /** 
  * Embedded Tailwind CSS
  * --------------------
