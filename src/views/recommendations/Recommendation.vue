@@ -376,6 +376,7 @@ const progressWidth = computed(() => {
 
 function fetchRecommendation() {
   isLoading.value = true
+
   recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
     .then(response => {
       const recommendation = recommendationStore.recommendation
@@ -399,9 +400,6 @@ function fetchRecommendation() {
       if (recommendation.status === 'done' && allBlocksHaveHtml) {
         clearInterval(interval)
         setTimeout(() => isLoading.value = false, 800)
-      } else if (recommendation.status === 'done' && !allBlocksHaveHtml) {
-        // If status is done but not all blocks have HTML, continue polling
-        console.log('Recommendation status is done but waiting for all blocks to have HTML')
       }
 
       if (['requires_action', 'cancelled', 'failed', 'expired'].some(status => recommendation.status.includes(status))) {
