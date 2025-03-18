@@ -88,6 +88,11 @@
                     <AppInput v-model="wordpressForm.token.username" label="Username" :errors="errorStore.errors['token.username']" required />
                     <AppInput v-model="wordpressForm.token.app_password" label="App password" type="password" :errors="errorStore.errors['token.app_password']" required/>
                 </div>
+                
+                <div v-if="isValidUrl(wordpressForm.token.wordpress_url)" class="mt-4 p-3 bg-gray-50 rounded-md text-sm text-gray-600">
+                    Visit <a :href="wordpressForm.token.wordpress_url + '/wp-admin/profile.php'" class="text-violet-700 font-semibold">{{ wordpressForm.token.wordpress_url + '/wp-admin/profile.php' }}</a> to find your WordPress username and create an application password.
+                </div>
+                
                 <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                     <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm" @click="showWordPressModal = false">
                         Cancel
@@ -171,6 +176,17 @@ async function connectWordPress() {
                 }
             }
     })
+}
+
+function isValidUrl(url) {
+  if (!url) return false
+  try {
+    const urlObj = new URL(url)
+    // Check that the URL has a hostname with a TLD (at least one dot)
+    return urlObj.hostname && urlObj.hostname.includes('.')
+  } catch (e) {
+    return false
+  }
 }
 
 onMounted(() => {

@@ -2,7 +2,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import wordpressBlockSchemas from '@/domain/wordpress/store/wordpressBlockSchemas.js'
 import OpenAI from 'openai'
-import axios from 'axios'
+import { wordPressApi } from '@/domain/wordpress/api/wordPressApi.js'
 
 const openai = new OpenAI({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -260,13 +260,9 @@ export const useWordPressStore = defineStore('wordpressStore', {
         }
     },
 
-    async createPageInWordPress(pageTitle) {
+    async createPageInWordPress(organizationSlug, pageTitle) {
         this.error = null; // Reset error state before attempting to create page
         this.isDeploying = true; // Set deploying state to true
-        
-        const wordpressUrl = 'https://base.bloomcudev.com/wp-json/metrifi/v1/create-page';
-        const username = 'admin-base';
-        const appPassword = 'ZEh4 V0zI Ihxx iJR4 D9RZ dUb3';
         
         // Create a new array from blocks.value array where each member 
         // of the new array is an object with only the schema_with_content property
@@ -282,8 +278,8 @@ export const useWordPressStore = defineStore('wordpressStore', {
             }
         }).filter(block => block !== null); // Filter out any blocks that failed to parse
       
-        console.log('blocks:', this.blocks);
-        console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
+        // console.log('blocks:', this.blocks);
+        // console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
       
         if (blocksWithSchemaWithContent.length === 0) {
             this.error = 'No valid blocks to send to WordPress';
@@ -292,64 +288,27 @@ export const useWordPressStore = defineStore('wordpressStore', {
         }
       
         try {
-          const response = await axios.post(wordpressUrl,
-            {
-              title: pageTitle + ' - ' + new Date().toISOString().split('T')[0],
-              status: 'publish',
-              acf: {
-                content_blocks: blocksWithSchemaWithContent
-              }
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Basic ' + btoa(`${username}:${appPassword}`)
-              },
-              timeout: 30000 // 30 second timeout
-            }
-          );
-
-          if (!response.data || !response.data.link) {
-            throw new Error('WordPress API returned an invalid response (missing page link)');
-          }
-
-          this.wordpressPageUrl = response.data.link
-      
-          console.log('Post created successfully!');
-          console.log('Post data:', response.data);
+        // Prepare data to send to WordPress
+        const pageData = {
+            title: pageTitle,
+            blocks: blocksWithSchemaWithContent
+        };
+        
+        // Call WordPress API to create the page
+        const response = await wordPressApi.storePage(organizationSlug, pageData);
+        
+        // Update state
+        this.isDeploying = false;
+        this.wordpressPageUrl = response.data.page_url;
+        
+        return response;
         } catch (error) {
-          console.log('Failed to create post');
-          console.error('Error:', error.response ? error.response.data : error.message);
-          
-          // Store the error in the store's error state
-          if (error.code === 'ECONNABORTED') {
-            this.error = 'Connection timeout: WordPress server took too long to respond. Please try again later.';
-          } else if (error.code === 'ERR_NETWORK') {
-            this.error = 'Network error: Unable to connect to WordPress. Please check your internet connection and try again.';
-          } else if (error.response) {
-            // Server responded with an error status code
-            const statusCode = error.response.status;
-            const errorData = error.response.data;
-            
-            if (statusCode === 401 || statusCode === 403) {
-              this.error = 'Authentication error: WordPress credentials are invalid or expired.';
-            } else if (statusCode === 404) {
-              this.error = 'WordPress API endpoint not found. Please contact support.';
-            } else if (statusCode >= 500) {
-              this.error = `WordPress server error (${statusCode}): The server encountered an issue. Please try again later.`;
-            } else {
-              // Get the most specific error message possible
-              const errorMessage = errorData?.message || errorData?.error || errorData?.code || error.response.statusText || 'Unknown error';
-              this.error = `Failed to create WordPress page: ${errorMessage}`;
-            }
-          } else {
-            // Something happened in setting up the request that triggered an error
-            this.error = `Failed to create WordPress page: ${error.message || 'Unknown error'}`;
-          }
-        } finally {
-          // Open the wordpress page in a new tab
-          this.isDeploying = false; // Set deploying state back to false
+            console.error('Failed to create WordPress page:', error);
+            this.error = `Failed to create page in WordPress: ${error.message}`;
+            this.isDeploying = false;
+            throw error;
         }
+        
     }
   },
 })

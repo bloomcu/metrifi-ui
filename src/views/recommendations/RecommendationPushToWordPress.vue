@@ -3,14 +3,8 @@
     <div class="w-full max-w-3xl">
       <!-- <h2 class="text-base text-gray-400 text-center">Push to WordPress</h2> -->
       
-      <!-- Warning message -->
-      <div v-if="!wordpressStore.wordpressPageUrl" class="mb-6 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
-        <p class="text-yellow-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
-        <p class="text-yellow-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
-      </div>
-      
       <!-- Blocks -->
-      <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" class="border rounded-lg mb-2">
+      <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" class="border rounded-lg mb-4">
         <p v-if="block.error" class="text-red-500 p-3">{{ block.error }}</p>
 
         <div v-else>
@@ -40,18 +34,21 @@
         </div>
       </div>
 
+      <!-- Warning message -->
+      <div v-if="!wordpressStore.wordpressPageUrl" class="mb-4 p-4 bg-violet-50 rounded-lg">
+        <p class="text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
+        <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
+        <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
+      </div>
+
       <!-- WordPress page link -->
-      <div v-if="wordpressStore.wordpressPageUrl" class="mt-4 p-4 bg-violet-50 rounded-lg">
+      <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-4 bg-violet-50 rounded-lg">
         <p class="text-violet-700 font-medium mb-2 text-center">WordPress page created successfully!</p>
         <div class="flex justify-center">
           <a :href="wordpressStore.wordpressPageUrl" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
             View WordPress Page
           </a>
         </div>
-      </div>
-      <div v-else class="mt-4 p-4 bg-violet-50 rounded-lg">
-        <!-- <p class="text-violet-700 font-medium mb-2 text-center">WordPress page in progress</p> -->
-        <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
       </div>
 
       <div v-if="wordpressStore.error" class="mt-4 p-4 bg-red-50 rounded-lg">
@@ -96,7 +93,7 @@ watch(() => wordpressStore.blocks, (blocks) => {
     
     if (allBlocksHaveContent) {
       console.log('All blocks have schema_with_content, creating WordPress page');
-      wordpressStore.createPageInWordPress(recommendationStore.recommendation.title)
+      wordpressStore.createPageInWordPress(route.params.organization, recommendationStore.recommendation.title)
     }
   }
 }, { deep: true });
