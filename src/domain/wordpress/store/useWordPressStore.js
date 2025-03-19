@@ -33,6 +33,12 @@ export const useWordPressStore = defineStore('wordpressStore', {
         this.wordpressPageUrl = null
         this.isDeploying = true;
       try {
+        // Reset any existing retry counts for blocks
+        this.blocks.forEach(block => {
+          block.schemaRetryCount = 0;
+          block.error = null;
+        });
+        
         // Process all blocks simultaneously using Promise.all
         const blockPromises = this.blocks.map(async (block, index) => {
           block.status = 'Matching block';
@@ -189,18 +195,61 @@ export const useWordPressStore = defineStore('wordpressStore', {
         // Set block.schema to the matching schema or undefined if not found
         block.schema = matchingSchema;
         
-        // If no schema is found, set the error message
+        // If no schema is found, retry with predictCMSBlockWithAssistant up to 2 more times
         if (!matchingSchema) {
-          block.error = 'Could not find matching WordPress schema';
+          // Initialize retry count if it doesn't exist
+          block.schemaRetryCount = block.schemaRetryCount || 0;
+          
+          // Only retry if we haven't already tried twice
+          if (block.schemaRetryCount < 2) {
+            block.schemaRetryCount++;
+            console.log(`No matching schema found for block. Retry attempt ${block.schemaRetryCount}/2`);
+            
+            try {
+              // Update status to show we're retrying
+              block.status = `Retrying match (${block.schemaRetryCount}/2)`;
+              
+              // Retry prediction with the assistant
+              const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block.html);
+              
+              // Split the wordpress category into acf_fc_layout and layout
+              let splitCategory = predictedCMSBlockCategory['data-block-id'].split('--');
+              block.acf_fc_layout = splitCategory[0];
+              block.layout = splitCategory[1];
+              
+              // Try to get the schema again with the new acf_fc_layout
+              return await this.getBlockSchema(block);
+            } catch (err) {
+              console.error(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err);
+              block.status = null;
+              
+              // If we've exhausted all retries, set the error message
+              if (block.schemaRetryCount >= 2) {
+                block.error = 'Could not find matching WordPress schema after multiple attempts';
+              }
+            }
+          } else {
+            // We've already retried twice, set the error message
+            block.error = 'Could not find matching WordPress schema after multiple attempts';
+          }
         }
 
         return
     },
 
     async writeBlockContent(block) {
-        block.status = 'Writing content'
+        // Only set status if it's not already in a retry state
+        if (!block.status || !block.status.includes('Retrying match')) {
+            block.status = 'Writing content'
+        }
         
         await this.getBlockSchema(block)
+
+        // If we still don't have a schema after retries, don't proceed with content writing
+        if (!block.schema) {
+            block.status = null;
+            return;
+        }
 
         try {
           const response = await openai.chat.completions.create({
