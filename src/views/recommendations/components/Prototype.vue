@@ -2,12 +2,12 @@
   <div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-    <div class="border rounded-md shadow-sm overflow-hidden">
+    <div class="_border _rounded-md shadow-lg overflow-hidden">
       <!-- Browser-like header -->
-      <div class="border-b px-4 py-2 flex items-center justify-between">
+      <!-- <div class="border-b px-4 py-2 flex items-center justify-between"> -->
 
         <!-- Device toggles -->
-        <div class="flex items-center space-x-1">
+        <!-- <div class="flex items-center space-x-1">
           <button 
             @click="deviceType = 'desktop'" 
             class="w-8 p-1 rounded"
@@ -32,10 +32,10 @@
           >
             <i class="fas fa-mobile-alt text-sm"></i>
           </button>
-        </div>
+        </div> -->
         
         <!-- Version dropdown -->
-        <div class="relative" ref="versionDropdown">
+        <!-- <div class="relative" ref="versionDropdown">
           <button 
             @click.stop="showVersionDropdown = !showVersionDropdown" 
             class="flex items-center space-x-2 text-sm text-gray-700 border rounded px-3 py-1 hover:bg-gray-50"
@@ -48,8 +48,6 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
           </button>
-          
-          <!-- Dropdown menu -->
           <div 
             v-if="showVersionDropdown" 
             class="absolute right-0 mt-1 w-48 bg-white border rounded-md shadow-lg z-10"
@@ -70,8 +68,8 @@
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </div> -->
+      <!-- </div> -->
       
       <!-- Content container with responsive width -->
       <div class="bg-white overflow-auto transition-all duration-300 flex justify-center"
@@ -123,45 +121,46 @@ import { useRecommendationStore } from '@/domain/recommendations/store/useRecomm
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const recommendationStore = useRecommendationStore()
-const deviceType = ref('desktop')
-const showVersionDropdown = ref(false)
-const selectedVersion = ref(7)
-const versionDropdown = ref(null)
+
+// const deviceType = ref('desktop')
+// const showVersionDropdown = ref(false)
+// const selectedVersion = ref(7)
+// const versionDropdown = ref(null)
 
 // Version data with human-readable dates
-const versions = [
-  { id: 7, date: '1 day ago' },
-  { id: 6, date: '1 day ago' },
-  { id: 5, date: '1 day ago' },
-  { id: 4, date: '1 day ago' },
-  { id: 3, date: '2 days ago' },
-  { id: 2, date: '3 days ago' },
-  { id: 1, date: '4 days ago' }
-]
+// const versions = [
+//   { id: 7, date: '1 day ago' },
+//   { id: 6, date: '1 day ago' },
+//   { id: 5, date: '1 day ago' },
+//   { id: 4, date: '1 day ago' },
+//   { id: 3, date: '2 days ago' },
+//   { id: 2, date: '3 days ago' },
+//   { id: 1, date: '4 days ago' }
+// ]
+
+// const selectVersion = (versionId) => {
+//   selectedVersion.value = versionId
+//   showVersionDropdown.value = false
+// }
 
 const selectBlock = (block) => {
   recommendationStore.selectedBlock = block
 }
 
-const selectVersion = (versionId) => {
-  selectedVersion.value = versionId
-  showVersionDropdown.value = false
-}
+// // Close dropdown when clicking outside
+// const handleClickOutside = (event) => {
+//   if (versionDropdown.value && !versionDropdown.value.contains(event.target)) {
+//     showVersionDropdown.value = false
+//   }
+// }
 
-// Close dropdown when clicking outside
-const handleClickOutside = (event) => {
-  if (versionDropdown.value && !versionDropdown.value.contains(event.target)) {
-    showVersionDropdown.value = false
-  }
-}
+// // Add event listener when component is mounted
+// onMounted(() => {
+//   document.addEventListener('click', handleClickOutside)
+// })
 
-// Add event listener when component is mounted
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-// Remove event listener when component is unmounted
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+// // Remove event listener when component is unmounted
+// onUnmounted(() => {
+//   document.removeEventListener('click', handleClickOutside)
+// })
 </script>
