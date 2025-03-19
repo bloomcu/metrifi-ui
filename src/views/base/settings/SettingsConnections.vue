@@ -87,10 +87,11 @@
                     <AppInput v-model="wordpressForm.token.wordpress_url" label="Website url" :errors="errorStore.errors['token.wordpress_url']" required />
                     <AppInput v-model="wordpressForm.token.username" label="Username" :errors="errorStore.errors['token.username']" required />
                     <AppInput v-model="wordpressForm.token.app_password" label="App password" type="password" :errors="errorStore.errors['token.app_password']" required/>
+                    <p class="text-xs text-gray-500 mt-1">Username and app password are secured using AES-256 encryption</p>
                 </div>
                 
                 <div v-if="isValidUrl(wordpressForm.token.wordpress_url)" class="mt-4 p-3 bg-gray-50 rounded-md text-sm text-gray-600">
-                    Visit <a :href="wordpressForm.token.wordpress_url + '/wp-admin/profile.php'" class="text-violet-700 font-semibold">{{ wordpressForm.token.wordpress_url + '/wp-admin/profile.php' }}</a> to find your WordPress username and create an application password.
+                    Visit <a :href="wordpressForm.token.wordpress_url + '/wp-admin/profile.php'" target="_blank" class="text-violet-700 font-semibold">{{ wordpressForm.token.wordpress_url + '/wp-admin/profile.php' }}</a> to find your WordPress username and create an application password.
                 </div>
                 
                 <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
