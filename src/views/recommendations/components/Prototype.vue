@@ -79,17 +79,11 @@
         }"
       >
         <!-- Content with responsive width -->
-        <div 
-          class="transition-all duration-300"
-          :style="{
-            width: deviceType === 'desktop' ? '100%' : 'auto',
-            maxWidth: deviceType === 'tablet' ? '768px' : deviceType === 'mobile' ? '375px' : 'none'
-          }"
-        >
+        <div class="transition-all duration-300 w-full">
           <div 
             v-for="(block, index) in recommendationStore.recommendation?.latest_page?.blocks || []" 
             :key="index"
-            class="relative group"
+            class="relative group w-full block"
             @click="selectBlock(block)"
           >
             <div 
