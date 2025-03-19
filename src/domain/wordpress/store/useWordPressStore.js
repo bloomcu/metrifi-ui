@@ -304,7 +304,19 @@ export const useWordPressStore = defineStore('wordpressStore', {
         return response;
         } catch (error) {
             console.error('Failed to create WordPress page:', error);
-            this.error = `Failed to create page in WordPress: ${error.message}`;
+            
+            // Extract the specific error message from the response if available
+            if (error.response && error.response.data && error.response.data.error) {
+                // Use the specific error message from the Laravel backend
+                this.error = error.response.data.error;
+            } else if (error.response && error.response.data && error.response.data.message) {
+                // Fallback to the message if error field is not available
+                this.error = error.response.data.message;
+            } else {
+                // Default generic error message with the JavaScript error
+                this.error = `Failed to create page in WordPress: ${error.message}`;
+            }
+            
             this.isDeploying = false;
             throw error;
         }
