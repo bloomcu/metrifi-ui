@@ -84,9 +84,8 @@ import { useRoute } from 'vue-router'
 import { blocksApi } from '@/domain/blocks/api/blocksApi'
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_GROK_API_KEY,
-  baseURL: "https://api.x.ai/v1",
-  dangerouslyAllowBrowser: true,
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true,
 })
 
 const route = useRoute()
@@ -124,7 +123,8 @@ const sendMessage = async () => {
 
   try {
     const stream = await openai.chat.completions.create({
-      model: "grok-beta",
+    //   model: "grok-beta",
+      model: 'gpt-4o',
       messages: [
         { 
           role: "system", 

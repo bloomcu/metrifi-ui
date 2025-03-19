@@ -261,7 +261,6 @@
 
 <script setup>
 import moment from "moment"
-import OpenAI from "openai"
 import debounce from 'lodash.debounce'
 import { ref, reactive, provide, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -276,13 +275,6 @@ import ChatInterface from '@/views/recommendations/components/ChatInterface.vue'
 import PushToWordPressPanel from '@/views/recommendations/components/PushToWordPressPanel.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecommendationModal.vue'
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_GROK_API_KEY,
-  baseURL: "https://api.x.ai/v1",
-  dangerouslyAllowBrowser: true,
-});
 
 const router = useRouter()
 const route = useRoute()
