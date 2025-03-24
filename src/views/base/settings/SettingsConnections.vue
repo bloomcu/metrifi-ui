@@ -84,7 +84,7 @@
             <form @submit.prevent="connectWordPress" class="mt-6">
                 <div class="space-y-4">
                     <AppInput v-model="wordpressForm.name" label="Website name" :errors="errorStore.errors.name" required />
-                    <AppInput v-model="wordpressForm.token.wordpress_url" label="Website url" :errors="errorStore.errors['token.wordpress_url']" required />
+                    <AppInput v-model="wordpressForm.token.wordpress_url" label="Full website URL" hint="Example: https://example.com/" :errors="errorStore.errors['token.wordpress_url']" required />
                     
                     <template v-if="isValidUrl(wordpressForm.token.wordpress_url)">
                         <div class="p-3 bg-gray-50 rounded-md text-sm text-gray-600">
@@ -165,9 +165,26 @@ function selectConnectionType(type) {
 }
 
 async function connectWordPress() {
+    // Format URL before submission
+    if (wordpressForm.value.token.wordpress_url) {
+        let url = wordpressForm.value.token.wordpress_url
+        
+        // Add protocol if missing
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url
+        }
+        
+        try {
+            const urlObj = new URL(url)
+            // Set the URL to just protocol + hostname (no path or trailing slash)
+            wordpressForm.value.token.wordpress_url = urlObj.protocol + '//' + urlObj.hostname
+        } catch (e) {
+            // Keep the original value if URL parsing fails
+        }
+    }
+
     connectionApi.store(route.params.organization, wordpressForm.value)
         .then((response) => {
-            console.log(response)
             connections.value.push(response.data.data)
             showWordPressModal.value = false
 
@@ -185,13 +202,28 @@ async function connectWordPress() {
 
 function isValidUrl(url) {
   if (!url) return false
+  
+  // Add protocol if missing
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = 'https://' + url
+  }
+  
   try {
     const urlObj = new URL(url)
+    
     // Check that the URL has a valid hostname with a TLD
     // Must have at least one dot and something after the last dot
-    return urlObj.hostname && 
+    const isValid = urlObj.hostname && 
            urlObj.hostname.includes('.') && 
            urlObj.hostname.split('.').pop().length >= 2
+    
+    // Return formatted URL without path or trailing slash
+    if (isValid) {
+      // Update the form value with the formatted URL
+      wordpressForm.value.token.wordpress_url = urlObj.protocol + '//' + urlObj.hostname
+    }
+    
+    return isValid
   } catch (e) {
     return false
   }
