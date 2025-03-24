@@ -4165,7 +4165,7 @@ const wordpressBlockSchemas = [
           "rate_sub_label": "as low as"
         },
         {
-          "rate_title": "Test",
+          "rate_title": "",
           "rate": "3.3",
           "rate_suffix": "%",
           "rate_term": "APR",
@@ -4216,7 +4216,7 @@ const wordpressBlockSchemas = [
           "rate_sub_label": "as low as"
         },
         {
-          "rate_title": "Test",
+          "rate_title": "",
           "rate": "3.3",
           "rate_suffix": "%",
           "rate_term": "APR",
@@ -4645,7 +4645,7 @@ const wordpressBlockSchemas = [
       "title_display_style": "default",
       "content": "<p>The Text Block is good for single column, long-form content. Vitae qui adipisci repellendus reiciendis. Consequatur in dolores eius expedita. Eligendi qui qui eum et autem. Vitae qui adipisci repellendus reiciendis. Consequatur in dolores eius expedita.</p>\n",
       "link": {
-        "title": "Test",
+        "title": "",
         "url": "#",
         "target": ""
       },
@@ -8676,7 +8676,7 @@ const wordpressBlockSchemas = [
           "link_type": "basic_link",
           "link_1_style": "primary",
           "link_1": {
-            "title": "Test",
+            "title": "",
             "url": "#",
             "target": ""
           },
@@ -8759,7 +8759,7 @@ const wordpressBlockSchemas = [
           "link_type": "basic_link",
           "link_1_style": "primary",
           "link_1": {
-            "title": "Test",
+            "title": "",
             "url": "#",
             "target": ""
           },
