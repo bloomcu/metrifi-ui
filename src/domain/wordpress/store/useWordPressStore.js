@@ -9,11 +9,11 @@ const openai = new OpenAI({
     dangerouslyAllowBrowser: true,
 })
 
-// const grok = new OpenAI({
-//     apiKey: import.meta.env.VITE_GROK_API_KEY,
-//     baseURL: "https://api.x.ai/v1",
-//     dangerouslyAllowBrowser: true,
-// })
+const grok = new OpenAI({
+    apiKey: import.meta.env.VITE_GROK_API_KEY,
+    baseURL: "https://api.x.ai/v1",
+    dangerouslyAllowBrowser: true,
+})
 
 export const useWordPressStore = defineStore('wordpressStore', {
   state: () => ({
@@ -254,15 +254,17 @@ export const useWordPressStore = defineStore('wordpressStore', {
         try {
           const response = await openai.chat.completions.create({
             model: 'gpt-4o',
+        //   const response = await grok.chat.completions.create({
+        //     model: 'grok-beta',
             messages: [
               { 
                 role: "system", 
-                // content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
-                //         "IMPORTANT: Don't fill in gaps in the content. That's not your job. Your only job is to delete placeholder content and transfer existing content. Don't do anything else." +
-                //         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
-                content: "You are an expert at adapting content in html to a json object. I will provide the html of a block and the json schema I need the content adapted to. " +
-                         "IMPORTANT: The json schema I provide may have placeholder content. Do not keep the placeholder content, only transfer content from the html to the json schema and remove any unused placeholder content. Remove any placeholder test buttons" +
-                         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
+                content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
+                        "IMPORTANT: Don't fill in gaps in the content. That's not your job. Your only job is to delete placeholder content and transfer existing content. Don't do anything else." +
+                        "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
+                // content: "You are an expert at adapting content in html to a json object. I will provide the html of a block and the json schema I need the content adapted to. " +
+                //          "IMPORTANT: The json schema I provide may have placeholder content. Do not keep the placeholder content, only transfer content from the html to the json schema and remove any unused placeholder content. Remove any placeholder test buttons" +
+                //          "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
               },
               { 
                 role: "user",
