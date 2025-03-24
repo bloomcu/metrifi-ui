@@ -1,6 +1,24 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen p-4">
     <div class="w-full max-w-3xl">
+      <!-- Page Title -->
+      <div class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-gray-900 mb-5" v-if="recommendationStore.recommendation && wordpressConnection">
+          Pushing "{{ recommendationStore.recommendation.title }}" to {{ wordpressConnection.name }}
+        </h1>
+        <div class="flex justify-center mb-8">
+          <router-link 
+            :to="{ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: route.params.recommendation } }" 
+            class="text-violet-600 hover:text-violet-800 flex items-center gap-1"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Recommendation
+          </router-link>
+        </div>
+      </div>
+
       <!-- No WordPress Connection Message -->
       <div v-if="!hasWordPressConnection" class="mb-4 p-4 bg-violet-50 rounded-lg">
         <p class="text-violet-700 font-medium mb-2 text-center">No WordPress Connection Found</p>
@@ -97,6 +115,7 @@ const recommendationStore = useRecommendationStore()
 const wordpressStore = useWordPressStore()
 const connections = useConnections()
 const hasWordPressConnection = ref(false)
+const wordpressConnection = ref(null)
 
 // Function to close the tab
 const closeTab = () => {
@@ -125,8 +144,8 @@ watch(() => wordpressStore.blocks, (blocks) => {
 onMounted(() => {
     // Check if WordPress connection exists
     connections.listConnections().then(() => {
-        const wordpressConnection = connections.connections.value.find(connection => connection.service === 'WordPress Website')
-        hasWordPressConnection.value = !!wordpressConnection
+        wordpressConnection.value = connections.connections.value.find(connection => connection.service === 'WordPress Website')
+        hasWordPressConnection.value = !!wordpressConnection.value
         
         if (hasWordPressConnection.value) {
             recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
