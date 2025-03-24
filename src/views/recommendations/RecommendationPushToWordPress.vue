@@ -2,21 +2,10 @@
   <div class="flex flex-col items-center justify-center min-h-screen p-4">
     <div class="w-full max-w-3xl">
       <!-- Page Title -->
-      <div class="mb-6 text-center">
-        <h1 class="text-2xl font-bold text-gray-900 mb-5" v-if="recommendationStore.recommendation && wordpressConnection">
+      <div class="mb-4 text-center">
+        <h1 class="text-2xl font-semibold text-gray-900 mb-5" v-if="recommendationStore.recommendation && wordpressConnection">
           Pushing "{{ recommendationStore.recommendation.title }}" to {{ wordpressConnection.name }}
         </h1>
-        <div class="flex justify-center mb-8">
-          <router-link 
-            :to="{ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: route.params.recommendation } }" 
-            class="text-violet-600 hover:text-violet-800 flex items-center gap-1"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Recommendation
-          </router-link>
-        </div>
       </div>
 
       <!-- No WordPress Connection Message -->
@@ -32,6 +21,13 @@
           </button>
         </div>
       </div>
+
+      <!-- Warning message -->
+      <div v-if="hasWordPressConnection && !wordpressStore.wordpressPageUrl" class="mb-4 p-4 bg-violet-50 rounded-lg">
+          <p class="text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
+          <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
+          <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
+        </div>
 
       <!-- WordPress Push Content (only shown if connection exists) -->
       <div v-if="hasWordPressConnection">
@@ -66,13 +62,6 @@
           </div>
         </div>
 
-        <!-- Warning message -->
-        <div v-if="!wordpressStore.wordpressPageUrl" class="mb-4 p-4 bg-violet-50 rounded-lg">
-          <p class="text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
-          <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
-          <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
-        </div>
-
         <!-- WordPress page link -->
         <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-4 bg-violet-50 rounded-lg">
           <p class="text-violet-700 font-medium mb-2 text-center">WordPress page created successfully!</p>
@@ -89,13 +78,14 @@
         </div>
         
         <!-- Cancel button -->
-        <div v-if="!wordpressStore.wordpressPageUrl" class="mt-6 flex justify-center">
-          <button 
-            @click="closeTab" 
-            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-          >
+        <div class="mt-6 flex justify-center gap-3">
+          <AppButton :to="{ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: route.params.recommendation } }" variant="secondary">
+            Back to Recommendation
+          </AppButton>
+
+          <AppButton v-if="!wordpressStore.wordpressPageUrl"  @click="closeTab">
             Cancel and close tab
-          </button>
+          </AppButton>
         </div>
       </div>
     </div>
