@@ -64,10 +64,10 @@
 
         <!-- WordPress page link -->
         <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-4 bg-violet-50 rounded-lg">
-          <p class="text-violet-700 font-medium mb-2 text-center">WordPress page created successfully!</p>
+          <p class="text-violet-700 font-medium mb-2 text-center">Success! MetriFi has drafted a new page in WordPress.</p>
           <div class="flex justify-center">
-            <a :href="wordpressStore.wordpressPageUrl" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-              View WordPress Page
+            <a :href="wordpressStore.wordpressPageUrl + '&preview=true'" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                View Draft in WordPress
             </a>
           </div>
         </div>
@@ -81,6 +81,10 @@
         <div class="mt-6 flex justify-center gap-3">
           <AppButton :to="{ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: route.params.recommendation } }" variant="secondary">
             Back to Recommendation
+          </AppButton>
+
+          <AppButton v-if="!wordpressStore.wordpressPageUrl" @click="refreshPage" variant="secondary">
+            Start over
           </AppButton>
 
           <AppButton v-if="!wordpressStore.wordpressPageUrl"  @click="closeTab">
@@ -110,6 +114,11 @@ const wordpressConnection = ref(null)
 // Function to close the tab
 const closeTab = () => {
   window.close()
+}
+
+// Function to refresh the page
+const refreshPage = () => {
+  window.location.reload()
 }
 
 // Navigate to settings connections page
