@@ -83,7 +83,6 @@
             <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Connect WordPress website</h3>
             <form @submit.prevent="connectWordPress" class="mt-6">
                 <div class="space-y-4">
-                    <AppInput v-model="wordpressForm.name" label="Website name" :errors="errorStore.errors.name" required />
                     <AppInput v-model="wordpressForm.token.wordpress_url" label="Full website URL" hint="Example: https://example.com/" :errors="errorStore.errors['token.wordpress_url']" required />
                     
                     <template v-if="isValidUrl(wordpressForm.token.wordpress_url)">
@@ -92,8 +91,8 @@
                             <p class="mt-2">Watch our <a href="https://vimeo.com/1069012242" target="_blank" class="text-violet-700 font-semibold">video tutorial</a> for step-by-step instructions.</p>
                         </div>
                         
-                        <AppInput v-model="wordpressForm.token.username" label="Username" :errors="errorStore.errors['token.username']" required />
-                        <AppInput v-model="wordpressForm.token.app_password" label="App password" type="password" :errors="errorStore.errors['token.app_password']" required/>
+                        <AppInput v-model="wordpressForm.token.username" label="Your WordPress username" :errors="errorStore.errors['token.username']" required />
+                        <AppInput v-model="wordpressForm.token.app_password" label="WordPress application password" type="password" :errors="errorStore.errors['token.app_password']" required/>
                         <p class="text-xs text-gray-500 mt-1">Username and app password are secured using AES-256 encryption</p>
                     </template>
                 </div>
@@ -136,7 +135,7 @@ const showWordPressModal = ref(false)
 
 const wordpressForm = ref({
   service: 'WordPress Website',
-  name: 'Primary website',
+  name: '',
   token: {
     wordpress_url: '',
     username: '',
@@ -178,6 +177,8 @@ async function connectWordPress() {
             const urlObj = new URL(url)
             // Set the URL to just protocol + hostname (no path or trailing slash)
             wordpressForm.value.token.wordpress_url = urlObj.protocol + '//' + urlObj.hostname
+            // Set the name property to the formatted URL
+            wordpressForm.value.name = urlObj.hostname
         } catch (e) {
             // Keep the original value if URL parsing fails
         }
@@ -190,7 +191,7 @@ async function connectWordPress() {
 
             wordpressForm.value = {
                 service: 'WordPress Website',
-                name: 'Primary website',
+                name: '',
                 token: {
                     wordpress_url: '',
                     username: '',
@@ -221,6 +222,8 @@ function isValidUrl(url) {
     if (isValid) {
       // Update the form value with the formatted URL
       wordpressForm.value.token.wordpress_url = urlObj.protocol + '//' + urlObj.hostname
+      // Set the name property to the hostname
+      wordpressForm.value.name = urlObj.hostname
     }
     
     return isValid
