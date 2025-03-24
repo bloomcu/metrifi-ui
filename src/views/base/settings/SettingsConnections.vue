@@ -85,13 +85,17 @@
                 <div class="space-y-4">
                     <AppInput v-model="wordpressForm.name" label="Website name" :errors="errorStore.errors.name" required />
                     <AppInput v-model="wordpressForm.token.wordpress_url" label="Website url" :errors="errorStore.errors['token.wordpress_url']" required />
-                    <AppInput v-model="wordpressForm.token.username" label="Username" :errors="errorStore.errors['token.username']" required />
-                    <AppInput v-model="wordpressForm.token.app_password" label="App password" type="password" :errors="errorStore.errors['token.app_password']" required/>
-                    <p class="text-xs text-gray-500 mt-1">Username and app password are secured using AES-256 encryption</p>
-                </div>
-                
-                <div v-if="isValidUrl(wordpressForm.token.wordpress_url)" class="mt-4 p-3 bg-gray-50 rounded-md text-sm text-gray-600">
-                    Visit <a :href="wordpressForm.token.wordpress_url + '/wp-admin/profile.php'" target="_blank" class="text-violet-700 font-semibold">{{ wordpressForm.token.wordpress_url + '/wp-admin/profile.php' }}</a> to find your WordPress username and create an application password.
+                    
+                    <template v-if="isValidUrl(wordpressForm.token.wordpress_url)">
+                        <div class="p-3 bg-gray-50 rounded-md text-sm text-gray-600">
+                            <p>Visit <a :href="wordpressForm.token.wordpress_url + '/wp-admin/profile.php'" target="_blank" class="text-violet-700 font-semibold">{{ wordpressForm.token.wordpress_url + '/wp-admin/profile.php' }}</a> to find your WordPress username and create an application password.</p>
+                            <p class="mt-2">Watch our <a href="https://vimeo.com/1069012242" target="_blank" class="text-violet-700 font-semibold">video tutorial</a> for step-by-step instructions.</p>
+                        </div>
+                        
+                        <AppInput v-model="wordpressForm.token.username" label="Username" :errors="errorStore.errors['token.username']" required />
+                        <AppInput v-model="wordpressForm.token.app_password" label="App password" type="password" :errors="errorStore.errors['token.app_password']" required/>
+                        <p class="text-xs text-gray-500 mt-1">Username and app password are secured using AES-256 encryption</p>
+                    </template>
                 </div>
                 
                 <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
@@ -183,8 +187,11 @@ function isValidUrl(url) {
   if (!url) return false
   try {
     const urlObj = new URL(url)
-    // Check that the URL has a hostname with a TLD (at least one dot)
-    return urlObj.hostname && urlObj.hostname.includes('.')
+    // Check that the URL has a valid hostname with a TLD
+    // Must have at least one dot and something after the last dot
+    return urlObj.hostname && 
+           urlObj.hostname.includes('.') && 
+           urlObj.hostname.split('.').pop().length >= 2
   } catch (e) {
     return false
   }
