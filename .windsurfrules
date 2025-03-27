@@ -1,0 +1,9 @@
+- Always use Tailwind CSS classes for styling.
+- Always import components then layouts after all other imports.
+- Always use '@' for imports.
+- Never explain code or changes you made, just do it unless asked to explain.
+- Never write typescript.
+- Never run $ npm run serve
+- Never run $ npm run dev
+- Never run a preview
+- If you see typescript, do not remove it just leave it.

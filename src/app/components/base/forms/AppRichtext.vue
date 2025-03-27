@@ -1,6 +1,6 @@
 <template>
   <div v-if="editor" class="md-editor">
-    <label v-if="label" class="inline-block text-sm font-medium leading-6 text-gray-900" :for="label">{{ label }}</label>
+    <label v-if="label" class="block text-sm font-medium text-gray-700" :for="label">{{ label }}</label>
     
     <div v-if="editable" class="sticky top-[52px] z-10 bg-white border border-gray-300 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
       <menu class="flex flex-wrap">    

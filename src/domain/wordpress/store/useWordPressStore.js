@@ -1,18 +1,19 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
+import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import wordpressBlockSchemas from '@/domain/wordpress/store/wordpressBlockSchemas.js'
 import OpenAI from 'openai'
-import axios from 'axios'
+import { wordPressApi } from '@/domain/wordpress/api/wordPressApi.js'
 
 const openai = new OpenAI({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY,
     dangerouslyAllowBrowser: true,
 })
 
-// const grok = new OpenAI({
-//     apiKey: import.meta.env.VITE_GROK_API_KEY,
-//     baseURL: "https://api.x.ai/v1",
-//     dangerouslyAllowBrowser: true,
-// })
+const grok = new OpenAI({
+    apiKey: import.meta.env.VITE_GROK_API_KEY,
+    baseURL: "https://api.x.ai/v1",
+    dangerouslyAllowBrowser: true,
+})
 
 export const useWordPressStore = defineStore('wordpressStore', {
   state: () => ({
@@ -30,19 +31,33 @@ export const useWordPressStore = defineStore('wordpressStore', {
     async predictCMSBlocks() {
         this.error = null
         this.wordpressPageUrl = null
+        this.isDeploying = true;
       try {
+        // Reset any existing retry counts for blocks
+        this.blocks.forEach(block => {
+          block.schemaRetryCount = 0;
+          block.error = null;
+        });
+        
         // Process all blocks simultaneously using Promise.all
         const blockPromises = this.blocks.map(async (block, index) => {
           block.status = 'Matching block';
           
           try {
-            const response = await this.predictCMSBlockWithAssistant(block.html);
-            
-            let splitResponse = response['data-block-id'].split('--');
-            
-            block.acf_fc_layout = splitResponse[0];
-            block.layout = splitResponse[1];
+            const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block.html);
             block.status = null;
+
+            // Update the block wordpress_category in the database
+            blocksApi.update(
+                block.organization.slug,
+                block.id,
+                { wordpress_category:  predictedCMSBlockCategory['data-block-id'] }
+            )
+
+            // Split the wordpress category into acf_fc_layout and layout
+            let splitCategory = predictedCMSBlockCategory['data-block-id'].split('--');
+            block.acf_fc_layout = splitCategory[0];
+            block.layout = splitCategory[1];
 
             this.writeBlockContent(block)
             
@@ -77,7 +92,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
     },
 
     // Function to process HTML and get layout type from OpenAI assistant
-    async predictCMSBlockWithAssistant(htmlContent, retries = 3) {
+    async predictCMSBlockWithAssistant(htmlContent, retries = 5) {
       // Static variable to track if this is the first call
       if (!this.constructor.hasCalledBefore) {
         this.constructor.hasCalledBefore = true;
@@ -180,27 +195,76 @@ export const useWordPressStore = defineStore('wordpressStore', {
         // Set block.schema to the matching schema or undefined if not found
         block.schema = matchingSchema;
         
-        // If no schema is found, set the error message
+        // If no schema is found, retry with predictCMSBlockWithAssistant up to 2 more times
         if (!matchingSchema) {
-          block.error = 'Could not find matching WordPress schema';
+          // Initialize retry count if it doesn't exist
+          block.schemaRetryCount = block.schemaRetryCount || 0;
+          
+          // Only retry if we haven't already tried twice
+          if (block.schemaRetryCount < 2) {
+            block.schemaRetryCount++;
+            console.log(`No matching schema found for block. Retry attempt ${block.schemaRetryCount}/2`);
+            
+            try {
+              // Update status to show we're retrying
+              block.status = `Retrying match (${block.schemaRetryCount}/2)`;
+              
+              // Retry prediction with the assistant
+              const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block.html);
+              
+              // Split the wordpress category into acf_fc_layout and layout
+              let splitCategory = predictedCMSBlockCategory['data-block-id'].split('--');
+              block.acf_fc_layout = splitCategory[0];
+              block.layout = splitCategory[1];
+              
+              // Try to get the schema again with the new acf_fc_layout
+              return await this.getBlockSchema(block);
+            } catch (err) {
+              console.error(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err);
+              block.status = null;
+              
+              // If we've exhausted all retries, set the error message
+              if (block.schemaRetryCount >= 2) {
+                block.error = 'Could not find matching WordPress schema after multiple attempts';
+              }
+            }
+          } else {
+            // We've already retried twice, set the error message
+            block.error = 'Could not find matching WordPress schema after multiple attempts';
+          }
         }
 
         return
     },
 
     async writeBlockContent(block) {
-        block.status = 'Writing content'
+        // Only set status if it's not already in a retry state
+        if (!block.status || !block.status.includes('Retrying match')) {
+            block.status = 'Writing content'
+        }
         
         await this.getBlockSchema(block)
+
+        // If we still don't have a schema after retries, don't proceed with content writing
+        if (!block.schema) {
+            block.status = null;
+            return;
+        }
 
         try {
           const response = await openai.chat.completions.create({
             model: 'gpt-4o',
+        //   const response = await grok.chat.completions.create({
+        //     model: 'grok-beta',
             messages: [
               { 
                 role: "system", 
                 content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
-                         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
+                        "IMPORTANT: Remove unused content in the json. Don't fill in gaps in the content. That's not your job. Your only job is to delete placeholder content and transfer existing content. Don't do anything else." +
+                        "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
+                // content: "You are an expert at adapting content in html to a json object. I will provide the html of a block and the json schema I need the content adapted to. " +
+                //          "IMPORTANT: The json schema I provide may have placeholder content. Do not keep the placeholder content, only transfer content from the html to the json schema and remove any unused placeholder content. Remove any placeholder test buttons" +
+                //          "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
               },
               { 
                 role: "user",
@@ -250,13 +314,9 @@ export const useWordPressStore = defineStore('wordpressStore', {
         }
     },
 
-    async createPageInWordPress(pageTitle) {
+    async createPageInWordPress(organizationSlug, pageTitle) {
         this.error = null; // Reset error state before attempting to create page
         this.isDeploying = true; // Set deploying state to true
-        
-        const wordpressUrl = 'https://base.bloomcudev.com/wp-json/metrifi/v1/create-page';
-        const username = 'admin-base';
-        const appPassword = 'ZEh4 V0zI Ihxx iJR4 D9RZ dUb3';
         
         // Create a new array from blocks.value array where each member 
         // of the new array is an object with only the schema_with_content property
@@ -272,8 +332,8 @@ export const useWordPressStore = defineStore('wordpressStore', {
             }
         }).filter(block => block !== null); // Filter out any blocks that failed to parse
       
-        console.log('blocks:', this.blocks);
-        console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
+        // console.log('blocks:', this.blocks);
+        // console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
       
         if (blocksWithSchemaWithContent.length === 0) {
             this.error = 'No valid blocks to send to WordPress';
@@ -282,64 +342,39 @@ export const useWordPressStore = defineStore('wordpressStore', {
         }
       
         try {
-          const response = await axios.post(wordpressUrl,
-            {
-              title: pageTitle + ' - ' + new Date().toISOString().split('T')[0],
-              status: 'publish',
-              acf: {
-                content_blocks: blocksWithSchemaWithContent
-              }
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Basic ' + btoa(`${username}:${appPassword}`)
-              },
-              timeout: 30000 // 30 second timeout
-            }
-          );
-
-          if (!response.data || !response.data.link) {
-            throw new Error('WordPress API returned an invalid response (missing page link)');
-          }
-
-          this.wordpressPageUrl = response.data.link
-      
-          console.log('Post created successfully!');
-          console.log('Post data:', response.data);
+        // Prepare data to send to WordPress
+        const pageData = {
+            title: pageTitle,
+            blocks: blocksWithSchemaWithContent
+        };
+        
+        // Call WordPress API to create the page
+        const response = await wordPressApi.storePage(organizationSlug, pageData);
+        
+        // Update state
+        this.isDeploying = false;
+        this.wordpressPageUrl = response.data.page_url;
+        
+        return response;
         } catch (error) {
-          console.log('Failed to create post');
-          console.error('Error:', error.response ? error.response.data : error.message);
-          
-          // Store the error in the store's error state
-          if (error.code === 'ECONNABORTED') {
-            this.error = 'Connection timeout: WordPress server took too long to respond. Please try again later.';
-          } else if (error.code === 'ERR_NETWORK') {
-            this.error = 'Network error: Unable to connect to WordPress. Please check your internet connection and try again.';
-          } else if (error.response) {
-            // Server responded with an error status code
-            const statusCode = error.response.status;
-            const errorData = error.response.data;
+            console.error('Failed to create WordPress page:', error);
             
-            if (statusCode === 401 || statusCode === 403) {
-              this.error = 'Authentication error: WordPress credentials are invalid or expired.';
-            } else if (statusCode === 404) {
-              this.error = 'WordPress API endpoint not found. Please contact support.';
-            } else if (statusCode >= 500) {
-              this.error = `WordPress server error (${statusCode}): The server encountered an issue. Please try again later.`;
+            // Extract the specific error message from the response if available
+            if (error.response && error.response.data && error.response.data.error) {
+                // Use the specific error message from the Laravel backend
+                this.error = error.response.data.error;
+            } else if (error.response && error.response.data && error.response.data.message) {
+                // Fallback to the message if error field is not available
+                this.error = error.response.data.message;
             } else {
-              // Get the most specific error message possible
-              const errorMessage = errorData?.message || errorData?.error || errorData?.code || error.response.statusText || 'Unknown error';
-              this.error = `Failed to create WordPress page: ${errorMessage}`;
+                // Default generic error message with the JavaScript error
+                this.error = `Failed to create page in WordPress: ${error.message}`;
             }
-          } else {
-            // Something happened in setting up the request that triggered an error
-            this.error = `Failed to create WordPress page: ${error.message || 'Unknown error'}`;
-          }
-        } finally {
-          // Open the wordpress page in a new tab
-          this.isDeploying = false; // Set deploying state back to false
+            
+            this.isDeploying = false;
+            throw error;
         }
+        
     }
   },
 })

@@ -7,7 +7,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         recommendations: [],
         isLoading: false,
         isPushToWordPressPanelOpen: false,
-        clickedElement: null,
+        selectedBlock: null,
     }),
     
     actions: {
@@ -64,18 +64,6 @@ export const useRecommendationStore = defineStore('recommendationStore', {
             console.log('Error error attaching file', error.response.data)
           })
       },
-
-      addClickedElement(element) {
-        this.clickedElement = element;
-      },
-
-      setClickedElement(element) {
-          this.clickedElement = element;
-      },
-
-      clearClickedElement() {
-          this.clickedElement = null;
-      }
     }
 })
 

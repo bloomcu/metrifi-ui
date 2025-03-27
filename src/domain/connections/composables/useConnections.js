@@ -15,7 +15,7 @@ export const useConnections = () => {
         route.params.organization
       ).then(response => {
         connections.value = response.data.data
-        selectedConnection.value = response.data.data[0]
+        selectedConnection.value = connections.value.find(connection => connection.service === 'Google Analytics - Property')
       })
   }
 
