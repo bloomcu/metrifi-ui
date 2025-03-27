@@ -163,7 +163,7 @@ const pageJunkStatuses = [
 ]
 
 const junkStatusClasses = {
-  keep: 'text-green-400 bg-green-400/10',
+  keep: 'text-emerald-400 bg-emerald-400/10',
   trash: 'text-red-400 bg-red-400/10',
 }
 

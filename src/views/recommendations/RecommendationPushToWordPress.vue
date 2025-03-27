@@ -3,14 +3,14 @@
     <div class="w-full max-w-3xl">
       <!-- Page Title -->
       <div class="mb-4 text-center">
-        <h1 class="text-2xl font-semibold text-gray-900 mb-5" v-if="recommendationStore.recommendation && wordpressConnection">
-          Pushing "{{ recommendationStore.recommendation.title }}" to {{ wordpressConnection.name }}
+        <h1 class="text-2xl text-gray-900 mb-5" v-if="recommendationStore.recommendation && wordpressConnection">
+          Pushing <span class="font-semibold">"{{ recommendationStore.recommendation.title }}"</span> to <span class="font-semibold">{{ wordpressConnection.name }}</span>
         </h1>
       </div>
 
       <!-- No WordPress Connection Message -->
-      <div v-if="!hasWordPressConnection" class="mb-4 p-4 bg-violet-50 rounded-lg">
-        <p class="text-violet-700 font-medium mb-2 text-center">No WordPress Connection Found</p>
+      <div v-if="!hasWordPressConnection" class="mb-4 p-6 bg-violet-50 rounded-lg">
+        <p class="text-lg text-violet-700 font-medium mb-2 text-center">No WordPress Connection Found</p>
         <p class="text-violet-600 text-sm text-center mb-4">You need to connect a WordPress website before you can push content.</p>
         <div class="flex justify-center">
           <button 
@@ -22,9 +22,26 @@
         </div>
       </div>
 
+      <!-- Success: WordPress page link -->
+      <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-emerald-50 rounded-lg">
+          <div class="flex justify-center mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          
+          <p class="text-lg text-emerald-700 font-medium mb-3 text-center">Success! MetriFi has drafted a new page in WordPress.</p>
+
+          <div class="flex justify-center">
+            <AppButton variant="success" :href="wordpressStore.wordpressPageUrl + '&preview=true'" target="_blank">
+                View draft in WordPress
+            </AppButton>
+          </div>
+        </div>
+
       <!-- Warning message -->
-      <div v-if="hasWordPressConnection && !wordpressStore.wordpressPageUrl" class="mb-4 p-4 bg-violet-50 rounded-lg">
-          <p class="text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
+      <div v-if="hasWordPressConnection && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
+          <p class="text-lg text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
           <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
           <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
         </div>
@@ -53,7 +70,7 @@
               </div>
 
               <div v-if="!block.status && block.schema_with_content" class="flex items-center gap-2">
-                <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                <span class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
                   Done
                 </span>
               </div>
@@ -62,19 +79,10 @@
           </div>
         </div>
 
-        <!-- WordPress page link -->
-        <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-4 bg-violet-50 rounded-lg">
-          <p class="text-violet-700 font-medium mb-2 text-center">Success! MetriFi has drafted a new page in WordPress.</p>
-          <div class="flex justify-center">
-            <a :href="wordpressStore.wordpressPageUrl + '&preview=true'" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-                View Draft in WordPress
-            </a>
-          </div>
-        </div>
-
-        <div v-if="wordpressStore.error" class="mt-4 p-4 bg-red-50 rounded-lg">
-          <p class="text-red-700 font-medium text-center">Error:</p>
-          <p class="text-red-600 text-center">{{ wordpressStore.error }}</p>
+        <!-- Error -->
+        <div v-if="wordpressStore.error" class="mt-4 p-6 bg-red-50 rounded-lg">
+          <p class="text-lg text-red-700 font-medium text-center">Error:</p>
+          <p class="text-red-700 text-center">{{ wordpressStore.error }}</p>
         </div>
         
         <!-- Cancel button -->

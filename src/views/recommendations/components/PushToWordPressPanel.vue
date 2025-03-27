@@ -39,7 +39,7 @@
             </div>
 
             <div v-if="!block.status && block.schema_with_content" class="flex items-center gap-2">
-              <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+              <span class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
                 Done
               </span>
             </div>

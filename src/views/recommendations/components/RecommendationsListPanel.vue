@@ -24,7 +24,7 @@
                         <p class="text-sm text-gray-700">For step {{ recommendation.step_index + 1 }}</p>
                     </div>
                     
-                    <span v-if="recommendation.status == 'done'" class="text-green-600 text-sm">Done</span>
+                    <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
                     <span v-if="isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
                     <span v-if="isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
                 </div>

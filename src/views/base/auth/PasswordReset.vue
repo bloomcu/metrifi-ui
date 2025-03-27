@@ -1,10 +1,10 @@
 <template>
   <main class="py-10 mx-auto max-w-lg px-4 sm:px-6 lg:px-8">
     <!-- Success message -->
-    <div v-if="authStore.passwordReset" class="rounded-md bg-green-50 p-6">
+    <div v-if="authStore.passwordReset" class="rounded-md bg-emerald-50 p-6">
       <div class="flex">
         <div class="flex items-center">
-          <CheckCircleIcon class="h-10 w-10 text-green-400" aria-hidden="true" />
+          <CheckCircleIcon class="h-10 w-10 text-emerald-400" aria-hidden="true" />
           <p class="ml-3 sm:text-2xl text-xl font-medium leading-7 text-gray-900 tracking-tight">Success!</p>
         </div>
       </div>
