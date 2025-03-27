@@ -20,11 +20,12 @@
 </template>
 
 <script setup>
-import { BuildingOfficeIcon, CreditCardIcon, UsersIcon, EyeIcon, BellAlertIcon } from '@heroicons/vue/24/outline'
+import { BuildingOfficeIcon, CreditCardIcon, UsersIcon, EyeIcon, BellAlertIcon, CloudIcon } from '@heroicons/vue/24/outline'
 
 const tabs = [
   { name: 'Users', to: { name:'settingsUsers' }, icon: UsersIcon },  
   { name: 'Sharing', to: { name:'settingsSharing' }, icon: EyeIcon },  
+  { name: 'Connections', to: { name:'settingsConnections' }, icon: CloudIcon },  
   { name: 'Organization', to: { name:'settingsOrganization' }, icon: BuildingOfficeIcon },  
   { name: 'Billing', to: { name:'settingsBilling' }, icon: CreditCardIcon },
   { name: 'Notifications', to: { name:'settingsNotifications' }, icon: BellAlertIcon },

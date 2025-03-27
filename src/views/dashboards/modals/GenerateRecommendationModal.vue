@@ -369,14 +369,10 @@ async function generateRecommendation() {
 
     console.log('Metadata:', recommendationStore.recommendation.metadata)
 
+    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
+        
     setTimeout(() => {
-      console.log('Redirecting to recommendation')
-      isGenerateRecommendationModalOpen.value = false
-
-      router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
-        .then(() => {
-            window.location.reload()
-        })
+        window.location.reload()
     }, 2000)
   })
 }
