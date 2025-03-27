@@ -75,7 +75,7 @@
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ moment(user.created_at).fromNow() }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ moment(user.accepted_terms_at).fromNow() }}</td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                  <AppButton v-if="authStore.user.id !== user.id" @click="userStore.destroy(user.id)" variant="link">Remove user</AppButton>
+                  <AppButton v-if="authStore.user.id !== user.id" @click="openDestroyUserModal(user)" variant="link">Remove user</AppButton>
                 </td>
               </tr>
             </tbody>
@@ -84,16 +84,20 @@
       </div>
     </div>
   </AppCard> <!-- end users table -->
+  
+  <!-- Destroy User Modal -->
+  <DestroyUserModal v-if="isDestroyUserModalOpen" />
 </template>
 
 <script setup>
 import moment from "moment"
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, provide } from 'vue'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useInvitationStore } from '@/domain/base/invitations/store/useInvitationStore'
 import { useUserStore } from '@/domain/base/users/store/useUserStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import AppButtonCopyText from '@/app/components/base/buttons/AppButtonCopyText.vue'
+import DestroyUserModal from '@/views/base/settings/modals/DestroyUserModal.vue'
 
 const errorStore = useErrorStore()
 const inviteStore = useInvitationStore()
@@ -102,6 +106,16 @@ const authStore = useAuthStore()
 
 const email = ref('')
 const sendingInvite = ref(false)
+const isDestroyUserModalOpen = ref(false)
+const userToBeDestroyed = ref(null)
+
+provide('isModalOpen', isDestroyUserModalOpen)
+provide('userToBeDestroyed', userToBeDestroyed)
+
+function openDestroyUserModal(user) {
+  userToBeDestroyed.value = user
+  isDestroyUserModalOpen.value = true
+}
 
 function submit() {
   sendingInvite.value = true
