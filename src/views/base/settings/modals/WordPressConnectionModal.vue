@@ -40,7 +40,7 @@
                   <div class="mt-2 text-sm text-amber-700">
                     <p>The MetriFi WP plugin is required to connect to your WordPress site. Please install and activate the plugin first.</p>
                     <p class="mt-2">
-                      <a href="https://github.com/metrifi/metrifi-wordpress-plugin/releases/latest" target="_blank" class="font-medium text-amber-700 underline hover:text-amber-600">Download the plugin</a>
+                      <a href="https://github.com/bloomcu/metrifi-wp/releases/latest" target="_blank" class="font-medium text-amber-700 underline hover:text-amber-600">Download the plugin</a>
                     </p>
                   </div>
                 </div>
