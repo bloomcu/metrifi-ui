@@ -48,15 +48,15 @@
               </div>
             </div>
 
-            <div v-if="pluginStatus.installed === true" class="p-4 bg-green-50 border border-green-200 rounded-md text-sm">
-              <div class="flex">
+            <div v-if="pluginStatus.installed === true" class="p-4 bg-white border border-green-200 rounded-md text-sm">
+              <div class="flex items-center">
                 <div class="flex-shrink-0">
-                  <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <svg class="h-8 w-8 text-green-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
                   </svg>
                 </div>
                 <div class="ml-3">
-                  <h3 class="text-sm font-medium text-green-700">MetriFi WP Plugin Detected</h3>
+                  <h3 class="text-sm font-medium text-green-500">MetriFi WP Plugin Detected</h3>
                 </div>
               </div>
             </div>
