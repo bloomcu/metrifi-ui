@@ -5,19 +5,23 @@
     :open="isModalOpen"
   >
     <div class="p-6">
-      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:truncate sm:text-2xl">Archive User</h3>
+      <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight mb-3 sm:truncate sm:text-2xl">Remove user</h3>
 
       <p class="leading-6 mb-8 text-gray-700">
-        Archiving 
+        Removing 
         <span class="inline-flex items-center gap-2 rounded-md bg-gray-50 px-2 py-1 text-sm font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
           {{ userToBeDestroyed.name }}
         </span>
-        will remove this user from your organization. Any connections, funnels and dashboards they own will also be archived. This action cannot be undone. Are you sure you want to archive this user?
+        from your organization will also remove any connections, funnels and dashboards they own. This action cannot be undone.
+      </p>
+
+      <p class="leading-6 mb-8 text-gray-700">
+        Are you sure you want to remove this user?
       </p>
 
       <div class="flex justify-end gap-3 border-t pt-4">
         <AppButton @click="isModalOpen = false" variant="tertiary">Never mind</AppButton>
-        <AppButton @click="destroyUser()" variant="primary">Archive User</AppButton>
+        <AppButton @click="destroyUser()" variant="primary">Remove user</AppButton>
       </div>
     </div>
   </AppModal>
