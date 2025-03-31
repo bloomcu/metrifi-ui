@@ -8,6 +8,7 @@
       <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Connect WordPress website</h3>
       <form @submit.prevent="connectWordPress" class="mt-6">
         <div class="space-y-4">
+
           <AppInput 
             v-model="wordpressForm.token.wordpress_url" 
             label="Full website URL" 
@@ -46,8 +47,8 @@
                 </div>
               </div>
             </div>
-            
-            <div v-else-if="pluginStatus.installed === true" class="p-4 bg-green-50 border border-green-200 rounded-md text-sm">
+
+            <div v-if="pluginStatus.installed === true" class="p-4 bg-green-50 border border-green-200 rounded-md text-sm">
               <div class="flex">
                 <div class="flex-shrink-0">
                   <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -55,13 +56,19 @@
                   </svg>
                 </div>
                 <div class="ml-3">
-                  <h3 class="text-sm font-medium text-green-800">MetriFi WP Plugin Detected</h3>
-                  <div class="mt-2 text-sm text-green-700">
-                    <p>The MetriFi WP plugin is installed and active. Please enter your WordPress credentials below.</p>
-                  </div>
+                  <h3 class="text-sm font-medium text-green-700">MetriFi WP Plugin Detected</h3>
                 </div>
               </div>
             </div>
+            
+            <template v-if="pluginStatus.installed === true">
+                <div class="p-3 mb-2 border bg-gray-50 rounded-md text-sm text-gray-600">
+                    <p>
+                        Visit <a :href="wordpressForm.token.wordpress_url + '/wp-admin/profile.php'" target="_blank" class="text-violet-700 font-semibold">your WordPress profile</a> to find your WordPress username and create an application password. 
+                        Watch our <a href="https://vimeo.com/1069012242" target="_blank" class="text-violet-700 font-semibold">video tutorial</a> for step-by-step instructions.
+                    </p>
+                </div>
+            </template>
             
             <AppInput 
               v-if="pluginStatus.installed === true" 
@@ -79,6 +86,7 @@
               :errors="errorStore.errors['token.app_password']" 
               required 
             />
+
           </template>
         </div>
         
