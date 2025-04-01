@@ -26,12 +26,17 @@
             </div>
 
             <div v-else-if="block.html" class="relative">
-              <button 
-                @click.stop="regenerateBlock(block)"
-                class="absolute top-2 right-2 bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 rounded-md text-sm font-medium z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-              >
-                Regenerate
-              </button>
+              <div v-if="block.outline">
+                <button 
+                  @click.stop="regenerateBlock(block)"
+                  class="absolute top-2 right-2 bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 rounded-md text-sm font-medium z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                >
+                  Regenerate
+                </button>
+              </div>
+              <div v-else class="absolute top-2 right-2 bg-neutral-200 text-neutral-600 px-3 py-1 rounded-md text-sm font-medium z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                Block must have an outline to be regenerated
+              </div>
               <div v-html="block.html" :class="recommendationStore.selectedBlock === block ? 'border-2 border-violet-700' : ''" class="border-2 border-transparent group-hover:border-violet-500 cursor-pointer"></div>
             </div>
 
