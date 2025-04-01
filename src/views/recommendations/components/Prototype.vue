@@ -25,7 +25,15 @@
                 </div>
             </div>
 
-            <div v-else-if="block.html" v-html="block.html" :class="recommendationStore.selectedBlock === block ? 'border-2 border-violet-700' : ''" class="border-2 border-transparent group-hover:border-violet-500 cursor-pointer"></div>
+            <div v-else-if="block.html" class="relative">
+              <button 
+                @click.stop="regenerateBlock(block)"
+                class="absolute top-2 right-2 bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 rounded-md text-sm font-medium z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              >
+                Regenerate
+              </button>
+              <div v-html="block.html" :class="recommendationStore.selectedBlock === block ? 'border-2 border-violet-700' : ''" class="border-2 border-transparent group-hover:border-violet-500 cursor-pointer"></div>
+            </div>
 
             <div v-else class="m-2 border rounded-md p-3 bg-gray-200 animate-pulse">
                 <div class="flex items-center gap-1 text-violet-600">
@@ -43,10 +51,30 @@
 
 <script setup>
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
+import { useRoute } from 'vue-router'
+import { blocksApi } from '@/domain/blocks/api/blocksApi'
 
+const route = useRoute()
 const recommendationStore = useRecommendationStore()
+const emit = defineEmits(['regenerate-block'])
 
 const selectBlock = (block) => {
   recommendationStore.selectedBlock = block
+}
+
+const regenerateBlock = async (block) => {
+  // Set block status to regenerating
+  block.status = 'regenerating'
+  
+  try {
+    await blocksApi.regenerate(route.params.organization, block.id)
+    
+    // Emit event to parent component
+    emit('regenerate-block')
+  } catch (error) {
+    console.error('Error regenerating block:', error)
+    // Reset status if there was an error
+    block.status = null
+  }
 }
 </script>
