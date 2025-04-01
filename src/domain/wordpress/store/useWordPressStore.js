@@ -1,8 +1,9 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import wordpressBlockSchemas from '@/domain/wordpress/store/wordpressBlockSchemas.js'
-import OpenAI from 'openai'
 import { wordPressApi } from '@/domain/wordpress/api/wordPressApi.js'
+import * as Sentry from '@sentry/vue'
+import OpenAI from 'openai'
 
 const openai = new OpenAI({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -65,7 +66,8 @@ export const useWordPressStore = defineStore('wordpressStore', {
             
             return { success: true, block };
           } catch (err) {
-            console.log(`Failed to predict CMS block type for block ${index + 1}:`, err);
+            console.log('Assistant failed to predict CMS block type:', err);
+            Sentry.captureException('Assistant failed to predict CMS block type:', err);
             
             block.error = `Assistant failed to predict CMS block type.`;
             block.status = null;
@@ -162,7 +164,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
             return { 'data-block-id': assistantResponse };
           }
         } catch (err) {
-          console.log(`Error on attempt ${attempt}:`, err);
+          console.log(`Assistant failed to predict CMS on attempt ${attempt}:`, err);
           if (attempt === retries) {
             throw err; // If this was the last attempt, throw the error
           }
@@ -191,7 +193,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         await new Promise(resolve => setTimeout(resolve, delayMs));
       }
       
-      throw new Error(`Run timed out after ${maxAttempts * delayMs / 1000} seconds`);
+      throw new Error(`Assistant timed out after ${maxAttempts * delayMs / 1000} seconds`);
     },
 
     async getBlockSchema(block) {
@@ -212,6 +214,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
           if (block.schemaRetryCount < 2) {
             block.schemaRetryCount++;
             console.log(`No matching schema found for block. Retry attempt ${block.schemaRetryCount}/2`);
+            Sentry.captureException(`No matching schema found for block. Retry attempt ${block.schemaRetryCount}/2`);
             
             try {
               // Update status to show we're retrying
@@ -229,6 +232,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
               return await this.getBlockSchema(block);
             } catch (err) {
               console.log(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err);
+              Sentry.captureException(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err)
               block.status = null;
               
               // If we've exhausted all retries, set the error message
@@ -290,6 +294,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
           } catch (jsonError) {
             // If it's not valid JSON, try to clean it up
             console.log('Received invalid JSON from OpenAi, attempting to clean:', jsonError);
+            Sentry.captureException('Received invalid JSON from OpenAi:', jsonError)
             
             // Remove any markdown code block indicators if present
             if (content.startsWith('```json')) {
@@ -309,8 +314,9 @@ export const useWordPressStore = defineStore('wordpressStore', {
           }
       
         } catch (error) {
-          console.error('Error from OpenAi:', error)
-          block.error = `Error writing content: ${error.message}`
+          console.error('OpenAi error writing block content:', error)
+          Sentry.captureException('OpenAi error writing block content:', error)
+          block.error = `OpenAi error writing block content: ${error.message}`
       
         } finally {
           block.status = null
@@ -330,7 +336,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
                 console.log(`Error parsing JSON for block:`, error);
                 console.log('Problematic content:', block.schema_with_content);
                 // Return a placeholder or null instead of failing completely
-                this.error = `Error parsing block content: ${error.message}`;
+                // this.error = `Error parsing block content: ${error.message}`;
                 return null;
             }
         }).filter(block => block !== null); // Filter out any blocks that failed to parse

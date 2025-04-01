@@ -49,7 +49,7 @@
       <!-- WordPress Push Content (only shown if connection exists) -->
       <div v-if="hasWordPressConnection">
         <!-- Blocks -->
-        <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" :class="block.error ? 'bg-red-50' : ''" class="border rounded-lg mb-4">
+        <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" class="border rounded-lg mb-4">
           <!-- Block id and loader -->
           <div class="flex items-center justify-between p-3">
               <div class="flex items-center gap-3">
@@ -57,7 +57,7 @@
                   <div v-if="block.type" class="inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20">
                       {{ block.type }} / {{ block.layout }}
                   </div>
-                  <p v-if="block.error" class="text-red-500">{{ block.error }}</p>
+                  <p v-if="block.error" class="text-red-500 text-sm">{{ block.error }}</p>
               </div>
 
               <div v-if="block.status" class="flex items-center gap-2 text-violet-600">
@@ -131,14 +131,16 @@ const goToSettingsConnections = () => {
 }
 
 // Watch the blocks array in the WordPress store
-// When all blocks have schema_with_content, create the WordPress page
+// When all blocks without errors have schema_with_content, create the WordPress page
 watch(() => wordpressStore.blocks, (blocks) => {
   if (blocks && blocks.length > 0) {
-    // Check if all blocks have schema_with_content
-    const allBlocksHaveContent = blocks.every(block => block.schema_with_content);
+    // Check if all blocks without errors have schema_with_content
+    const allValidBlocksHaveContent = blocks
+      .filter(block => !block.error)
+      .every(block => block.schema_with_content);
     
-    if (allBlocksHaveContent) {
-      console.log('All blocks have schema_with_content, creating WordPress page');
+    if (allValidBlocksHaveContent && blocks.some(block => !block.error)) {
+      console.log('All valid blocks have schema_with_content, creating WordPress page');
       wordpressStore.createPageInWordPress(route.params.organization, recommendationStore.recommendation.title)
     }
   }
