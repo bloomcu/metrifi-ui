@@ -26,7 +26,7 @@ export default defineConfig({
     vue(), 
     sentryVitePlugin({
       org: "metrifi",
-      project: "javascript-vue"
+      project: "metrifi-ui"
     }),
   ],
 
