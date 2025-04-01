@@ -49,17 +49,15 @@
       <!-- WordPress Push Content (only shown if connection exists) -->
       <div v-if="hasWordPressConnection">
         <!-- Blocks -->
-        <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" class="border rounded-lg mb-4">
-          <p v-if="block.error" class="text-red-500 p-3">{{ block.error }}</p>
-
-          <div v-else>
-            <!-- Block id and loader -->
-            <div class="flex items-center justify-between p-3">
+        <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" :class="block.error ? 'bg-red-50' : ''" class="border rounded-lg mb-4">
+          <!-- Block id and loader -->
+          <div class="flex items-center justify-between p-3">
               <div class="flex items-center gap-3">
                   <div class="text-gray-900 font-semibold">Block {{ index + 1 }}</div>
-                  <div v-if="block.acf_fc_layout" class="inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20">
-                      {{ block.acf_fc_layout }}
+                  <div v-if="block.type" class="inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20">
+                      {{ block.type }} / {{ block.layout }}
                   </div>
+                  <p v-if="block.error" class="text-red-500">{{ block.error }}</p>
               </div>
 
               <div v-if="block.status" class="flex items-center gap-2 text-violet-600">
@@ -76,13 +74,11 @@
               </div>
               
             </div>
-          </div>
         </div>
 
         <!-- Error -->
         <div v-if="wordpressStore.error" class="mt-4 p-6 bg-red-50 rounded-lg">
-          <p class="text-lg text-red-700 font-medium text-center">Error:</p>
-          <p class="text-red-700 text-center">{{ wordpressStore.error }}</p>
+          <p class="text-red-500 text-center">{{ wordpressStore.error }}</p>
         </div>
         
         <!-- Cancel button -->

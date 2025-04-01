@@ -31,6 +31,10 @@ export const useWordPressStore = defineStore('wordpressStore', {
         this.blocks.forEach(block => {
           block.schemaRetryCount = 0;
           block.error = null;
+          block.status = null;
+          block.type = null;
+          block.layout = null;
+          block.wordpress_category = null;
         });
         
         // Process all blocks simultaneously using Promise.all
@@ -50,7 +54,11 @@ export const useWordPressStore = defineStore('wordpressStore', {
             blocksApi.update(
                 block.organization.slug,
                 block.id,
-                { type: splitBlockId[0], layout: splitBlockId[1] }
+                { 
+                    type: splitBlockId[0], 
+                    layout: splitBlockId[1], 
+                    wordpress_category: predictedCMSBlockCategory['data-block-id'] 
+                }
             )
 
             this.writeBlockContent(block)
@@ -79,7 +87,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         const failedBlocks = results.filter(result => !result.success);
         if (failedBlocks.length > 0) {
           console.warn(`${failedBlocks.length} blocks failed to process.`);
-          this.error = 'Some blocks failed to match.';
+        //   this.error = 'Some blocks failed to match.';
         }
         
         console.log('Matching CMS blocks complete:', this.blocks);
