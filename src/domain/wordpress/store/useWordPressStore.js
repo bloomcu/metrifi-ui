@@ -41,26 +41,32 @@ export const useWordPressStore = defineStore('wordpressStore', {
             const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block.html);
             block.status = null;
 
-            // Update the block wordpress_category in the database
+            // Split the wordpress category into acf_fc_layout and layout
+            let splitBlockId = predictedCMSBlockCategory['data-block-id'].split('--');
+            block.type = splitBlockId[0];
+            block.layout = splitBlockId[1];
+
+            // Update the block type and layout in the database
             blocksApi.update(
                 block.organization.slug,
                 block.id,
-                { wordpress_category:  predictedCMSBlockCategory['data-block-id'] }
+                { type: splitBlockId[0], layout: splitBlockId[1] }
             )
-
-            // Split the wordpress category into acf_fc_layout and layout
-            let splitCategory = predictedCMSBlockCategory['data-block-id'].split('--');
-            block.acf_fc_layout = splitCategory[0];
-            block.layout = splitCategory[1];
 
             this.writeBlockContent(block)
             
             return { success: true, block };
           } catch (err) {
-            console.error(`Failed to process block ${index + 1}:`, err);
+            console.log(`Failed to predict CMS block type for block ${index + 1}:`, err);
             
-            block.error = `Failed to process: ${err.message}`;
+            block.error = `Assistant failed to predict CMS block type.`;
             block.status = null;
+
+            blocksApi.update(
+                block.organization.slug,
+                block.id,
+                { status: block.status, error: block.error }
+            )
             
             return { success: false, block, error: err };
           }
@@ -148,7 +154,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
             return { 'data-block-id': assistantResponse };
           }
         } catch (err) {
-          console.error(`Error on attempt ${attempt}:`, err);
+          console.log(`Error on attempt ${attempt}:`, err);
           if (attempt === retries) {
             throw err; // If this was the last attempt, throw the error
           }
@@ -183,7 +189,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
     async getBlockSchema(block) {
         // Find the schema object that matches the block's acf_fc_layout
         const matchingSchema = wordpressBlockSchemas.find(
-          schema => schema.acf_fc_layout === block.acf_fc_layout
+          schema => schema.acf_fc_layout === block.type
         );
         
         // Set block.schema to the matching schema or undefined if not found
@@ -207,14 +213,14 @@ export const useWordPressStore = defineStore('wordpressStore', {
               const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block.html);
               
               // Split the wordpress category into acf_fc_layout and layout
-              let splitCategory = predictedCMSBlockCategory['data-block-id'].split('--');
-              block.acf_fc_layout = splitCategory[0];
-              block.layout = splitCategory[1];
+              let splitBlockId = predictedCMSBlockCategory['data-block-id'].split('--');
+              block.type = splitBlockId[0];
+              block.layout = splitBlockId[1];
               
               // Try to get the schema again with the new acf_fc_layout
               return await this.getBlockSchema(block);
             } catch (err) {
-              console.error(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err);
+              console.log(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err);
               block.status = null;
               
               // If we've exhausted all retries, set the error message
@@ -275,7 +281,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
             block.schema_with_content = content;
           } catch (jsonError) {
             // If it's not valid JSON, try to clean it up
-            console.warn('Received invalid JSON from OpenAi, attempting to clean:', jsonError);
+            console.log('Received invalid JSON from OpenAi, attempting to clean:', jsonError);
             
             // Remove any markdown code block indicators if present
             if (content.startsWith('```json')) {
@@ -313,7 +319,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
             try {
                 return JSON.parse(block.schema_with_content);
             } catch (error) {
-                console.error(`Error parsing JSON for block:`, error);
+                console.log(`Error parsing JSON for block:`, error);
                 console.log('Problematic content:', block.schema_with_content);
                 // Return a placeholder or null instead of failing completely
                 this.error = `Error parsing block content: ${error.message}`;
