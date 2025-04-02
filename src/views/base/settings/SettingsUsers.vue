@@ -60,6 +60,7 @@
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-medium text-gray-900 sm:pl-0">Name</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Email</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Role</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Weekly email</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Joined</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-medium text-gray-900">Accepted terms</th>
                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
@@ -72,6 +73,11 @@
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{{ user.name }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ user.email }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ user.role }}</td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <span :class="user.settings?.send_weekly_website_analysis == false ? 'text-gray-500 bg-gray-50 border-gray-300' : 'text-green-500 bg-green-50 border-green-300'" class="py-0.5 px-2 rounded-full border text-xs">
+                        {{ user.settings?.send_weekly_website_analysis == false ? 'Disabled' : 'Enabled' }}
+                    </span>
+                </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ moment(user.created_at).fromNow() }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ moment(user.accepted_terms_at).fromNow() }}</td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
