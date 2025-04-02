@@ -60,9 +60,9 @@ const baseClasses = `
 `
 
 const sizeClasses = {
-  sm: 'px-2.5 py-1.5 text-sm',
-  base: 'px-3 py-2 text-sm',
-  md: 'px-4 py-2 text-base',
+  sm: 'px-3 py-1.5 text-sm',
+  base: 'px-4 py-2 text-sm',
+  md: 'px-4.5 py-2 text-base',
   lg: 'px-8 py-3 text-md',
 }
 
