@@ -31,7 +31,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         // Reset any existing retry counts for blocks
         this.blocks.forEach(block => {
           block.schemaRetryCount = 0;
-          block.error = null;
+        //   block.error = null;
           block.status = null;
           block.type = null;
           block.layout = null;
@@ -40,6 +40,10 @@ export const useWordPressStore = defineStore('wordpressStore', {
         
         // Process all blocks simultaneously using Promise.all
         const blockPromises = this.blocks.map(async (block, index) => {
+          if (block.error) {
+            return;
+          }
+
           block.status = 'Matching block';
           
           try {
@@ -342,7 +346,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         }).filter(block => block !== null); // Filter out any blocks that failed to parse
       
         // console.log('blocks:', this.blocks);
-        // console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
+        console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
       
         if (blocksWithSchemaWithContent.length === 0) {
             this.error = 'No valid blocks to send to WordPress';

@@ -57,7 +57,7 @@
                   <div v-if="block.type" class="inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20">
                       {{ block.type }} / {{ block.layout }}
                   </div>
-                  <p v-if="block.error" class="text-red-500 text-sm">{{ block.error }}</p>
+                  <p v-if="block.error" class="text-red-500 text-sm">{{ block.error }}. Block will not be pushed.</p>
               </div>
 
               <div v-if="block.status" class="flex items-center gap-2 text-violet-600">
