@@ -23,14 +23,14 @@
       </div>
 
       <!-- Success: WordPress page link -->
-      <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-emerald-50 rounded-lg">
+      <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-[#EEFFF7] rounded-lg">
           <div class="flex justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[#2B0F52]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           
-          <p class="text-lg text-emerald-700 font-medium mb-3 text-center">Success! MetriFi has drafted a new page in WordPress.</p>
+          <p class="text-lg text-[#2B0F52] font-medium mb-3 text-center">Success! MetriFi has drafted a new page in WordPress.</p>
 
           <div class="flex justify-center">
             <AppButton variant="success" :href="wordpressStore.wordpressPageUrl + '&preview=true'" target="_blank">
@@ -68,7 +68,7 @@
               </div>
 
               <div v-if="!block.status && block.schema_with_content" class="flex items-center gap-2">
-                <span class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                <span class="inline-flex items-center rounded-md bg-[#EEFFF7] px-2 py-1 text-xs font-medium text-[#2B0F52]">
                   Done
                 </span>
               </div>
