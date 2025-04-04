@@ -35,13 +35,13 @@
               <EyeSlashIcon class="text-red-500 h-4 w-4" aria-hidden="true" />
               Private
             </span>
-            <span v-else class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs text-gray-900 bg-green-50 ring-1 ring-inset ring-gray-200">
-              <EyeIcon class="text-green-500 h-4 w-4" aria-hidden="true" />
+            <span v-else class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs text-gray-900 bg-emerald-50 ring-1 ring-inset ring-gray-200">
+              <EyeIcon class="text-emerald-500 h-4 w-4" aria-hidden="true" />
               Anonymous
             </span>
 
-            <span v-if="organization.onboarding.onboardingComplete" class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs text-gray-900 bg-green-50 ring-1 ring-inset ring-gray-200">
-              <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3" /></svg>
+            <span v-if="organization.onboarding.onboardingComplete" class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs text-gray-900 bg-emerald-50 ring-1 ring-inset ring-gray-200">
+              <svg class="h-1.5 w-1.5 fill-emerald-500" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3" /></svg>
               Onboarding complete
             </span>
             <span v-else class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs text-gray-900 bg-red-50 ring-1 ring-inset ring-gray-200">

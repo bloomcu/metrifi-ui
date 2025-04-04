@@ -74,40 +74,11 @@
     </AppModal>
 
     <!-- WordPress Connection Modal -->
-    <AppModal 
-        size="lg"
+    <WordPressConnectionModal 
         :open="showWordPressModal"
-        @closed="showWordPressModal = false" 
-    >
-        <div class="p-6">
-            <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Connect WordPress website</h3>
-            <form @submit.prevent="connectWordPress" class="mt-6">
-                <div class="space-y-4">
-                    <AppInput v-model="wordpressForm.token.wordpress_url" label="Full website URL" hint="Example: https://example.com/" :errors="errorStore.errors['token.wordpress_url']" required />
-                    
-                    <template v-if="isValidUrl(wordpressForm.token.wordpress_url)">
-                        <div class="p-3 bg-gray-50 rounded-md text-sm text-gray-600">
-                            <p>Visit <a :href="wordpressForm.token.wordpress_url + '/wp-admin/profile.php'" target="_blank" class="text-violet-700 font-semibold">{{ wordpressForm.token.wordpress_url + '/wp-admin/profile.php' }}</a> to find your WordPress username and create an application password.</p>
-                            <p class="mt-2">Watch our <a href="https://vimeo.com/1069012242" target="_blank" class="text-violet-700 font-semibold">video tutorial</a> for step-by-step instructions.</p>
-                        </div>
-                        
-                        <AppInput v-model="wordpressForm.token.username" label="Your WordPress username" :errors="errorStore.errors['token.username']" required />
-                        <AppInput v-model="wordpressForm.token.app_password" label="WordPress application password" type="password" :errors="errorStore.errors['token.app_password']" required/>
-                        <p class="text-xs text-gray-500 mt-1">Username and app password are secured using AES-256 encryption</p>
-                    </template>
-                </div>
-                
-                <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                    <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm" @click="showWordPressModal = false">
-                        Cancel
-                    </button>
-                    <button type="submit" class="inline-flex w-full justify-center rounded-md border border-transparent bg-violet-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm">
-                        Connect
-                    </button>
-                </div>
-            </form>
-        </div>
-    </AppModal>
+        @closed="showWordPressModal = false"
+        @connected="handleWordPressConnected"
+    />
 
     <DisconnectConnectionModal/>
   </div>
@@ -115,12 +86,14 @@
 
 <script setup>
 import moment from 'moment'
-import { ref, onMounted, provide } from 'vue'
+import { ref, onMounted, provide, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { connectionApi } from '@/domain/connections/api/connectionApi.js'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import DisconnectConnectionModal from '@/views/base/settings/modals/DisconnectConnectionModal.vue'
+import WordPressConnectionModal from '@/views/base/settings/modals/WordPressConnectionModal.vue'
+import axios from 'axios'
 
 const route = useRoute()
 
@@ -132,18 +105,6 @@ const isModalOpen = ref(false)
 const connectionToBeDisconnected = ref()
 const showConnectionTypeModal = ref(false)
 const showWordPressModal = ref(false)
-
-const wordpressForm = ref({
-  service: 'WordPress Website',
-  name: '',
-  token: {
-    wordpress_url: '',
-    username: '',
-    app_password: ''
-  }
-})
-
-const { connectToGoogle } = useConnections()
 
 provide('isModalOpen', isModalOpen)
 provide('connectionToBeDisconnected', connectionToBeDisconnected)
@@ -163,74 +124,12 @@ function selectConnectionType(type) {
   }
 }
 
-async function connectWordPress() {
-    // Format URL before submission
-    if (wordpressForm.value.token.wordpress_url) {
-        let url = wordpressForm.value.token.wordpress_url
-        
-        // Add protocol if missing
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = 'https://' + url
-        }
-        
-        try {
-            const urlObj = new URL(url)
-            // Set the URL to just protocol + hostname (no path or trailing slash)
-            wordpressForm.value.token.wordpress_url = urlObj.protocol + '//' + urlObj.hostname
-            // Set the name property to the formatted URL
-            wordpressForm.value.name = urlObj.hostname
-        } catch (e) {
-            // Keep the original value if URL parsing fails
-        }
-    }
-
-    connectionApi.store(route.params.organization, wordpressForm.value)
-        .then((response) => {
-            connections.value.push(response.data.data)
-            showWordPressModal.value = false
-
-            wordpressForm.value = {
-                service: 'WordPress Website',
-                name: '',
-                token: {
-                    wordpress_url: '',
-                    username: '',
-                    app_password: ''
-                }
-            }
-    })
+function handleWordPressConnected(connection) {
+  connections.value.push(connection)
+  showWordPressModal.value = false
 }
 
-function isValidUrl(url) {
-  if (!url) return false
-  
-  // Add protocol if missing
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    url = 'https://' + url
-  }
-  
-  try {
-    const urlObj = new URL(url)
-    
-    // Check that the URL has a valid hostname with a TLD
-    // Must have at least one dot and something after the last dot
-    const isValid = urlObj.hostname && 
-           urlObj.hostname.includes('.') && 
-           urlObj.hostname.split('.').pop().length >= 2
-    
-    // Return formatted URL without path or trailing slash
-    if (isValid) {
-      // Update the form value with the formatted URL
-      wordpressForm.value.token.wordpress_url = urlObj.protocol + '//' + urlObj.hostname
-      // Set the name property to the hostname
-      wordpressForm.value.name = urlObj.hostname
-    }
-    
-    return isValid
-  } catch (e) {
-    return false
-  }
-}
+const { connectToGoogle } = useConnections()
 
 onMounted(() => {
   isLoading.value = true

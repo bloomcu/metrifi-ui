@@ -1,17 +1,12 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import wordpressBlockSchemas from '@/domain/wordpress/store/wordpressBlockSchemas.js'
-import OpenAI from 'openai'
 import { wordPressApi } from '@/domain/wordpress/api/wordPressApi.js'
+import * as Sentry from '@sentry/vue'
+import OpenAI from 'openai'
 
 const openai = new OpenAI({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-})
-
-const grok = new OpenAI({
-    apiKey: import.meta.env.VITE_GROK_API_KEY,
-    baseURL: "https://api.x.ai/v1",
     dangerouslyAllowBrowser: true,
 })
 
@@ -36,37 +31,56 @@ export const useWordPressStore = defineStore('wordpressStore', {
         // Reset any existing retry counts for blocks
         this.blocks.forEach(block => {
           block.schemaRetryCount = 0;
-          block.error = null;
+        //   block.error = null;
+          block.status = null;
+          block.type = null;
+          block.layout = null;
+          block.wordpress_category = null;
         });
         
         // Process all blocks simultaneously using Promise.all
         const blockPromises = this.blocks.map(async (block, index) => {
+          if (block.error) {
+            return;
+          }
+
           block.status = 'Matching block';
           
           try {
             const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block.html);
             block.status = null;
 
-            // Update the block wordpress_category in the database
+            // Split the wordpress category into acf_fc_layout and layout
+            let splitBlockId = predictedCMSBlockCategory['data-block-id'].split('--');
+            block.type = splitBlockId[0];
+            block.layout = splitBlockId[1];
+
+            // Update the block type and layout in the database
             blocksApi.update(
                 block.organization.slug,
                 block.id,
-                { wordpress_category:  predictedCMSBlockCategory['data-block-id'] }
+                { 
+                    type: splitBlockId[0], 
+                    layout: splitBlockId[1], 
+                    wordpress_category: predictedCMSBlockCategory['data-block-id'] 
+                }
             )
-
-            // Split the wordpress category into acf_fc_layout and layout
-            let splitCategory = predictedCMSBlockCategory['data-block-id'].split('--');
-            block.acf_fc_layout = splitCategory[0];
-            block.layout = splitCategory[1];
 
             this.writeBlockContent(block)
             
             return { success: true, block };
           } catch (err) {
-            console.error(`Failed to process block ${index + 1}:`, err);
+            console.log('Assistant failed to predict CMS block type:', err);
+            Sentry.captureException('Assistant failed to predict CMS block type:', err);
             
-            block.error = `Failed to process: ${err.message}`;
+            block.error = `Assistant failed to predict CMS block type.`;
             block.status = null;
+
+            blocksApi.update(
+                block.organization.slug,
+                block.id,
+                { status: block.status, error: block.error }
+            )
             
             return { success: false, block, error: err };
           }
@@ -79,7 +93,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         const failedBlocks = results.filter(result => !result.success);
         if (failedBlocks.length > 0) {
           console.warn(`${failedBlocks.length} blocks failed to process.`);
-          this.error = 'Some blocks failed to match.';
+        //   this.error = 'Some blocks failed to match.';
         }
         
         console.log('Matching CMS blocks complete:', this.blocks);
@@ -154,7 +168,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
             return { 'data-block-id': assistantResponse };
           }
         } catch (err) {
-          console.error(`Error on attempt ${attempt}:`, err);
+          console.log(`Assistant failed to predict CMS on attempt ${attempt}:`, err);
           if (attempt === retries) {
             throw err; // If this was the last attempt, throw the error
           }
@@ -183,13 +197,13 @@ export const useWordPressStore = defineStore('wordpressStore', {
         await new Promise(resolve => setTimeout(resolve, delayMs));
       }
       
-      throw new Error(`Run timed out after ${maxAttempts * delayMs / 1000} seconds`);
+      throw new Error(`Assistant timed out after ${maxAttempts * delayMs / 1000} seconds`);
     },
 
     async getBlockSchema(block) {
         // Find the schema object that matches the block's acf_fc_layout
         const matchingSchema = wordpressBlockSchemas.find(
-          schema => schema.acf_fc_layout === block.acf_fc_layout
+          schema => schema.acf_fc_layout === block.type
         );
         
         // Set block.schema to the matching schema or undefined if not found
@@ -204,6 +218,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
           if (block.schemaRetryCount < 2) {
             block.schemaRetryCount++;
             console.log(`No matching schema found for block. Retry attempt ${block.schemaRetryCount}/2`);
+            Sentry.captureException(`No matching schema found for block. Retry attempt ${block.schemaRetryCount}/2`);
             
             try {
               // Update status to show we're retrying
@@ -213,14 +228,15 @@ export const useWordPressStore = defineStore('wordpressStore', {
               const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block.html);
               
               // Split the wordpress category into acf_fc_layout and layout
-              let splitCategory = predictedCMSBlockCategory['data-block-id'].split('--');
-              block.acf_fc_layout = splitCategory[0];
-              block.layout = splitCategory[1];
+              let splitBlockId = predictedCMSBlockCategory['data-block-id'].split('--');
+              block.type = splitBlockId[0];
+              block.layout = splitBlockId[1];
               
               // Try to get the schema again with the new acf_fc_layout
               return await this.getBlockSchema(block);
             } catch (err) {
-              console.error(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err);
+              console.log(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err);
+              Sentry.captureException(`Failed to retry block schema matching (attempt ${block.schemaRetryCount}):`, err)
               block.status = null;
               
               // If we've exhausted all retries, set the error message
@@ -254,17 +270,12 @@ export const useWordPressStore = defineStore('wordpressStore', {
         try {
           const response = await openai.chat.completions.create({
             model: 'gpt-4o',
-        //   const response = await grok.chat.completions.create({
-        //     model: 'grok-beta',
             messages: [
               { 
                 role: "system", 
                 content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
                         "IMPORTANT: Remove unused content in the json. Don't fill in gaps in the content. That's not your job. Your only job is to delete placeholder content and transfer existing content. Don't do anything else." +
                         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
-                // content: "You are an expert at adapting content in html to a json object. I will provide the html of a block and the json schema I need the content adapted to. " +
-                //          "IMPORTANT: The json schema I provide may have placeholder content. Do not keep the placeholder content, only transfer content from the html to the json schema and remove any unused placeholder content. Remove any placeholder test buttons" +
-                //          "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
               },
               { 
                 role: "user",
@@ -286,7 +297,8 @@ export const useWordPressStore = defineStore('wordpressStore', {
             block.schema_with_content = content;
           } catch (jsonError) {
             // If it's not valid JSON, try to clean it up
-            console.warn('Received invalid JSON from OpenAi, attempting to clean:', jsonError);
+            console.log('Received invalid JSON from OpenAi, attempting to clean:', jsonError);
+            Sentry.captureException('Received invalid JSON from OpenAi:', jsonError)
             
             // Remove any markdown code block indicators if present
             if (content.startsWith('```json')) {
@@ -306,8 +318,9 @@ export const useWordPressStore = defineStore('wordpressStore', {
           }
       
         } catch (error) {
-          console.error('Error from OpenAi:', error)
-          block.error = `Error writing content: ${error.message}`
+          console.error('OpenAi error writing block content:', error)
+          Sentry.captureException('OpenAi error writing block content:', error)
+          block.error = `OpenAi error writing block content: ${error.message}`
       
         } finally {
           block.status = null
@@ -324,16 +337,16 @@ export const useWordPressStore = defineStore('wordpressStore', {
             try {
                 return JSON.parse(block.schema_with_content);
             } catch (error) {
-                console.error(`Error parsing JSON for block:`, error);
+                console.log(`Error parsing JSON for block:`, error);
                 console.log('Problematic content:', block.schema_with_content);
                 // Return a placeholder or null instead of failing completely
-                this.error = `Error parsing block content: ${error.message}`;
+                // this.error = `Error parsing block content: ${error.message}`;
                 return null;
             }
         }).filter(block => block !== null); // Filter out any blocks that failed to parse
       
         // console.log('blocks:', this.blocks);
-        // console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
+        console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
       
         if (blocksWithSchemaWithContent.length === 0) {
             this.error = 'No valid blocks to send to WordPress';

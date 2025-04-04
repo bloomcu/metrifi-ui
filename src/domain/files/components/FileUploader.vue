@@ -1,4 +1,8 @@
 <template>
+    <div v-if="errorStore.errors.file" class="bg-red-100 text-red-600 p-2 rounded-md text-sm mb-2" role="alert">
+        <p>{{ errorStore.errors.file[0] }}</p>
+    </div>
+    
     <div class="relative flex flex-col items-center border border-gray-300 rounded-lg overflow-hidden">
         <!-- Drag area -->
         <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full cursor-pointer bg-white hover:bg-gray-50">
@@ -37,12 +41,14 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useFileStore } from '@/domain/files/store/useFileStore'
+import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { CloudArrowUpIcon } from '@heroicons/vue/24/solid'
 
 const emit = defineEmits(['fileUploaded'])
 
 const route = useRoute()
 const fileStore = useFileStore()
+const errorStore = useErrorStore()
 const files = ref([])
 
 function onInputChange(e) {
@@ -51,6 +57,17 @@ function onInputChange(e) {
 }
 
 function addFiles(droppedFiles) {
+  // Check file types
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  const invalidFiles = [...droppedFiles].filter(file => !allowedTypes.includes(file.type));
+  
+  if (invalidFiles.length > 0) {
+    errorStore.setErrors({ file: ['Only jpg, jpeg, png, gif, and webp files are allowed.'] });
+    return;
+  } else {
+    errorStore.setErrors({ file: null });
+  }
+
   // Build uploadable files
   let uploadables = [...droppedFiles].map((file) => ({
     file: file,

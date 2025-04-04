@@ -81,7 +81,7 @@
                   </div>
 
                   <div v-if="recommendationStore.recommendation.metadata.comparisons?.length" class="flex items-center gap-2">
-                    <CheckCircleIcon class="h-7 w-7 text-green-600"/>
+                    <CheckCircleIcon class="h-7 w-7 text-emerald-600"/>
                   </div>
                 </div>
                 <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
@@ -123,7 +123,7 @@
                     <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
                     <h2 class="font-medium">Additional information</h2>
                   </div>
-                  <CheckCircleIcon v-if="recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>' || recommendationStore.recommendation.files.length" class="h-7 w-7 text-green-600"/>
+                  <CheckCircleIcon v-if="recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>' || recommendationStore.recommendation.files.length" class="h-7 w-7 text-emerald-600"/>
                 </div>
 
                 <div v-if="accordionStates.accordion2" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
@@ -164,7 +164,7 @@
                     <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
                     <h2 class="font-medium">Secret shopping study</h2>
                   </div>
-                  <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>' || recommendationStore.recommendation.secret_shopper_files.length" class="h-7 w-7 text-green-600"/>
+                  <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>' || recommendationStore.recommendation.secret_shopper_files.length" class="h-7 w-7 text-emerald-600"/>
                 </div>
 
                 <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
@@ -245,7 +245,7 @@
             </div>
           </div>
 
-          <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length"/>
+          <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length" @regenerate-block="handleBlockRegeneration"/>
           
 
           <!-- <p v-else>The complete HTML was not generated</p> -->
@@ -350,7 +350,7 @@ const updateBlock = debounce(() => {
   })
 }, 800)
 
-function toggleGenerateRecommendationModal() { 
+function toggleGenerateRecommendationModal() {
   isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 
   recommendationStepIndex.value = recommendationStore.recommendation.step_index
   recommendationPrompt.value = recommendationStore.recommendation.prompt
@@ -405,21 +405,28 @@ function fetchRecommendation() {
     })
 }
 
-/** 
- * Embedded Tailwind CSS
- * --------------------
- */
-const tailwind = ref('tailwind')
-let tailwindScript = null
+const tailwind = ref(null)
+
+// Function to handle block regeneration
+const handleBlockRegeneration = () => {
+  // Clear existing interval
+  clearInterval(interval)
+  // Set up new polling interval
+  interval = setInterval(fetchRecommendation, 3000)
+  // Fetch immediately
+  fetchRecommendation()
+}
 
 onMounted(() => {
+  // Initial fetch and polling
   fetchRecommendation()
   interval = setInterval(fetchRecommendation, 3000)
-
-  tailwindScript = document.createElement('script')
+  
+  // Setup Tailwind
+  const tailwindScript = document.createElement('script')
   tailwindScript.src = 'https://cdn.tailwindcss.com'
-  tailwind.value.appendChild(tailwindScript)
-
+  document.head.appendChild(tailwindScript)
+  
   organizationSubscriptionStore.show(route.params.organization)
 })
 

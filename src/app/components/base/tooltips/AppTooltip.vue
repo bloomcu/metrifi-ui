@@ -32,7 +32,7 @@ const alignments = {
 
 const variants = {
   primary: 'bg-violet-500 text-white',
-  success: 'bg-green-600 text-white',
+  success: 'bg-emerald-600 text-white',
   danger: 'bg-red-700 text-white',
   warning: 'bg-yellow-700 text-gray-50',
   info: 'bg-blue-700 text-white',
