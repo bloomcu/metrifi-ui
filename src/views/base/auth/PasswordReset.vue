@@ -43,6 +43,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
+import { CheckCircleIcon } from '@heroicons/vue/20/solid'
 import AppPasswordChecker from '@/app/components/base/forms/AppPasswordChecker.vue'
 
 const route = useRoute()

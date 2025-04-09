@@ -16,9 +16,12 @@
 
         <dl class="divide-y divide-gray-200">
             <div class="px-4 py-6 sm:grid sm:grid-cols-[2fr_1fr] sm:gap-4 sm:px-0">
-                <dt class="text-sm leading-6 text-gray-900">Weekly website analysis email</dt>
+                <dt>
+                    <p class="text-sm leading-6 text-gray-900 mb-1.5">Opportunity Intelligence emails</p>
+                    <p class="text-sm text-gray-500">Emails show how much money your website is losing, which funnels are underperforming, and where to focus for the biggest gains.</p>
+                </dt>
                 <dd class="mt-1 text-sm leading-6 text-gray-500 sm:mt-0 flex justify-end">
-                <AppToggle v-model="userStore.user.settings.send_weekly_website_analysis" />
+                    <AppToggle v-model="userStore.user.settings.send_weekly_website_analysis" />
                 </dd>
             </div>
         </dl>
