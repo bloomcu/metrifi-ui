@@ -32,7 +32,6 @@
                 <div class="flex justify-between text-gray-500 text-sm">
                     <div class="flex items-center gap-1">
                         <ClockIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
-                        <!-- <span>{{ moment(recommendation.created_at).fromNow() }}</span> -->
                         <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
                     </div>
                     
@@ -60,7 +59,7 @@ const recommendationStore = useRecommendationStore()
 const isRecommendationsListPanelOpen = inject('isRecommendationsListPanelOpen')
 
 function isInProgress(status) {
-  return status ? ['in_progress', '_completed', 'queued'].some(s => status.includes(s)) : false;
+  return status ? ['in_progress', 'completed', 'queued'].some(s => status.includes(s)) : false;
 }
 
 function isFailed(status) {
@@ -75,7 +74,9 @@ function showRecommendation(recommendationId) {
 }
 
 onMounted(() => {
-    recommendationStore.index(route.params.organization, route.params.dashboard)
+    recommendationStore.index(route.params.organization, {
+        dashboard_id: route.params.dashboard
+    })
 })
 </script>
   

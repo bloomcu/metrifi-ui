@@ -11,10 +11,10 @@ export const useRecommendationStore = defineStore('recommendationStore', {
     }),
     
     actions: {
-      index(organizationSlug, dashboardId, params) {
+      index(organizationSlug, params) {
         this.recommendations = []
 
-        RecommendationsApi.index(organizationSlug, dashboardId, params)
+        RecommendationsApi.index(organizationSlug, params)
           .then(response => {
             this.recommendations = response.data.data
           }).catch(error => {
