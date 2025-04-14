@@ -247,6 +247,7 @@ import {
 
 import {
   HomeIcon,
+  BoltIcon,
   ChartBarIcon,
   Cog6ToothIcon,
   Squares2X2Icon,
@@ -256,6 +257,7 @@ import {
 
 const navigation = [
   { name: 'Dashboards', to: { name: 'dashboards'}, icon: Squares2X2Icon},
+  { name: 'Recommendations', to: { name: 'recommendations'}, icon: BoltIcon},
   { name: 'Funnels', to: { name: 'funnels'}, icon: ChartBarIcon},
   { name: 'Reports', to: { name: 'explore' }, icon: MagnifyingGlassIcon},
   { name: 'Settings', to: { name: 'settings'}, icon: Cog6ToothIcon},

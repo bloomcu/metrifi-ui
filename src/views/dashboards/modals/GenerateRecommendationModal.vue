@@ -265,6 +265,7 @@ import AppButton from '@/app/components/base/buttons/AppButton.vue'
 import FileUploader from '@/domain/files/components/FileUploader.vue'
 
 const props = defineProps({
+  dashboardId: '',
   stepIndex: '',
   prompt: '',
   secretShopperPrompt: '',
@@ -293,7 +294,7 @@ watch(() => isGenerateRecommendationModalOpen.value, (modelOpen) => {
   if (modelOpen === true) {
     if (route.params.recommendation) {
       // Get the current recommendation
-      recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
+      recommendationStore.show(route.params.organization, route.params.recommendation)
       
     } else {
       // Start a new recommendation in the store
@@ -308,7 +309,7 @@ watch(() => isGenerateRecommendationModalOpen.value, (modelOpen) => {
     }
   } else {
     if (route.params.recommendation) {
-      recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
+      recommendationStore.show(route.params.organization, route.params.recommendation)
     }
   }
 });
@@ -355,7 +356,7 @@ async function generateRecommendation() {
   console.log('Cached secretShopperFileIds', secretShopperFileIds)
 
   // Store recommendation
-  await recommendationStore.store(route.params.organization, route.params.dashboard, recommendationStore.recommendation).then(() => {
+  await recommendationStore.store(route.params.organization, recommendationStore.recommendation).then(() => {
     // Attach files
     if (fileIds.length) {
       console.log('Attaching files', fileIds)
@@ -369,7 +370,7 @@ async function generateRecommendation() {
 
     console.log('Metadata:', recommendationStore.recommendation.metadata)
 
-    router.push({ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationStore.recommendation.id } })
+    router.push({ name: 'recommendation', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } })
         
     setTimeout(() => {
         window.location.reload()
@@ -475,7 +476,7 @@ function loadDashboard() {
   console.log('Loading dashboard from within recommendation modal')
   funnelStore.funnels = []
   
-  dashboardApi.show(route.params.organization, route.params.dashboard)
+  dashboardApi.show(route.params.organization, props.dashboardId)
     .then(response => {
       // console.log(response)
       let dashboard = response.data.data

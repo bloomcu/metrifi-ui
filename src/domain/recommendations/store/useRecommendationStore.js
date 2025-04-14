@@ -64,6 +64,14 @@ export const useRecommendationStore = defineStore('recommendationStore', {
             console.log('Error error attaching file', error.response.data)
           })
       },
+      
+      isInProgress(status) {
+        return status ? ['in_progress', 'completed', 'queued'].some(s => status.includes(s)) : false;
+      },
+      
+      isFailed(status) {
+        return status ? ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s)) : false;
+      }
     }
 })
 

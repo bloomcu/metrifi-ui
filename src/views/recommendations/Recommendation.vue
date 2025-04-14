@@ -4,13 +4,13 @@
 
     <!-- Header -->
     <header class="px-4 py-3 flex items-center justify-between border-b">
-      <div class="flex items-center gap-3 grow">
-        <AppButton @click="router.push({name: 'dashboard'})" variant="primary" size="base">
+      <div v-if="recommendationStore.recommendation" class="flex items-center gap-3 grow">
+        <AppButton @click="router.push({name: 'dashboard', params: {organization: route.params.organization, dashboard: recommendationStore.recommendation.dashboard_id}})" variant="primary" size="base">
           <ArrowLeftIcon class="h-4 w-4 shrink-0" />
         </AppButton>
-        <p v-if="recommendationStore.recommendation" class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }} recommendation</p>
-        <p v-if="recommendationStore.recommendation" class="text-sm">For step {{ recommendationStore.recommendation.step_index + 1 }}</p>
-        <span v-if="recommendationStore.recommendation" class="text-gray-400 text-sm font-normal">Created {{ moment(recommendationStore.recommendation.created_at).fromNow() }} by {{ recommendationStore.recommendation.user.name }}</span>
+        <p class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }} recommendation</p>
+        <p class="text-sm">For step {{ recommendationStore.recommendation.step_index + 1 }}</p>
+        <span class="text-gray-400 text-sm font-normal">Created {{ moment(recommendationStore.recommendation.created_at).fromNow() }} by {{ recommendationStore.recommendation.user.name }}</span>
       </div>
 
       <div class="flex items-center gap-2">
@@ -235,7 +235,7 @@
         <!-- Right Side (2/3 of the screen) -->
         <div class="pb-40 flex-1 h-full overflow-y-auto px-8 pt-5 bg-white">
           <!-- Loading content -->
-          <div v-if="recommendationStore.recommendation.status != 'done'" class="p-6">
+          <div v-if="recommendationStore.isInProgress(recommendationStore.recommendation.status)" class="p-6">
             <div class="flex items-center justify-center mb-6">
               <div class="w-12 h-12 border-2 border-violet-300 rounded-full border-t-transparent spin"/>
             </div>
@@ -251,9 +251,10 @@
           <!-- <p v-else>The complete HTML was not generated</p> -->
         </div>
       </div>
-    </div>
 
-    <GenerateRecommendationModal :stepIndex="recommendationStepIndex" :prompt="recommendationPrompt" :secret-shopper-prompt="recommendationSecretShopperPrompt" :open="isGenerateRecommendationModalOpen"/>
+      <GenerateRecommendationModal :dashboardId="recommendationStore.recommendation.dashboard_id" :stepIndex="recommendationStepIndex" :prompt="recommendationPrompt" :secret-shopper-prompt="recommendationSecretShopperPrompt" :open="isGenerateRecommendationModalOpen"/>
+    </div>
+    
     <RecommendationsListPanel/>
     <PushToWordPressPanel/>
   </div>
@@ -369,7 +370,7 @@ const progressWidth = computed(() => {
 function fetchRecommendation() {
   isLoading.value = true
 
-  recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
+  recommendationStore.show(route.params.organization, route.params.recommendation)
     .then(response => {
       const recommendation = recommendationStore.recommendation
       setTimeout(() => isLoading.value = false, 800)
@@ -394,7 +395,7 @@ function fetchRecommendation() {
         setTimeout(() => isLoading.value = false, 800)
       }
 
-      if (['requires_action', 'cancelled', 'failed', 'expired'].some(status => recommendation.status.includes(status))) {
+      if (recommendationStore.isFailed(recommendation.status)) {
         clearInterval(interval)
         issue.value = recommendation.status
         setTimeout(() => isLoading.value = false, 800)

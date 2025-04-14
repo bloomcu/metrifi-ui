@@ -25,8 +25,8 @@
                     </div>
                     
                     <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
-                    <span v-if="isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
-                    <span v-if="isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
+                    <span v-if="recommendationStore.isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
+                    <span v-if="recommendationStore.isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
                 </div>
 
                 <div class="flex justify-between text-gray-500 text-sm">
@@ -58,14 +58,6 @@ const router = useRouter()
 const recommendationStore = useRecommendationStore()
 const isRecommendationsListPanelOpen = inject('isRecommendationsListPanelOpen')
 
-function isInProgress(status) {
-  return status ? ['in_progress', 'completed', 'queued'].some(s => status.includes(s)) : false;
-}
-
-function isFailed(status) {
-  return status ? ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s)) : false;
-}
-
 function showRecommendation(recommendationId) {
     router.push({name: 'recommendation', params:{ organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationId }})
         .then(() => {
@@ -79,4 +71,3 @@ onMounted(() => {
     })
 })
 </script>
-  
