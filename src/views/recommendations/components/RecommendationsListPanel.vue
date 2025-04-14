@@ -25,14 +25,13 @@
                     </div>
                     
                     <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
-                    <span v-if="isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
-                    <span v-if="isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
+                    <span v-if="recommendationStore.isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
+                    <span v-if="recommendationStore.isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
                 </div>
 
                 <div class="flex justify-between text-gray-500 text-sm">
                     <div class="flex items-center gap-1">
                         <ClockIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
-                        <!-- <span>{{ moment(recommendation.created_at).fromNow() }}</span> -->
                         <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
                     </div>
                     
@@ -59,14 +58,6 @@ const router = useRouter()
 const recommendationStore = useRecommendationStore()
 const isRecommendationsListPanelOpen = inject('isRecommendationsListPanelOpen')
 
-function isInProgress(status) {
-  return status ? ['in_progress', '_completed', 'queued'].some(s => status.includes(s)) : false;
-}
-
-function isFailed(status) {
-  return status ? ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s)) : false;
-}
-
 function showRecommendation(recommendationId) {
     router.push({name: 'recommendation', params:{ organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationId }})
         .then(() => {
@@ -75,7 +66,8 @@ function showRecommendation(recommendationId) {
 }
 
 onMounted(() => {
-    recommendationStore.index(route.params.organization, route.params.dashboard)
+    recommendationStore.index(route.params.organization, {
+        dashboard_id: route.params.dashboard
+    })
 })
 </script>
-  
