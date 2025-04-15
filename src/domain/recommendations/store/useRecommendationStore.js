@@ -51,7 +51,15 @@ export const useRecommendationStore = defineStore('recommendationStore', {
 
         await RecommendationsApi.update(organizationSlug, dashboardId, id, params)
           .then(response => {
-            // this.recommendation = response.data.data
+            this.isLoading = false
+          })
+      },
+
+      async generate(organizationSlug, recommendationId) {
+        this.isLoading = true
+        
+        return await RecommendationsApi.generate(organizationSlug, recommendationId)
+          .then(response => {
             this.isLoading = false
           })
       },

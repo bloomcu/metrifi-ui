@@ -7,7 +7,7 @@
       <div v-if="recommendationStore.recommendation" class="flex items-center gap-3 grow">
         <!-- Back button -->
         <AppButton @click="handleBack()" variant="primary" size="base">
-          <ArrowLeftIcon class="h-4 w-4 shrink-0" />
+          <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
         <!-- Recommendation title -->

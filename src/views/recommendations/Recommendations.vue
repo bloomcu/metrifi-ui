@@ -27,7 +27,7 @@
     <div v-if="recommendationStore.recommendations" class="flex flex-col gap-4 mb-20">
       <div
         v-for="recommendation in recommendationStore.recommendations" 
-        @click="router.push({ name: 'recommendation', params: { recommendation: recommendation.id }})"
+        @click="recommendation.status === 'draft' ? router.push({ name: 'recommendationEdit', params: { recommendation: recommendation.id }}) : router.push({ name: 'recommendation', params: { recommendation: recommendation.id }})"
         class="group relative flex flex-col cursor-pointer overflow-hidden rounded-lg shadow-sm border bg-white hover:shadow-md"
       >
         <div class="flex flex-col space-y-4 w-full px-4 py-4">
@@ -43,7 +43,9 @@
                 <!-- <span class="text-sm text-gray-500 border-r border-gray-300 pr-3">6 versions</span> -->
 
                <!-- Status -->
+                <!-- TODO: Move this into a component -->
                 <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
+                <span v-if="recommendation.status == 'draft'" class="bg-gray-100 border border-gray-300 py-1 px-2.5 rounded-full text-gray-600 text-sm">Draft</span>
                 <span v-if="recommendationStore.isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
                 <span v-if="recommendationStore.isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
               
@@ -166,7 +168,7 @@ const createFromScratch = () => {
   recommendationStore.store(route.params.organization, {
     title: 'New recommendation',
     dashboard_id: null,
-    status: null,
+    status: 'draft',
     step_index: null,
     metadata: null
   }).then(() => {
