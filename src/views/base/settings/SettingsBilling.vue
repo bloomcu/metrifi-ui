@@ -6,7 +6,7 @@
   </div>
 
   <!-- Plans -->
-  <AppCard v-if="organizationSubscriptionStore.subscription"  class="mb-12">
+  <div v-if="organizationSubscriptionStore.subscription"  class="mb-12">
     <h2 class="text-base font-medium leading-6 text-gray-900">Plans</h2>
 
     <!-- Plan has upcoming changes -->
@@ -45,7 +45,7 @@
     <p v-else class="mt-2 text-sm text-gray-500">You are currently subscribed to <span class="font-bold text-violet-700">{{ organizationSubscriptionStore.subscription.plan.title }}</span>.</p>
 
     <!-- Frequency toggle -->
-    <fieldset class="mt-8" aria-label="Payment frequency">
+    <!-- <fieldset class="mt-8" aria-label="Payment frequency">
       <RadioGroup v-model="frequency" class="w-fit grid grid-cols-2 gap-x-1 rounded-full p-1 text-center text-sm font-semibold ring-1 ring-inset ring-gray-200">
         <RadioGroupOption as="template" v-for="option in frequencies" :key="option.value" :value="option" v-slot="{ checked }">
           <div :class="[checked ? 'bg-violet-500 text-white' : 'text-gray-500', 'cursor-pointer rounded-full px-6 py-2']">
@@ -54,10 +54,10 @@
           </div>
         </RadioGroupOption>
       </RadioGroup>
-    </fieldset>
+    </fieldset> -->
     
     <!-- Plans -->
-    <div class="isolate mt-6 grid grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+    <div class="isolate mt-6 grid grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-4">
       <div v-for="(tier, index) in plans[frequency.value]" :key="index" :class="[organizationSubscriptionStore.subscription.plan.title == tier.fullTitle ? 'ring-2 ring-violet-600' : 'ring-1 ring-gray-200', 'rounded-3xl p-4 xl:p-6']">
         <div class="flex items-center justify-between gap-x-4">
           <h3 class="text-gray-900 text-lg font-semibold">{{ tier.title }}</h3>
@@ -69,28 +69,22 @@
           <span class="text-sm/6 font-semibold text-gray-600">{{ tier.priceSuffix }}</span>
         </p>
 
-        <p v-if="frequency.value == 'yearly'" class="mt-1.5 text-sm text-gray-600">{{ tier.fullTitle == 'Starter Yearly' ? 'Billed yearly at $996' : '&nbsp;' }} </p>
+        <!-- <p v-if="frequency.value == 'yearly'" class="mt-1.5 text-sm text-gray-600">{{ tier.fullTitle == 'Starter Yearly' ? 'Billed yearly at $996' : '&nbsp;' }} </p> -->
 
         <ul role="list" class="mt-6 space-y-3 text-sm/6 text-gray-600">
           <li v-for="feature in tier.features" :key="feature" class="flex gap-x-2">
-            <CheckIcon class="h-6 w-5 flex-none text-violet-500" aria-hidden="true" />
-            {{ feature }}
+            <CheckIcon v-if="feature.included" class="h-6 w-5 flex-none text-violet-500" aria-hidden="true" />
+            <XMarkIcon v-else class="h-6 w-5 flex-none text-gray-400" aria-hidden="true" />
+            {{ feature.text }}
           </li>
         </ul>
 
-        <!-- <template> -->
-          <button v-if="tier.group == 'starter' && !organizationSubscriptionStore.subscription.subscribed" @click="selectPlan(tier.price_id)" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-600 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+        <a v-if="['growth', 'starter', 'enterprise'].includes(tier.group)" :href="tier.href" target="_blank" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-600 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
             Upgrade to {{ tier.title }}
-          </button>
-          <a v-if="tier.group == 'growth'" :href="tier.href" target="_blank" class="w-full bg-violet-500 text-white shadow-sm hover:bg-violet-600 mt-8 block rounded-full px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
-            Upgrade to {{ tier.title }}
-          </a>
-        <!-- </template> -->
-
-        <p v-if="tier.title === 'Starter Yearly'" class="text-center text-sm/6 text-violet-500 mt-6">Subscribe annually and get 2 months free</p>
+        </a>
       </div>
     </div>
-  </AppCard>
+  </div>
 
   <!-- Billing portal -->
   <AppCard v-if="organizationSubscriptionStore.subscription && organizationSubscriptionStore.subscription.subscribed" class="mb-12">
@@ -110,7 +104,7 @@
 import moment from "moment"
 import { ref, computed, onMounted } from 'vue'
 import { RadioGroup, RadioGroupOption } from '@headlessui/vue'
-import { ExclamationTriangleIcon, CheckIcon } from '@heroicons/vue/20/solid'
+import { ExclamationTriangleIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/20/solid'
 import { useRoute, useRouter } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
@@ -133,18 +127,17 @@ const frequency = ref(frequencies[0])
 const plans = {
   monthly: [
     {
-      title: 'Free Plan',
-      fullTitle: 'Free Plan',
+      title: 'Free',
+      fullTitle: 'Free',
       group: 'free',
       href: null,
       price: '$0',
       priceSuffix: '',
       price_id: '',
       features: [
-        'Recommendations: 2 / mo', 
+        'Recommendations: 2 per month', 
         'Funnels: unlimited', 
         'Comparisons: unlimited', 
-        'Users: unlimited',
         'File retention: 1 year'
       ],
     },
@@ -163,7 +156,6 @@ const plans = {
         'Recommendations: 10 / mo', 
         'Funnels: unlimited', 
         'Comparisons: unlimited', 
-        'Users: unlimited',
         'File retention: 1 year'
       ],
     },
@@ -180,7 +172,6 @@ const plans = {
         'Recommendations: custom', 
         'Funnels: unlimited', 
         'Comparisons: unlimited', 
-        'Users: unlimited',
         'File retention: 1 year'
       ],
     },
@@ -188,53 +179,130 @@ const plans = {
   
   yearly: [
     {
-      title: 'Free Plan',
-      fullTitle: 'Free Plan',
+      title: 'Free',
+      fullTitle: 'Free',
       group: 'free',
       href: null,
       price: '$0',
       priceSuffix: '',
       price_id: '',
       features: [
-        'Recommendations: 2 / mo', 
-        'Funnels: unlimited', 
-        'Comparisons: unlimited', 
-        'Users: unlimited',
-        'File retention: 1 year'
+        {
+            text: 'Recommendations: 2 per year', 
+            included: true,
+        },
+        {
+            text: 'Design reviews for A/B tests',
+            included: false,
+        },
+        {
+            text: 'Funnels: unlimited', 
+            included: true,
+        },
+        {
+            text: 'Comparisons: unlimited', 
+            included: true,
+        },
+        {
+            text: 'File retention: 1 year',
+            included: true,
+        },
       ],
     },
     {
       title: 'Starter',
       fullTitle: 'Starter Yearly',
       group: 'starter',
-      href: null,
-      price: '$83',
-      priceSuffix: '/ month',
-      price_id: 'price_1QHVQzK64893LVlSx24PpimR', // Production
+      href: 'https://metrifi.com/upgrade-your-metrifi-plan/',
+      price: 'Contact us',
+      priceSuffix: '',
+      price_id: '',
+      // price_id: 'price_1QHVQzK64893LVlSx24PpimR', // Production
       // price_id: 'price_1QHUFJRB5mhzFf19JkljJoNt', // Staging
       // price_id: 'price_1QHTk3IoK0qLKtdjKBrj2CEF', // Local
       features: [
-        'Recommendations: 120 / yr', 
-        'Funnels: unlimited', 
-        'Comparisons: unlimited', 
-        'Users: unlimited',
-        'File retention: 1 year'
+        {
+            text: 'Recommendations: 12 per year', 
+            included: true,
+        },
+        {
+            text: 'Design reviews for A/B tests',
+            included: false,
+        },
+        {
+            text: 'Funnels: unlimited', 
+            included: true,
+        },
+        {
+            text: 'Comparisons: unlimited', 
+            included: true,
+        },
+        {
+            text: 'File retention: 1 year',
+            included: true,
+        },
       ],
     },
     {
       title: 'Growth',
       fullTitle: 'Growth Yearly',
       group: 'growth',
-      href: 'https://metrifi.com/pricing/growth-plan/',
+      href: 'https://metrifi.com/upgrade-your-metrifi-plan/',
       price: 'Contact us',
       priceSuffix: '',
       price_id: '',
       features: [
-        'Recommendations: custom', 
-        'Funnels: unlimited', 
-        'Comparisons: unlimited', 
-        'Users: unlimited',
-        'File retention: 1 year'
+        {
+            text: 'Recommendations: 24 per year', 
+            included: true,
+        },
+        {
+            text: 'Design reviews for A/B tests',
+            included: false,
+        },
+        {
+            text: 'Funnels: unlimited', 
+            included: true,
+        },
+        {
+            text: 'Comparisons: unlimited', 
+            included: true,
+        },
+        {
+            text: 'File retention: 1 year',
+            included: true,
+        },
+      ],
+    },
+    {
+      title: 'Enterprise',
+      fullTitle: 'Growth Yearly',
+      group: 'enterprise',
+      href: 'https://metrifi.com/upgrade-your-metrifi-plan/',
+      price: 'Contact us',
+      priceSuffix: '',
+      price_id: '',
+      features: [
+        {
+            text: 'Recommendations: 48 per year', 
+            included: true,
+        },
+        {
+            text: 'Design reviews for A/B tests',
+            included: true,
+        },
+        {
+            text: 'Funnels: unlimited', 
+            included: true,
+        },
+        {
+            text: 'Comparisons: unlimited', 
+            included: true,
+        },
+        {
+            text: 'File retention: 1 year',
+            included: true,
+        },
       ],
     },
   ]
