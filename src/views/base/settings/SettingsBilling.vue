@@ -188,7 +188,7 @@ const plans = {
       price_id: '',
       features: [
         {
-            text: 'Recommendations: 2 per year', 
+            text: 'Recommendations: 2 / yr', 
             included: true,
         },
         {
@@ -222,7 +222,7 @@ const plans = {
       // price_id: 'price_1QHTk3IoK0qLKtdjKBrj2CEF', // Local
       features: [
         {
-            text: 'Recommendations: 12 per year', 
+            text: 'Recommendations: 12 / yr', 
             included: true,
         },
         {
@@ -253,7 +253,7 @@ const plans = {
       price_id: '',
       features: [
         {
-            text: 'Recommendations: 24 per year', 
+            text: 'Recommendations: 24 / yr', 
             included: true,
         },
         {
@@ -284,7 +284,7 @@ const plans = {
       price_id: '',
       features: [
         {
-            text: 'Recommendations: 48 per year', 
+            text: 'Recommendations: 48 / yr', 
             included: true,
         },
         {
