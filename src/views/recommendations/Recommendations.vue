@@ -15,11 +15,11 @@
     <template #topbar>
         <div class="flex items-center justify-between">
           <h1 class="text-2xl font-medium leading-6 text-gray-900 tracking-tight">Recommendations</h1>
-          <!-- <div class="flex gap-2">
-            <AppButton v-if="organizationStore.organization" @click="storeNewRecommendation()">
-              Create recommendation
+          <div class="flex gap-2">
+            <AppButton @click="showGenerateRecommendationModal = true">
+              Generate recommendation
             </AppButton>
-          </div> -->
+          </div>
         </div>
     </template>
 
@@ -115,6 +115,27 @@
       <Squares2X2Icon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
       <h2 class="mt-2 text-lg font-medium text-violet-500">Create a recommendation</h2>
     </div>
+
+    <!-- Generate recommendation -->
+    <AppModal 
+        size="lg"
+        :open="showGenerateRecommendationModal"
+        @closed="showGenerateRecommendationModal = false" 
+    >
+        <div class="p-6">
+            <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Generate recommendation</h3>
+            <div class="mt-6 grid grid-cols-2 gap-4">
+                <div @click="createFromScratch()" class="flex flex-col items-center justify-center border border-gray-300 rounded-lg p-5 cursor-pointer hover:bg-violet-50 hover:border-violet-400">
+                    <PencilSquareIcon class="w-10 h-10 mb-3 text-violet-500" aria-hidden="true" />
+                    <p class="text-base font-medium text-gray-900">From scratch</p>
+                </div>
+                <RouterLink :to="{name: 'dashboards'}" class="flex flex-col items-center justify-center border border-gray-300 rounded-lg p-5 cursor-pointer hover:bg-violet-50 hover:border-violet-400">
+                    <Squares2X2Icon class="w-10 h-10 mb-3 text-violet-500" aria-hidden="true" />
+                    <p class="text-base font-medium text-gray-900">From dashboard</p>
+                </RouterLink>
+            </div>
+        </div>
+    </AppModal>
   </LayoutWithSidebar>
 </template>
 
@@ -125,7 +146,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useRecommendationStore } from "@/domain/recommendations/store/useRecommendationStore"
 import { useConnections } from '@/domain/connections/composables/useConnections'
-import { Squares2X2Icon } from '@heroicons/vue/24/outline'
+import { PencilSquareIcon, Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { UserIcon, ClockIcon } from '@heroicons/vue/16/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
@@ -136,7 +157,22 @@ const { connectToGoogle } = useConnections()
 
 const organizationStore = useOrganizationStore()
 const recommendationStore = useRecommendationStore()
+
+const showGenerateRecommendationModal = ref(false)
 const isLoading = ref(false)
+
+const createFromScratch = () => {
+    // Store recommendation
+  recommendationStore.store(route.params.organization, {
+    title: 'New recommendation',
+    dashboard_id: null,
+    status: null,
+    step_index: null,
+    metadata: null
+  }).then(() => {
+    router.push({ name: 'recommendation', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } })
+  })
+}
 
 onMounted(() => {
     recommendationStore.index(route.params.organization)

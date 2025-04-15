@@ -5,11 +5,18 @@
     <!-- Header -->
     <header class="px-4 py-3 flex items-center justify-between border-b">
       <div v-if="recommendationStore.recommendation" class="flex items-center gap-3 grow">
-        <AppButton @click="router.push({name: 'dashboard', params: {organization: route.params.organization, dashboard: recommendationStore.recommendation.dashboard_id}})" variant="primary" size="base">
+        <!-- Back button -->
+        <AppButton @click="handleBack()" variant="primary" size="base">
           <ArrowLeftIcon class="h-4 w-4 shrink-0" />
         </AppButton>
+
+        <!-- Recommendation title -->
         <p class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }} recommendation</p>
+
+        <!-- Step -->
         <p class="text-sm">For step {{ recommendationStore.recommendation.step_index + 1 }}</p>
+
+        <!-- Created by -->
         <span class="text-gray-400 text-sm font-normal">Created {{ moment(recommendationStore.recommendation.created_at).fromNow() }} by {{ recommendationStore.recommendation.user.name }}</span>
       </div>
 
@@ -252,7 +259,12 @@
         </div>
       </div>
 
-      <GenerateRecommendationModal :dashboardId="recommendationStore.recommendation.dashboard_id" :stepIndex="recommendationStepIndex" :prompt="recommendationPrompt" :secret-shopper-prompt="recommendationSecretShopperPrompt" :open="isGenerateRecommendationModalOpen"/>
+      <GenerateRecommendationModal 
+        :dashboardId="recommendationStore.recommendation.dashboard_id" 
+        :stepIndex="recommendationStepIndex" 
+        :prompt="recommendationPrompt" 
+        :secret-shopper-prompt="recommendationSecretShopperPrompt" 
+        :open="isGenerateRecommendationModalOpen"/>
     </div>
     
     <RecommendationsListPanel/>
@@ -416,6 +428,14 @@ const handleBlockRegeneration = () => {
   interval = setInterval(fetchRecommendation, 3000)
   // Fetch immediately
   fetchRecommendation()
+}
+
+const handleBack = () => {
+    if (recommendationStore.recommendation.dashboard_id) {
+        router.push({name: 'dashboard', params: {organization: route.params.organization, dashboard: recommendationStore.recommendation.dashboard_id}})
+    } else {
+        router.push({ name: 'recommendations' })
+    }
 }
 
 onMounted(() => {
