@@ -166,7 +166,7 @@ const showGenerateRecommendationModal = ref(false)
 const isLoading = ref(false)
 
 const createFromScratch = () => {
-    // Store recommendation
+  // Store recommendation
   recommendationStore.store(route.params.organization, {
     title: 'New recommendation',
     dashboard_id: null,

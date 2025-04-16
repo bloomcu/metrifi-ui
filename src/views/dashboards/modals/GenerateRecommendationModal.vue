@@ -356,6 +356,8 @@ async function generateRecommendation() {
   console.log('Cached secretShopperFileIds', secretShopperFileIds)
 
   // Store recommendation
+  // Set recommendation status to queued
+  recommendationStore.recommendation.status = 'queued'
   await recommendationStore.store(route.params.organization, recommendationStore.recommendation).then(() => {
     // Attach files
     if (fileIds.length) {
@@ -368,9 +370,9 @@ async function generateRecommendation() {
       recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, secretShopperFileIds, 'secret-shopper')
     }
 
-    console.log('Metadata:', recommendationStore.recommendation.metadata)
-
-    router.push({ name: 'recommendation', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } })
+    recommendationStore.generate(route.params.organization, recommendationStore.recommendation.id).then(() => {
+        router.push({name: 'recommendation', params: {organization: route.params.organization, recommendation: recommendationStore.recommendation.id}})
+    })
         
     setTimeout(() => {
         window.location.reload()
@@ -494,7 +496,7 @@ const toggleAccordion = (accordionName) => {
 };
 
 onMounted(() => {
-  if (route.params.recommendation) {
+  if (route.params.recommendation && props.dashboardId) {
     loadDashboard()
   }
 })
