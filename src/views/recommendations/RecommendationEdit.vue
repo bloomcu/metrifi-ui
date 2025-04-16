@@ -29,8 +29,8 @@
         </div>
 
         <!-- Edit recommendation -->
-        <div v-if="!organizationSubscriptionStore.limitExceeded" class="max-w-4xl mx-auto py-24">
-            <span v-if="recommendationStore.recommendation.status == 'draft'" class="bg-gray-100 border border-gray-300 -ml-1 py-1 px-2.5 rounded-full text-gray-600 text-sm">Draft</span>
+        <div v-if="!organizationSubscriptionStore.limitExceeded" class="max-w-4xl w-full mx-auto py-24">
+            <span v-if="recommendationStore.recommendation.status == 'draft'" class="bg-gray-200 -ml-1 py-1 px-2.5 rounded-full text-gray-600 text-sm">Draft</span>
 
             <!-- Recommendation title -->
             <div class="mt-8 mb-10">
@@ -44,35 +44,39 @@
 
 
             <!-- Additional information -->
-            <div class="space-y-4">
+            <div class="space-y-12">
                 <!-- Instructions -->
-                <p class="font-semibold mb-1">Instructions</p>
-                <p class="text-gray-600">MetriFi AI will use the instructions below to generate a new webpage for you.</p>
+                <div class="space-y-3">
+                    <p class="font-semibold">Instructions</p>
+                    <p class="text-gray-600">MetriFi AI will use the instructions below to generate a new webpage for you.</p>
 
-                <!-- Additional info -->
-                <AppRichtext v-model="recommendationStore.recommendation.prompt" :editable="true" class="bg-white"/>
-
+                    <!-- Additional info -->
+                    <AppRichtext v-model="recommendationStore.recommendation.prompt" :editable="true" placeholder="Write instructions..." class="bg-white"/>
+                </div>
+                
                 <!-- Upload files -->
-                <p class="font-semibold mb-1">Files</p>
-                <FileUploader @fileUploaded="handleLocalFileUploaded" class="mb-5"/>
+                <div class="space-y-3">
+                    <p class="font-semibold mb-1">Files</p>
+                    <FileUploader @fileUploaded="handleLocalFileUploaded" class="mb-5"/>
 
-                <!-- Files -->
-                <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
-                    <li v-for="file in recommendationStore.recommendation.files" :key="file.id" class="relative">
-                        <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
-                            <!-- Thumbnail -->
-                            <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
+                    <!-- Files -->
+                    <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
+                        <li v-for="file in recommendationStore.recommendation.files" :key="file.id" class="relative">
+                            <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
+                                <!-- Thumbnail -->
+                                <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
 
-                            <!-- Delete -->
-                            <!-- <button @click.stop="handleDeleteLocalFile(file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
-                                <TrashIcon class="h-4 w-4"/>
-                            </button> -->
-                        </div>
+                                <!-- Delete -->
+                                <!-- <button @click.stop="handleDeleteLocalFile(file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
+                                    <TrashIcon class="h-4 w-4"/>
+                                </button> -->
+                            </div>
 
-                        <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
-                        <!-- <p class="block truncate text-sm text-gray-500">{{ file.filename }}</p> -->
-                    </li>
-                </ul>
+                            <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
+                            <!-- <p class="block truncate text-sm text-gray-500">{{ file.filename }}</p> -->
+                        </li>
+                    </ul>
+                </div>
             </div><!-- End additional information -->
 
             <!-- <div><pre>{{ recommendationStore.recommendation }}</pre></div> -->

@@ -25,10 +25,12 @@
                     </div>
                     
                     <!-- TODO: Move this into a component -->
-                    <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
-                    <span v-if="recommendation.status == 'draft'" class="bg-gray-100 border border-gray-300 py-1 px-2.5 rounded-full text-gray-600 text-sm">Draft</span>
-                    <span v-if="recommendationStore.isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
-                    <span v-if="recommendationStore.isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
+                    <div>
+                        <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
+                        <span v-if="recommendation.status == 'draft'" class="bg-gray-200 py-0.5 px-2 rounded-full text-gray-600 text-sm">Draft</span>
+                        <span v-if="recommendationStore.isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
+                        <span v-if="recommendationStore.isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
+                    </div>
                 </div>
 
                 <div class="flex justify-between text-gray-500 text-sm">
