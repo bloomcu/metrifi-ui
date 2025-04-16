@@ -5,7 +5,7 @@
     
     <div class="relative flex flex-col items-center border border-gray-300 rounded-lg overflow-hidden">
         <!-- Drag area -->
-        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full cursor-pointer bg-white hover:bg-gray-50">
+        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full cursor-pointer bg-white hover:bg-slate-100">
             <div class="flex flex-col items-center justify-center text-center p-6">
                 <CloudArrowUpIcon class="h-7 w-7 mb-2 text-gray-500" />
                 <p class="text-xs text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop .jpeg, .jpg, .png, .gif or .webp</p>

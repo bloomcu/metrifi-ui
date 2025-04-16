@@ -41,21 +41,13 @@
             <div class="flex items-center gap-2">
                 <!-- Versions -->
                 <!-- <span class="text-sm text-gray-500 border-r border-gray-300 pr-3">6 versions</span> -->
-
-                <!-- Status -->
-                <!-- TODO: Move this into a component -->
-                <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
-                <span v-if="recommendation.status == 'draft'" class="bg-gray-200 py-1 px-2.5 rounded-full text-gray-600 text-sm">Draft</span>
-                <span v-if="recommendationStore.isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
-                <span v-if="recommendationStore.isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
               
                 <!-- Copy -->
-                <!-- TODO: Enable this -->
-                <!-- <button @click.stop="replicateDashboard(dashboard.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
+                <button @click.stop="replicateRecommendation(recommendation)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
                     </svg>
-                </button> -->
+                </button>
 
                 <!-- Delete -->
                 <!-- TODO: Enable this -->
@@ -68,15 +60,28 @@
           </div>
 
           <div class="flex justify-between text-gray-500 text-sm">
-                <div class="flex items-center gap-1">
-                    <ClockIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
-                    <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
+                <div class="flex items-center gap-4">
+                    
+
+                    <!-- Created at date -->
+                    <div class="flex items-center gap-1">
+                        <ClockIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
+                        <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
+                    </div>
+
+                    <!-- Owner -->
+                    <div class="flex items-center gap-1">
+                        <UserIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
+                        <span>{{ recommendation.user.name }}</span>
+                    </div>
                 </div>
                 
-                <div class="flex items-center gap-1">
-                    <UserIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
-                    <span>{{ recommendation.user.name }}</span>
-                </div>
+                <!-- Status -->
+                <!-- TODO: Move this into a component -->
+                <span v-if="recommendation.status == 'done'" class="bg-[#99ffcc] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Done</span>
+                <span v-if="recommendation.status == 'draft'" class="bg-slate-300 py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Draft</span>
+                <span v-if="recommendationStore.isInProgress(recommendation.status)" class="bg-[#FFE666] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">In progress</span>
+                <span v-if="recommendationStore.isFailed(recommendation.status)" class="bg-[#FF6D66] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Failed</span>
             </div>
         </div>
       </div>
@@ -175,6 +180,14 @@ const createFromScratch = () => {
     metadata: null
   }).then(() => {
     router.push({ name: 'recommendationEdit', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } })
+  })
+}
+
+const replicateRecommendation = (recommendation) => {
+  recommendationStore.replicate(route.params.organization, recommendation.id).then(() => {
+    recommendation.status === 'draft' ?
+        router.push({ name: 'recommendationEdit', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } }) :
+        router.push({ name: 'recommendation', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } })
   })
 }
 

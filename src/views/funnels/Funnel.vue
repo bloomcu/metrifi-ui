@@ -4,7 +4,7 @@
     <header class="border-b flex items-center gap-3 justify-between py-3 px-3">
       <div class="flex items-center gap-2 grow">
         <!-- Back -->
-        <AppButton :to="{name: 'funnels'}" variant="tertiary" size="base">
+        <AppButton :to="{name: 'funnels'}" variant="tertiary" size="sm">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 

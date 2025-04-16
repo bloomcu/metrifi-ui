@@ -26,10 +26,10 @@
                     
                     <!-- TODO: Move this into a component -->
                     <div>
-                        <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
-                        <span v-if="recommendation.status == 'draft'" class="bg-gray-200 py-0.5 px-2 rounded-full text-gray-600 text-sm">Draft</span>
-                        <span v-if="recommendationStore.isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
-                        <span v-if="recommendationStore.isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
+                        <span v-if="recommendation.status == 'done'" class="bg-[#99ffcc] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Done</span>
+                        <span v-if="recommendation.status == 'draft'" class="bg-slate-300 py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Draft</span>
+                        <span v-if="recommendationStore.isInProgress(recommendation.status)" class="bg-[#FFE666] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">In progress</span>
+                        <span v-if="recommendationStore.isFailed(recommendation.status)" class="bg-[#FF6D66] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Failed</span>
                     </div>
                 </div>
 

@@ -13,7 +13,7 @@
     <!-- Sticky Top Bar -->
     <div class="z-20 fixed top-0 left-0 w-full bg-white border-b border-gray-200">
       <div class="flex items-center justify-between px-4 py-2">
-        <AppButton @click="isGenerateRecommendationModalOpen = false" variant="primary" size="base">
+        <AppButton @click="isGenerateRecommendationModalOpen = false" variant="tertiary" size="sm">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 

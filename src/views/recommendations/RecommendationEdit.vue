@@ -6,7 +6,7 @@
                 <!-- Left side -->
                 <div class="flex items-center gap-3 grow">
                     <!-- Back -->
-                    <AppButton @click="handleBack()" variant="primary" size="sm">
+                    <AppButton @click="handleBack()" variant="tertiary" size="sm">
                         <ArrowLeftIcon class="h-5 w-5 shrink-0" />
                     </AppButton>
 
@@ -30,7 +30,7 @@
 
         <!-- Edit recommendation -->
         <div v-if="!organizationSubscriptionStore.limitExceeded" class="max-w-4xl w-full mx-auto py-24">
-            <span v-if="recommendationStore.recommendation.status == 'draft'" class="bg-gray-200 -ml-1 py-1 px-2.5 rounded-full text-gray-600 text-sm">Draft</span>
+            <span v-if="recommendationStore.recommendation.status == 'draft'" class="bg-slate-300 py-1 px-2.5 rounded-full text-[#2b0f52] text-sm">Draft</span>
 
             <!-- Recommendation title -->
             <div class="mt-8 mb-10">

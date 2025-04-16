@@ -6,7 +6,7 @@
     <header class="px-4 py-3 flex items-center justify-between border-b">
       <div v-if="recommendationStore.recommendation" class="flex items-center gap-3 grow">
         <!-- Back button -->
-        <AppButton @click="handleBack()" variant="primary" size="base">
+        <AppButton @click="handleBack()" variant="tertiary" size="sm">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
@@ -268,7 +268,6 @@
     </div>
     
     <RecommendationsListPanel/>
-    <PushToWordPressPanel/>
   </div>
 </template>
 
@@ -285,7 +284,6 @@ import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import CodeEditor from '@/views/recommendations/components/CodeEditor.vue'
 import Prototype from '@/views/recommendations/components/Prototype.vue'
 import ChatInterface from '@/views/recommendations/components/ChatInterface.vue'
-import PushToWordPressPanel from '@/views/recommendations/components/PushToWordPressPanel.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecommendationModal.vue'
 

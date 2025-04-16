@@ -2,10 +2,10 @@
   <div v-if="editor" class="md-editor">
     <label v-if="label" class="block text-sm font-medium text-gray-700" :for="label">{{ label }}</label>
     
-    <div v-if="editable" class="sticky top-[52px] z-10 bg-gray-100 border border-gray-100 ring ring-white ring-offset-0 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
+    <div v-if="editable" class="sticky top-[52px] z-10 bg-slate-100 border border-slate-100 ring ring-white ring-offset-0 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
       <menu class="flex flex-wrap">    
         <li>
-          <button @click="editor.chain().focus().toggleBold().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-200 active:translate-y-px" type="button" title="Bold">
+          <button @click="editor.chain().focus().toggleBold().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-slate-200 active:translate-y-px" type="button" title="Bold">
             <svg class="relative block m-auto w-[16px] h-[16px]" viewBox="0 0 16 16">
               <title>Bold</title>
               <g fill="currentColor">
@@ -16,25 +16,25 @@
         </li>
         
         <li>
-          <button @click="editor.chain().focus().toggleItalic().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-200 active:translate-y-px" type="button" title="Italic">
+          <button @click="editor.chain().focus().toggleItalic().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-slate-200 active:translate-y-px" type="button" title="Italic">
             <svg class="relative block m-auto w-[16px] h-[16px]" viewBox="0 0 16 16"><title>Italic</title><g fill="currentColor"><path d="M6 15h3a1 1 0 0 0 0-2H7.388l3.333-10H13a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1.612L5.279 13H3a1 1 0 0 0 0 2h3z"></path></g></svg>
           </button>
         </li>
 
         <li>
-          <button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-200 active:translate-y-px" type="button" title="Italic">
+          <button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-slate-200 active:translate-y-px" type="button" title="Italic">
             <span class="relative block m-auto">H1</span>
           </button>
         </li>
 
         <li>
-          <button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-200 active:translate-y-px" type="button" title="Italic">
+          <button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-slate-200 active:translate-y-px" type="button" title="Italic">
             <span class="relative block m-auto">H2</span>
           </button>
         </li>
 
         <li>
-          <button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-gray-200 active:translate-y-px" type="button" title="Italic">
+          <button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-slate-200 active:translate-y-px" type="button" title="Italic">
             <span class="relative block m-auto">H3</span>
           </button>
         </li>

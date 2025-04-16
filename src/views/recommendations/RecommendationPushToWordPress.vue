@@ -153,7 +153,7 @@ onMounted(() => {
         hasWordPressConnection.value = !!wordpressConnection.value
         
         if (hasWordPressConnection.value) {
-            recommendationStore.show(route.params.organization, route.params.dashboard, route.params.recommendation)
+            recommendationStore.show(route.params.organization, route.params.recommendation)
                 .then(() => {
                     wordpressStore.blocks = recommendationStore.recommendation.latest_page.blocks;
                     wordpressStore.predictCMSBlocks();

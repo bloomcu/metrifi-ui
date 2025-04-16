@@ -6,7 +6,6 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         recommendation: null,
         recommendations: [],
         isLoading: false,
-        isPushToWordPressPanelOpen: false,
         selectedBlock: null,
     }),
     
@@ -60,6 +59,16 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         
         return await RecommendationsApi.generate(organizationSlug, recommendationId)
           .then(response => {
+            this.isLoading = false
+          })
+      },
+
+      async replicate(organizationSlug, recommendationId) {
+        this.isLoading = true
+        
+        return await RecommendationsApi.replicate(organizationSlug, recommendationId)
+          .then(response => {
+            this.recommendation = response.data.data
             this.isLoading = false
           })
       },
