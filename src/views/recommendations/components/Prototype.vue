@@ -32,16 +32,33 @@
             <div v-else-if="block.html" class="relative">
                 <div v-if="recommendationStore.recommendation.status === 'done'">
                     <div class="absolute z-[9999] top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                        <button 
+                        <div 
                             v-if="block.versions" 
-                            @click.stop="revert(block)" 
-                            class="bg-neutral-600 hover:bg-neutral-700 text-white px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1"
+                            @click.stop
+                            class="bg-neutral-600 hover:bg-neutral-700 text-white px-3 py-1 rounded-md text-sm font-medium flex items-center gap-2"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                            </svg>
+                            <button 
+                                @click="revertToPreviousVersion(block)" 
+                                :disabled="!canRevertBack(block)"
+                                class="flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                :class="canRevertBack(block) ? 'hover:text-violet-300' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
                             <span>{{ block.current_version }}/{{ block.versions.length + 1 }}</span>
-                        </button>
+                            <button 
+                                @click="revertToNextVersion(block)" 
+                                :disabled="!canRevertForward(block)"
+                                class="flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                :class="canRevertForward(block) ? 'hover:text-violet-300' : ''"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
                         
                         <button 
                             v-if="block.outline" 
@@ -103,22 +120,57 @@ const regenerateBlock = async (block) => {
   }
 }
 
-const revert = async (block) => {
-  // Set block status to regenerating
-  block.status = 'regenerating'
+const canRevertBack = (block) => {
+  return block.versions && block.versions.length > 0 && block.current_version > 1
+}
+
+const canRevertForward = (block) => {
+  return block.versions && block.current_version < block.versions.length + 1
+}
+
+const revertToPreviousVersion = async (block) => {
+  if (!canRevertBack(block)) return
   
-  try {
-    const response = await blocksApi.revert(route.params.organization, block.id)
+  // Find the previous version
+  const targetVersion = block.versions.find(v => v.version_number === block.current_version - 1)
+  if (targetVersion) {
+    block.status = 'regenerating'
     
-    // Update block with the response data
-    Object.assign(block, response.data)
+    try {
+      const response = await blocksApi.revert(route.params.organization, block.id, targetVersion.id)
+
+      // Update block with the response data
+      Object.assign(block, response.data.data)
+      
+      // Reset status
+      block.status = null
+    } catch (error) {
+      console.error('Error reverting to previous version:', error)
+      block.status = null
+    }
+  }
+}
+
+const revertToNextVersion = async (block) => {
+  if (!canRevertForward(block)) return
+  
+  // Find the next version
+  const targetVersion = block.versions.find(v => v.version_number === block.current_version + 1)
+  if (targetVersion) {
+    block.status = 'regenerating'
     
-    // Reset status
-    block.status = null
-  } catch (error) {
-    console.error('Error reverting block to previous version:', error)
-    // Reset status if there was an error
-    block.status = null
+    try {
+      const response = await blocksApi.revert(route.params.organization, block.id, targetVersion.id)
+      
+      // Update block with the response data
+      Object.assign(block, response.data.data)
+      
+      // Reset status
+      block.status = null
+    } catch (error) {
+      console.error('Error reverting to next version:', error)
+      block.status = null
+    }
   }
 }
 </script>
