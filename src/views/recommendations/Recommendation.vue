@@ -356,10 +356,13 @@ const updateBlock = debounce(() => {
       route.params.organization,
       recommendationStore.selectedBlock.id,
       { html: recommendationStore.selectedBlock.html }
-  ).then(() => {
+  ).then((response) => {
+    // Update block with the response data
+    Object.assign(recommendationStore.selectedBlock, response.data.data)
+
     setTimeout(() => isLoading.value = false, 800)
   })
-}, 800)
+}, 1200)
 
 function toggleGenerateRecommendationModal() {
   isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 

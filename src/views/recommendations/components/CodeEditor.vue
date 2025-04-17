@@ -16,6 +16,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const editorRef = ref()
 let editorInstance = null
+let isSettingValue = false // Flag to track if changes are from user rather than programatically
 
 onMounted(async () => {
   // Dynamically import Monaco
@@ -61,14 +62,19 @@ onMounted(async () => {
     acceptSuggestionOnEnter: 'on'
   })
 
-  editorInstance.onDidChangeModelContent(() => {
-    emit('update:modelValue', editorInstance.getValue())
+  editorInstance.onDidChangeModelContent((event) => {
+    // Only emit if the change was made by user rather than programatically
+    if (!isSettingValue) {
+      emit('update:modelValue', editorInstance.getValue())
+    }
   })
 })
 
 watch(() => props.modelValue, (newValue) => {
   if (editorInstance && newValue !== editorInstance.getValue()) {
+    isSettingValue = true
     editorInstance.setValue(newValue)
+    isSettingValue = false
   }
 })
 
