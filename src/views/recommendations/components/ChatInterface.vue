@@ -169,14 +169,17 @@ const sendMessage = async () => {
     const cleanedHtml = accumulatedHtml.replace(/```html\s*|\s*```/g, '').trim()
 
     // Update the selectedBlock's html property directly
-    recommendationStore.selectedBlock.html = cleanedHtml
+    // recommendationStore.selectedBlock.html = cleanedHtml
     
     // Update the block in the backend
     await blocksApi.update(
-      route.params.organization,
-      recommendationStore.selectedBlock.id,
-      { html: cleanedHtml }
-    )
+        route.params.organization,
+        recommendationStore.selectedBlock.id, 
+        { html: cleanedHtml }
+    ).then((response) => {
+        // Update block with the response data
+        Object.assign(recommendationStore.selectedBlock, response.data.data)
+    })
 
   } catch (error) {
     console.error('Error streaming from Grok:', error)
@@ -189,7 +192,7 @@ const sendMessage = async () => {
   } finally {
     isSending.value = false
     newMessage.value = ''
-    recommendationStore.selectedBlock = null
+    // recommendationStore.selectedBlock = null
     scrollToBottom() // Final scroll
   }
 }
