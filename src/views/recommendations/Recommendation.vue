@@ -323,6 +323,7 @@ provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 
 // Generating recommendation states
 const steps = [
+  { status: 'initializing', text: 'Warming up', completed: false },
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
   { status: 'comparison_analyzer_in_progress', text: 'Analyzing comparisons', completed: false },
   { status: 'synthesizer_in_progress', text: 'Synthesizing prompt', completed: false },
@@ -362,7 +363,7 @@ const updateBlock = debounce(() => {
 
     setTimeout(() => isLoading.value = false, 800)
   })
-}, 1200)
+}, 5000)
 
 function toggleGenerateRecommendationModal() {
   isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 
