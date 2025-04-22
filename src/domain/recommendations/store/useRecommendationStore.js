@@ -11,13 +11,16 @@ export const useRecommendationStore = defineStore('recommendationStore', {
     
     actions: {
       index(organizationSlug, params) {
+        this.isLoading = true
         this.recommendations = []
 
         RecommendationsApi.index(organizationSlug, params)
           .then(response => {
             this.recommendations = response.data.data
+            this.isLoading = false
           }).catch(error => {
             console.log('Error', error.response.data)
+            this.isLoading = false
           })
       },
 
@@ -32,6 +35,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
             this.isLoading = false
           }).catch(error => {
             console.log('Error', error.response.data)
+            this.isLoading = false
           })
       },
       

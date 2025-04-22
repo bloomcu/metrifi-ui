@@ -323,7 +323,7 @@ provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 
 // Generating recommendation states
 const steps = [
-  { status: 'initializing', text: 'Warming up', completed: false },
+  { status: 'initializing', text: 'Engaging design thrusters', completed: false },
   { status: 'screenshot_grabber_in_progress', text: 'Taking screenshots', completed: false },
   { status: 'comparison_analyzer_in_progress', text: 'Analyzing comparisons', completed: false },
   { status: 'synthesizer_in_progress', text: 'Synthesizing prompt', completed: false },
