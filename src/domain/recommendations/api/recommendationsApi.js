@@ -1,21 +1,29 @@
 import { httpClient as HttpClient } from '@/app/api/base/httpClient'
 
 const recommendationsApi = {    
-    index(organizationSlug, dashboardId, params) {
-      return HttpClient.get(`/${organizationSlug}/dashboards/${dashboardId}/recommendations`, { params: params })
+    index(organizationSlug, params) {
+      return HttpClient.get(`/${organizationSlug}/recommendations`, { params: params })
     },
 
-    async store(organizationSlug, dashboardId, params) {
-        return await HttpClient.post(`/${organizationSlug}/dashboards/${dashboardId}/recommendations`, params)
+    async store(organizationSlug, params) {
+        return await HttpClient.post(`/${organizationSlug}/recommendations`, params)
     },
 
-    async show(organizationSlug, dashboardId, recommendationId) {
-      return await HttpClient.get(`/${organizationSlug}/dashboards/${dashboardId}/recommendations/${recommendationId}`)
+    async show(organizationSlug, recommendationId) {
+      return await HttpClient.get(`/${organizationSlug}/recommendations/${recommendationId}`)
     },
 
-    async update(organizationSlug, dashboardId, recommendationId, params) {
-      return await HttpClient.put(`/${organizationSlug}/dashboards/${dashboardId}/recommendations/${recommendationId}`, params)
+    async update(organizationSlug, recommendationId, params) {
+      return await HttpClient.put(`/${organizationSlug}/recommendations/${recommendationId}`, params)
     },
+
+    async generate(organizationSlug, recommendationId) {
+      return await HttpClient.put(`/${organizationSlug}/recommendations/${recommendationId}/generate`)
+    },
+
+    async replicate(organizationSlug, recommendationId) {
+        return await HttpClient.post(`/${organizationSlug}/recommendations/${recommendationId}/replicate`)
+      },
 
     async attachFile(organizationSlug, recommendationId, fileIds, type) {
       return await HttpClient.post(`/${organizationSlug}/recommendations/${recommendationId}/files`, { 

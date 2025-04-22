@@ -6,19 +6,21 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         recommendation: null,
         recommendations: [],
         isLoading: false,
-        isPushToWordPressPanelOpen: false,
         selectedBlock: null,
     }),
     
     actions: {
-      index(organizationSlug, dashboardId, params) {
+      index(organizationSlug, params) {
+        this.isLoading = true
         this.recommendations = []
 
-        RecommendationsApi.index(organizationSlug, dashboardId, params)
+        RecommendationsApi.index(organizationSlug, params)
           .then(response => {
             this.recommendations = response.data.data
+            this.isLoading = false
           }).catch(error => {
             console.log('Error', error.response.data)
+            this.isLoading = false
           })
       },
 
@@ -33,6 +35,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
             this.isLoading = false
           }).catch(error => {
             console.log('Error', error.response.data)
+            this.isLoading = false
           })
       },
       
@@ -51,7 +54,25 @@ export const useRecommendationStore = defineStore('recommendationStore', {
 
         await RecommendationsApi.update(organizationSlug, dashboardId, id, params)
           .then(response => {
-            // this.recommendation = response.data.data
+            this.isLoading = false
+          })
+      },
+
+      async generate(organizationSlug, recommendationId) {
+        this.isLoading = true
+        
+        return await RecommendationsApi.generate(organizationSlug, recommendationId)
+          .then(response => {
+            this.isLoading = false
+          })
+      },
+
+      async replicate(organizationSlug, recommendationId) {
+        this.isLoading = true
+        
+        return await RecommendationsApi.replicate(organizationSlug, recommendationId)
+          .then(response => {
+            this.recommendation = response.data.data
             this.isLoading = false
           })
       },
@@ -64,6 +85,14 @@ export const useRecommendationStore = defineStore('recommendationStore', {
             console.log('Error error attaching file', error.response.data)
           })
       },
+      
+      isInProgress(status) {
+        return status ? ['in_progress', 'completed', 'queued'].some(s => status.includes(s)) : false;
+      },
+      
+      isFailed(status) {
+        return status ? ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s)) : false;
+      }
     }
 })
 

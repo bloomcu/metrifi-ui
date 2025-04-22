@@ -7,7 +7,11 @@ const blocksApi = {
 
     async regenerate(organizationSlug, blockId, params) {
         return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/regenerate`)
-      }
+    },
+
+    async revert(organizationSlug, blockId, versionId) {
+        return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/versions/${versionId}`)
+    },
 }
 
 export { blocksApi }

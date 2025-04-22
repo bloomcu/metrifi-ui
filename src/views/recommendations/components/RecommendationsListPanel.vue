@@ -24,15 +24,18 @@
                         <p class="text-sm text-gray-700">For step {{ recommendation.step_index + 1 }}</p>
                     </div>
                     
-                    <span v-if="recommendation.status == 'done'" class="text-emerald-600 text-sm">Done</span>
-                    <span v-if="isInProgress(recommendation.status)" class="text-blue-600 text-sm">In progress</span>
-                    <span v-if="isFailed(recommendation.status)" class="text-red-600 text-sm">Failed</span>
+                    <!-- TODO: Move this into a component -->
+                    <div>
+                        <span v-if="recommendation.status == 'done'" class="bg-[#99ffcc] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Done</span>
+                        <span v-if="recommendation.status == 'draft'" class="bg-slate-300 py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Draft</span>
+                        <span v-if="recommendationStore.isInProgress(recommendation.status)" class="bg-[#FFE666] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">In progress</span>
+                        <span v-if="recommendationStore.isFailed(recommendation.status)" class="bg-[#FF6D66] py-1 px-2.5 rounded-full text-[#2b0f52] text-xs">Failed</span>
+                    </div>
                 </div>
 
                 <div class="flex justify-between text-gray-500 text-sm">
                     <div class="flex items-center gap-1">
                         <ClockIcon class="h-3 w-3 text-gray-400" aria-hidden="true" />
-                        <!-- <span>{{ moment(recommendation.created_at).fromNow() }}</span> -->
                         <span>{{ moment(recommendation.created_at).format('MMM DD, Y') }}</span>
                     </div>
                     
@@ -59,14 +62,6 @@ const router = useRouter()
 const recommendationStore = useRecommendationStore()
 const isRecommendationsListPanelOpen = inject('isRecommendationsListPanelOpen')
 
-function isInProgress(status) {
-  return status ? ['in_progress', '_completed', 'queued'].some(s => status.includes(s)) : false;
-}
-
-function isFailed(status) {
-  return status ? ['requires_action', 'cancelled', 'failed', 'incomplete', 'expired'].some(s => status.includes(s)) : false;
-}
-
 function showRecommendation(recommendationId) {
     router.push({name: 'recommendation', params:{ organization: route.params.organization, dashboard: route.params.dashboard, recommendation: recommendationId }})
         .then(() => {
@@ -75,7 +70,8 @@ function showRecommendation(recommendationId) {
 }
 
 onMounted(() => {
-    recommendationStore.index(route.params.organization, route.params.dashboard)
+    recommendationStore.index(route.params.organization, {
+        dashboard_id: route.params.dashboard
+    })
 })
 </script>
-  

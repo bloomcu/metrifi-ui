@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="border-b p-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <AppButton :to="{name: 'dashboards'}" variant="tertiary" size="base">
+        <AppButton :to="{name: 'dashboards'}" variant="tertiary" size="sm">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
