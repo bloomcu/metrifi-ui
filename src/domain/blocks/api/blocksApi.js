@@ -6,7 +6,11 @@ const blocksApi = {
     },
     
     async update(organizationSlug, blockId, params) {
-      return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}`, params)
+        return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}`, params)
+    },
+
+    async destroy(organizationSlug, blockId) {
+        return await HttpClient.delete(`/${organizationSlug}/blocks/${blockId}`)
     },
 
     async regenerate(organizationSlug, blockId, params) {

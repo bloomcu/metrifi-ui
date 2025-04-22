@@ -42,6 +42,10 @@
                   <AppButton @click="generateBlock(block)" :disabled="!block.outline">
                     Submit
                   </AppButton>
+                  <!-- Delete block -->
+                  <AppButton @click="destroyBlock(block)" variant="tertiary">
+                    Cancel
+                  </AppButton>
                 </div>
             </div>
 
@@ -81,6 +85,11 @@
                                 </svg>
                             </button>
                         </div>
+
+                        <!-- Delete block -->
+                        <button @click.stop="destroyBlock(block)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">
+                            Delete
+                        </button>
                         
                         <!-- Regenerate button -->
                         <button v-if="block.outline" @click.stop="regenerateBlock(block)" class="bg-[#884DFF] hover:bg-[#6E3ECE] text-white px-3 py-1 rounded-md text-sm">
@@ -187,6 +196,15 @@ const reorderBlock = async (e) => {
     await blocksApi.reorder(route.params.organization, event.element.id, event.newIndex + 1)
   } catch (error) {
     console.error('Error reordering block:', error)
+  }
+}
+
+const destroyBlock = async (block) => {
+  try {
+    await blocksApi.destroy(route.params.organization, block.id)
+    emit('fetch-recommendation')
+  } catch (error) {
+    console.error('Error deleting block:', error)
   }
 }
 
