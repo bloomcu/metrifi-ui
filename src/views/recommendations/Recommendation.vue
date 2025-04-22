@@ -252,8 +252,10 @@
             </div>
           </div>
 
-          <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length" @regenerate-block="handleBlockRegeneration"/>
-          
+          <!-- <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length" @regenerate-block="handleBlockRegeneration" @add-block="handleAddBlock"/> -->
+          <Prototype 
+            v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length"
+            @fetch-recommendation="fetchRecommendation()"/>
 
           <!-- <p v-else>The complete HTML was not generated</p> -->
         </div>
@@ -401,7 +403,7 @@ function fetchRecommendation() {
       
       // Check if all blocks have their HTML attribute not null
       const allBlocksHaveHtml = recommendation?.latest_page?.blocks?.length > 0 && 
-        recommendation.latest_page.blocks.every(block => block.html !== null);
+        recommendation.latest_page.blocks.every(block => block.status !== 'generating');
       
       // Only clear interval when both conditions are met: status is 'done' AND all blocks have HTML
       if (recommendation.status === 'done' && allBlocksHaveHtml) {
@@ -423,14 +425,35 @@ function fetchRecommendation() {
 const tailwind = ref(null)
 
 // Function to handle block regeneration
-const handleBlockRegeneration = () => {
-  // Clear existing interval
-  clearInterval(interval)
-  // Set up new polling interval
-  interval = setInterval(fetchRecommendation, 3000)
-  // Fetch immediately
-  fetchRecommendation()
-}
+// const handleBlockRegeneration = () => {
+//   // Clear existing interval
+//   clearInterval(interval)
+//   // Set up new polling interval
+//   interval = setInterval(fetchRecommendation, 3000)
+//   // Fetch immediately
+//   fetchRecommendation()
+// }
+
+// Function to handle adding a new block
+// const handleAddBlock = async (page_id,order) => {
+//   isLoading.value = true
+  
+//   try {
+//     await blocksApi.store(
+//       route.params.organization,
+//       { 
+//         page_id: page_id,
+//         order: order 
+//       }
+//     )
+    
+//     // Fetch the updated recommendation with the new block
+//     fetchRecommendation()
+//   } catch (error) {
+//     console.error('Error adding new block:', error)
+//     isLoading.value = false
+//   }
+// }
 
 const handleBack = () => {
     if (recommendationStore.recommendation.dashboard_id) {
