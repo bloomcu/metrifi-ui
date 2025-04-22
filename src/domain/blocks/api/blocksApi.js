@@ -16,6 +16,10 @@ const blocksApi = {
     async revert(organizationSlug, blockId, versionId) {
         return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/versions/${versionId}`)
     },
+
+    async reorder(organizationSlug, blockId, order) {
+        return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/reorder`, { order: order})
+      },
 }
 
 export { blocksApi }
