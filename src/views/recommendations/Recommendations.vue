@@ -109,13 +109,6 @@
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
     </div>
 
     <!-- Empty state: No recommendations -->
@@ -126,22 +119,22 @@
 
     <!-- Generate recommendation -->
     <AppModal 
-        size="lg"
+        size="2xl"
         :open="showGenerateRecommendationModal"
         @closed="showGenerateRecommendationModal = false" 
     >
         <div class="p-6">
             <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:truncate sm:text-2xl">Generate recommendation</h3>
             <div class="mt-6 grid grid-cols-2 gap-4">
-                <div @click="createFromScratch()" class="flex flex-col items-center justify-center border border-gray-300 rounded-lg p-5 cursor-pointer hover:bg-violet-50 hover:border-violet-400">
+                <div @click="createFromScratch()" class="flex flex-col items-start justify-start border border-gray-300 rounded-lg p-5 cursor-pointer hover:bg-violet-50 hover:border-violet-400">
                     <PencilSquareIcon class="w-10 h-10 mb-3 text-violet-500" aria-hidden="true" />
-                    <p class="text-base font-medium text-gray-900">Start from scratch</p>
-                    <p class="text-sm text-gray-500 text-center">Give AI instructions to generate a webpage recommendation from scratch.</p>
+                    <p class="text-lg mb-1 font-medium text-gray-900">Start from scratch</p>
+                    <p class="text-sm text-gray-500">Give AI instructions to generate a webpage recommendation from scratch.</p>
                 </div>
-                <RouterLink :to="{name: 'dashboards'}" class="flex flex-col items-center justify-center border border-gray-300 rounded-lg p-5 cursor-pointer hover:bg-violet-50 hover:border-violet-400">
+                <RouterLink :to="{name: 'dashboards'}" class="flex flex-col items-start justify-start border border-gray-300 rounded-lg p-5 cursor-pointer hover:bg-violet-50 hover:border-violet-400">
                     <Squares2X2Icon class="w-10 h-10 mb-3 text-violet-500" aria-hidden="true" />
-                    <p class="text-base font-medium text-gray-900">Start from a dashboard</p>
-                    <p class="text-sm text-gray-500 text-center">Select a dashboard and click "Improve" on the funnel step where you want AI to generate a webpage recommendation.</p>
+                    <p class="text-lg mb-1 font-medium text-gray-900">Start from a dashboard</p>
+                    <p class="text-sm text-gray-500">Select a dashboard and click "Improve" on the funnel step where you want AI to generate a webpage recommendation.</p>
                 </RouterLink>
             </div>
         </div>
