@@ -59,7 +59,7 @@
 
             <!-- Block has been generated -->
             <div v-else-if="block.html" class="relative">
-                <div v-if="recommendationStore.recommendation.status === 'done'">
+                <!-- <div v-if="recommendationStore.recommendation.status === 'done'"> -->
                     <div class="absolute z-[9999] top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <!-- Version controls -->
                         <div v-if="block.versions" @click.stop class="bg-slate-500 text-white px-3 py-1 rounded-md text-sm flex items-center gap-2">
@@ -97,11 +97,11 @@
                         </button>
 
                         <!-- Disabled regenerate button -->
-                        <button v-if="!block.outline" @click.stop="regenerateBlock(block)" class="bg-[#884DFF]/50 hover:bg-[#6E3ECE]/50 text-white px-3 py-1 rounded-md text-sm">
+                        <button v-if="!block.outline" class="bg-[#884DFF]/50 hover:bg-[#6E3ECE]/50 text-white px-3 py-1 rounded-md text-sm">
                             Block must have an outline to be regenerated
                         </button>
                     </div>
-                </div>
+                <!-- </div> -->
 
                 <div v-html="block.html" :class="recommendationStore.selectedBlock === block ? 'border-2 border-violet-700' : ''" class="border-2 border-transparent group-hover:border-violet-500 cursor-pointer"></div>
             </div>
