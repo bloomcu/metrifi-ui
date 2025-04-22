@@ -86,11 +86,6 @@
                             </button>
                         </div>
 
-                        <!-- Delete block -->
-                        <button @click.stop="destroyBlock(block)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">
-                            Delete
-                        </button>
-                        
                         <!-- Regenerate button -->
                         <button v-if="block.outline" @click.stop="regenerateBlock(block)" class="bg-[#884DFF] hover:bg-[#6E3ECE] text-white px-3 py-1 rounded-md text-sm">
                             Regenerate
@@ -100,6 +95,20 @@
                         <button v-if="!block.outline" class="bg-[#884DFF]/50 hover:bg-[#6E3ECE]/50 text-white px-3 py-1 rounded-md text-sm">
                             Block must have an outline to be regenerated
                         </button>
+
+                        <!-- Delete block -->
+                        <button v-if="!confirmingDelete[block.id]" @click.stop="confirmDelete(block)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">
+                            Delete
+                        </button>
+                        <!-- Confirm delete -->
+                        <div v-else class="flex gap-1">
+                            <button @click.stop="destroyBlock(block)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
+                                Confirm
+                            </button>
+                            <button @click.stop="cancelDelete(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 <!-- </div> -->
 
@@ -129,6 +138,8 @@ import { ref } from 'vue'
 const route = useRoute()
 const recommendationStore = useRecommendationStore()
 const emit = defineEmits(['fetch-recommendation'])
+
+const confirmingDelete = ref({})
 
 const selectBlock = (block) => {
     if (block.html) {
@@ -252,5 +263,13 @@ const revertToNextVersion = async (block) => {
       console.error('Error reverting to next version:', error)
     }
   }
+}
+
+const confirmDelete = (block) => {
+  confirmingDelete.value[block.id] = true
+}
+
+const cancelDelete = (block) => {
+  confirmingDelete.value[block.id] = false
 }
 </script>
