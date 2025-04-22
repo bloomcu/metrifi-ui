@@ -252,7 +252,7 @@
             </div>
           </div>
 
-          <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length" @regenerate-block="handleBlockRegeneration"/>
+          <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length" @regenerate-block="handleBlockRegeneration" @add-block="handleAddBlock"/>
           
 
           <!-- <p v-else>The complete HTML was not generated</p> -->
@@ -430,6 +430,27 @@ const handleBlockRegeneration = () => {
   interval = setInterval(fetchRecommendation, 3000)
   // Fetch immediately
   fetchRecommendation()
+}
+
+// Function to handle adding a new block
+const handleAddBlock = async (page_id,order) => {
+  isLoading.value = true
+  
+  try {
+    await blocksApi.store(
+      route.params.organization,
+      { 
+        page_id: page_id,
+        order: order 
+      }
+    )
+    
+    // Fetch the updated recommendation with the new block
+    fetchRecommendation()
+  } catch (error) {
+    console.error('Error adding new block:', error)
+    isLoading.value = false
+  }
 }
 
 const handleBack = () => {
