@@ -2,9 +2,9 @@
   <div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-    <div class="_border _rounded-md shadow-lg overflow-hidden">
+    <div class="_border _rounded-md shadow-lg">
       <!-- Content container with responsive width -->
-      <div class="bg-white overflow-auto transition-all duration-300 flex justify-center"
+      <div class="bg-white transition-all duration-300 flex justify-center"
         :style="{
           width: '100%',
           minHeight: '300px'
@@ -19,8 +19,8 @@
             @click="selectBlock(block)"
           >
             <!-- Add block button (top) -->
-            <div class="absolute top-0 left-0 w-full flex justify-center -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <button @click.stop="addNewBlock(index)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8" title="Add block above">
+            <div class="absolute top-0 left-0 w-full flex justify-center -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 pointer-events-none">
+              <button @click.stop="addNewBlock(index)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block above">
                 <i class="fas fa-plus text-neutral-600"></i>
               </button>
             </div>
@@ -93,8 +93,8 @@
             </div>
 
             <!-- Add block button (bottom) -->
-            <div class="absolute bottom-0 left-0 w-full flex justify-center translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <button @click.stop="addNewBlock(index + 1)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8" title="Add block below">
+            <div class="absolute bottom-0 left-0 w-full flex justify-center translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 pointer-events-none">
+              <button @click.stop="addNewBlock(index + 1)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block below">
                 <i class="fas fa-plus text-neutral-600"></i>
               </button>
             </div>
