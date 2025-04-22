@@ -92,14 +92,15 @@
                         </button>
 
                         <!-- Disabled regenerate button -->
-                        <button v-if="!block.outline" class="bg-[#884DFF]/50 hover:bg-[#6E3ECE]/50 text-white px-3 py-1 rounded-md text-sm">
+                        <!-- <button v-if="!block.outline" class="bg-[#884DFF]/50 hover:bg-[#6E3ECE]/50 text-white px-3 py-1 rounded-md text-sm">
                             Block must have an outline to be regenerated
-                        </button>
+                        </button> -->
 
                         <!-- Delete block -->
                         <button v-if="!confirmingDelete[block.id]" @click.stop="confirmDelete(block)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">
                             Delete
                         </button>
+
                         <!-- Confirm delete -->
                         <div v-else class="flex gap-1">
                             <button @click.stop="destroyBlock(block)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
