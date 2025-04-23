@@ -49,6 +49,8 @@
                 </div>
             </div>
 
+            
+
             <!-- Block is being generated -->
             <div v-if="block.status === 'generating'" class="m-2 border rounded-md p-3 bg-gray-100 animate-pulse">
                 <div class="flex items-center gap-1 text-violet-600">
@@ -86,15 +88,15 @@
                             </button>
                         </div>
 
+                        <!-- Duplicate button -->
+                        <button v-if="block.outline" @click.stop="replicateBlock(block)" class="bg-slate-500 hover:bg-slate-600 text-white px-3 py-1 rounded-md text-sm">
+                            Duplicate
+                        </button>
+
                         <!-- Regenerate button -->
                         <button v-if="block.outline" @click.stop="regenerateBlock(block)" class="bg-[#884DFF] hover:bg-[#6E3ECE] text-white px-3 py-1 rounded-md text-sm">
                             Regenerate
                         </button>
-
-                        <!-- Disabled regenerate button -->
-                        <!-- <button v-if="!block.outline" class="bg-[#884DFF]/50 hover:bg-[#6E3ECE]/50 text-white px-3 py-1 rounded-md text-sm">
-                            Block must have an outline to be regenerated
-                        </button> -->
 
                         <!-- Delete block -->
                         <button v-if="!confirmingDelete[block.id]" @click.stop="confirmDelete(block)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">
@@ -103,11 +105,11 @@
 
                         <!-- Confirm delete -->
                         <div v-else class="flex gap-1">
-                            <button @click.stop="destroyBlock(block)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
-                                Confirm
-                            </button>
                             <button @click.stop="cancelDelete(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
                                 Cancel
+                            </button>
+                            <button @click.stop="destroyBlock(block)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
+                                Confirm
                             </button>
                         </div>
                     </div>
@@ -217,6 +219,15 @@ const destroyBlock = async (block) => {
     emit('fetch-recommendation')
   } catch (error) {
     console.error('Error deleting block:', error)
+  }
+}
+
+const replicateBlock = async (block) => {
+  try {
+    await blocksApi.replicate(route.params.organization, block.id)
+    emit('fetch-recommendation')
+  } catch (error) {
+    console.error('Error duplicating block:', error)
   }
 }
 

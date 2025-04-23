@@ -17,6 +17,10 @@ const blocksApi = {
         return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/regenerate`)
     },
 
+    async replicate(organizationSlug, blockId) {
+        return await HttpClient.post(`/${organizationSlug}/blocks/${blockId}/replicate`)
+    },
+
     async revert(organizationSlug, blockId, versionId) {
         return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/versions/${versionId}`)
     },
