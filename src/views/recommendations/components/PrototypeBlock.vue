@@ -76,7 +76,7 @@
           </button>
 
           <!-- Delete button -->
-          <button v-if="!confirmingDelete[block.id]" @click.stop="confirmDelete(block)" class="bbg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
+          <button v-if="!confirmingDelete[block.id]" @click.stop="confirmDelete(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
             Delete
           </button>
 
