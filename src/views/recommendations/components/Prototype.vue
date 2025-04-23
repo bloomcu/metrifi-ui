@@ -19,11 +19,11 @@
             @click="selectBlock(block)"
           >
             <!-- Add block button (top) -->
-            <div class="absolute top-0 left-0 w-full flex justify-center -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <!-- <div class="absolute top-0 left-0 w-full flex justify-center -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <button @click.stop="addNewBlock(index)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8" title="Add block above">
                 <i class="fas fa-plus text-neutral-600"></i>
               </button>
-            </div>
+            </div> -->
 
             <!-- Block is empty -->
             <div v-if="!block.status" class="m-2 border rounded-md p-2 bg-gray-200">
@@ -93,11 +93,11 @@
             </div>
 
             <!-- Add block button (bottom) -->
-            <div class="absolute bottom-0 left-0 w-full flex justify-center translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <!-- <div class="absolute bottom-0 left-0 w-full flex justify-center translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <button @click.stop="addNewBlock(index + 1)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8" title="Add block below">
                 <i class="fas fa-plus text-neutral-600"></i>
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
