@@ -83,9 +83,9 @@
                         </button>
 
                         <!-- Disabled regenerate button -->
-                        <button v-if="!block.outline" @click.stop="regenerateBlock(block)" class="bg-[#884DFF]/50 hover:bg-[#6E3ECE]/50 text-white px-3 py-1 rounded-md text-sm">
+                        <!-- <button v-if="!block.outline" @click.stop="regenerateBlock(block)" class="bg-[#884DFF]/50 hover:bg-[#6E3ECE]/50 text-white px-3 py-1 rounded-md text-sm">
                             Block must have an outline to be regenerated
-                        </button>
+                        </button> -->
                     </div>
                 </div>
 
