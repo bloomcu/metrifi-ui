@@ -255,7 +255,9 @@
           <!-- <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length" @regenerate-block="handleBlockRegeneration" @add-block="handleAddBlock"/> -->
           <Prototype 
             v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length"
-            @fetch-recommendation="fetchRecommendation()"/>
+            @poll-recommendation="pollRecommendation()"
+            @fetch-recommendation="fetchRecommendation()"
+          />
 
           <!-- <p v-else>The complete HTML was not generated</p> -->
         </div>
@@ -365,7 +367,7 @@ const updateBlock = debounce(() => {
 
     setTimeout(() => isLoading.value = false, 800)
   })
-}, 5000)
+}, 3000)
 
 function toggleGenerateRecommendationModal() {
   isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 
@@ -383,38 +385,49 @@ const progressWidth = computed(() => {
   return `${((currentStepIndex.value + 1) / steps.length) * 100}%`
 })
 
+function pollRecommendation() {
+  console.log('Attempting to poll recommendation...')
+  if (interval === null) {
+    console.log('Polling interval...')
+    interval = setInterval(fetchRecommendation, 3000)
+  }
+}
+
 function fetchRecommendation() {
+  console.log('Fetching recommendation...')
   isLoading.value = true
 
   recommendationStore.show(route.params.organization, route.params.recommendation)
     .then(response => {
       const recommendation = recommendationStore.recommendation
-      setTimeout(() => isLoading.value = false, 800)
       
+      // Update current step of the recommendation's progress
       const currentStepIdx = steps.findIndex(step => step.status === recommendation.status)
       if (currentStepIdx !== -1) {
         currentStepIndex.value = currentStepIdx
-        setTimeout(() => isLoading.value = false, 800)
       }
 
-      if (recommendation.status === null || recommendation.status === 'queued') {
-        return
-      }
-      
-      // Check if all blocks have their HTML attribute not null
-      const allBlocksHaveHtml = recommendation?.latest_page?.blocks?.length > 0 && 
-        recommendation.latest_page.blocks.every(block => block.status !== 'generating');
-      
-      // Only clear interval when both conditions are met: status is 'done' AND all blocks have HTML
-      if (recommendation.status === 'done' && allBlocksHaveHtml) {
+      // If recommendation is not done or draft
+      if (recommendation.status === 'done' || recommendation.status === 'draft') {
         clearInterval(interval)
+        interval = null
         setTimeout(() => isLoading.value = false, 800)
       }
-
+      
+      // If recommendation is failed, show error
       if (recommendationStore.isFailed(recommendation.status)) {
-        clearInterval(interval)
         issue.value = recommendation.status
+        clearInterval(interval)
+        interval = null
         setTimeout(() => isLoading.value = false, 800)
+      }
+
+      // Check if any blocks are being generated
+      const someBlocksAreGenerating = recommendation?.latest_page?.blocks?.length > 0 && recommendation.latest_page.blocks.some(block => block.status === 'generating');
+      if (someBlocksAreGenerating) {
+        console.log('Blocks are being generated')
+        setTimeout(() => isLoading.value = false, 800)
+        return
       }
     })
     .catch(error => {
@@ -466,7 +479,8 @@ const handleBack = () => {
 onMounted(() => {
   // Initial fetch and polling
   fetchRecommendation()
-  interval = setInterval(fetchRecommendation, 3000)
+  pollRecommendation()
+  
   
   // Setup Tailwind
   const tailwindScript = document.createElement('script')
