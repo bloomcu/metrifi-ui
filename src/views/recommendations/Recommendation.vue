@@ -11,7 +11,13 @@
         </AppButton>
 
         <!-- Recommendation title -->
-        <p class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }} recommendation</p>
+        <AppInlineEditor 
+          v-model="recommendationStore.recommendation.title" 
+          @update:modelValue="recommendationStore.update(route.params.organization, recommendationStore.recommendation.id, { title: recommendationStore.recommendation.title })"
+          class="text-base font-semibold leading-6 text-gray-900"
+        >
+          <p class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }}</p>
+        </AppInlineEditor>
 
         <!-- Step -->
         <p class="text-sm">For step {{ recommendationStore.recommendation.step_index + 1 }}</p>
@@ -290,6 +296,7 @@ import Prototype from '@/views/recommendations/components/Prototype.vue'
 import ChatInterface from '@/views/recommendations/components/ChatInterface.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecommendationModal.vue'
+import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -407,8 +414,8 @@ function fetchRecommendation() {
         currentStepIndex.value = currentStepIdx
       }
 
-      // If recommendation is not done or draft
-      if (recommendation.status === 'done' || recommendation.status === 'draft') {
+      // If recommendation is done
+      if (recommendation.status === 'done') {
         clearInterval(interval)
         interval = null
         setTimeout(() => isLoading.value = false, 800)
