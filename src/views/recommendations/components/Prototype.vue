@@ -26,7 +26,7 @@
             </div> -->
 
             <!-- Block is empty -->
-            <div v-if="!block.status" class="m-2 border rounded-md p-2 bg-gray-200">
+            <!-- <div v-if="!block.status" class="m-2 border rounded-md p-2 bg-gray-200">
                 <div class="flex items-center gap-2">
                   <AppInput
                     v-model="block.outline"
@@ -38,7 +38,7 @@
                     Submit
                   </AppButton>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Block is being generated -->
             <div v-if="block.status === 'generating'" class="m-2 border rounded-md p-3 bg-gray-100 animate-pulse">
