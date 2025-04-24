@@ -391,7 +391,8 @@ const progressWidth = computed(() => {
 
 function pollRecommendation() {
   console.log('Attempting to poll recommendation...')
-  if (interval === null) {
+  console.log('Current interval:', interval)
+  if (interval == null) {
     console.log('Polling recommendation...')
     interval = setInterval(fetchRecommendation, 3000)
   }
@@ -413,6 +414,7 @@ function fetchRecommendation() {
 
       // If recommendation is done
       if (recommendation.status === 'done') {
+        console.log('Recommendation is done')
         clearInterval(interval)
         interval = null
         setTimeout(() => isLoading.value = false, 800)
@@ -420,6 +422,7 @@ function fetchRecommendation() {
       
       // If recommendation is failed, show error
       if (recommendationStore.isFailed(recommendation.status)) {
+        console.log('Recommendation failed with status:', recommendation.status)
         issue.value = recommendation.status
         clearInterval(interval)
         interval = null
@@ -433,6 +436,7 @@ function fetchRecommendation() {
         setTimeout(() => isLoading.value = false, 800)
         return
       }
+
     })
     .catch(error => {
       console.error('Error fetching recommendation status:', error)
