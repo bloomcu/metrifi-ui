@@ -3,7 +3,6 @@
     class="relative group w-full block"
     @click="selectBlock(block)"
   >
-    {{ block.order }}
     <!-- Add block button (top) -->
     <div v-if="recommendationStore.recommendation.status === 'done'" class="absolute top-0 left-0 w-full flex justify-center -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 pointer-events-none">
       <button @click.stop="addNewBlock(block.order)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block above">
