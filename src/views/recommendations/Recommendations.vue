@@ -114,9 +114,9 @@
     </div>
 
     <!-- Empty state: No recommendations -->
-    <div v-else @click="storeNewRecommendation()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
-      <Squares2X2Icon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-violet-500">Create a recommendation</h2>
+    <div v-else @click="showGenerateRecommendationModal = true" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
+      <BoltIcon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-violet-500">Generate recommendation</h2>
     </div>
 
     <!-- Generate recommendation -->
@@ -151,7 +151,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useRecommendationStore } from "@/domain/recommendations/store/useRecommendationStore"
 import { useConnections } from '@/domain/connections/composables/useConnections'
-import { PencilSquareIcon, Squares2X2Icon } from '@heroicons/vue/24/outline'
+import { BoltIcon, PencilSquareIcon, Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { UserIcon, ClockIcon } from '@heroicons/vue/16/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
