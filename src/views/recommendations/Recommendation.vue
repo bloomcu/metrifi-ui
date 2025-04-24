@@ -258,14 +258,11 @@
             </div>
           </div>
 
-          <!-- <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length" @regenerate-block="handleBlockRegeneration" @add-block="handleAddBlock"/> -->
           <Prototype 
             v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length"
             @poll-recommendation="pollRecommendation()"
             @fetch-recommendation="fetchRecommendation()"
           />
-
-          <!-- <p v-else>The complete HTML was not generated</p> -->
         </div>
       </div>
 
@@ -444,43 +441,8 @@ function fetchRecommendation() {
 
 const tailwind = ref(null)
 
-// Function to handle block regeneration
-// const handleBlockRegeneration = () => {
-//   // Clear existing interval
-//   clearInterval(interval)
-//   // Set up new polling interval
-//   interval = setInterval(fetchRecommendation, 3000)
-//   // Fetch immediately
-//   fetchRecommendation()
-// }
-
-// Function to handle adding a new block
-// const handleAddBlock = async (page_id,order) => {
-//   isLoading.value = true
-  
-//   try {
-//     await blocksApi.store(
-//       route.params.organization,
-//       { 
-//         page_id: page_id,
-//         order: order 
-//       }
-//     )
-    
-//     // Fetch the updated recommendation with the new block
-//     fetchRecommendation()
-//   } catch (error) {
-//     console.error('Error adding new block:', error)
-//     isLoading.value = false
-//   }
-// }
-
 const handleBack = () => {
-    if (recommendationStore.recommendation.dashboard_id) {
-        router.push({name: 'dashboard', params: {organization: route.params.organization, dashboard: recommendationStore.recommendation.dashboard_id}})
-    } else {
-        router.push({ name: 'recommendations' })
-    }
+    router.back()
 }
 
 onMounted(() => {
