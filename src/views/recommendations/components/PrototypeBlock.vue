@@ -161,8 +161,8 @@ const generateBlock = async (block) => {
         blocksApi.regenerate(route.params.organization, block.id)
     })
     
-    emit('fetch-recommendation')
     emit('poll-recommendation')
+    emit('fetch-recommendation')
   } catch (error) {
     // Reset status if there was an error
     block.status = null
