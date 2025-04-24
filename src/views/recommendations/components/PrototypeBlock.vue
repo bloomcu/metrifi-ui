@@ -163,7 +163,6 @@ const addNewBlock = async (order) => {
 
 const generateBlock = async (block) => {
   block.status = 'generating'
-  recommendationStore.recommendation.status = 'page_builder_in_progress'
 
   try {
     // Update the block in db and regenerate

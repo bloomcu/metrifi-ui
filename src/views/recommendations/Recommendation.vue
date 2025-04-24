@@ -392,7 +392,7 @@ const progressWidth = computed(() => {
 function pollRecommendation() {
   if (interval == null) {
     console.log('Polling recommendation')
-    interval = setInterval(fetchRecommendation, 2500)
+    interval = setInterval(fetchRecommendation, 1500)
   }
 }
 
