@@ -3,9 +3,10 @@
     class="relative group w-full block"
     @click="selectBlock(block)"
   >
+    {{ block.order }}
     <!-- Add block button (top) -->
     <div v-if="recommendationStore.recommendation.status === 'done'" class="absolute top-0 left-0 w-full flex justify-center -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 pointer-events-none">
-      <button @click.stop="addNewBlock(index)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block above">
+      <button @click.stop="addNewBlock(block.order)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block above">
         <i class="fas fa-plus text-neutral-600"></i>
       </button>
     </div>
@@ -66,7 +67,7 @@
           </div>
 
           <!-- Duplicate button -->
-          <button v-if="block.outline" @click.stop="replicateBlock(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
+          <button @click.stop="replicateBlock(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
             Duplicate
           </button>
 
@@ -96,7 +97,7 @@
 
     <!-- Add block button (bottom) -->
     <div v-if="recommendationStore.recommendation.status === 'done'" class="absolute bottom-0 left-0 w-full flex justify-center translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 pointer-events-none">
-      <button @click.stop="addNewBlock(index + 1)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block below">
+      <button @click.stop="addNewBlock(block.order + 1)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block below">
         <i class="fas fa-plus text-neutral-600"></i>
       </button>
     </div>
@@ -112,10 +113,6 @@ import { ref } from 'vue'
 const props = defineProps({
   block: {
     type: Object,
-    required: true
-  },
-  index: {
-    type: Number,
     required: true
   }
 })
@@ -135,6 +132,8 @@ const selectBlock = (block) => {
 }
 
 const addNewBlock = async (order) => {
+//   if (order === 0) order = 1
+
   try {
     await blocksApi.store(
       route.params.organization,

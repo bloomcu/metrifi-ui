@@ -374,7 +374,7 @@ const updateBlock = debounce(() => {
 
     setTimeout(() => isLoading.value = false, 800)
   })
-}, 3000)
+}, 1500)
 
 function toggleGenerateRecommendationModal() {
   isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 
@@ -395,7 +395,7 @@ const progressWidth = computed(() => {
 function pollRecommendation() {
   console.log('Attempting to poll recommendation...')
   if (interval === null) {
-    console.log('Polling interval...')
+    console.log('Polling recommendation...')
     interval = setInterval(fetchRecommendation, 3000)
   }
 }

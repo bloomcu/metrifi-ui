@@ -21,7 +21,6 @@
             v-for="(block, index) in recommendationStore.recommendation?.latest_page?.blocks || []" 
             :key="index"
             :block="block"
-            :index="index"
             @poll-recommendation="$emit('poll-recommendation')"
             @fetch-recommendation="$emit('fetch-recommendation')"
           />
