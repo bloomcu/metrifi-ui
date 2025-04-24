@@ -4,7 +4,7 @@
     @click="selectBlock(block)"
   >
     <!-- Add block button (top) -->
-    <div v-if="recommendationStore.recommendation.status === 'done'" class="absolute top-0 left-0 w-full flex justify-center -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 pointer-events-none">
+    <div v-if="recommendationStore.recommendation.status === 'done'" class="absolute top-0 left-0 w-full flex justify-center -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100">
       <button @click.stop="addNewBlock(block.order)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block above">
         <i class="fas fa-plus text-neutral-600"></i>
       </button>
@@ -40,53 +40,55 @@
     <!-- Block has been generated -->
     <div v-else-if="block.html" class="relative">
         <div class="absolute z-[9999] top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <!-- Version controls -->
-          <div v-if="block.versions" @click.stop class="bg-white border text-slate-600 px-3 py-1 rounded-md text-sm flex items-center gap-2">
-            <button 
-              v-if="canRevertBack(block)"
-              @click="revertToPreviousVersion(block)" 
-              class="bg-white border hover:bg-slate-100 text-slate-600 p-0.5 -ml-2 flex items-center rounded-md gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            
-            <span class="text-xs text-center w-10">v{{ block.current_version }}/{{ block.versions.length }}</span>
-            
-            <button 
-              v-if="canRevertForward(block)"
-              @click="revertToNextVersion(block)" 
-              class="bg-white border hover:bg-slate-100 text-slate-600 p-0.5 -mr-2 flex items-center rounded-md gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-
-          <!-- Duplicate button -->
-          <button @click.stop="replicateBlock(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
-            Duplicate
-          </button>
-
-          <!-- Regenerate button -->
-          <button v-if="block.outline" @click.stop="regenerateBlock(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
-            Regenerate
-          </button>
-
-          <!-- Delete button -->
-          <button v-if="!confirmingDelete[block.id]" @click.stop="confirmDelete(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
-            Delete
-          </button>
-
           <!-- Confirm delete -->
-          <div v-else class="flex gap-1">
-            <button @click.stop="cancelDelete(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
+          <div v-if="confirmingDelete[block.id]" class="flex bg-white gap-1 border rounded-lg p-1">
+            <button @click.stop="cancelDelete(block)" class="bg-slate-200 hover:bg-slate-300 text-slate-600 px-3 py-1 rounded-md text-sm">
               Cancel
             </button>
             <button @click.stop="destroyBlock(block)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
-              Confirm
+              Yes, delete
+            </button>
+          </div>
+
+          <div v-else class="flex gap-2">
+            <!-- Version controls -->
+            <div v-if="block.versions" @click.stop class="bg-white border text-slate-600 px-3 py-1 rounded-md text-sm flex items-center gap-2">
+                <button 
+                v-if="canRevertBack(block)"
+                @click="revertToPreviousVersion(block)" 
+                class="bg-white border hover:bg-slate-100 text-slate-600 p-0.5 -ml-2 flex items-center rounded-md gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                </button>
+                
+                <span class="text-xs text-center w-10">v{{ block.current_version }}/{{ block.versions.length }}</span>
+                
+                <button 
+                v-if="canRevertForward(block)"
+                @click="revertToNextVersion(block)" 
+                class="bg-white border hover:bg-slate-100 text-slate-600 p-0.5 -mr-2 flex items-center rounded-md gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                </button>
+            </div>
+
+            <!-- Duplicate button -->
+            <button @click.stop="replicateBlock(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
+                Duplicate
+            </button>
+
+            <!-- Regenerate button -->
+            <button v-if="block.outline" @click.stop="regenerateBlock(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
+                Regenerate
+            </button>
+
+            <!-- Delete button -->
+            <button @click.stop="confirmDelete(block)" class="bg-white border hover:bg-slate-100 text-slate-600 px-3 py-1 rounded-md text-sm">
+                Delete
             </button>
           </div>
         </div>
@@ -95,7 +97,7 @@
     </div>
 
     <!-- Add block button (bottom) -->
-    <div v-if="recommendationStore.recommendation.status === 'done'" class="absolute bottom-0 left-0 w-full flex justify-center translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 pointer-events-none">
+    <div v-if="recommendationStore.recommendation.status === 'done'" class="absolute bottom-0 left-0 w-full flex justify-center translate-y-1/2 z-10 opacity-0 group-hover:opacity-100">
       <button @click.stop="addNewBlock(block.order + 1)" class="bg-neutral-50 hover:bg-neutral-100 rounded-full p-2 shadow-sm border border-neutral-200 flex items-center justify-center w-8 h-8 pointer-events-auto" title="Add block below">
         <i class="fas fa-plus text-neutral-600"></i>
       </button>
