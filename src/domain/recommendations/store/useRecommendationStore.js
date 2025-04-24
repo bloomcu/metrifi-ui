@@ -73,7 +73,9 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         return await RecommendationsApi.replicate(organizationSlug, recommendationId)
           .then(response => {
             this.recommendation = response.data.data
-            this.isLoading = false
+            this.recommendations.unshift(response.data.data)
+
+            setTimeout(() => this.isLoading = false, 800)
           })
       },
 

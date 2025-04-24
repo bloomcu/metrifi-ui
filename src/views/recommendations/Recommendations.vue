@@ -181,9 +181,7 @@ const createFromScratch = () => {
 
 const replicateRecommendation = (recommendation) => {
   recommendationStore.replicate(route.params.organization, recommendation.id).then(() => {
-    recommendation.status === 'draft' ?
-        router.push({ name: 'recommendationEdit', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } }) :
-        router.push({ name: 'recommendation', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   })
 }
 
