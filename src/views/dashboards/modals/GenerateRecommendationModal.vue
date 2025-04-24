@@ -475,7 +475,6 @@ function getMetadataForRecommendations(stepIndex) {
 }
 
 function loadDashboard() {
-  console.log('Loading dashboard from within recommendation modal')
   funnelStore.funnels = []
   
   dashboardApi.show(route.params.organization, props.dashboardId)

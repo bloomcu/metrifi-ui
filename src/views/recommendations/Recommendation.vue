@@ -390,16 +390,14 @@ const progressWidth = computed(() => {
 })
 
 function pollRecommendation() {
-  console.log('Attempting to poll recommendation...')
-  console.log('Current interval:', interval)
   if (interval == null) {
-    console.log('Polling recommendation...')
+    console.log('Polling recommendation')
     interval = setInterval(fetchRecommendation, 3000)
   }
 }
 
 function fetchRecommendation() {
-  console.log('Fetching recommendation...')
+  console.log('Fetching recommendation')
   isLoading.value = true
 
   recommendationStore.show(route.params.organization, route.params.recommendation)
@@ -412,32 +410,37 @@ function fetchRecommendation() {
         currentStepIndex.value = currentStepIdx
       }
 
-      // If recommendation is done
-      if (recommendation.status === 'done') {
-        console.log('Recommendation is done')
-        clearInterval(interval)
-        interval = null
+      // If any blocks are still generating, continue polling
+      const someBlocksAreGenerating = recommendation?.latest_page?.blocks?.length > 0 && recommendation.latest_page.blocks.some(block => block.status === 'generating');
+      if (someBlocksAreGenerating) {
+        console.log('Some blocks are being generated')
         setTimeout(() => isLoading.value = false, 800)
+        return
+      }
+
+      // If recommendation is not done, continue polling
+      if (recommendation.status !== 'done') {
+        console.log('Recommendation is not done being generated')
+        setTimeout(() => isLoading.value = false, 800)
+        return
       }
       
       // If recommendation is failed, show error
       if (recommendationStore.isFailed(recommendation.status)) {
         console.log('Recommendation failed with status:', recommendation.status)
         issue.value = recommendation.status
+      }
+
+      // If recommendation is done and no blocks are generating, stop polling
+      if (interval !== null) {
+        console.log('Stopping polling')
         clearInterval(interval)
         interval = null
-        setTimeout(() => isLoading.value = false, 800)
       }
-
-      // Check if any blocks are being generated
-      const someBlocksAreGenerating = recommendation?.latest_page?.blocks?.length > 0 && recommendation.latest_page.blocks.some(block => block.status === 'generating');
-      if (someBlocksAreGenerating) {
-        console.log('Blocks are being generated')
-        setTimeout(() => isLoading.value = false, 800)
-        return
-      }
-
+      
+      setTimeout(() => isLoading.value = false, 800)
     })
+
     .catch(error => {
       console.error('Error fetching recommendation status:', error)
     })
