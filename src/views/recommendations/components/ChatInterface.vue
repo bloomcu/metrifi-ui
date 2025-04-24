@@ -109,13 +109,13 @@ const sendMessage = async () => {
 
   isSending.value = true
 
-  const userMessage = {
+  messages.push({
     role: 'user',
     content: newMessage.value,
     element: recommendationStore.selectedBlock,
     timestamp: new Date().toLocaleTimeString()
-  }
-  messages.push(userMessage)
+  })
+  
   scrollToBottom() // Scroll when user message is added
 
   let accumulatedHtml = ''
@@ -144,6 +144,9 @@ const sendMessage = async () => {
       ],
       stream: true
     })
+
+    // Unset the message input
+    newMessage.value = ''
 
     for await (const chunk of stream) {
       const content = chunk.choices[0].delta.content
@@ -191,7 +194,7 @@ const sendMessage = async () => {
     scrollToBottom() // Scroll for error message
   } finally {
     isSending.value = false
-    newMessage.value = ''
+    
     // recommendationStore.selectedBlock = null
     scrollToBottom() // Final scroll
   }

@@ -73,7 +73,9 @@ export const useRecommendationStore = defineStore('recommendationStore', {
         return await RecommendationsApi.replicate(organizationSlug, recommendationId)
           .then(response => {
             this.recommendation = response.data.data
-            this.isLoading = false
+            this.recommendations.unshift(response.data.data)
+
+            setTimeout(() => this.isLoading = false, 800)
           })
       },
 
@@ -86,8 +88,21 @@ export const useRecommendationStore = defineStore('recommendationStore', {
           })
       },
       
+      async destroy(organizationSlug, recommendationId) {
+        this.isLoading = true
+        
+        return await RecommendationsApi.destroy(organizationSlug, recommendationId)
+          .then(() => {
+            this.recommendations = this.recommendations.filter(r => r.id !== recommendationId)
+            this.isLoading = false
+          }).catch(error => {
+            console.log('Error deleting recommendation', error.response?.data)
+            this.isLoading = false
+          })
+      },
+      
       isInProgress(status) {
-        return status ? ['in_progress', 'completed', 'queued'].some(s => status.includes(s)) : false;
+        return status ? ['in_progress', 'completed', 'queued', 'draft'].some(s => status.includes(s)) : false;
       },
       
       isFailed(status) {

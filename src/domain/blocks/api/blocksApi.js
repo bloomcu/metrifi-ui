@@ -6,16 +6,28 @@ const blocksApi = {
     },
     
     async update(organizationSlug, blockId, params) {
-      return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}`, params)
+        return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}`, params)
+    },
+
+    async destroy(organizationSlug, blockId) {
+        return await HttpClient.delete(`/${organizationSlug}/blocks/${blockId}`)
     },
 
     async regenerate(organizationSlug, blockId, params) {
         return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/regenerate`)
     },
 
+    async replicate(organizationSlug, blockId) {
+        return await HttpClient.post(`/${organizationSlug}/blocks/${blockId}/replicate`)
+    },
+
     async revert(organizationSlug, blockId, versionId) {
         return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/versions/${versionId}`)
     },
+
+    async reorder(organizationSlug, blockId, order) {
+        return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/reorder`, { order: order})
+      },
 }
 
 export { blocksApi }

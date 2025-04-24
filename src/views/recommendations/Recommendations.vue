@@ -39,23 +39,32 @@
             </div>
             
             <div class="flex items-center gap-2">
-                <!-- Versions -->
-                <!-- <span class="text-sm text-gray-500 border-r border-gray-300 pr-3">6 versions</span> -->
-              
-                <!-- Copy -->
-                <button @click.stop="replicateRecommendation(recommendation)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
-                    </svg>
-                </button>
+                <div v-if="!confirmingDelete[recommendation.id]" class="flex items-center gap-2">
+                  <!-- Copy -->
+                  <button @click.stop="replicateRecommendation(recommendation)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+                      </svg>
+                  </button>
 
-                <!-- Delete -->
-                <!-- TODO: Enable this -->
-                <!-- <button @click.stop="destroyDashboard(dashboard.id)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                    </svg>
-                </button> -->
+                  <!-- Delete -->
+                  <button @click.stop="confirmDelete(recommendation)" class="cursor-pointer font-medium rounded-md p-1.5 text-sm text-gray-400 bg-white hover:bg-gray-200 ring-1 ring-inset ring-gray-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                      </svg>
+                  </button>
+                </div>
+                
+                <!-- Confirm delete -->
+                <div v-if="confirmingDelete[recommendation.id]" class="flex items-center bg-white gap-1 border rounded-lg p-1">
+                  <span class="text-sm px-2">Are you sure?</span>
+                  <button @click.stop="cancelDelete(recommendation)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-md text-sm">
+                    Cancel
+                  </button>
+                  <button @click.stop="destroyRecommendation(recommendation)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">
+                    Yes, delete
+                  </button>
+                </div>
             </div>
           </div>
 
@@ -102,19 +111,12 @@
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded"></div>
       <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded"></div>
-      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
     </div>
 
     <!-- Empty state: No recommendations -->
-    <div v-else @click="storeNewRecommendation()" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
-      <Squares2X2Icon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
-      <h2 class="mt-2 text-lg font-medium text-violet-500">Create a recommendation</h2>
+    <div v-else @click="showGenerateRecommendationModal = true" class="flex flex-col items-center justify-center border border-violet-400 border-dashed rounded-lg py-6 px-2 cursor-pointer hover:bg-violet-50">
+      <BoltIcon class="mx-auto h-10 w-10 text-violet-500" aria-hidden="true" />
+      <h2 class="mt-2 text-lg font-medium text-violet-500">Generate recommendation</h2>
     </div>
 
     <!-- Generate recommendation -->
@@ -149,7 +151,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
 import { useRecommendationStore } from "@/domain/recommendations/store/useRecommendationStore"
 import { useConnections } from '@/domain/connections/composables/useConnections'
-import { PencilSquareIcon, Squares2X2Icon } from '@heroicons/vue/24/outline'
+import { BoltIcon, PencilSquareIcon, Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { UserIcon, ClockIcon } from '@heroicons/vue/16/solid'
 import LayoutWithSidebar from '@/app/layouts/LayoutWithSidebar.vue'
 
@@ -162,6 +164,7 @@ const organizationStore = useOrganizationStore()
 const recommendationStore = useRecommendationStore()
 
 const showGenerateRecommendationModal = ref(false)
+const confirmingDelete = ref({})
 
 const createFromScratch = () => {
   // Store recommendation
@@ -178,10 +181,21 @@ const createFromScratch = () => {
 
 const replicateRecommendation = (recommendation) => {
   recommendationStore.replicate(route.params.organization, recommendation.id).then(() => {
-    recommendation.status === 'draft' ?
-        router.push({ name: 'recommendationEdit', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } }) :
-        router.push({ name: 'recommendation', params: { organization: route.params.organization, recommendation: recommendationStore.recommendation.id } })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   })
+}
+
+const confirmDelete = (recommendation) => {
+  confirmingDelete.value[recommendation.id] = true
+}
+
+const cancelDelete = (recommendation) => {
+  confirmingDelete.value[recommendation.id] = false
+}
+
+const destroyRecommendation = (recommendation) => {
+  recommendationStore.destroy(route.params.organization, recommendation.id)
+  confirmingDelete.value[recommendation.id] = false
 }
 
 onMounted(() => {

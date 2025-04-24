@@ -17,6 +17,10 @@ const recommendationsApi = {
       return await HttpClient.put(`/${organizationSlug}/recommendations/${recommendationId}`, params)
     },
 
+    async destroy(organizationSlug, recommendationId) {
+      return await HttpClient.delete(`/${organizationSlug}/recommendations/${recommendationId}`)
+    },
+
     async generate(organizationSlug, recommendationId) {
       return await HttpClient.put(`/${organizationSlug}/recommendations/${recommendationId}/generate`)
     },

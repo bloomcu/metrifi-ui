@@ -11,7 +11,13 @@
         </AppButton>
 
         <!-- Recommendation title -->
-        <p class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }} recommendation</p>
+        <AppInlineEditor 
+          v-model="recommendationStore.recommendation.title" 
+          @update:modelValue="recommendationStore.update(route.params.organization, recommendationStore.recommendation.id, { title: recommendationStore.recommendation.title })"
+          class="text-base font-semibold leading-6 text-gray-900"
+        >
+          <p class="text-base font-semibold leading-6 text-gray-900">{{ recommendationStore.recommendation.title }}</p>
+        </AppInlineEditor>
 
         <!-- Step -->
         <p class="text-sm">For step {{ recommendationStore.recommendation.step_index + 1 }}</p>
@@ -252,12 +258,11 @@
             </div>
           </div>
 
-          <!-- <Prototype v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length" @regenerate-block="handleBlockRegeneration" @add-block="handleAddBlock"/> -->
           <Prototype 
             v-if="recommendationStore.recommendation.latest_page && recommendationStore.recommendation.latest_page.blocks.length"
-            @fetch-recommendation="fetchRecommendation()"/>
-
-          <!-- <p v-else>The complete HTML was not generated</p> -->
+            @poll-recommendation="pollRecommendation()"
+            @fetch-recommendation="fetchRecommendation()"
+          />
         </div>
       </div>
 
@@ -288,6 +293,7 @@ import Prototype from '@/views/recommendations/components/Prototype.vue'
 import ChatInterface from '@/views/recommendations/components/ChatInterface.vue'
 import RecommendationsListPanel from '@/views/recommendations/components/RecommendationsListPanel.vue'
 import GenerateRecommendationModal from '@/views/dashboards/modals/GenerateRecommendationModal.vue'
+import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -365,7 +371,7 @@ const updateBlock = debounce(() => {
 
     setTimeout(() => isLoading.value = false, 800)
   })
-}, 5000)
+}, 1500)
 
 function toggleGenerateRecommendationModal() {
   isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 
@@ -383,40 +389,58 @@ const progressWidth = computed(() => {
   return `${((currentStepIndex.value + 1) / steps.length) * 100}%`
 })
 
+function pollRecommendation() {
+  if (interval == null) {
+    console.log('Polling recommendation')
+    interval = setInterval(fetchRecommendation, 1500)
+  }
+}
+
 function fetchRecommendation() {
+  console.log('Fetching recommendation')
   isLoading.value = true
 
   recommendationStore.show(route.params.organization, route.params.recommendation)
     .then(response => {
       const recommendation = recommendationStore.recommendation
-      setTimeout(() => isLoading.value = false, 800)
       
+      // Update current step of the recommendation's progress
       const currentStepIdx = steps.findIndex(step => step.status === recommendation.status)
       if (currentStepIdx !== -1) {
         currentStepIndex.value = currentStepIdx
-        setTimeout(() => isLoading.value = false, 800)
       }
 
-      if (recommendation.status === null || recommendation.status === 'queued') {
+      // If any blocks are still generating, continue polling
+      const someBlocksAreGenerating = recommendation?.latest_page?.blocks?.length > 0 && recommendation.latest_page.blocks.some(block => block.status === 'generating');
+      if (someBlocksAreGenerating) {
+        console.log('Some blocks are being generated')
+        setTimeout(() => isLoading.value = false, 800)
+        return
+      }
+
+      // If recommendation is not done, continue polling
+      if (recommendation.status !== 'done') {
+        console.log('Recommendation is not done being generated')
+        setTimeout(() => isLoading.value = false, 800)
         return
       }
       
-      // Check if all blocks have their HTML attribute not null
-      const allBlocksHaveHtml = recommendation?.latest_page?.blocks?.length > 0 && 
-        recommendation.latest_page.blocks.every(block => block.status !== 'generating');
-      
-      // Only clear interval when both conditions are met: status is 'done' AND all blocks have HTML
-      if (recommendation.status === 'done' && allBlocksHaveHtml) {
-        clearInterval(interval)
-        setTimeout(() => isLoading.value = false, 800)
+      // If recommendation is failed, show error
+      if (recommendationStore.isFailed(recommendation.status)) {
+        console.log('Recommendation failed with status:', recommendation.status)
+        issue.value = recommendation.status
       }
 
-      if (recommendationStore.isFailed(recommendation.status)) {
+      // If recommendation is done and no blocks are generating, stop polling
+      if (interval !== null) {
+        console.log('Stopping polling')
         clearInterval(interval)
-        issue.value = recommendation.status
-        setTimeout(() => isLoading.value = false, 800)
+        interval = null
       }
+      
+      setTimeout(() => isLoading.value = false, 800)
     })
+
     .catch(error => {
       console.error('Error fetching recommendation status:', error)
     })
@@ -424,49 +448,15 @@ function fetchRecommendation() {
 
 const tailwind = ref(null)
 
-// Function to handle block regeneration
-// const handleBlockRegeneration = () => {
-//   // Clear existing interval
-//   clearInterval(interval)
-//   // Set up new polling interval
-//   interval = setInterval(fetchRecommendation, 3000)
-//   // Fetch immediately
-//   fetchRecommendation()
-// }
-
-// Function to handle adding a new block
-// const handleAddBlock = async (page_id,order) => {
-//   isLoading.value = true
-  
-//   try {
-//     await blocksApi.store(
-//       route.params.organization,
-//       { 
-//         page_id: page_id,
-//         order: order 
-//       }
-//     )
-    
-//     // Fetch the updated recommendation with the new block
-//     fetchRecommendation()
-//   } catch (error) {
-//     console.error('Error adding new block:', error)
-//     isLoading.value = false
-//   }
-// }
-
 const handleBack = () => {
-    if (recommendationStore.recommendation.dashboard_id) {
-        router.push({name: 'dashboard', params: {organization: route.params.organization, dashboard: recommendationStore.recommendation.dashboard_id}})
-    } else {
-        router.push({ name: 'recommendations' })
-    }
+    router.back()
 }
 
 onMounted(() => {
   // Initial fetch and polling
   fetchRecommendation()
-  interval = setInterval(fetchRecommendation, 3000)
+  pollRecommendation()
+  
   
   // Setup Tailwind
   const tailwindScript = document.createElement('script')
