@@ -325,21 +325,21 @@ function handleSecretShopperFileUploaded(file) {
 }
 
 function handleDeleteLocalFile(fileId) {
-  // We're not working with an existing recommendation, destroy the file
-  if (!route.params.recommendation) {
-    fileStore.destroy(route.params.organization, fileId)
-  }
-
   recommendationStore.recommendation.files = recommendationStore.recommendation.files.filter(file => file.id !== fileId)
+  
+  if (!route.params.recommendation) {
+    // We're not working with an existing recommendation, destroy the file
+    fileStore.destroy(route.params.organization, fileId)
+  }  
 }
 
 function handleDeleteSecretShopperFile(fileId) {
-  // We're not working with an existing recommendation, destroy the file
-  if (!route.params.recommendation) {
-    fileStore.destroy(route.params.organization, fileId)
-  }
-
   recommendationStore.recommendation.secret_shopper_files = recommendationStore.recommendation.secret_shopper_files.filter(file => file.id !== fileId)
+  
+  if (!route.params.recommendation) {
+    // We're not working with an existing recommendation, destroy the file
+    fileStore.destroy(route.params.organization, fileId)
+  }  
 }
 
 async function generateRecommendation() {

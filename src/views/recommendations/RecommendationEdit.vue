@@ -90,9 +90,9 @@
                                 <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
 
                                 <!-- Delete -->
-                                <!-- <button @click.stop="handleDeleteLocalFile(file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
+                                <button @click.stop="handleDeleteLocalFile(file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
                                     <TrashIcon class="h-4 w-4"/>
-                                </button> -->
+                                </button>
                             </div>
 
                             <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
@@ -115,6 +115,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
+import { useFileStore } from '@/domain/files/store/useFileStore'
 import { ArrowLeftIcon, TrashIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
 import AppRichtext from '@/app/components/base/forms/AppRichtext.vue'
 import FileUploader from '@/domain/files/components/FileUploader.vue'
@@ -125,10 +126,16 @@ const route = useRoute()
 const authStore = useAuthStore()
 const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const recommendationStore = useRecommendationStore()
+const fileStore = useFileStore()
 
 function handleLocalFileUploaded(file) {
     recommendationStore.recommendation.files.push(file)
     recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, [file.id], 'additional-information')
+}
+
+function handleDeleteLocalFile(fileId) {
+    recommendationStore.recommendation.files = recommendationStore.recommendation.files.filter(file => file.id !== fileId)
+    fileStore.destroy(route.params.organization, fileId)
 }
 
 const handleGenerateRecommendation = () => {
