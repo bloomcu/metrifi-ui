@@ -25,7 +25,7 @@
 
     <!-- Quota exceeded -->
     <!-- TODO: Make this a component -->
-    <div v-if="organizationSubscriptionStore.limitExceeded" class="max-w-4xl mx-auto p-16 mt-24 bg-violet-50 border border-violet-200 rounded-xl">
+    <div v-if="organizationSubscriptionStore.limitExceeded && !authStore.isAdmin" class="max-w-4xl mx-auto p-16 mt-24 bg-violet-50 border border-violet-200 rounded-xl">
         <div class="max-w-2xl">
             <div class="flex h-12 w-12 mb-4 flex-shrink-0 items-center justify-center rounded-full bg-white mx-0">
                 <svg class="h-6 w-6 text-violet-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
@@ -256,6 +256,7 @@ import { ref, reactive, computed, onMounted, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { ArrowLeftIcon, TrashIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
+import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useFunnelStore } from '@/domain/funnels/store/useFunnelStore'
@@ -275,6 +276,7 @@ const showLoader = ref(false)
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const recommendationStore = useRecommendationStore()
 const funnelStore = useFunnelStore()

@@ -28,8 +28,31 @@
             </div>
         </div>
 
+        <!-- Quota exceeded -->
+        <!-- TODO: Make this a component -->
+        <div v-if="organizationSubscriptionStore.limitExceeded && !authStore.isAdmin" class="max-w-4xl mx-auto p-16 mt-24 bg-violet-50 border border-violet-200 rounded-xl">
+            <div class="max-w-2xl">
+                <div class="flex h-12 w-12 mb-4 flex-shrink-0 items-center justify-center rounded-full bg-white mx-0">
+                    <svg class="h-6 w-6 text-violet-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                    </svg>
+                </div>
+
+                <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:text-2xl">Subscription limit reached</h3>
+                <p class="text-gray-500 mb-6">You've reached the usage limit for your current plan.</p>
+
+                <p class="mb-6">
+                    Your <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.title }} plan</span> allows for <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.limits.recommendations }} recommendations</span> per year. You've used all available recommendations for this billing cycle.
+                </p>
+
+                <div class="flex gap-2">
+                    <AppButton :to="{name: 'settingsBilling', params: {organization: route.params.slug}}">Upgrade plan</AppButton>
+                </div>
+            </div>
+        </div><!-- End quota exceeded -->
+
         <!-- Edit recommendation -->
-        <div v-if="!organizationSubscriptionStore.limitExceeded" class="max-w-4xl w-full mx-auto py-24">
+        <div v-else class="max-w-4xl w-full mx-auto py-24">
             <span v-if="recommendationStore.recommendation.status == 'draft'" class="bg-slate-300 py-1 px-2.5 rounded-full text-[#2b0f52] text-sm">Draft</span>
 
             <!-- Recommendation title -->
@@ -82,29 +105,6 @@
             <!-- <div><pre>{{ recommendationStore.recommendation }}</pre></div> -->
         </div><!-- End edit recommendation -->
 
-        <!-- Quota exceeded -->
-        <!-- TODO: Make this a component -->
-        <div v-else class="max-w-4xl mx-auto p-16 mt-24 bg-violet-50 border border-violet-200 rounded-xl">
-            <div class="max-w-2xl">
-                <div class="flex h-12 w-12 mb-4 flex-shrink-0 items-center justify-center rounded-full bg-white mx-0">
-                    <svg class="h-6 w-6 text-violet-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                    </svg>
-                </div>
-
-                <h3 class="text-lg font-medium leading-7 text-gray-900 tracking-tight sm:text-2xl">Subscription limit reached</h3>
-                <p class="text-gray-500 mb-6">You've reached the usage limit for your current plan.</p>
-
-                <p class="mb-6">
-                    Your <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.title }} plan</span> allows for <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.limits.recommendations }} recommendations</span> per year. You've used all available recommendations for this billing cycle.
-                </p>
-
-                <div class="flex gap-2">
-                    <AppButton :to="{name: 'settingsBilling', params: {organization: route.params.slug}}">Upgrade plan</AppButton>
-                </div>
-            </div>
-        </div><!-- End quota exceeded -->
-
     </div><!-- End wrapper -->
 </template>
 
@@ -112,6 +112,7 @@
 import moment from "moment"
 import { computed, watch, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationSubscriptionStore } from '@/domain/organizations/store/useOrganizationSubscriptionStore'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { ArrowLeftIcon, TrashIcon, PlusIcon, MinusIcon, CheckCircleIcon } from '@heroicons/vue/24/solid'
@@ -121,6 +122,7 @@ import AppInlineEditor from '@/app/components/base/forms/AppInlineEditor.vue'
 
 const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
 const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const recommendationStore = useRecommendationStore()
 
