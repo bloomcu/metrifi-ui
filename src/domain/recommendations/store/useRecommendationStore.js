@@ -102,7 +102,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
       },
       
       isInProgress(status) {
-        return status ? ['in_progress', 'completed', 'queued', 'draft'].some(s => status.includes(s)) : false;
+        return status ? ['in_progress', 'completed', 'queued'].some(s => status.includes(s)) : false;
       },
       
       isFailed(status) {
