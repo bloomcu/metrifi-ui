@@ -21,7 +21,7 @@
                 <div class="flex items-center gap-2">
                     <p v-if="recommendationStore.isLoading" class="text-xs text-gray-400">Updating...</p>
                     
-                    <AppButton v-if="!organizationSubscriptionStore.limitExceeded" :disabled="!canGenerateRecommendation" @click="handleGenerateRecommendation()" class="whitespace-nowrap">
+                    <AppButton v-if="!organizationSubscriptionStore.limitExceeded || authStore.isAdmin" :disabled="!canGenerateRecommendation" @click="handleGenerateRecommendation()" class="whitespace-nowrap">
                         Generate recommendation
                     </AppButton>
                 </div>

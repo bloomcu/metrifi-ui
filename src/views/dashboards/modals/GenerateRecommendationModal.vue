@@ -17,7 +17,7 @@
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
         </AppButton>
 
-        <AppButton v-if="!organizationSubscriptionStore.limitExceeded" :disabled="!canGenerateRecommendation" @click="generateRecommendation()" class="whitespace-nowrap">
+        <AppButton v-if="!organizationSubscriptionStore.limitExceeded || authStore.isAdmin" :disabled="!canGenerateRecommendation" @click="generateRecommendation()" class="whitespace-nowrap">
           Generate recommendation
         </AppButton>
       </div>
