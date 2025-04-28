@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex flex-col overflow-hidden">
+  <div class="h-screen flex flex-col overflow-hidden p-4">
     <div ref="tailwind"/>
 
     <!-- Header -->
