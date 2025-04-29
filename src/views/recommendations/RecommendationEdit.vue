@@ -140,6 +140,7 @@ function handleDeleteLocalFile(fileId) {
 
 const handleGenerateRecommendation = () => {
     recommendationStore.generate(route.params.organization, recommendationStore.recommendation.id).then(() => {
+        recommendationStore.recommendations.status = 'in_progress'
         router.push({name: 'recommendation', params: {organization: route.params.organization, recommendation: recommendationStore.recommendation.id}})
     })
 }
@@ -189,7 +190,12 @@ watch(() => recommendationStore.recommendation, (newValue, oldValue) => {
 }, { deep: true })
 
 onMounted(() => {
-    recommendationStore.show(route.params.organization, route.params.recommendation)
+    recommendationStore.show(route.params.organization, route.params.recommendation).then(() => {
+        if (recommendationStore.recommendation.status !== 'draft') {
+            router.push({name: 'recommendations'})
+        }
+    })
+
     if (!organizationSubscriptionStore.subscription) organizationSubscriptionStore.show(route.params.organization)
 })
 </script>

@@ -360,6 +360,12 @@ async function generateRecommendation() {
   // Store recommendation
   // Set recommendation status to queued
   recommendationStore.recommendation.status = 'queued'
+
+  // Set dashboard id if it exists
+  if (route.params.dashboard) {
+    recommendationStore.recommendation.dashboard_id = route.params.dashboard
+  }
+  
   await recommendationStore.store(route.params.organization, recommendationStore.recommendation).then(() => {
     // Attach files
     if (fileIds.length) {

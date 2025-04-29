@@ -1,8 +1,8 @@
 <template>
   <div class="h-[calc(100vh-200px)] flex flex-col">
     <!-- Instructions -->
-    <div v-if="!recommendationStore.selectedBlock" class="p-4 bg-white rounded-md border">
-      <p class="text-sm mb-1 text-gray-700 font-medium">How to use the AI editor</p>
+    <div v-if="!recommendationStore.selectedBlock" class="p-4 bg-gray-50 rounded-md border">
+      <p class="text-base mb-1 text-gray-700 font-medium">How to use the AI editor</p>
       <p class="text-sm text-gray-500">Click on the part of the page you want to change, then enter your request below.</p>
     </div>
 

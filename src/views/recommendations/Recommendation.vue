@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex flex-col overflow-hidden p-4">
+  <div class="h-screen flex flex-col overflow-hidden">
     <div ref="tailwind"/>
 
     <!-- Header -->
@@ -93,19 +93,18 @@
                     <h2 class="font-medium">Compare to higher-converting pages</h2>
                   </div>
 
-                  <div v-if="recommendationStore.recommendation.metadata.comparisons?.length" class="flex items-center gap-2">
+                  <div v-if="recommendationStore.recommendation.metadata && recommendationStore.recommendation.metadata.comparisons" class="flex items-center gap-2">
                     <CheckCircleIcon class="h-7 w-7 text-emerald-600"/>
                   </div>
                 </div>
-                <div v-if="accordionStates.accordion1" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+                <div v-if="accordionStates.accordion1" class="p-4 border-t transition-all duration-300 ease-in-out">
                   <div class="space-y-4">
                     <p class="text-gray-600">MetriFi AI compares your webpage with higher-converting pages to find opportunities to increase your conversion rate.</p>
 
-                    <div v-if="recommendationStore.recommendation.metadata.comparisons?.length">
+                    <div v-if="recommendationStore.recommendation.metadata && recommendationStore.recommendation.metadata.comparisons">
                       <p class="font-semibold mb-2">Higher-converting comparisons</p>
                       <ul class="border divide-y bg-white rounded-md">
                         <li v-for="comparison in recommendationStore.recommendation.metadata.comparisons" class="flex items-center justify-between py-3 px-4">
-                          <!-- <p v-if="comparison.funnel"><span class="font-semibold">{{ comparison.funnel}}</span> funnel, step <span class="font-semibold">{{ comparison.name }}</span></p> -->
                           <div v-if="comparison.funnel">
                             <p class="text-gray-500">Funnel: {{ comparison.funnel}}</p>
                             <p>Step: <span class="font-semibold">{{ comparison.name }}</span></p>
@@ -118,11 +117,7 @@
 
                     <div v-else>
                       <p class="font-semibold mb-2">Higher-converting comparisons</p>
-                      <ul class="border border-dashed divide-y bg-white rounded-md">
-                        <li class="py-3 px-4">
-                          <p class="text-gray-500">No higher-converting comparisons</p>
-                        </li>
-                      </ul>
+                      <p class="text-gray-600">No higher-converting comparisons</p>
                     </div>
                   </div>
                 </div>
@@ -139,7 +134,7 @@
                   <CheckCircleIcon v-if="recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>' || recommendationStore.recommendation.files.length" class="h-7 w-7 text-emerald-600"/>
                 </div>
 
-                <div v-if="accordionStates.accordion2" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+                <div v-if="accordionStates.accordion2" class="p-4 border-t transition-all duration-300 ease-in-out">
                   <div class="space-y-6">
                     <p class="text-gray-600">More details for MetriFi AI to consider while generating the recommendation.</p>
 
@@ -180,7 +175,7 @@
                   <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>' || recommendationStore.recommendation.secret_shopper_files.length" class="h-7 w-7 text-emerald-600"/>
                 </div>
 
-                <div v-if="accordionStates.accordion3" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
+                <div v-if="accordionStates.accordion3" class="p-4 border-t transition-all duration-300 ease-in-out">
                   <div class="space-y-6">
                     <p class="text-gray-600">Insights from a secret shopping study for MetriFi AI to consider while generating the recommendation.</p>
 
@@ -212,9 +207,9 @@
             </div>
 
             <!-- Analysis (recommendation) -->
-            <div v-if="show === 'recommendation'" class="border border-gray-300 bg-white rounded-lg p-4">
-              <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="mb-2"/>
-              <p v-else>Awaiting analysis...</p>
+            <div v-if="show === 'recommendation'" class="">
+              <AppRichtext v-if="recommendationStore.recommendation.content" v-model="recommendationStore.recommendation.content" class="px-2 mb-2"/>
+              <p v-else class="border bg-gray-50 rounded-lg p-4 text-base mb-1 text-gray-700 font-medium">Awaiting analysis...</p>
             </div>
 
             <!-- Code -->
@@ -225,8 +220,8 @@
                 @update:modelValue="updateBlock"
               />
 
-              <div v-else class="p-4 bg-white rounded-md border">
-                <p class="text-sm mb-1 text-gray-700 font-medium">How to use the code editor</p>
+              <div v-else class="p-4 bg-gray-50 rounded-md border">
+                <p class="text-base mb-1 text-gray-700 font-medium">How to use the code editor</p>
                 <p class="text-sm text-gray-500">Click a block in the prototype to view and edit its code.</p>
               </div>
             </div>
