@@ -14,8 +14,15 @@
 
     <!-- Organizations -->
     <AppCard padding="none" class="mb-20">
+      <div class="p-4 sm:p-6 border-b border-gray-100">
+        <AppInput
+          v-model="searchTerm"
+          placeholder="Search organizations..."
+          autofocus
+        />
+      </div>
       <ul role="list" class="divide-y divide-gray-100">
-        <li v-for="organization in adminOrganizationStore.organizations" :key="organization.slug" class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6">
+        <li v-for="organization in filteredOrganizations" :key="organization.slug" class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6">
           <!-- Organization title -->
           <div class="flex gap-x-4">
             <div class="min-w-0 flex-auto">
@@ -60,14 +67,22 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useAdminOrganizationStore } from '@/domain/admin/store/useAdminOrganizationStore'
 import { ChevronRightIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
 import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
 import CreateOrganizationModal from '@/views/admin/modals/CreateOrganizationModal.vue'
 
 const adminOrganizationStore = useAdminOrganizationStore()
-const redirectRoute = import.meta.env.VITE_REDIRECT_FROM_ORGANIZATIONS_ROUTE
+const searchTerm = ref('')
+
+const filteredOrganizations = computed(() => {
+  if (!searchTerm.value) return adminOrganizationStore.organizations
+  
+  return adminOrganizationStore.organizations.filter(organization => 
+    organization.title.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
+})
 
 onMounted(() => {
     adminOrganizationStore.index()
