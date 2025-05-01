@@ -70,8 +70,6 @@ function showRecommendation(recommendationId) {
 }
 
 onMounted(() => {
-    recommendationStore.index(route.params.organization, {
-        dashboard_id: route.params.dashboard
-    })
+    recommendationStore.index(route.params.organization)
 })
 </script>
