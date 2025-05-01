@@ -12,7 +12,7 @@ export const useRecommendationStore = defineStore('recommendationStore', {
     actions: {
       index(organizationSlug, params) {
         this.isLoading = true
-        this.recommendations = []
+        // this.recommendations = []
 
         RecommendationsApi.index(organizationSlug, params)
           .then(response => {
