@@ -59,7 +59,7 @@ const searchQuery = ref('')
 
 const filteredBlocks = computed(() => {
     return wordpressBlocks.filter(block => 
-        block.id.toLowerCase().includes(searchQuery.value.toLowerCase())
+        block.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
 })
 
@@ -87,12 +87,13 @@ const updateBlock = (blockType, layoutType) => {
     // Update local block
     wordpressStore.selectedBlock.type = blockType
     wordpressStore.selectedBlock.layout = layoutType
+
+    // Update the local block's schema with content
+    wordpressStore.selectedBlock.schema_with_content.acf_fc_layout = blockType
+    wordpressStore.selectedBlock.schema_with_content.layout = layoutType
     
     // If block type is changing, update schema and content
     if (schemaShouldUpdate) {
-        // Get updated schema
-        wordpressStore.getBlockSchema(wordpressStore.selectedBlock)
-
         // Re-write content
         wordpressStore.writeBlockContent(wordpressStore.selectedBlock)
     }

@@ -206,12 +206,10 @@ export const useWordPressStore = defineStore('wordpressStore', {
         const matchingSchema = wordpressBlockSchemas.find(
           schema => schema.acf_fc_layout === block.type
         );
-        
-        // Set the specific layout for the scheme
-        matchingSchema.layout = block.layout;
 
         // Set block.schema to the matching schema or undefined if not found
         block.schema = matchingSchema;
+        block.schema.layout = block.layout;
         
         // If no schema is found, retry with predictCMSBlockWithAssistant up to 2 more times
         if (!matchingSchema) {
@@ -281,6 +279,11 @@ export const useWordPressStore = defineStore('wordpressStore', {
                 content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
                         "IMPORTANT: Remove unused content in the json. Don't fill in gaps in the content. That's not your job. Your only job is to delete placeholder content and transfer existing content. Don't do anything else." +
                         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
+
+                // content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
+                //         "IMPORTANT: Do not change the acf_fc_layout or layout properties in the json." +
+                //         "IMPORTANT: When you are done writing content, remove properties with empty values except for the acf_fc_layout and layout properties. " +
+                //         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
               },
               { 
                 role: "user",
@@ -298,28 +301,32 @@ export const useWordPressStore = defineStore('wordpressStore', {
           
           // Try to validate if it's proper JSON
           try {
-            JSON.parse(content);
-            block.schema_with_content = content;
+                let parsedContent = JSON.parse(content);
+                block.schema_with_content = parsedContent;
+                block.schema_with_content.acf_fc_layout = block.type;
+                block.schema_with_content.layout = block.layout;
           } catch (jsonError) {
-            // If it's not valid JSON, try to clean it up
-            console.log('Received invalid JSON from OpenAi, attempting to clean:', jsonError);
-            Sentry.captureException('Received invalid JSON from OpenAi:', jsonError)
+                // If it's not valid JSON, try to clean it up
+                console.log('Received invalid JSON from OpenAi, attempting to clean:', jsonError);
+                Sentry.captureException('Received invalid JSON from OpenAi:', jsonError)
+                
+                // Remove any markdown code block indicators if present
+                if (content.startsWith('```json')) {
+                content = content.replace(/^```json\n/, '').replace(/\n```$/, '');
+                } else if (content.startsWith('```')) {
+                content = content.replace(/^```\n/, '').replace(/\n```$/, '');
+                }
             
-            // Remove any markdown code block indicators if present
-            if (content.startsWith('```json')) {
-              content = content.replace(/^```json\n/, '').replace(/\n```$/, '');
-            } else if (content.startsWith('```')) {
-              content = content.replace(/^```\n/, '').replace(/\n```$/, '');
-            }
-            
-            // Try parsing again after cleaning
-            try {
-              JSON.parse(content);
-              block.schema_with_content = content;
-            } catch (secondJsonError) {
-              console.error('Failed to clean JSON:', secondJsonError);
-              throw new Error('Invalid JSON response from OpenAi');
-            }
+                // Try parsing again after cleaning
+                try {
+                    let parsedContent = JSON.parse(content);
+                    block.schema_with_content = parsedContent;
+                    block.schema_with_content.acf_fc_layout = block.type;
+                    block.schema_with_content.layout = block.layout;
+                } catch (secondJsonError) {
+                    console.error('Failed to clean JSON:', secondJsonError);
+                    throw new Error('Invalid JSON response from OpenAi');
+                }
           }
       
         } catch (error) {
