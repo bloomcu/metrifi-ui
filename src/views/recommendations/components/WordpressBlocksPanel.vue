@@ -43,15 +43,17 @@
 import wordpressBlocks from '@/domain/wordpress/store/wordpressBlocks.js'
 import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import { inject, ref, computed, watch, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
+import { useWordPressStore } from '@/domain/wordpress/store/useWordPressStore'
 import AppInput from '@/app/components/base/forms/AppInput.vue'
 
 const route = useRoute()
-const router = useRouter()
 const recommendationStore = useRecommendationStore()
+const wordpressStore = useWordPressStore()
 const isWordpressBlocksPanelOpen = inject('isWordpressBlocksPanelOpen')
 
+// Search state
 const searchInputRef = ref(null)
 const searchQuery = ref('')
 
@@ -78,12 +80,33 @@ watch(isWordpressBlocksPanelOpen, (newValue) => {
 
 // Update selected block's type
 const updateBlock = (blockType, layoutType) => {
-    recommendationStore.selectedBlock.type = blockType
-    recommendationStore.selectedBlock.layout = layoutType
+    console.log('Updating block:', blockType, layoutType)
+    // Check if schema should update
+    let schemaShouldUpdate = wordpressStore.selectedBlock.type !== blockType 
 
-    blocksApi.update(route.params.organization, recommendationStore.selectedBlock.id, { 
+    // Update local block
+    wordpressStore.selectedBlock.type = blockType
+    wordpressStore.selectedBlock.layout = layoutType
+    
+    // If block type is changing, update schema and content
+    if (schemaShouldUpdate) {
+        // Get updated schema
+        wordpressStore.getBlockSchema(wordpressStore.selectedBlock)
+
+        // Re-write content
+        wordpressStore.writeBlockContent(wordpressStore.selectedBlock)
+    }
+
+    // Update block in database
+    blocksApi.update(route.params.organization, wordpressStore.selectedBlock.id, { 
         type: blockType, 
         layout: layoutType 
     })
+
+    // Reset wordpress page url
+    wordpressStore.wordpressPageUrl = null
+    
+    // Close panel
+    isWordpressBlocksPanelOpen.value = false
 }
 </script>

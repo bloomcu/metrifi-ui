@@ -22,18 +22,25 @@
         </div>
       </div>
 
+      <!-- Please wait: Do not close tab -->
+      <div v-if="hasWordPressConnection && !readyToPush && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
+          <p class="text-lg text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
+          <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
+          <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
+        </div>
+
       <!-- Success: Ready to push to WordPress -->
-      <div v-if="readyToPush && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-[#EEFFF7] rounded-lg">
+      <div v-if="readyToPush && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
           <div class="flex justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[#2B0F52]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-violet-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
             </svg>
           </div>
           
-          <p class="text-lg text-[#2B0F52] font-medium mb-3 text-center">Prototype is ready to push to WordPress</p>
+          <p class="text-lg text-violet-600 font-medium mb-3 text-center">Prototype is ready to push to WordPress</p>
 
           <div class="flex justify-center">
-            <AppButton variant="success" @click="pushToWordPress">
+            <AppButton @click="pushToWordPress">
                 Push to WordPress
             </AppButton>
           </div>
@@ -54,13 +61,6 @@
                 View draft in WordPress
             </AppButton>
           </div>
-        </div>
-
-      <!-- Warning message -->
-      <div v-if="hasWordPressConnection && !readyToPush && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
-          <p class="text-lg text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
-          <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
-          <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
         </div>
 
       <!-- WordPress Push Content (only shown if connection exists) -->
@@ -98,6 +98,7 @@
                 </span>
               </div>
             </div>
+            <pre>{{ block.schema }}</pre>
         </div>
 
         <!-- Error -->
@@ -152,7 +153,7 @@ provide('isWordpressBlocksPanelOpen', isWordpressBlocksPanelOpen)
 // Open block types list panel and set selected block
 const showWordpressBlocksPanel = (block) => {
   isWordpressBlocksPanelOpen.value = true
-  recommendationStore.selectedBlock = block
+  wordpressStore.selectedBlock = block
 }
 
 // Get block name by type

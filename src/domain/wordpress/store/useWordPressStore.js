@@ -19,13 +19,12 @@ export const useWordPressStore = defineStore('wordpressStore', {
     progress: '',
     status: '',
     error: null,
+    selectedBlock: null,
     wordpressPageUrl: null
   }),
 
   actions: {
     async predictCMSBlocks() {
-        return;
-        
         this.error = null
         this.wordpressPageUrl = null
         this.isDeploying = true;
@@ -203,11 +202,14 @@ export const useWordPressStore = defineStore('wordpressStore', {
     },
 
     async getBlockSchema(block) {
-        // Find the schema object that matches the block's acf_fc_layout
+        // Find the schema object that matches the block's type to a schema's acf_fc_layout
         const matchingSchema = wordpressBlockSchemas.find(
           schema => schema.acf_fc_layout === block.type
         );
         
+        // Set the specific layout for the scheme
+        matchingSchema.layout = block.layout;
+
         // Set block.schema to the matching schema or undefined if not found
         block.schema = matchingSchema;
         
@@ -259,6 +261,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         // Only set status if it's not already in a retry state
         if (!block.status || !block.status.includes('Retrying match')) {
             block.status = 'Writing content'
+            block.schema_with_content = null // Empty out any existing content
         }
         
         await this.getBlockSchema(block)
