@@ -24,14 +24,16 @@ export const useWordPressStore = defineStore('wordpressStore', {
 
   actions: {
     async predictCMSBlocks() {
+        return;
+        
         this.error = null
         this.wordpressPageUrl = null
         this.isDeploying = true;
-      try {
+
+        try {
         // Reset any existing retry counts for blocks
         this.blocks.forEach(block => {
           block.schemaRetryCount = 0;
-        //   block.error = null;
           block.status = null;
           block.type = null;
           block.layout = null;
