@@ -98,7 +98,7 @@
                 </span>
               </div>
             </div>
-            <pre>{{ block.schema_with_content }}</pre>
+            <!-- <pre>{{ block.schema_with_content }}</pre> -->
         </div>
 
         <!-- Error -->
