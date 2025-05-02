@@ -75,7 +75,7 @@
                   </div>
 
                   <!-- Type -->
-                  <div v-if="block.type" @click="showBlockTypesListPanel(block)" class="cursor-pointer inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20 hover:bg-violet-100">
+                  <div v-if="block.type" @click="showWordpressBlocksPanel(block)" class="cursor-pointer inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20 hover:bg-violet-100">
                       {{ getBlockName(block.type) }} / {{ getLayoutName(block.type, block.layout) }}
                   </div>
 
@@ -123,7 +123,7 @@
       </div>
     </div>
 
-    <BlockTypesListPanel/>
+    <WordpressBlocksPanel/>
   </div>
 </template>
 
@@ -134,7 +134,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useWordPressStore } from '@/domain/wordpress/store/useWordPressStore'
-import BlockTypesListPanel from '@/views/recommendations/components/BlockTypesListPanel.vue'
+import WordpressBlocksPanel from '@/views/recommendations/components/WordpressBlocksPanel.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -146,12 +146,12 @@ const wordpressConnection = ref(null)
 const readyToPush = ref(false)
 
 // Block types list panel state
-const isBlockTypesListPanelOpen = ref(false)
-provide('isBlockTypesListPanelOpen', isBlockTypesListPanelOpen)
+const isWordpressBlocksPanelOpen = ref(false)
+provide('isWordpressBlocksPanelOpen', isWordpressBlocksPanelOpen)
 
 // Open block types list panel and set selected block
-const showBlockTypesListPanel = (block) => {
-  isBlockTypesListPanelOpen.value = true
+const showWordpressBlocksPanel = (block) => {
+  isWordpressBlocksPanelOpen.value = true
   recommendationStore.selectedBlock = block
 }
 

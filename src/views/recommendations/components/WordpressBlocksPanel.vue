@@ -1,12 +1,12 @@
 <template>
-    <template v-if="isBlockTypesListPanelOpen">
-        <div @click="isBlockTypesListPanelOpen = false" class="fixed inset-0 h-full w-full overflow-y-auto bg-slate-600 bg-opacity-20"></div>
+    <template v-if="isWordpressBlocksPanelOpen">
+        <div @click="isWordpressBlocksPanelOpen = false" class="fixed inset-0 h-full w-full overflow-y-auto bg-slate-600 bg-opacity-20"></div>
 
         <div class="fixed right-0 top-0 h-full overflow-y-auto w-[500px] p-6 transform rounded-l-3xl bg-white shadow-2xl ring-1 ring-gray-900/5 z-50">
             <!-- Tray header -->
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-xl font-medium">WordPress blocks</h3>
-                <svg @click="isBlockTypesListPanelOpen = false" class="w-6 h-6 mr-2 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <svg @click="isWordpressBlocksPanelOpen = false" class="w-6 h-6 mr-2 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
             </div>
@@ -50,7 +50,7 @@ import AppInput from '@/app/components/base/forms/AppInput.vue'
 const route = useRoute()
 const router = useRouter()
 const recommendationStore = useRecommendationStore()
-const isBlockTypesListPanelOpen = inject('isBlockTypesListPanelOpen')
+const isWordpressBlocksPanelOpen = inject('isWordpressBlocksPanelOpen')
 
 const searchInputRef = ref(null)
 const searchQuery = ref('')
@@ -61,7 +61,7 @@ const filteredBlocks = computed(() => {
     )
 })
 
-watch(isBlockTypesListPanelOpen, (newValue) => {
+watch(isWordpressBlocksPanelOpen, (newValue) => {
   if (newValue) {
     nextTick(() => {
       setTimeout(() => {
