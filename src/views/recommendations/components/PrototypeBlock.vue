@@ -40,7 +40,7 @@
     <!-- Block has been generated -->
     <div v-else-if="block.html" class="relative">
         <!-- Drag handle icon -->
-        <div class="absolute z-[9999] top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div class="absolute z-10 top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <div class="bg-white border rounded-md p-1 cursor-move" title="Drag to reorder">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 text-slate-500">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
@@ -48,7 +48,7 @@
           </div>
         </div>
         
-        <div class="absolute z-[9999] top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div class="absolute z-10 top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <!-- Confirm delete -->
           <div v-if="confirmingDelete[block.id]" class="flex items-center bg-white gap-1 border rounded-lg p-1">
             <span class="text-sm px-2">Are you sure?</span>
