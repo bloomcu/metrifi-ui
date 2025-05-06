@@ -4,7 +4,7 @@
       <!-- Page Title -->
       <div class="mb-4 text-center">
         <h1 class="text-2xl text-gray-900 mb-5" v-if="recommendationStore.recommendation && wordpressConnection">
-          Pushing <span class="font-semibold">"{{ recommendationStore.recommendation.title }}"</span> to <span class="font-semibold">{{ wordpressConnection.name }}</span>
+          Push <span class="font-semibold">"{{ recommendationStore.recommendation.title }}"</span> to <span class="font-semibold">{{ wordpressConnection.name }}</span>
         </h1>
       </div>
 
@@ -21,6 +21,30 @@
           </button>
         </div>
       </div>
+
+      <!-- Please wait: Do not close tab -->
+      <div v-if="hasWordPressConnection && !readyToPush && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
+          <p class="text-lg text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
+          <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
+          <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
+        </div>
+
+      <!-- Success: Ready to push to WordPress -->
+      <div v-if="readyToPush && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
+          <div class="flex justify-center mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-violet-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+            </svg>
+          </div>
+          
+          <p class="text-lg text-violet-600 font-medium mb-3 text-center">Prototype is ready to push to WordPress</p>
+
+          <div class="flex justify-center">
+            <AppButton @click="pushToWordPress">
+                Push to WordPress
+            </AppButton>
+          </div>
+        </div>
 
       <!-- Success: WordPress page link -->
       <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-[#EEFFF7] rounded-lg">
@@ -39,25 +63,26 @@
           </div>
         </div>
 
-      <!-- Warning message -->
-      <div v-if="hasWordPressConnection && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
-          <p class="text-lg text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
-          <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
-          <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
-        </div>
-
       <!-- WordPress Push Content (only shown if connection exists) -->
       <div v-if="hasWordPressConnection">
-        <!-- Blocks -->
+        <!-- Block cards -->
         <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" class="border rounded-lg mb-4">
-          <!-- Block id and loader -->
           <div class="flex items-center justify-between p-3">
               <div class="flex items-center gap-3">
-                  <div class="text-gray-900 font-semibold">Block {{ index + 1 }}</div>
-                  <div v-if="block.type" class="inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20">
-                      {{ block.type }} / {{ block.layout }}
+                  <!-- Block number -->   
+                  <div class="text-gray-900 font-semibold">
+                    Block {{ index + 1 }}
                   </div>
-                  <p v-if="block.error" class="text-red-500 text-sm">{{ block.error }}. Block will not be pushed.</p>
+
+                  <!-- Type -->
+                  <div v-if="block.type" @click="showWordpressBlocksPanel(block)" class="cursor-pointer inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20 hover:bg-violet-100">
+                      {{ getBlockName(block.type) }} / {{ getLayoutName(block.type, block.layout) }}
+                  </div>
+
+                  <!-- Error -->
+                  <p v-if="block.error" class="text-red-500 text-sm">
+                    {{ block.error }}. Block will not be pushed.
+                  </p>
               </div>
 
               <div v-if="block.status" class="flex items-center gap-2 text-violet-600">
@@ -72,15 +97,16 @@
                   Done
                 </span>
               </div>
-              
             </div>
+            <!-- <pre>{{ block.schema_with_content }}</pre> -->
         </div>
 
         <!-- Error -->
         <div v-if="wordpressStore.error" class="mt-4 p-6 bg-red-50 rounded-lg">
           <p class="text-red-500 text-center">{{ wordpressStore.error }}</p>
         </div>
-        
+
+
         <!-- Cancel button -->
         <div class="mt-6 flex justify-center gap-3">
           <AppButton :to="{ name: 'recommendation', params: { organization: route.params.organization, dashboard: route.params.dashboard, recommendation: route.params.recommendation } }" variant="secondary">
@@ -97,15 +123,19 @@
         </div>
       </div>
     </div>
+
+    <WordpressBlocksPanel/>
   </div>
 </template>
 
 <script setup>
-import { watch, onMounted, ref } from 'vue'
+import wordpressBlocks from '@/domain/wordpress/store/wordpressBlocks.js'
+import { watch, provide, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useWordPressStore } from '@/domain/wordpress/store/useWordPressStore'
+import WordpressBlocksPanel from '@/views/recommendations/components/WordpressBlocksPanel.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -114,6 +144,30 @@ const wordpressStore = useWordPressStore()
 const connections = useConnections()
 const hasWordPressConnection = ref(false)
 const wordpressConnection = ref(null)
+const readyToPush = ref(false)
+
+// Block types list panel state
+const isWordpressBlocksPanelOpen = ref(false)
+provide('isWordpressBlocksPanelOpen', isWordpressBlocksPanelOpen)
+
+// Open block types list panel and set selected block
+const showWordpressBlocksPanel = (block) => {
+  isWordpressBlocksPanelOpen.value = true
+  wordpressStore.selectedBlock = block
+}
+
+// Get block name by type
+const getBlockName = (blockId) => {
+    const block = wordpressBlocks.find(block => block.id === blockId)
+    return block.name
+}
+
+// Get block layout name by type and layout
+const getLayoutName = (blockId, layoutId) => {
+    const block = wordpressBlocks.find(block => block.id === blockId)
+    const layout = block.layouts.find(layout => layout.id === layoutId)
+    return layout.name
+}
 
 // Function to close the tab
 const closeTab = () => {
@@ -130,8 +184,13 @@ const goToSettingsConnections = () => {
   router.push({ name: 'settingsConnections', params: { organization: route.params.organization } })
 }
 
+// Function to push to WordPress
+const pushToWordPress = () => {
+  wordpressStore.createPageInWordPress(route.params.organization, recommendationStore.recommendation.title)
+}
+
 // Watch the blocks array in the WordPress store
-// When all blocks without errors have schema_with_content, create the WordPress page
+// When all blocks have schema_with_content and no errors, show the push button
 watch(() => wordpressStore.blocks, (blocks) => {
   if (blocks && blocks.length > 0) {
     // Check if all blocks without errors have schema_with_content
@@ -140,8 +199,10 @@ watch(() => wordpressStore.blocks, (blocks) => {
       .every(block => block.schema_with_content);
     
     if (allValidBlocksHaveContent && blocks.some(block => !block.error)) {
-      console.log('All valid blocks have schema_with_content, creating WordPress page');
-      wordpressStore.createPageInWordPress(route.params.organization, recommendationStore.recommendation.title)
+      console.log('All valid blocks have schema_with_content, ready to push');
+      readyToPush.value = true
+    } else {
+      readyToPush.value = false
     }
   }
 }, { deep: true });

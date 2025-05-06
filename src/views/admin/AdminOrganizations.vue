@@ -14,6 +14,7 @@
 
     <!-- Organizations -->
     <AppCard padding="none" class="mb-20">
+      <!-- Search -->
       <div class="p-4 sm:p-6 border-b border-gray-100">
         <AppInput
           v-model="searchTerm"
