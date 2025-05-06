@@ -347,18 +347,14 @@ export const useWordPressStore = defineStore('wordpressStore', {
         // of the new array is an object with only the schema_with_content property
         const blocksWithSchemaWithContent = this.blocks.map(block => {
             try {
-                return JSON.parse(block.schema_with_content);
-            } catch (error) {
-                console.log(`Error parsing JSON for block:`, error);
+                return block.schema_with_content;
+            } catch () {
                 console.log('Problematic content:', block.schema_with_content);
-                // Return a placeholder or null instead of failing completely
-                // this.error = `Error parsing block content: ${error.message}`;
-                return null;
+                return null;// Return null instead of failing completely
             }
         }).filter(block => block !== null); // Filter out any blocks that failed to parse
       
-        // console.log('blocks:', this.blocks);
-        console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
+        // console.log('blocksWithSchemaWithContent:', blocksWithSchemaWithContent);
       
         if (blocksWithSchemaWithContent.length === 0) {
             this.error = 'No valid blocks to send to WordPress';
