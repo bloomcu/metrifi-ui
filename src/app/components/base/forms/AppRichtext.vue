@@ -1,8 +1,8 @@
 <template>
-  <div v-if="editor" class="md-editor">
+  <div v-if="editor" class="md-editor bg-transparent">
     <label v-if="label" class="block text-sm font-medium text-gray-700" :for="label">{{ label }}</label>
     
-    <div v-if="editable" class="sticky top-[52px] z-10 bg-slate-100 border border-slate-100 ring ring-white ring-offset-0 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
+    <div v-if="editable" class="sticky top-[46px] z-10 bg-white border border-gray-300 rounded-md p-0.5 lg:p-1 mb-1 lg:mb-1.5">
       <menu class="flex flex-wrap">    
         <li>
           <button @click="editor.chain().focus().toggleBold().run()" class="relative flex w-[40px] h-[40px] cursor-pointer rounded-md hover:bg-slate-200 active:translate-y-px" type="button" title="Bold">
@@ -45,7 +45,7 @@
       :value="modelValue" 
       :editor="editor" 
       :class="[editable ? 'border border-gray-300 rounded-md p-4' : '']" 
-      class="h-full appearance-none"
+      class="h-full bg-white appearance-none"
     />
   </div>
 </template>

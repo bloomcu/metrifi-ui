@@ -9,7 +9,6 @@
             <div class="flex flex-col items-center justify-center text-center p-6">
                 <CloudArrowUpIcon class="h-7 w-7 mb-2 text-gray-500" />
                 <p class="text-xs text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop .jpeg, .jpg, .png, .gif or .webp</p>
-                <!-- <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (max 1GB)</p> -->
             </div>
             <input 
                 multiple 
@@ -21,7 +20,7 @@
             />
         </label>
 
-        <!-- Dropped files -->
+        <!-- Upload queue -->
         <ul v-if="files.length" class="w-full divide-y divide-gray-200 border-t">
             <li v-for="file in files" :key="file.id" class="flex items-center justify-between gap-x-6 p-3">
                 <div class="flex items-center min-w-0 gap-x-4">
@@ -93,7 +92,10 @@ function uploadFiles() {
         file.status = 'Uploading';
 
         fileStore.store(route.params.organization, file.file).then(uploadedFile => {
-            file.status = 'Uploaded';
+            // Remove the file from the list instead of just marking it as uploaded
+            setTimeout(() => {
+                files.value = files.value.filter(f => f.id !== file.id);
+            }, 1000);
             emit('fileUploaded', uploadedFile);
         }).catch(error => {
             console.error(error);
