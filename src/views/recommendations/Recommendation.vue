@@ -3,11 +3,12 @@
     <div ref="tailwind"/>
 
     <!-- Header -->
-    <header class="px-4 py-3 flex items-center justify-between border-b">
-      <div v-if="recommendationStore.recommendation" class="flex items-center gap-3 grow">
+    <header v-if="recommendationStore.recommendation" class="px-4 py-3 flex items-center justify-between border-b">
+      <div class="flex items-center gap-3 grow">
         <!-- Back button -->
-        <AppButton @click="handleBack()" variant="tertiary" size="sm">
+        <AppButton :to="{name: 'recommendations', params: {organization: route.params.organization}}" variant="tertiary" size="sm" class="flex items-center gap-2">
           <ArrowLeftIcon class="h-5 w-5 shrink-0" />
+          Back to recommendations
         </AppButton>
 
         <!-- Recommendation title -->
@@ -29,7 +30,11 @@
       <div class="flex items-center gap-2">
         <p v-if="isLoading" class="text-xs text-gray-400">Loading...</p>
 
-        <AppButton v-if="recommendationStore.recommendation && recommendationStore.recommendation.status === 'done'" @click="toggleGenerateRecommendationModal()" variant="secondary" size="base">
+        <AppButton v-if="recommendationStore.recommendation.dashboard_id" :to="{name: 'dashboard', params: {dashboard: recommendationStore.recommendation.dashboard_id}}" variant="link" size="sm" class="flex items-center gap-2">
+          Go to dashboard
+        </AppButton>
+
+        <AppButton v-if="recommendationStore.recommendation.status === 'done'" @click="toggleGenerateRecommendationModal()" variant="secondary" size="base">
           Regenerate
         </AppButton>
 
@@ -446,10 +451,6 @@ function fetchRecommendation() {
 }
 
 const tailwind = ref(null)
-
-const handleBack = () => {
-    router.back()
-}
 
 onMounted(() => {
   // Initial fetch and polling
