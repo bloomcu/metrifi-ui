@@ -34,6 +34,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         this.blocks.forEach(block => {
           block.schemaRetryCount = 0;
           block.status = null;
+          block.error = null;
           block.type = null;
           block.layout = null;
           block.wordpress_category = null;
