@@ -118,13 +118,13 @@ const wordpressBlocks = [
           {"id": "advanced_gallery_v2", "name": "Advanced Gallery"},
         ]
     },
-    {
-        "id": "block_clone",
-        "name": "Global Block",
-        "layouts": [
-          {"id": "default", "name": "Default"},
-        ]
-      },
+    // {
+    //     "id": "block_clone",
+    //     "name": "Global Block",
+    //     "layouts": [
+    //       {"id": "default", "name": "Default"},
+    //     ]
+    // },
     {
         "id": "hero",
         "name": "Hero",

@@ -133,7 +133,8 @@ export const useWordPressStore = defineStore('wordpressStore', {
           
           // Create a thread and start a run
           const run = await openai.beta.threads.createAndRun({
-            assistant_id: 'asst_jjPmiRkOknWPAYxPdyfQLpvJ',
+            assistant_id: 'asst_jjPmiRkOknWPAYxPdyfQLpvJ', // Match AI component to CMS block v4 (production)
+            // assistant_id: 'asst_krcoPvnnz9FqO1g7luVGzrRL', // Match AI component to CMS block v5 (production)
             thread: {
               messages: [
                 {
@@ -277,7 +278,8 @@ export const useWordPressStore = defineStore('wordpressStore', {
               { 
                 role: "system", 
                 content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
-                        "IMPORTANT: Remove unused content in the json. Don't fill in gaps in the content. That's not your job. Your only job is to delete placeholder content and transfer existing content. Don't do anything else." +
+                        "IMPORTANT: Remove unused keys in the json–these are keys with empty values. Don't fill in gaps in the content. That's not your job. Your only job is to delete placeholder content and transfer existing content." +
+                        "IMPORTANT: Do not remove image keys." +
                         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
 
                 // content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
@@ -348,7 +350,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         const blocksWithSchemaWithContent = this.blocks.map(block => {
             try {
                 return block.schema_with_content;
-            } catch () {
+            } catch (e) {
                 console.log('Problematic content:', block.schema_with_content);
                 return null;// Return null instead of failing completely
             }
