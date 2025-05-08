@@ -1193,6 +1193,19 @@ const wordpressBlockSchemas = [
       "background_image": false
     },
     {
+        "acf_fc_layout": "comparison_table",
+        "section_title": "",
+        "section_sub_title": "",
+        "comparison_table": [
+            2920
+        ],
+        "section_margin": "top_bottom",
+        "layout": "default",
+        "section_background": "default",
+        "data_source": "default",
+        "background_image": false
+    },
+    {
       "acf_fc_layout": "table",
       "section_title": "Table",
       "section_sub_title": "Table blocks are used to display a single table or to repeat multiple tables as a group.",
@@ -1451,6 +1464,17 @@ const wordpressBlockSchemas = [
       "section_margin": "default",
       "data_source": "default",
       "background_image": false
+    },
+    {
+        "acf_fc_layout": "html",
+        "section_title": "",
+        "section_sub_title": "",
+        "html": "",
+        "layout": "default",
+        "section_background": "default",
+        "section_margin": "default",
+        "data_source": "default",
+        "background_image": false
     },
     {
       "acf_fc_layout": "sub_navigation",

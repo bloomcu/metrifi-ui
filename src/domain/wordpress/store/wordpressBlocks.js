@@ -171,6 +171,13 @@ const wordpressBlocks = [
         ]
     },
     {
+        "id": "html",
+        "name": "HTML",
+        "layouts": [
+          {"id": "default", "name": "Default"},
+        ]
+    },
+    {
         "id": "login",
         "name": "Login",
         "layouts": [
@@ -253,6 +260,13 @@ const wordpressBlocks = [
     {
         "id": "table_repeater",
         "name": "Tables (Multiple)",
+        "layouts": [
+          {"id": "default", "name": "Default"},
+        ]
+    },
+    {
+        "id": "comparison_table",
+        "name": "Comparison Table",
         "layouts": [
           {"id": "default", "name": "Default"},
         ]

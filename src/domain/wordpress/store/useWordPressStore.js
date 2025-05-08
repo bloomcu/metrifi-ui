@@ -281,6 +281,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
                 content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
                         "IMPORTANT: Remove unused keys in the json–these are keys with empty values. Don't fill in gaps in the content. That's not your job. Your only job is to delete placeholder content and transfer existing content." +
                         "IMPORTANT: Do not remove image keys." +
+                        "IMPORTANT: Do not remove keys that are arrays containing ids." +
                         "IMPORTANT: Your response MUST be pure JSON without any markdown wrappers, code blocks, or additional text. Do NOT wrap the response in \`\`\`json ... \`\`\` or any other markdown. Provide only the JSON object as plain text."
 
                 // content: "You are an expert at writing content in a json object. I am requesting content for a block. I will provide the html of a block and the json schema I need the content written in. " +
