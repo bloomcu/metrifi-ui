@@ -25,8 +25,8 @@
       <!-- Please wait: Do not close tab -->
       <div v-if="hasWordPressConnection && !readyToPush && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
           <p class="text-lg text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
-          <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being pushed to WordPress.</p>
-          <p class="text-violet-600 text-sm text-center">Once the page is created, the URL will appear here.</p>
+          <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being prepared for WordPress.</p>
+          <p class="text-violet-600 text-sm text-center">Once the prototype is ready, you will need to push it to WordPress.</p>
         </div>
 
       <!-- Success: Ready to push to WordPress -->
@@ -77,7 +77,7 @@
                   <!-- Type -->
                   <div v-if="block.type" @click="showWordpressBlocksPanel(block)" class="cursor-pointer inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20 hover:bg-violet-100">
                       {{ getBlockName(block.type) }} / {{ getLayoutName(block.type, block.layout) }}
-                        
+
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                       </svg>
