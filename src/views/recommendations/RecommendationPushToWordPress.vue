@@ -77,6 +77,10 @@
                   <!-- Type -->
                   <div v-if="block.type" @click="showWordpressBlocksPanel(block)" class="cursor-pointer inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20 hover:bg-violet-100">
                       {{ getBlockName(block.type) }} / {{ getLayoutName(block.type, block.layout) }}
+                        
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
                   </div>
 
                   <!-- Error -->
