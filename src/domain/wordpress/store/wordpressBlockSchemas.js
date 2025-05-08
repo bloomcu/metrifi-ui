@@ -2218,32 +2218,7 @@ const wordpressBlockSchemas = [
     {
       "acf_fc_layout": "testimonial",
       "testimonial": [
-        {
-          "ID": 31,
-          "post_author": "1",
-          "post_date": "2021-04-21 22:28:20",
-          "post_date_gmt": "2021-04-21 22:28:20",
-          "post_content": "",
-          "post_title": "Example Testimonial One",
-          "post_excerpt": "",
-          "post_status": "publish",
-          "comment_status": "closed",
-          "ping_status": "closed",
-          "post_password": "",
-          "post_name": "example-testimonial-one",
-          "to_ping": "",
-          "pinged": "",
-          "post_modified": "2021-09-13 21:17:08",
-          "post_modified_gmt": "2021-09-13 21:17:08",
-          "post_content_filtered": "",
-          "post_parent": 0,
-          "guid": "https://base.bloomcudev.com/?post_type=base-testimonial&#038;p=31",
-          "menu_order": 0,
-          "post_type": "base-testimonial",
-          "post_mime_type": "",
-          "comment_count": "0",
-          "filter": "raw"
-        }
+        31
       ],
       "layout": "full_width_blockquote",
       "section_background": "default",
