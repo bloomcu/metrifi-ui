@@ -42,6 +42,13 @@ const wordpressBlocks = [
         ]
     },
     {
+        "id": "comparison_table",
+        "name": "Comparison Table",
+        "layouts": [
+          {"id": "default", "name": "Default"},
+        ]
+    },
+    {
         "id": "details_repeater",
         "name": "Details List",
         "layouts": [
@@ -54,14 +61,14 @@ const wordpressBlocks = [
         "layouts": [
             // {"id": "feature_bloom_1", "name": ""},
             // {"id": "feature_bloom_1_invert", "name": ""},
-            {"id": "feature", "name": "Default"},
-            {"id": "feature_invert", "name": "Invert"},
-            {"id": "boxed_feature", "name": "Boxed"},
-            {"id": "boxed_feature_invert", "name": "Boxed Invert"},
+            {"id": "feature", "name": "Feature"},
+            {"id": "feature_invert", "name": "Feature (Invert)"},
+            {"id": "boxed_feature", "name": "Boxed Feature"},
+            {"id": "boxed_feature_invert", "name": "Boxed Feature (Invert)"},
             {"id": "feature_v2", "name": "V2"},
-            {"id": "feature_v2_invert", "name": "V2 Invert"},
+            {"id": "feature_v2_invert", "name": "V2 (Invert)"},
             {"id": "feature_v4", "name": "V4"},
-            {"id": "feature_v4_invert", "name": "V4 Invert"},
+            {"id": "feature_v4_invert", "name": "V4 (Invert)"},
             {"id": "feature_v11", "name": "V11"},
             {"id": "feature_v11_bottom_center", "name": "V11 Bottom Center"},
             {"id": "feature_v11_right", "name": "V11 Right"},
@@ -73,25 +80,25 @@ const wordpressBlocks = [
         "name": "Feature Devices",
         "layouts": [
           {"id": "mobile", "name": "Mobile"},
-          {"id": "mobile_and_desktop", "name": "Mobile and Desktop"},
+          {"id": "mobile_and_desktop", "name": "Mobile & Desktop"},
         ]
     },
     {
         "id": "feature_repeater",
         "name": "Feature List",
         "layouts": [
-          {"id": "feature_v7", "name": "V7"},
-          {"id": "feature_v9", "name": "V9"},
-          {"id": "feature_v9_small_icon_centered", "name": "V9 Small Icon Centered"},
-          {"id": "feature_v9_small_image", "name": "V9 Small Image"},
-          {"id": "feature_v9_centered", "name": "V9 Centered"},
+          {"id": "feature_v7", "name": "Feature V7"},
+          {"id": "feature_v9", "name": "Feature V9"},
+          {"id": "feature_v9_small_icon_centered", "name": "Feature V9 (Small Icon Centered)"},
+          {"id": "feature_v9_small_image", "name": "Feature V9 (Small Image)"},
+          {"id": "feature_v9_centered", "name": "Feature V9 (Centered Content)"},
         ]
     },
     {
         "id": "double_feature",
         "name": "Feature Side-by-side",
         "layouts": [
-          {"id": "feature_v9", "name": "V9"},
+          {"id": "feature_v9", "name": "Feature V9"},
         ]
     },
     {
@@ -114,31 +121,24 @@ const wordpressBlocks = [
         "id": "gallery_repeater",
         "name": "Gallery",
         "layouts": [
-          {"id": "gallery", "name": "Default"},
-          {"id": "advanced_gallery_v2", "name": "Advanced Gallery"},
+          {"id": "gallery", "name": "Gallery"},
+          {"id": "advanced_gallery_v2", "name": "Advanced Gallery V2"},
         ]
     },
-    // {
-    //     "id": "block_clone",
-    //     "name": "Global Block",
-    //     "layouts": [
-    //       {"id": "default", "name": "Default"},
-    //     ]
-    // },
     {
         "id": "hero",
         "name": "Hero",
         "layouts": [
           {"id": "default", "name": "Default"},
           {"id": "center", "name": "Center"},
-          {"id": "coming-soon", "name": "Coming Soon"},
-          {"id": "coming-soon-reverse", "name": "Coming Soon Reverse"},
-          {"id": "image-fixed-size", "name": "Image Fixed Size"},
-          {"id": "image-fixed-size-reverse", "name": "Image Fixed Size Reverse"},
-          {"id": "image-fixed-size-lg", "name": "Image Fixed Size Large"},
-          {"id": "image-fixed-size-lg-reverse", "name": "Image Fixed Size Large Reverse"},
           {"id": "left-content", "name": "Left Content"},
           {"id": "boxed", "name": "Boxed"},
+          {"id": "coming-soon", "name": "Angle"},
+          {"id": "coming-soon-reverse", "name": "Angle Reverse"},
+          {"id": "image-fixed-size", "name": "Isolated"},
+          {"id": "image-fixed-size-reverse", "name": "Isolated (Invert)"},
+          {"id": "image-fixed-size-lg", "name": "Isolated Full Bleed (Img 1:1)"},
+          {"id": "image-fixed-size-lg-reverse", "name": "Isolated Full Bleed (Invert, Img 1:1)"},
         ]
     },
     {
@@ -153,6 +153,7 @@ const wordpressBlocks = [
         "name": "Hero Search",
         "layouts": [
           {"id": "default", "name": "Default"},
+          {"id": "default", "name": "Form"},
         ]
     },
     {
@@ -160,6 +161,7 @@ const wordpressBlocks = [
         "name": "Hero Sticky",
         "layouts": [
           {"id": "default", "name": "Default"},
+          {"id": "default", "name": "Scale"},
         ]
     },
     {
@@ -167,26 +169,14 @@ const wordpressBlocks = [
         "name": "Hero Video",
         "layouts": [
           {"id": "video_background", "name": "Video Background"},
-          {"id": "video_background_hero_modal", "name": "Video Background Hero Modal"},
+          {"id": "video_background_hero_modal", "name": "Video Background Hero w/ Modal"},
         ]
     },
     {
         "id": "html",
         "name": "HTML",
         "layouts": [
-          {"id": "default", "name": "Default"},
-        ]
-    },
-    {
-        "id": "login",
-        "name": "Login",
-        "layouts": [
-          {"id": "default", "name": "Default"},
-          {"id": "login_left", "name": "Login Left"},
-          {"id": "angle", "name": "Angle"},
-          {"id": "angle_left", "name": "Angle Left"},
-          {"id": "angle_one_col", "name": "Angle One Column"},
-          {"id": "angle_one_col_right", "name": "Angle One Column Right"},
+          {"id": "default", "name": "Default (Full-width)"},
         ]
     },
     {
@@ -215,7 +205,8 @@ const wordpressBlocks = [
         "id": "router",
         "name": "Router",
         "layouts": [
-          {"id": "default", "name": "Default"},
+          {"id": "default", "name": "Color Background"},
+          {"id": "default", "name": "Color Foreground"},
         ]
     },
     {
@@ -226,6 +217,7 @@ const wordpressBlocks = [
           {"id": "curve_2", "name": "Curve 2"},
           {"id": "curve_3", "name": "Curve 3"},
           {"id": "paint", "name": "Paint"},
+          {"id": "paint", "name": "Paint 2"},
         ]
     },
     {
@@ -240,7 +232,7 @@ const wordpressBlocks = [
         "name": "Sub Navigation",
         "layouts": [
           {"id": "sub_navigation", "name": "Default"},
-          {"id": "sub_navigation_collapse", "name": "Collapse"},
+          {"id": "sub_navigation_collapse", "name": "Non-collapsing"},
         ]
     },
     {
@@ -265,17 +257,10 @@ const wordpressBlocks = [
         ]
     },
     {
-        "id": "comparison_table",
-        "name": "Comparison Table",
-        "layouts": [
-          {"id": "default", "name": "Default"},
-        ]
-    },
-    {
         "id": "testimonial",
         "name": "Testimonial",
         "layouts": [
-          {"id": "full_width_blockquote", "name": "Full Width Blockquote"},
+          {"id": "full_width_blockquote", "name": "Full-width Blockquote"},
         ]
     },
     {
@@ -291,6 +276,7 @@ const wordpressBlocks = [
         "name": "Text",
         "layouts": [
           {"id": "default", "name": "Default"},
+          {"id": "default", "name": "Center Column"},
         ]
     },
     {
