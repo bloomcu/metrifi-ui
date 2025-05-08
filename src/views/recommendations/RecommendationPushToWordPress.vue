@@ -48,7 +48,7 @@
 
       <!-- Success: WordPress page link -->
       <div v-if="wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-[#EEFFF7] rounded-lg">
-          <div class="flex justify-center mb-2">
+          <div class="flex justify-center mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[#2B0F52]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>

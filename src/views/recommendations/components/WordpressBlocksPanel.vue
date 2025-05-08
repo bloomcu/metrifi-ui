@@ -81,8 +81,6 @@ watch(isWordpressBlocksPanelOpen, (newValue) => {
 // Update selected block's type
 const updateBlock = (blockType, layoutType) => {
     console.log('Updating block:', blockType, layoutType)
-    // Check if schema should update
-    let schemaShouldUpdate = wordpressStore.selectedBlock.type !== blockType 
 
     // Update local block
     wordpressStore.selectedBlock.type = blockType
@@ -92,11 +90,7 @@ const updateBlock = (blockType, layoutType) => {
     wordpressStore.selectedBlock.schema_with_content.acf_fc_layout = blockType
     wordpressStore.selectedBlock.schema_with_content.layout = layoutType
     
-    // If block type is changing, update schema and content
-    if (schemaShouldUpdate) {
-        // Re-write content
-        wordpressStore.writeBlockContent(wordpressStore.selectedBlock)
-    }
+    wordpressStore.writeBlockContent(wordpressStore.selectedBlock)
 
     // Update block in database
     blocksApi.update(route.params.organization, wordpressStore.selectedBlock.id, { 

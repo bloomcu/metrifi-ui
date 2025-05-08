@@ -206,7 +206,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
     async getBlockSchema(block) {
         // Find the schema object that matches the block's type to a schema's acf_fc_layout
         const matchingSchema = wordpressBlockSchemas.find(
-          schema => schema.acf_fc_layout === block.type
+          schema => schema.acf_fc_layout === block.type && schema.layout === block.layout
         );
 
         // Set block.schema to the matching schema or undefined if not found

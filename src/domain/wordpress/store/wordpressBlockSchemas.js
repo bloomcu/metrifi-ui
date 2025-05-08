@@ -3352,7 +3352,7 @@ const wordpressBlockSchemas = [
         "link_2_style": "color-inherit"
       },
       "layout": "image-fixed-size",
-      "section_background": "bg-2",
+      "section_background": "default",
       "section_margin": "no_margin",
       "background_image": false,
       "divider_image": false,
@@ -3445,7 +3445,7 @@ const wordpressBlockSchemas = [
         "image": 7,
         "pre_title": "",
         "title": "",
-        "sub_title": "Sub [table-cell table=\"example-table\" row=\"1\" col=\"A\"] . Ullam vero aliquam, natus quae architecto hic quod!",
+        "sub_title": "Ullam vero aliquam, natus quae architecto hic quod!",
         "link": {
           "title": "",
           "url": "#",
