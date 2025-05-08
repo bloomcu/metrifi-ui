@@ -56,11 +56,13 @@
           
           <p class="text-lg text-[#2B0F52] font-medium mb-3 text-center">Success! MetriFi has drafted a new page in WordPress.</p>
 
-          <div class="flex justify-center">
+          <div class="flex justify-center mb-8">
             <AppButton variant="success" :href="wordpressStore.wordpressPageUrl + '&preview=true'" target="_blank">
                 View draft in WordPress
             </AppButton>
           </div>
+
+          <p class="text-sm text-[#2B0F52]/90 mt-2 text-center">You have to be logged in WordPress to view this draft page.</p>
         </div>
 
       <!-- WordPress Push Content (only shown if connection exists) -->
