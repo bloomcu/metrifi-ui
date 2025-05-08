@@ -1469,7 +1469,7 @@ const wordpressBlockSchemas = [
         "acf_fc_layout": "html",
         "section_title": "",
         "section_sub_title": "",
-        "html": "",
+        "html": "<div style=\"padding: 20px; margin: 0 auto;\"><h3>This is a sample HTML block.</h3><p>You can edit this text, add images, or include other HTML elements</p></div>",
         "layout": "default",
         "section_background": "default",
         "section_margin": "default",
