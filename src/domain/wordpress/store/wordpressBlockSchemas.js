@@ -934,7 +934,7 @@ const wordpressBlockSchemas = [
       "section_margin": "default",
       "section_background": "default",
       "data_source": "calculator",
-      "background_image": 7
+      "background_image": false
     },
     {
       "acf_fc_layout": "calculator",
@@ -947,7 +947,7 @@ const wordpressBlockSchemas = [
       "section_margin": "default",
       "section_background": "default",
       "data_source": "calculator",
-      "background_image": 7
+      "background_image": false
     },
     {
       "acf_fc_layout": "calculator",
@@ -960,7 +960,7 @@ const wordpressBlockSchemas = [
       "section_margin": "default",
       "section_background": "default",
       "data_source": "calculator",
-      "background_image": 7
+      "background_image": false
     },
     {
       "acf_fc_layout": "calculator",
@@ -973,7 +973,7 @@ const wordpressBlockSchemas = [
       "section_margin": "default",
       "section_background": "default",
       "data_source": "calculator",
-      "background_image": 7
+      "background_image": false
     },
     {
       "acf_fc_layout": "calculator",
@@ -986,7 +986,7 @@ const wordpressBlockSchemas = [
       "section_margin": "default",
       "section_background": "default",
       "data_source": "calculator",
-      "background_image": 7
+      "background_image": false
     },
     {
       "acf_fc_layout": "calculator",
@@ -999,7 +999,7 @@ const wordpressBlockSchemas = [
       "section_margin": "default",
       "section_background": "default",
       "data_source": "calculator",
-      "background_image": 7
+      "background_image": false
     },
     {
       "acf_fc_layout": "rate_repeater",
