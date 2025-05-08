@@ -344,6 +344,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
     },
 
     async createPageInWordPress(organizationSlug, pageTitle) {
+        this.isLoading = true;
         this.error = null; // Reset error state before attempting to create page
         this.isDeploying = true; // Set deploying state to true
         
@@ -377,6 +378,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
         const response = await wordPressApi.storePage(organizationSlug, pageData);
         
         // Update state
+        this.isLoading = false;
         this.isDeploying = false;
         this.wordpressPageUrl = response.data.page_url;
         
@@ -396,6 +398,7 @@ export const useWordPressStore = defineStore('wordpressStore', {
                 this.error = `Failed to create page in WordPress: ${error.message}`;
             }
             
+            this.isLoading = false;
             this.isDeploying = false;
             throw error;
         }

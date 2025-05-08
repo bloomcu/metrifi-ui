@@ -40,7 +40,7 @@
           <p class="text-lg text-violet-600 font-medium mb-3 text-center">Prototype is ready to push to WordPress</p>
 
           <div class="flex justify-center">
-            <AppButton @click="pushToWordPress">
+            <AppButton @click="pushToWordPress" :loading="wordpressStore.isLoading">
                 Push to WordPress
             </AppButton>
           </div>
