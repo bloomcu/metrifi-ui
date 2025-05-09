@@ -1931,9 +1931,9 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "columns_repeater",
-      "section_title": "Text Columns",
+      "section_title": "",
       "title_display_style": "default",
-      "section_sub_title": "Text Columns are used to display basic text content in single or multi-column layouts.",
+      "section_sub_title": "",
       "default_data": [
         {
           "title": "Column Title",
@@ -1956,7 +1956,18 @@ const wordpressBlockSchemas = [
             "target": ""
           },
           "button_style": "primary"
-        }
+        },
+        {
+            "title": "Column Title",
+            "title_display_style": "default",
+            "content": "",
+            "link": {
+              "title": "",
+              "url": "#",
+              "target": ""
+            },
+            "button_style": "primary"
+          }
       ],
       "layout": "default",
       "section_background": "default",
@@ -2152,7 +2163,7 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "accordion_repeater",
-      "section_title": "Accordion Repeater - Default",
+      "section_title": "",
       "section_sub_title": "",
       "default_data": [
         {
@@ -2177,7 +2188,7 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "accordion_repeater",
-      "section_title": "Accordion Repeater - FAQs",
+      "section_title": "",
       "section_sub_title": "",
       "default_data": false,
       "faqs_data": 2,
@@ -2189,7 +2200,7 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "testimonial_repeater",
-      "section_title": "Section Title: Testimonial Repeater - Slider",
+      "section_title": "",
       "default_data": [
         31,
         35,
@@ -2203,7 +2214,7 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "testimonial_repeater",
-      "section_title": "Section Title: Testimonial Repeater - Cards",
+      "section_title": "",
       "default_data": [
         31,
         35,
@@ -2643,8 +2654,8 @@ const wordpressBlockSchemas = [
       "default_data": {
         "column_1_text_alignment": "center",
         "column_1_text_color": "contrast-higher",
-        "title_1": "Double Feature V9 Left Title",
-        "sub_title_1": "Acadia Federal Credit Union is an unusual financial institution because we care deeply about our members, our communities, and each other. Our care is evident in everything we do. We even greet our members by name—because they're our friends. Heck, we even know the names of their dogs.",
+        "title_1": "",
+        "sub_title_1": "",
         "link_1_style": "primary",
         "link_1": {
           "title": "",
@@ -2654,7 +2665,7 @@ const wordpressBlockSchemas = [
         "image_1": 7,
         "column_2_text_alignment": "center",
         "column_2_text_color": "contrast-higher",
-        "title_2": "Double Feature V9 Right Title",
+        "title_2": "",
         "sub_title_2": "",
         "link_2_style": "primary",
         "link_2": {
@@ -2831,7 +2842,7 @@ const wordpressBlockSchemas = [
         "pre_title": "",
         "title": "",
         "title_display_style": "default",
-        "content": "This feature will preserver the aspect ratio of a supplied image. For ADA compliance images used in this layout must have an \"alt\" attribute",
+        "content": "",
         "link_1": {
           "title": "",
           "url": "#",
