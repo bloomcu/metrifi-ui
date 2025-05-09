@@ -44,7 +44,7 @@ const wordpressBlockSchemas = [
     {
       "acf_fc_layout": "products_overview",
       "section_title": "",
-      "section_sub_title": "The Products overview is for showing a group of products that can filtered by common attributes. ",
+      "section_sub_title": "",
       "default_data": [
         {
           "products_overview_group": {
@@ -1101,8 +1101,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "icon_repeater",
-      "section_title": "Thumbnails",
-      "section_sub_title": "Thumbnail blocks are used to show a group of small graphics, statistics or product features.",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "image": 7,
@@ -1130,8 +1130,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "table_repeater",
-      "section_title": "Tables (Multiple)",
-      "section_sub_title": "Table blocks are used to display a single table or to repeat multiple tables as a group.",
+      "section_title": "",
+      "section_sub_title": "",
       "tables_data": [
         {
           "ID": 1791,
@@ -1207,8 +1207,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "table",
-      "section_title": "Table",
-      "section_sub_title": "Table blocks are used to display a single table or to repeat multiple tables as a group.",
+      "section_title": "",
+      "section_sub_title": "",
       "show_table_title": true,
       "table_data": {
         "ID": 1311,
@@ -1343,8 +1343,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "section_divider",
-      "section_title": "<span class=\"color-white text-center\">Section divider (default)</span>",
-      "section_content": "<span class=\"color-white text-center\">Nisi est dolore ut repudiandae blanditiis. Possimus eius quod corrupti temporibus. Ipsa omnis vero voluptas facere blanditiis maiores.</span>",
+      "section_title": "",
+      "section_sub_title": "",
       "layout": "default",
       "section_background": "default",
       "section_margin": "default",
@@ -1363,8 +1363,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "section_divider",
-      "section_title": "Section Divider (Curve 3)",
-      "section_content": "Alias sed dolorum Incidunt reprehenderit ipsam voluptas aut molestiae est esse. Recusandae facilis atque enim quos at est alias.",
+      "section_title": "",
+      "section_sub_title": "",
       "layout": "curve_3",
       "section_background": "default",
       "section_margin": "default",
@@ -1373,8 +1373,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "section_divider",
-      "section_title": "Section Divider (Paint)",
-      "section_content": "",
+      "section_title": "",
+      "section_sub_title": "",
       "layout": "paint",
       "section_background": "default",
       "section_margin": "default",
@@ -1393,8 +1393,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "section_divider",
-      "section_title": "Section Divider (Paint 2)",
-      "section_content": "Natus odio praesentium atque minus eius. Cupiditate officia quasi fuga est dolores ut dolor est. Omnis blanditiis et voluptatem dolor.",
+      "section_title": "",
+      "section_sub_title": "",
       "layout": "default",
       "section_background": "default",
       "section_margin": "default",
@@ -1592,7 +1592,7 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "process_repeater",
-      "section_title": "Section Title: Process Repeater - Default",
+      "section_title": "",
       "section_sub_title": "",
       "section_link": {
         "title": "",
@@ -1621,8 +1621,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "card_repeater",
-      "section_title": "Cards - Default Link (Img Size)",
-      "section_sub_title": "Section subtitle",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "pre_title": "",
@@ -1683,8 +1683,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "card_repeater",
-      "section_title": "Cards - Default Link (1:1)",
-      "section_sub_title": "Section subtitle",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "pre_title": "",
@@ -1745,8 +1745,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "card_repeater",
-      "section_title": "Default Button (3:2)",
-      "section_sub_title": "Section subtitle",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "pre_title": "",
@@ -1807,8 +1807,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "card_repeater",
-      "section_title": "V9 (Background Image)",
-      "section_sub_title": "Section subtitle",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "pre_title": "",
@@ -1869,8 +1869,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "card_repeater",
-      "section_title": "V3 (3:2)",
-      "section_sub_title": "Section subtitle",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "pre_title": "",
@@ -2239,7 +2239,7 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "details_repeater",
-      "section_title": "Details List (3 Column) - Section Title",
+      "section_title": "",
       "section_sub_title": "",
       "row_title": "Row Title",
       "default_data": [
@@ -2319,8 +2319,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "feature_repeater",
-      "section_title": "Feature v7",
-      "section_sub_title": "Vestibulum bibendum dignissim leo ac tempor. Sed interdum, ex eget molestie fringilla, quam turpis rhoncus nisl, ac feugiat felis tellus volutpat tortor. Sed cursus commodo arcu, ut scelerisque eros eleifend ut. ",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "title": "Feature V7 Repeater",
@@ -2383,8 +2383,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "feature_repeater",
-      "section_title": "Feature v9",
-      "section_sub_title": "Vestibulum bibendum dignissim leo ac tempor. Sed interdum, ex eget molestie fringilla, quam turpis rhoncus nisl, ac feugiat felis tellus volutpat tortor. Sed cursus commodo arcu, ut scelerisque eros eleifend ut. ",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "title": "Feature V9",
@@ -2443,8 +2443,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "feature_repeater",
-      "section_title": "Feature v9",
-      "section_sub_title": "Vestibulum bibendum dignissim leo ac tempor. Sed interdum, ex eget molestie fringilla, quam turpis rhoncus nisl, ac feugiat felis tellus volutpat tortor. Sed cursus commodo arcu, ut scelerisque eros eleifend ut. ",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "title": "Feature V9",
@@ -2499,8 +2499,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "feature_repeater",
-      "section_title": "Feature v9",
-      "section_sub_title": "Vestibulum bibendum dignissim leo ac tempor. Sed interdum, ex eget molestie fringilla, quam turpis rhoncus nisl, ac feugiat felis tellus volutpat tortor. Sed cursus commodo arcu, ut scelerisque eros eleifend ut. ",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "title": "Feature V9",
@@ -2555,8 +2555,8 @@ const wordpressBlockSchemas = [
     },
     {
       "acf_fc_layout": "feature_repeater",
-      "section_title": "Feature v9",
-      "section_sub_title": "Vestibulum bibendum dignissim leo ac tempor. Sed interdum, ex eget molestie fringilla, quam turpis rhoncus nisl, ac feugiat felis tellus volutpat tortor. Sed cursus commodo arcu, ut scelerisque eros eleifend ut. ",
+      "section_title": "",
+      "section_sub_title": "",
       "default_data": [
         {
           "title": "Feature V9",
