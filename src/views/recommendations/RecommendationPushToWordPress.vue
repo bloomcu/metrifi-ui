@@ -26,7 +26,7 @@
       <div v-if="hasWordPressConnection && !readyToPush && !wordpressStore.wordpressPageUrl" class="mb-4 p-6 bg-violet-50 rounded-lg">
           <p class="text-lg text-violet-700 font-medium mb-2 text-center">Important: Don't close this tab</p>
           <p class="text-violet-600 text-sm text-center">Closing this tab will interrupt the prototype being prepared for WordPress.</p>
-          <p class="text-violet-600 text-sm text-center">Once the prototype is ready, you will need to push it to WordPress.</p>
+          <p class="text-violet-600 text-sm text-center">When the block matches are complete, you’ll see a button here to push a draft to WordPress.</p>
         </div>
 
       <!-- Success: Ready to push to WordPress -->
