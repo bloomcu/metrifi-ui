@@ -163,16 +163,18 @@ const showWordpressBlocksPanel = (block) => {
 }
 
 // Get block name by type
-const getBlockName = (blockId) => {
-    const block = wordpressBlocks.find(block => block.id === blockId)
-    return block.name || 'Unknown Block: ' + blockId
+const getBlockName = (type) => {
+    const block = wordpressBlocks.find(block => block.id === type)
+    return block ? block.name : 'Unknown Block: ' + type
 }
 
 // Get block layout name by type and layout
-const getLayoutName = (blockId, layoutId) => {
-    const block = wordpressBlocks.find(block => block.id === blockId)
-    const layout = block.layouts.find(layout => layout.id === layoutId)
-    return layout.name || 'Unknown Layout: ' + layoutId
+const getLayoutName = (type, layout) => {
+    const block = wordpressBlocks.find(block => block.id === type)
+    if (!block) return 'Unknown Block: ' + type
+    
+    const layoutItem = block.layouts.find(layoutItem => layoutItem.id === layout)
+    return layoutItem ? layoutItem.name : 'Unknown Layout: ' + layout
 }
 
 // Function to close the tab
