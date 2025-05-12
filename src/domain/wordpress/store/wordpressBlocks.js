@@ -180,6 +180,13 @@ const wordpressBlocks = [
         ]
     },
     {
+        "id": "login",
+        "name": "Login",
+        "layouts": [
+          {"id": "default", "name": "Default"},
+        ]
+    },
+    {
         "id": "looping_tabs",
         "name": "Looping Tabs",
         "layouts": [
