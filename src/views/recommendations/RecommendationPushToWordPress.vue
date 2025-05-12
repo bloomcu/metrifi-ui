@@ -165,14 +165,14 @@ const showWordpressBlocksPanel = (block) => {
 // Get block name by type
 const getBlockName = (blockId) => {
     const block = wordpressBlocks.find(block => block.id === blockId)
-    return block.name
+    return block.name || 'Unknown Block: ' + blockId
 }
 
 // Get block layout name by type and layout
 const getLayoutName = (blockId, layoutId) => {
     const block = wordpressBlocks.find(block => block.id === blockId)
     const layout = block.layouts.find(layout => layout.id === layoutId)
-    return layout.name
+    return layout.name || 'Unknown Layout: ' + layoutId
 }
 
 // Function to close the tab
