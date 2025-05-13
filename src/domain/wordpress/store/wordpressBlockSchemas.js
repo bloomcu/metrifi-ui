@@ -1935,27 +1935,19 @@ const wordpressBlockSchemas = [
       "title_display_style": "default",
       "section_sub_title": "",
       "default_data": [
+        // The following object can be repeater to create multiple columns
         {
           "title": "",
-          "title_display_style": "default",
           "content": "",
-          "link": "",
-          "button_style": "default"
         },
         {
           "title": "",
-          "title_display_style": "default",
           "content": "",
-          "link": "",
-          "button_style": "primary"
         },
         {
-            "title": "",
-            "title_display_style": "default",
-            "content": "",
-            "link": "",
-            "button_style": "primary"
-          }
+          "title": "",
+          "content": "",
+        }
       ],
       "layout": "default",
       "section_background": "default",
