@@ -151,6 +151,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useWordPressStore } from '@/domain/wordpress/store/useWordPressStore'
+import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import WordpressBlocksPanel from '@/views/recommendations/components/WordpressBlocksPanel.vue'
 
 const route = useRoute()
@@ -167,23 +168,51 @@ const isWordpressBlocksPanelOpen = ref(false)
 provide('isWordpressBlocksPanelOpen', isWordpressBlocksPanelOpen)
 
 // Retry block match
-const retryBlockMatch = (block) => {
-  block.status = 'Matching block';
-  block.error = null;
-  block.type = null;
-  block.layout = null;
-  block.wordpress_category = null;
-  
-  wordpressStore.predictCMSBlockWithAssistant(block.html);
+const retryBlockMatch = async (block) => {
+    // Reset the block
+    // block.status = 'Matching block';
+    block.error = null;
+    block.type = null;
+    block.layout = null;
+    block.wordpress_category = null;
+    block.schema_with_content = null;
+
+    // Reset the wordpress page url
+    wordpressStore.wordpressPageUrl = null
+
+    // Predict block type and layout
+    const predictedCMSBlockCategory = await wordpressStore.predictCMSBlockWithAssistant(block.html);
+
+    // Split the wordpress category into acf_fc_layout and layout
+    let splitBlockId = predictedCMSBlockCategory['data-block-id'].split('--');
+    block.type = splitBlockId[0];
+    block.layout = splitBlockId[1];
+
+    // Update the block type and layout in the database
+    blocksApi.update(
+        block.organization.slug,
+        block.id,
+        { 
+            type: splitBlockId[0], 
+            layout: splitBlockId[1], 
+            wordpress_category: predictedCMSBlockCategory['data-block-id'] 
+        }
+    )
+
+    wordpressStore.writeBlockContent(block)
 }
 
 // Retry block content
 const retryBlockContent = (block) => {
-  block.status = 'Writing content';
-  block.error = null;
-  block.schema_with_content = null;
-  
-  wordpressStore.writeBlockContent(block);
+    // Reset the block
+    block.status = 'Writing content';
+    block.error = null;
+    block.schema_with_content = null;
+
+    // Reset the wordpress page url
+    wordpressStore.wordpressPageUrl = null
+
+    wordpressStore.writeBlockContent(block);
 }
 
 // Open block types list panel and set selected block
