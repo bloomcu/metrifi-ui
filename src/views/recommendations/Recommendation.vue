@@ -301,9 +301,16 @@ const route = useRoute()
 const organizationSubscriptionStore = useOrganizationSubscriptionStore()
 const recommendationStore = useRecommendationStore()
 
+// UI states
 const isLoading = ref(false)
 const isRecommendationsListPanelOpen = ref(false)
 const isGenerateRecommendationModalOpen = ref(false)
+
+// Provide UI states
+provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
+provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
+
+// Recommendation states
 const recommendationStepIndex = ref(null)
 const recommendationPrompt = ref('')
 const recommendationSecretShopperPrompt = ref('')
@@ -325,9 +332,6 @@ const toggleAccordion = (accordionName) => {
     accordionStates[accordionName] = !accordionStates[accordionName]
   }
 }
-
-provide('isRecommendationsListPanelOpen', isRecommendationsListPanelOpen)
-provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 
 // Generating recommendation states
 const steps = [

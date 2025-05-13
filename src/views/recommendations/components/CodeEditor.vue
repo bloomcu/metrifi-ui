@@ -1,9 +1,24 @@
 <template>
-  <div class="h-[82vh]" ref="editorRef"></div>
+  <vue-monaco-editor
+    v-model:value="code"
+    theme="vs-dark"
+    language="html"
+    :options="editorOptions"
+    class="h-[82vh]"
+    @mount="handleMount"
+  />
 </template>
 
 <script setup>
-import { ref, onMounted, watch, onUnmounted } from 'vue'
+import { ref, shallowRef, watch } from 'vue'
+import { VueMonacoEditor, loader } from '@guolao/vue-monaco-editor'
+
+// Configure Monaco loader to use CDN
+loader.config({
+  paths: {
+    vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs'
+  }
+})
 
 const props = defineProps({
   modelValue: {
@@ -14,73 +29,34 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const editorRef = ref()
-let editorInstance = null
-let isSettingValue = false // Flag to track if changes are from user rather than programatically
+const editorOptions = {
+  automaticLayout: true,
+  formatOnType: true,
+  formatOnPaste: true,
+  minimap: { enabled: false },
+  fontSize: 14,
+  scrollBeyondLastLine: false,
+  wordWrap: 'on',
+  suggestOnTriggerCharacters: true,
+  acceptSuggestionOnEnter: 'on'
+}
 
-onMounted(async () => {
-  // Dynamically import Monaco
-  const monaco = await import('monaco-editor')
-  const editorWorker = await import('monaco-editor/esm/vs/editor/editor.worker?worker')
-  const htmlWorker = await import('monaco-editor/esm/vs/language/html/html.worker?worker')
+const code = ref(props.modelValue)
+const editor = shallowRef()
 
-  // Configure Monaco environment
-  self.MonacoEnvironment = {
-    getWorker(_, label) {
-      if (label === 'html') {
-        return new htmlWorker.default()
-      }
-      return new editorWorker.default()
-    }
-  }
+const handleMount = (editorInstance) => {
+  editor.value = editorInstance
+}
 
-  // Configure HTML formatting options
-  monaco.languages.html.htmlDefaults.setOptions({
-    format: {
-      tabSize: 2,
-      insertSpaces: true,
-      wrapLineLength: 120,
-      unformatted: '',
-      contentUnformatted: 'pre',
-      indentInnerHtml: true
-    }
-  })
-
-  // Create the editor
-  editorInstance = monaco.editor.create(editorRef.value, {
-    value: props.modelValue,
-    language: 'html',
-    theme: 'vs-dark',
-    automaticLayout: true,
-    minimap: { enabled: false },
-    fontSize: 14,
-    scrollBeyondLastLine: false,
-    wordWrap: 'on',
-    formatOnType: true,
-    formatOnPaste: true,
-    suggestOnTriggerCharacters: true,
-    acceptSuggestionOnEnter: 'on'
-  })
-
-  editorInstance.onDidChangeModelContent((event) => {
-    // Only emit if the change was made by user rather than programatically
-    if (!isSettingValue) {
-      emit('update:modelValue', editorInstance.getValue())
-    }
-  })
-})
-
+// Watch for external changes to modelValue
 watch(() => props.modelValue, (newValue) => {
-  if (editorInstance && newValue !== editorInstance.getValue()) {
-    isSettingValue = true
-    editorInstance.setValue(newValue)
-    isSettingValue = false
+  if (newValue !== code.value) {
+    code.value = newValue
   }
 })
 
-onUnmounted(() => {
-  if (editorInstance) {
-    editorInstance.dispose()
-  }
+// Watch for internal changes to code
+watch(() => code.value, (newValue) => {
+  emit('update:modelValue', newValue)
 })
 </script>
