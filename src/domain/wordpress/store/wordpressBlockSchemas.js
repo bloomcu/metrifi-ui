@@ -1936,36 +1936,24 @@ const wordpressBlockSchemas = [
       "section_sub_title": "",
       "default_data": [
         {
-          "title": "Column Title",
+          "title": "",
           "title_display_style": "default",
           "content": "",
-          "link": {
-            "title": "",
-            "url": "#",
-            "target": ""
-          },
+          "link": "",
           "button_style": "default"
         },
         {
-          "title": "Column Title",
+          "title": "",
           "title_display_style": "default",
           "content": "",
-          "link": {
-            "title": "",
-            "url": "#",
-            "target": ""
-          },
+          "link": "",
           "button_style": "primary"
         },
         {
-            "title": "Column Title",
+            "title": "",
             "title_display_style": "default",
             "content": "",
-            "link": {
-              "title": "",
-              "url": "#",
-              "target": ""
-            },
+            "link": "",
             "button_style": "primary"
           }
       ],
