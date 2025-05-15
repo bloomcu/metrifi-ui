@@ -1935,84 +1935,18 @@ const wordpressBlockSchemas = [
       "title_display_style": "default",
       "section_sub_title": "",
       "default_data": [
+        // The following object can be repeater to create multiple columns
         {
-          "title": "Column Title",
-          "title_display_style": "default",
+          "title": "",
           "content": "",
-          "link": {
-            "title": "",
-            "url": "#",
-            "target": ""
-          },
-          "button_style": "default"
         },
         {
-          "title": "Column Title",
-          "title_display_style": "default",
+          "title": "",
           "content": "",
-          "link": {
-            "title": "",
-            "url": "#",
-            "target": ""
-          },
-          "button_style": "primary"
         },
         {
-            "title": "Column Title",
-            "title_display_style": "default",
-            "content": "",
-            "link": {
-              "title": "",
-              "url": "#",
-              "target": ""
-            },
-            "button_style": "primary"
-          }
-      ],
-      "layout": "default",
-      "section_background": "default",
-      "section_margin": "default",
-      "data_source": "default",
-      "background_image": false
-    },
-    {
-      "acf_fc_layout": "columns_repeater",
-      "section_title": "",
-      "title_display_style": "default",
-      "section_sub_title": "",
-      "default_data": [
-        {
-          "title": "Column Title",
-          "title_display_style": "default",
+          "title": "",
           "content": "",
-          "link": {
-            "title": "",
-            "url": "#",
-            "target": ""
-          },
-          "button_style": "primary"
-        },
-        {
-          "title": "Column Title",
-          "title_display_style": "default",
-          "content": "",
-          "link": {
-            "title": "",
-            "url": "#",
-            "target": ""
-          },
-          "button_style": "primary"
-        },
-        {
-          "title": "Column Title",
-          "title_display_style": "default",
-          "content": "",
-          "link": {
-            "title": "",
-            "url": "#",
-            "target": ""
-          },
-          "button_style": "default"
         }
       ],
       "layout": "default",

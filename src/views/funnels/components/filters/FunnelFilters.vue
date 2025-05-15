@@ -125,7 +125,7 @@ import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 
 const props = defineProps({
   modelValue: Object, // This replaces `filters`,
-  total: Number,
+  total: 0,
   selected: 0
 });
 

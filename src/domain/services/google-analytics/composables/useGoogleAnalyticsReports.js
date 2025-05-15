@@ -27,6 +27,7 @@ const reports = ref({
   pageTitleUsers: null,
   outboundLinkUsers: null,
   formUserSubmissions: null,
+  llmUsers: null,
 })
 
 const isReportLoading = ref(false)

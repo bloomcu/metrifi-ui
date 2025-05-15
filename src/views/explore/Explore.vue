@@ -158,6 +158,21 @@
               <!-- Users -->
               <td class="py-3 px-3 text-sm font-medium text-gray-900 break-all w-[1%]">{{ row.metricValues[0].value }}</td>
           </tr>
+
+          <!-- LLM users -->
+          <tr 
+            v-if="selectedTab.metric === 'llmUsers'" 
+            v-for="row in reports[selectedTab.metric].rows" 
+            class="divide-x divide-gray-200 cursor-pointer hover:bg-gray-50"
+          >
+              <!-- Session source -->
+              <td class="py-3 px-3 text-sm break-all">
+                <p class="font-semibold text-gray-700 mb-0.5">{{ row.dimensionValues[0].value }}</p>
+                <!-- <p class="text-gray-500">{{ row.dimensionValues[2].value }}</p> -->
+              </td>
+              <!-- Users -->
+              <td class="py-3 px-3 text-sm font-medium text-gray-900">{{ row.metricValues[0].value }}</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -281,6 +296,15 @@ const tabs = ref({
       { name: 'customEvent:form_length', displayName: 'Fields' },
       { name: 'customEvent:form_submit_text', displayName: 'Text' },
       { name: 'hostname', displayName: 'Hostname' },
+      { name: 'totalUsers', displayName: 'Users' },
+    ],
+  },
+  llmUsers: { 
+    name: 'LLM referral users',
+    metric: 'llmUsers',
+    icon: EyeIcon,
+    columns: [
+      { name: 'sessionSource', displayName: 'LLM source'},
       { name: 'totalUsers', displayName: 'Users' },
     ],
   },

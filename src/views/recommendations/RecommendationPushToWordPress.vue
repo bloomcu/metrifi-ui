@@ -68,21 +68,31 @@
       <!-- WordPress Push Content (only shown if connection exists) -->
       <div v-if="hasWordPressConnection">
         <!-- Block cards -->
-        <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" class="border rounded-lg mb-4">
+        <div v-if="wordpressStore.blocks" v-for="(block, index) in wordpressStore.blocks" class="group border rounded-lg mb-4">
           <div class="flex items-center justify-between p-3">
-              <div class="flex items-center gap-3">
+              <div class="flex items-center">
                   <!-- Block number -->   
                   <div class="text-gray-900 font-semibold">
                     Block {{ index + 1 }}
                   </div>
 
                   <!-- Type -->
-                  <div v-if="block.type" @click="showWordpressBlocksPanel(block)" class="cursor-pointer inline-flex items-center rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20 hover:bg-violet-100">
+                  <div v-if="block.type" @click="showWordpressBlocksPanel(block)" class="cursor-pointer inline-flex items-center rounded-md bg-violet-50 ml-4 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20 hover:bg-violet-100">
                       {{ getBlockName(block.type) }} / {{ getLayoutName(block.type, block.layout) }}
 
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                       </svg>
+                  </div>
+
+                  <!-- Retry block match -->
+                  <div v-if="block.type" @click="retryBlockMatch(block)" class="cursor-pointer inline-flex items-center rounded-md ml-3 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    Retry block
+                  </div>
+
+                  <!-- Retry block content -->
+                  <div v-if="block.type" @click="retryBlockContent(block)" class="cursor-pointer inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    Retry content
                   </div>
 
                   <!-- Error -->
@@ -141,6 +151,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useConnections } from '@/domain/connections/composables/useConnections'
 import { useWordPressStore } from '@/domain/wordpress/store/useWordPressStore'
+import { blocksApi } from '@/domain/blocks/api/blocksApi'
 import WordpressBlocksPanel from '@/views/recommendations/components/WordpressBlocksPanel.vue'
 
 const route = useRoute()
@@ -155,6 +166,54 @@ const readyToPush = ref(false)
 // Block types list panel state
 const isWordpressBlocksPanelOpen = ref(false)
 provide('isWordpressBlocksPanelOpen', isWordpressBlocksPanelOpen)
+
+// Retry block match
+const retryBlockMatch = async (block) => {
+    // Reset the block
+    // block.status = 'Matching block';
+    block.error = null;
+    block.type = null;
+    block.layout = null;
+    block.wordpress_category = null;
+    block.schema_with_content = null;
+
+    // Reset the wordpress page url
+    wordpressStore.wordpressPageUrl = null
+
+    // Predict block type and layout
+    const predictedCMSBlockCategory = await wordpressStore.predictCMSBlockWithAssistant(block.html);
+
+    // Split the wordpress category into acf_fc_layout and layout
+    let splitBlockId = predictedCMSBlockCategory['data-block-id'].split('--');
+    block.type = splitBlockId[0];
+    block.layout = splitBlockId[1];
+
+    // Update the block type and layout in the database
+    blocksApi.update(
+        block.organization.slug,
+        block.id,
+        { 
+            type: splitBlockId[0], 
+            layout: splitBlockId[1], 
+            wordpress_category: predictedCMSBlockCategory['data-block-id'] 
+        }
+    )
+
+    wordpressStore.writeBlockContent(block)
+}
+
+// Retry block content
+const retryBlockContent = (block) => {
+    // Reset the block
+    block.status = 'Writing content';
+    block.error = null;
+    block.schema_with_content = null;
+
+    // Reset the wordpress page url
+    wordpressStore.wordpressPageUrl = null
+
+    wordpressStore.writeBlockContent(block);
+}
 
 // Open block types list panel and set selected block
 const showWordpressBlocksPanel = (block) => {

@@ -66,6 +66,15 @@ const gaDataApi = {
   async formUserSubmissions(connectionId, request) {
     return await HttpClient.post(`/ga/form-user-submissions/${connectionId}`, request)
   },
+
+  /**
+   * Fetch users by LLM session source
+   *
+   * @return promise
+   */
+  async llmUsers(connectionId, request) {
+    return await HttpClient.post(`/ga/llm-users/${connectionId}`, request)
+  },
 }
 
 export { gaDataApi }
