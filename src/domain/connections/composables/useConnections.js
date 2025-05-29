@@ -23,10 +23,10 @@ export const useConnections = () => {
     selectedConnection.value = connections.value.find(connection => connection.id === connectionId)
   }
 
-  function connectToGoogle(connectionId) {
+  function connectToGoogle(organization) {
     googleApi.connect({
       scope: 'https://www.googleapis.com/auth/analytics.readonly',
-      state: route.params.organization,
+      state: organization || route.params.organization,
     })
     .then(response => {
       window.location.href = response.data.url
