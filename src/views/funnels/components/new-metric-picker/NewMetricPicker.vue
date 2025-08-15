@@ -554,6 +554,7 @@ watch(searchQuery, () => {
 
 // Sync search query with page path fields
 function syncSearchWithPagePath() {
+  // Only sync if manual input fields are visible (non-exact match types) and search query has value
   if (!selectedMatchTypeConfig.value.requiresSelection && searchQuery.value) {
     // Sync with page path field for pageUsers metric
     if (selectedTab.value.metric === 'pageUsers') {
@@ -563,7 +564,11 @@ function syncSearchWithPagePath() {
     else if (selectedTab.value.metric === 'pagePlusQueryStringUsers') {
       manualInput.value.pagePathPlusQueryString = searchQuery.value
     }
-    // Sync with page path field for outboundLinkUsers metric
+    // Sync with page title field for pageTitleUsers metric
+    else if (selectedTab.value.metric === 'pageTitleUsers') {
+      manualInput.value.pageTitle = searchQuery.value
+    }
+    // Sync with page path field for outboundLinkUsers metric (not Link URL)
     else if (selectedTab.value.metric === 'outboundLinkUsers') {
       manualInput.value.pagePath = searchQuery.value
     }
