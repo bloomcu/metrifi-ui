@@ -137,7 +137,15 @@
                   <div class="flex flex-row items-center justify-between">
                     <div>
                       <p class="text-xs uppercase">Metric:</p>
-                      <p class="text-gray-500">{{ metric.metric }}</p>
+                      <div class="flex items-center gap-2">
+                        <p class="text-gray-500">{{ metric.metric }}</p>
+                        <span
+                          :class="getMatchTypeBadgeClass(metric.matchType || 'EXACT')"
+                          class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                        >
+                          {{ getMatchTypeLabel(metric.matchType || 'EXACT') }}
+                        </span>
+                      </div>
                     </div>
 
                     <div class="flex items-center gap-1">
@@ -156,23 +164,43 @@
                   </div>
 
                   <div v-if="metric.pagePath" class="">
-                    <p class="text-xs uppercase">Page path:</p>
+                    <p class="text-xs uppercase">
+                      Page path
+                      <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500">
+                        ({{ metric.matchType.toLowerCase() }})
+                      </span>:
+                    </p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.pagePath }}</p>
                   </div>
 
                   <div v-if="metric.pagePathPlusQueryString" class="">
-                    <p class="text-xs uppercase">Page path + query string:</p>
+                    <p class="text-xs uppercase">
+                      Page path + query string
+                      <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500">
+                        ({{ metric.matchType.toLowerCase() }})
+                      </span>:
+                    </p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.pagePathPlusQueryString }}</p>
                   </div>
 
                   <div v-if="metric.pageTitle" class="">
-                    <p class="text-xs uppercase">Page title:</p>
+                    <p class="text-xs uppercase">
+                      Page title
+                      <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500">
+                        ({{ metric.matchType.toLowerCase() }})
+                      </span>:
+                    </p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.pageTitle }}</p>
                   </div>
 
                   
                   <div v-if="metric.linkUrl" class="">
-                    <p class="text-xs uppercase">Link url:</p>
+                    <p class="text-xs uppercase">
+                      Link url
+                      <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500">
+                        ({{ metric.matchType.toLowerCase() }})
+                      </span>:
+                    </p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.linkUrl }}</p>
                   </div>
 
@@ -344,6 +372,26 @@ import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
+function getMatchTypeLabel(matchType) {
+  const labels = {
+    'EXACT': 'Exact',
+    'CONTAINS': 'Contains',
+    'BEGINS_WITH': 'Begins with',
+    'ENDS_WITH': 'Ends with'
+  }
+  return labels[matchType] || 'Exact'
+}
+
+function getMatchTypeBadgeClass(matchType) {
+  const classes = {
+    'EXACT': 'bg-gray-50 text-gray-600 ring-gray-500/10',
+    'CONTAINS': 'bg-violet-50 text-violet-600 ring-violet-500/10',
+    'BEGINS_WITH': 'bg-blue-50 text-blue-600 ring-blue-500/10',
+    'ENDS_WITH': 'bg-green-50 text-green-600 ring-green-500/10'
+  }
+  return classes[matchType] || classes['EXACT']
+}
+
 const route = useRoute()
 const authStore = useAuthStore()
 const organizationStore = useOrganizationStore()
@@ -448,14 +496,24 @@ function getUniqueStepName(steps, name, index = 1) {
 }
 
 const updateStepMetrics = debounce((step) => {
-  // console.log('Updating step measurables...')
+  // console.log('Updating step metrics...')
   isUpdating.value = true
 
-  // Iterate over metrics and delete any that don't have the metric property set
-  step.metrics.filter((element, index, array) => {
-    if (!element.metric) {
-      array.splice(index, 1)
+  // Ensure all metrics have a matchType, defaulting to EXACT for backward compatibility
+  step.metrics.forEach(metric => {
+    if (!metric.matchType) {
+      metric.matchType = 'EXACT'
     }
+  })
+
+  // Filter out incomplete metrics
+  step.metrics = step.metrics.filter((metric) => {
+    if (!metric.metric) {
+      return false
+    }
+
+    // Validate required fields based on metric type and match type
+    return validateMetric(metric)
   })
 
   // Update funnel step
@@ -466,6 +524,19 @@ const updateStepMetrics = debounce((step) => {
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
+
+function validateMetric(metric) {
+  const requiredFields = {
+    pageUsers: ['pagePath'],
+    pagePlusQueryStringUsers: ['pagePathPlusQueryString'],
+    pageTitleUsers: ['pageTitle'],
+    outboundLinkUsers: ['linkUrl', 'pagePath'],
+    formUserSubmissions: ['pagePath']
+  }
+
+  const fields = requiredFields[metric.metric] || []
+  return fields.every(field => metric[field] && metric[field].trim() !== '')
+}
 
 function handleDragEvent(e) {
   // console.log('Handing drag event...')
