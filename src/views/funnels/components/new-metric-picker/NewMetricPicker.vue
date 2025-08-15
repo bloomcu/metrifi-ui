@@ -1,139 +1,47 @@
 <template>
   <div ref="picker" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all z-[9999] sm:rounded-lg">
-    <div class="divide-y divide-gray-200">
-      <!-- Search -->
-      <div class="relative">
-        <MagnifyingGlassIcon class="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-        <input
-          v-model="searchQuery"
-          ref="searchElement"
-          class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-          placeholder="Search..."
-        />
-      </div>
-
-      <!-- Match Type Selection -->
-      <div class="p-4 border-b border-gray-200 bg-gray-50">
-        <div class="mb-3">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Match Type
-          </label>
-          <select
-            v-model="selectedMatchType"
-            @change="onMatchTypeChange"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-          >
-            <option v-for="option in matchTypeOptions" :key="option.value" :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-          <p class="mt-1 text-sm text-gray-500">{{ selectedMatchTypeConfig.description }}</p>
+    <div class="flex">
+      <!-- Main Content Area -->
+      <div class="flex-1 divide-y divide-gray-200">
+        <!-- Search -->
+        <div class="relative">
+          <MagnifyingGlassIcon class="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+          <input
+            v-model="searchQuery"
+            ref="searchElement"
+            class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
+            placeholder="Search..."
+          />
         </div>
 
-        <!-- Manual Input for non-exact matches -->
-        <div v-if="!selectedMatchTypeConfig.requiresSelection" class="space-y-3">
-          <div v-if="selectedTab.metric === 'pageUsers'">
-            <label class="block text-sm font-medium text-gray-700">Page Path</label>
-            <input
-              v-model="manualInput.pagePath"
-              type="text"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-              :placeholder="getPlaceholderText('pagePath')"
-            />
-          </div>
-
-          <div v-if="selectedTab.metric === 'pagePlusQueryStringUsers'">
-            <label class="block text-sm font-medium text-gray-700">Page Path + Query String</label>
-            <input
-              v-model="manualInput.pagePathPlusQueryString"
-              type="text"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-              :placeholder="getPlaceholderText('pagePathPlusQueryString')"
-            />
-          </div>
-
-          <div v-if="selectedTab.metric === 'pageTitleUsers'">
-            <label class="block text-sm font-medium text-gray-700">Page Title</label>
-            <input
-              v-model="manualInput.pageTitle"
-              type="text"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-              :placeholder="getPlaceholderText('pageTitle')"
-            />
-          </div>
-
-          <div v-if="selectedTab.metric === 'outboundLinkUsers'">
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Link URL</label>
-                <input
-                  v-model="manualInput.linkUrl"
-                  type="text"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-                  :placeholder="getPlaceholderText('linkUrl')"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Page Path</label>
-                <input
-                  v-model="manualInput.pagePath"
-                  type="text"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-                  :placeholder="getPlaceholderText('pagePath')"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Hostname (common to most metrics) -->
-          <div v-if="selectedTab.metric !== 'formUserSubmissions'">
-            <label class="block text-sm font-medium text-gray-700">Hostname (optional)</label>
-            <input
-              v-model="manualInput.hostname"
-              type="text"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-              placeholder="example.com"
-            />
-          </div>
-
-          <button
-            @click="applyManualInput"
-            :disabled="!isManualInputValid"
-            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
-          >
-            Apply {{ selectedMatchTypeConfig.label }}
-          </button>
+        <!-- Tabs -->
+        <div class="relative">
+          <nav class="flex space-x-2 p-2" aria-label="Tabs">
+            <button
+              v-for="tab in tabs"
+              :key="tab.name"
+              @click.stop="selectTab(tab)"
+              :class="selectedTab.metric == tab.metric ? 'bg-violet-100 text-violet-500 hover:bg-violet-100' : ''"
+              class="text-gray-500 rounded-md px-3 py-2 text-sm font-medium hover:text-gray-700 hover:bg-gray-100"
+            >
+              <span>{{ tab.name }}</span>
+            </button>
+          </nav>
         </div>
-      </div>
 
-      <!-- Tabs -->
-      <div class="relative">
-        <nav class="flex space-x-2 p-2" aria-label="Tabs">
-          <button
-            v-for="tab in tabs"
-            :key="tab.name"
-            @click.stop="selectTab(tab)"
-            :class="selectedTab.metric == tab.metric ? 'bg-violet-100 text-violet-500 hover:bg-violet-100' : ''"
-            class="text-gray-500 rounded-md px-3 py-2 text-sm font-medium hover:text-gray-700 hover:bg-gray-100"
-          >
-            <span>{{ tab.name }}</span>
-          </button>
-        </nav>
-      </div>
-
-      <!-- Results Table (only show for exact matches or as reference) -->
-      <div class="flex transform-gpu divide-x divide-gray-100" as="div">
-        <!-- Table container -->
-        <div class="relative min-h-[480px] min-w-[860px] h-[70vh] w-[80vw] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+        <!-- Results Table (only show for exact matches or as reference) -->
+        <div class="flex transform-gpu" as="div">
+          <!-- Table container -->
+          <div class="relative min-h-[480px] h-[70vh] w-[70vw] max-w-[90vw] min-w-[800px] flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
 
           <!-- Show notice for non-exact matches -->
-          <div v-if="!selectedMatchTypeConfig.requiresSelection" class="p-4 bg-blue-50 border-b border-blue-200">
+          <div v-if="!selectedMatchTypeConfig.requiresSelection" class="p-4 bg-violet-50">
             <div class="flex">
-              <InformationCircleIcon class="h-5 w-5 text-blue-400" />
+              <InformationCircleIcon class="h-5 w-5 text-violet-400" />
               <div class="ml-3">
-                <p class="text-sm text-blue-700">
+                <p class="text-sm text-violet-700">
                   <strong>{{ selectedMatchTypeConfig.label }} match selected.</strong>
-                  Use the form above to specify your criteria. The results below are shown for reference only.
+                  Use the form in the sidebar to specify your criteria. The results below are shown for reference only.
                 </p>
               </div>
             </div>
@@ -299,6 +207,105 @@
             <NoSymbolIcon class="mx-auto w-8 text-gray-400"/>
             <h2 class="mt-2 text-lg font-medium text-gray-900">No results</h2>
             <p class="mt-1 text-gray-500">Try another date range or search term.</p>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="w-80 bg-gray-50 border-l border-gray-200 flex-shrink-0">
+        <div class="p-4">
+          <h3 class="text-sm font-medium text-gray-900 mb-4">Match Type Selection</h3>
+          
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Match Type
+            </label>
+            <select
+              v-model="selectedMatchType"
+              @change="onMatchTypeChange"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+            >
+              <option v-for="option in matchTypeOptions" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+            <p class="mt-1 text-sm text-gray-500">{{ selectedMatchTypeConfig.description }}</p>
+          </div>
+
+          <!-- Manual Input for non-exact matches -->
+          <div v-if="!selectedMatchTypeConfig.requiresSelection" class="space-y-4">
+            <div v-if="selectedTab.metric === 'pageUsers'">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Page Path</label>
+              <input
+                v-model="manualInput.pagePath"
+                type="text"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+                :placeholder="getPlaceholderText('pagePath')"
+              />
+            </div>
+
+            <div v-if="selectedTab.metric === 'pagePlusQueryStringUsers'">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Page Path + Query String</label>
+              <input
+                v-model="manualInput.pagePathPlusQueryString"
+                type="text"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+                :placeholder="getPlaceholderText('pagePathPlusQueryString')"
+              />
+            </div>
+
+            <div v-if="selectedTab.metric === 'pageTitleUsers'">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
+              <input
+                v-model="manualInput.pageTitle"
+                type="text"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+                :placeholder="getPlaceholderText('pageTitle')"
+              />
+            </div>
+
+            <div v-if="selectedTab.metric === 'outboundLinkUsers'">
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Link URL</label>
+                  <input
+                    v-model="manualInput.linkUrl"
+                    type="text"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+                    :placeholder="getPlaceholderText('linkUrl')"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Page Path</label>
+                  <input
+                    v-model="manualInput.pagePath"
+                    type="text"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+                    :placeholder="getPlaceholderText('pagePath')"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Hostname (common to most metrics) -->
+            <div v-if="selectedTab.metric !== 'formUserSubmissions'">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Hostname (optional)</label>
+              <input
+                v-model="manualInput.hostname"
+                type="text"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+                placeholder="example.com"
+              />
+            </div>
+
+            <button
+              @click="applyManualInput"
+              :disabled="!isManualInputValid"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              Apply {{ selectedMatchTypeConfig.label }}
+            </button>
           </div>
         </div>
       </div>

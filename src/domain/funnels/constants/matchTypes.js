@@ -9,7 +9,7 @@ export const MATCH_TYPE_OPTIONS = [
   { 
     value: MATCH_TYPES.EXACT, 
     label: 'Exact match',
-    description: 'Select from results below',
+    description: 'Select an item from the table',
     requiresSelection: true
   },
   { 
