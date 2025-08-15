@@ -458,6 +458,8 @@ function onMatchTypeChange() {
   Object.keys(manualInput.value).forEach(key => {
     manualInput.value[key] = ''
   })
+  // After clearing, sync with search query if it exists
+  syncSearchWithPagePath()
 }
 
 function getPlaceholderText(field) {
@@ -547,6 +549,40 @@ watch(selectedTab, () => {
 
 watch(searchQuery, () => {
   debounceRun()
+  syncSearchWithPagePath()
+})
+
+// Sync search query with page path fields
+function syncSearchWithPagePath() {
+  if (!selectedMatchTypeConfig.value.requiresSelection && searchQuery.value) {
+    // Sync with page path field for pageUsers metric
+    if (selectedTab.value.metric === 'pageUsers') {
+      manualInput.value.pagePath = searchQuery.value
+    }
+    // Sync with page path + query string field for pagePlusQueryStringUsers metric
+    else if (selectedTab.value.metric === 'pagePlusQueryStringUsers') {
+      manualInput.value.pagePathPlusQueryString = searchQuery.value
+    }
+    // Sync with page path field for outboundLinkUsers metric
+    else if (selectedTab.value.metric === 'outboundLinkUsers') {
+      manualInput.value.pagePath = searchQuery.value
+    }
+  }
+}
+
+// Also sync when match type changes
+watch(selectedMatchType, () => {
+  syncSearchWithPagePath()
+})
+
+// Also sync when tab changes
+watch(selectedTab, () => {
+  if (
+    reports.value[selectedTab.value.metric] &&
+    reports.value[selectedTab.value.metric].query === searchQuery.value
+  ) return
+  run()
+  syncSearchWithPagePath()
 })
 
 onClickOutside(picker, () => {
