@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('authStore', {
             this.user = response.data.data
 
             if (this.isAdmin) {
-              this.router.push({ name: 'adminDashboards'})  
+              this.router.push({ name: 'adminFunnels'})  
             } else {
               if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
                 this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
