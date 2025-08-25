@@ -82,7 +82,7 @@ httpClient.interceptors.response.use((response) => {
   */
   if ([401, 403].includes(error.response.status)) {
     // Todo: Send user to an "Unauthorized" page
-    document.location.href = '/logout'
+    document.location.href = '/not-authorized'
   }
   
   // return error
