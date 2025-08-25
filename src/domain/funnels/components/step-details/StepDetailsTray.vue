@@ -17,7 +17,19 @@
       </div>
 
       <div>
-        <p class="mb-1 font-medium text-gray-900">Metrics</p>
+        <div class="flex items-center justify-between mb-2">
+          <p class="font-medium text-gray-900">Metrics</p>
+          <span
+            :class="[
+              'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset',
+              selectedStep.metrics_expression === 'andGroup'
+                ? 'bg-violet-50 text-violet-700 ring-violet-500/10'
+                : 'bg-blue-50 text-blue-700 ring-blue-500/10'
+            ]"
+          >
+            {{ selectedStep.metrics_expression === 'andGroup' ? 'ALL must match' : 'ANY can match' }}
+          </span>
+        </div>
       </div>
 
       <!-- Tray content -->
