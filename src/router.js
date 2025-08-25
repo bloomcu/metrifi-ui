@@ -94,7 +94,7 @@ router.beforeEach(async (to) => {
     // TODO: Set the return URL so that when the user logs in, they can return here
     // authStore.returnUrl = to.fullPath
     
-    return '/not-authorized'
+    return '/login'
   }
 })
 
