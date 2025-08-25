@@ -84,6 +84,12 @@
                 <Bars2Icon class="h-4 w-4 shrink-0 cursor-grab text-gray-400 group-hover:text-violet-600" />
                 <span class="inline-flex items-center rounded-md bg-violet-100 px-2 py-1 text-xs font-medium text-violet-500">{{ index + 1 }}</span>
                 <p>{{ step.name }}</p>
+                <span
+                  v-if="step.metrics_expression === 'andGroup' && step.metrics.length > 1"
+                  class="inline-flex items-center rounded-md bg-violet-50 px-1.5 py-0.5 text-xs font-medium text-violet-600"
+                >
+                  AND
+                </span>
               </div>
               
               <div class="flex items-center gap-x-1">
@@ -117,21 +123,65 @@
         <!-- Step metrics -->
         <div class="flex flex-col gap-4 p-3">
           <AppTooltipWrapper>
-            <AppInput 
-              v-model="activeStep.name" 
+            <AppInput
+              v-model="activeStep.name"
               @update:modelValue="updateStepName(activeStep)"
-              :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''" 
-              label="Step name" 
-              placeholder="Step name" 
+              :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''"
+              label="Step name"
+              placeholder="Step name"
             />
             <AppTooltip v-if="!organizationStore.organization.is_private" text="Step name will be visible to people outside of your organization" />
           </AppTooltipWrapper>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-900">Metric Combination Logic</p>
+                <p class="text-xs text-gray-500 mt-0.5">
+                  {{ activeStep.metrics_expression === 'andGroup' ? 'User must match ALL metrics' : 'User must match ANY metric' }}
+                </p>
+              </div>
+              <button
+                @click="toggleMetricsExpression(activeStep)"
+                :class="[
+                  'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-offset-2',
+                  activeStep.metrics_expression === 'andGroup' ? 'bg-violet-600' : 'bg-gray-200'
+                ]"
+              >
+                <span
+                  :class="[
+                    'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    activeStep.metrics_expression === 'andGroup' ? 'translate-x-5' : 'translate-x-0'
+                  ]"
+                />
+              </button>
+            </div>
+            <div class="mt-2 flex items-center gap-4 text-xs">
+              <span :class="activeStep.metrics_expression === 'orGroup' ? 'text-violet-600 font-medium' : 'text-gray-500'">
+                OR (Any)
+              </span>
+              <span :class="activeStep.metrics_expression === 'andGroup' ? 'text-violet-600 font-medium' : 'text-gray-500'">
+                AND (All)
+              </span>
+            </div>
+          </div>
 
           <div>
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
             <!-- Metrics -->
             <template v-for="(metric, index) in activeStep.metrics" :key="index">
+              <div v-if="index > 0" class="flex items-center justify-center py-1">
+                <span
+                  :class="[
+                    'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium',
+                    activeStep.metrics_expression === 'andGroup'
+                      ? 'bg-violet-100 text-violet-700'
+                      : 'bg-blue-100 text-blue-700'
+                  ]"
+                >
+                  {{ activeStep.metrics_expression === 'andGroup' ? 'AND' : 'OR' }}
+                </span>
+              </div>
               <div class="relative">
                 <div @click="metric.showPicker = !metric.showPicker" class="flex flex-col gap-2 cursor-pointer bg-gray-50 border border-gray-300 rounded-md p-2 mb-2 hover:bg-gray-100">
                   <div class="flex flex-row items-center justify-between">
@@ -525,6 +575,21 @@ const updateStepMetrics = debounce((step) => {
   })
 }, 800)
 
+const toggleMetricsExpression = debounce((step) => {
+  // Toggle between orGroup and andGroup
+  step.metrics_expression = step.metrics_expression === 'andGroup' ? 'orGroup' : 'andGroup'
+
+  // Update the step
+  isUpdating.value = true
+
+  funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
+    metrics_expression: step.metrics_expression,
+  }).then(() => {
+    funnelStore.addFunnelJob(funnelStore.funnel)
+    setTimeout(() => isUpdating.value = false, 800)
+  })
+}, 300)
+
 function validateMetric(metric) {
   const requiredFields = {
     pageUsers: ['pagePath'],
@@ -554,12 +619,16 @@ function handleDragEvent(e) {
 function addStep() {
   // console.log('Adding step...')
 
-  let name = getUniqueStepName(funnelStore.funnel.steps, 'New step') 
+  let name = getUniqueStepName(funnelStore.funnel.steps, 'New step')
   // console.log('name; ', name)
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: name,
     description: null,
+    metrics_expression: 'orGroup',
   }).then(response => {
+    if (!response.data.data.metrics_expression) {
+      response.data.data.metrics_expression = 'orGroup'
+    }
     funnelStore.funnel.steps.push(response.data.data)
   })
 }
