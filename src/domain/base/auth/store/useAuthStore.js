@@ -20,6 +20,8 @@ export const useAuthStore = defineStore('authStore', {
     
     actions: {
       async login(email, password) {
+        localStorage.removeItem('user');
+        
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
         this.loading = true
 
@@ -30,7 +32,7 @@ export const useAuthStore = defineStore('authStore', {
             this.user = response.data.data
 
             if (this.isAdmin) {
-              this.router.push({ name: 'adminDashboards'})  
+              this.router.push({ name: 'adminFunnels'})  
             } else {
               if (response.data.data.organization.onboarding['onboardingComplete'] === false) {
                 this.router.push({ name: 'welcome', params: { organization: this.organization.slug }})
