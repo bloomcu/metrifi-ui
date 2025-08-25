@@ -20,6 +20,8 @@ export const useAuthStore = defineStore('authStore', {
     
     actions: {
       async login(email, password) {
+        localStorage.removeItem('user');
+        
         const redirect = import.meta.env.VITE_REDIRECT_FROM_LOGIN_ROUTE
         this.loading = true
 
