@@ -84,6 +84,12 @@
                 <Bars2Icon class="h-4 w-4 shrink-0 cursor-grab text-gray-400 group-hover:text-violet-600" />
                 <span class="inline-flex items-center rounded-md bg-violet-100 px-2 py-1 text-xs font-medium text-violet-500">{{ index + 1 }}</span>
                 <p>{{ step.name }}</p>
+                <span
+                  v-if="step.metrics_expression === 'andGroup' && step.metrics.length > 1"
+                  class="inline-flex items-center rounded-md bg-violet-50 px-1.5 py-0.5 text-xs font-medium text-violet-600"
+                >
+                  AND
+                </span>
               </div>
               
               <div class="flex items-center gap-x-1">
@@ -117,27 +123,79 @@
         <!-- Step metrics -->
         <div class="flex flex-col gap-4 p-3">
           <AppTooltipWrapper>
-            <AppInput 
-              v-model="activeStep.name" 
+            <AppInput
+              v-model="activeStep.name"
               @update:modelValue="updateStepName(activeStep)"
-              :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''" 
-              label="Step name" 
-              placeholder="Step name" 
+              :hint="activeStep.name.length > 50 ? 'Warning: Step name is too long' : ''"
+              label="Step name"
+              placeholder="Step name"
             />
             <AppTooltip v-if="!organizationStore.organization.is_private" text="Step name will be visible to people outside of your organization" />
           </AppTooltipWrapper>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-900">Metric Combination Logic</p>
+                <p class="text-xs text-gray-500 mt-0.5">
+                  {{ activeStep.metrics_expression === 'andGroup' ? 'User must match ALL metrics' : 'User must match ANY metric' }}
+                </p>
+              </div>
+              <button
+                @click="toggleMetricsExpression(activeStep)"
+                :class="[
+                  'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-offset-2',
+                  activeStep.metrics_expression === 'andGroup' ? 'bg-violet-600' : 'bg-gray-200'
+                ]"
+              >
+                <span
+                  :class="[
+                    'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    activeStep.metrics_expression === 'andGroup' ? 'translate-x-5' : 'translate-x-0'
+                  ]"
+                />
+              </button>
+            </div>
+            <div class="mt-2 flex items-center gap-4 text-xs">
+              <span :class="activeStep.metrics_expression === 'orGroup' ? 'text-violet-600 font-medium' : 'text-gray-500'">
+                OR (Any)
+              </span>
+              <span :class="activeStep.metrics_expression === 'andGroup' ? 'text-violet-600 font-medium' : 'text-gray-500'">
+                AND (All)
+              </span>
+            </div>
+          </div>
 
           <div>
             <p class="block mb-1 text-sm font-medium text-gray-900">Metrics</p>
 
             <!-- Metrics -->
             <template v-for="(metric, index) in activeStep.metrics" :key="index">
+              <div v-if="index > 0" class="flex items-center justify-center py-1">
+                <span
+                  :class="[
+                    'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium',
+                    activeStep.metrics_expression === 'andGroup'
+                      ? 'bg-violet-100 text-violet-700'
+                      : 'bg-blue-100 text-blue-700'
+                  ]"
+                >
+                  {{ activeStep.metrics_expression === 'andGroup' ? 'AND' : 'OR' }}
+                </span>
+              </div>
               <div class="relative">
                 <div @click="metric.showPicker = !metric.showPicker" class="flex flex-col gap-2 cursor-pointer bg-gray-50 border border-gray-300 rounded-md p-2 mb-2 hover:bg-gray-100">
                   <div class="flex flex-row items-center justify-between">
                     <div>
                       <p class="text-xs uppercase">Metric:</p>
-                      <p class="text-gray-500">{{ metric.metric }}</p>
+                      <div class="flex items-center gap-2">
+                        <p class="text-gray-500">{{ metric.metric }}</p>
+                        <span
+                          :class="getMatchTypeBadgeClass(metric.matchType || 'EXACT')"
+                          class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                        >
+                          {{ getMatchTypeLabel(metric.matchType || 'EXACT') }}
+                        </span>
+                      </div>
                     </div>
 
                     <div class="flex items-center gap-1">
@@ -156,23 +214,43 @@
                   </div>
 
                   <div v-if="metric.pagePath" class="">
-                    <p class="text-xs uppercase">Page path:</p>
+                    <p class="text-xs uppercase">
+                      Page path
+                      <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500">
+                        ({{ metric.matchType.toLowerCase() }})
+                      </span>:
+                    </p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.pagePath }}</p>
                   </div>
 
                   <div v-if="metric.pagePathPlusQueryString" class="">
-                    <p class="text-xs uppercase">Page path + query string:</p>
+                    <p class="text-xs uppercase">
+                      Page path + query string
+                      <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500">
+                        ({{ metric.matchType.toLowerCase() }})
+                      </span>:
+                    </p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.pagePathPlusQueryString }}</p>
                   </div>
 
                   <div v-if="metric.pageTitle" class="">
-                    <p class="text-xs uppercase">Page title:</p>
+                    <p class="text-xs uppercase">
+                      Page title
+                      <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500">
+                        ({{ metric.matchType.toLowerCase() }})
+                      </span>:
+                    </p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.pageTitle }}</p>
                   </div>
 
                   
                   <div v-if="metric.linkUrl" class="">
-                    <p class="text-xs uppercase">Link url:</p>
+                    <p class="text-xs uppercase">
+                      Link url
+                      <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500">
+                        ({{ metric.matchType.toLowerCase() }})
+                      </span>:
+                    </p>
                     <p class="text-gray-500 overflow-x-auto">{{ metric.linkUrl }}</p>
                   </div>
 
@@ -344,6 +422,26 @@ import CategoryPicker from '@/app/components/category-picker/CategoryPicker.vue'
 import NewMetricPicker from '@/views/funnels/components/new-metric-picker/NewMetricPicker.vue'
 import Chart from '@/views/funnels/components/chart/Chart.vue'
 
+function getMatchTypeLabel(matchType) {
+  const labels = {
+    'EXACT': 'Exact',
+    'CONTAINS': 'Contains',
+    'BEGINS_WITH': 'Begins with',
+    'ENDS_WITH': 'Ends with'
+  }
+  return labels[matchType] || 'Exact'
+}
+
+function getMatchTypeBadgeClass(matchType) {
+  const classes = {
+    'EXACT': 'bg-gray-50 text-gray-600 ring-gray-500/10',
+    'CONTAINS': 'bg-violet-50 text-violet-600 ring-violet-500/10',
+    'BEGINS_WITH': 'bg-blue-50 text-blue-600 ring-blue-500/10',
+    'ENDS_WITH': 'bg-green-50 text-green-600 ring-green-500/10'
+  }
+  return classes[matchType] || classes['EXACT']
+}
+
 const route = useRoute()
 const authStore = useAuthStore()
 const organizationStore = useOrganizationStore()
@@ -448,14 +546,24 @@ function getUniqueStepName(steps, name, index = 1) {
 }
 
 const updateStepMetrics = debounce((step) => {
-  // console.log('Updating step measurables...')
+  // console.log('Updating step metrics...')
   isUpdating.value = true
 
-  // Iterate over metrics and delete any that don't have the metric property set
-  step.metrics.filter((element, index, array) => {
-    if (!element.metric) {
-      array.splice(index, 1)
+  // Ensure all metrics have a matchType, defaulting to EXACT for backward compatibility
+  step.metrics.forEach(metric => {
+    if (!metric.matchType) {
+      metric.matchType = 'EXACT'
     }
+  })
+
+  // Filter out incomplete metrics
+  step.metrics = step.metrics.filter((metric) => {
+    if (!metric.metric) {
+      return false
+    }
+
+    // Validate required fields based on metric type and match type
+    return validateMetric(metric)
   })
 
   // Update funnel step
@@ -466,6 +574,34 @@ const updateStepMetrics = debounce((step) => {
     setTimeout(() => isUpdating.value = false, 800);
   })
 }, 800)
+
+const toggleMetricsExpression = debounce((step) => {
+  // Toggle between orGroup and andGroup
+  step.metrics_expression = step.metrics_expression === 'andGroup' ? 'orGroup' : 'andGroup'
+
+  // Update the step
+  isUpdating.value = true
+
+  funnelApi.updateStep(route.params.organization, route.params.funnel, step.id, {
+    metrics_expression: step.metrics_expression,
+  }).then(() => {
+    funnelStore.addFunnelJob(funnelStore.funnel)
+    setTimeout(() => isUpdating.value = false, 800)
+  })
+}, 300)
+
+function validateMetric(metric) {
+  const requiredFields = {
+    pageUsers: ['pagePath'],
+    pagePlusQueryStringUsers: ['pagePathPlusQueryString'],
+    pageTitleUsers: ['pageTitle'],
+    outboundLinkUsers: ['linkUrl', 'pagePath'],
+    formUserSubmissions: ['pagePath']
+  }
+
+  const fields = requiredFields[metric.metric] || []
+  return fields.every(field => metric[field] && metric[field].trim() !== '')
+}
 
 function handleDragEvent(e) {
   // console.log('Handing drag event...')
@@ -483,12 +619,16 @@ function handleDragEvent(e) {
 function addStep() {
   // console.log('Adding step...')
 
-  let name = getUniqueStepName(funnelStore.funnel.steps, 'New step') 
+  let name = getUniqueStepName(funnelStore.funnel.steps, 'New step')
   // console.log('name; ', name)
   funnelApi.storeStep(route.params.organization, route.params.funnel, {
     name: name,
     description: null,
+    metrics_expression: 'orGroup',
   }).then(response => {
+    if (!response.data.data.metrics_expression) {
+      response.data.data.metrics_expression = 'orGroup'
+    }
     funnelStore.funnel.steps.push(response.data.data)
   })
 }

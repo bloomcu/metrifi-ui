@@ -17,7 +17,19 @@
       </div>
 
       <div>
-        <p class="mb-1 font-medium text-gray-900">Metrics</p>
+        <div class="flex items-center justify-between mb-2">
+          <p class="font-medium text-gray-900">Metrics</p>
+          <span
+            :class="[
+              'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset',
+              selectedStep.metrics_expression === 'andGroup'
+                ? 'bg-violet-50 text-violet-700 ring-violet-500/10'
+                : 'bg-blue-50 text-blue-700 ring-blue-500/10'
+            ]"
+          >
+            {{ selectedStep.metrics_expression === 'andGroup' ? 'ALL must match' : 'ANY can match' }}
+          </span>
+        </div>
       </div>
 
       <!-- Tray content -->
@@ -28,12 +40,27 @@
               <!-- Page users metric -->
               <div v-if="metric.metric === 'pageUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2">
                 <div class="border-b pb-2">
-                  <p class="font-medium text-gray-900">Metric</p>
-                  <p class="text-gray-500">{{ metric.metric }}</p>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="font-medium text-gray-900">Metric</p>
+                      <p class="text-gray-500">{{ metric.metric }}</p>
+                    </div>
+                    <span 
+                      :class="getMatchTypeBadgeClass(metric.matchType || 'EXACT')"
+                      class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                    >
+                      {{ getMatchTypeLabel(metric.matchType || 'EXACT') }}
+                    </span>
+                  </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                  <p class="font-medium text-gray-900">Page path</p>
+                  <p class="font-medium text-gray-900">
+                    Page path
+                    <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500 text-xs">
+                      ({{ metric.matchType.toLowerCase() }})
+                    </span>
+                  </p>
                   <p class="text-gray-500">{{ metric.pagePath }}</p>
                 </div>
               </div>
@@ -41,12 +68,27 @@
               <!-- Page plus query string users metric -->
               <div v-if="metric.metric === 'pagePlusQueryStringUsers'" class="flex flex-col gap-4 bg-gray-50 rounded-md p-4 mb-2">
                 <div class="border-b pb-4">
-                  <p class="font-medium text-gray-900">Metric</p>
-                  <p class="text-gray-500">{{ metric.metric }}</p>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="font-medium text-gray-900">Metric</p>
+                      <p class="text-gray-500">{{ metric.metric }}</p>
+                    </div>
+                    <span 
+                      :class="getMatchTypeBadgeClass(metric.matchType || 'EXACT')"
+                      class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                    >
+                      {{ getMatchTypeLabel(metric.matchType || 'EXACT') }}
+                    </span>
+                  </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                  <p class="font-medium text-gray-900">Page path + query string</p>
+                  <p class="font-medium text-gray-900">
+                    Page path + query string
+                    <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500 text-xs">
+                      ({{ metric.matchType.toLowerCase() }})
+                    </span>
+                  </p>
                   <p class="text-gray-500">{{ metric.pagePathPlusQueryString }}</p>
                 </div>
               </div>
@@ -54,12 +96,27 @@
               <!-- Page users metric -->
               <div v-if="metric.metric === 'pageTitleUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2">
                 <div class="border-b pb-2">
-                  <p class="font-medium text-gray-900">Metric</p>
-                  <p class="text-gray-500">{{ metric.metric }}</p>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="font-medium text-gray-900">Metric</p>
+                      <p class="text-gray-500">{{ metric.metric }}</p>
+                    </div>
+                    <span 
+                      :class="getMatchTypeBadgeClass(metric.matchType || 'EXACT')"
+                      class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                    >
+                      {{ getMatchTypeLabel(metric.matchType || 'EXACT') }}
+                    </span>
+                  </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                  <p class="font-medium text-gray-900">Page title</p>
+                  <p class="font-medium text-gray-900">
+                    Page title
+                    <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500 text-xs">
+                      ({{ metric.matchType.toLowerCase() }})
+                    </span>
+                  </p>
                   <p class="text-gray-500">{{ metric.pageTitle }}</p>
                 </div>
               </div>
@@ -67,17 +124,37 @@
               <!-- Outbound clicks metrics -->
               <div v-if="metric.metric === 'outboundLinkUsers'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
                 <div class="border-b pb-4">
-                  <p class="font-medium text-gray-900">Metric</p>
-                  <p class="text-gray-500">{{ metric.metric }}</p>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="font-medium text-gray-900">Metric</p>
+                      <p class="text-gray-500">{{ metric.metric }}</p>
+                    </div>
+                    <span 
+                      :class="getMatchTypeBadgeClass(metric.matchType || 'EXACT')"
+                      class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                    >
+                      {{ getMatchTypeLabel(metric.matchType || 'EXACT') }}
+                    </span>
+                  </div>
                 </div>
 
                 <div class="border-b pb-4 overflow-x-auto">
-                  <p class="font-medium text-gray-900">Page path</p>
+                  <p class="font-medium text-gray-900">
+                    Page path
+                    <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500 text-xs">
+                      ({{ metric.matchType.toLowerCase() }})
+                    </span>
+                  </p>
                   <p class="text-gray-500">{{ metric.pagePath }}</p>
                 </div>
-                
+
                 <div class="overflow-x-auto">
-                  <p class="font-medium text-gray-900">Link url</p>
+                  <p class="font-medium text-gray-900">
+                    Link url
+                    <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500 text-xs">
+                      ({{ metric.matchType.toLowerCase() }})
+                    </span>
+                  </p>
                   <p class="text-gray-500">{{ metric.linkUrl }}</p>
                 </div>
               </div>
@@ -85,12 +162,27 @@
               <!-- Form user submissions -->
               <div v-if="metric.metric === 'formUserSubmissions'" class="flex flex-col gap-2 bg-gray-50 rounded-md p-2 mb-2">
                 <div class="border-b pb-4">
-                  <p class="font-medium text-gray-900">Metric</p>
-                  <p class="text-gray-500">{{ metric.metric }}</p>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="font-medium text-gray-900">Metric</p>
+                      <p class="text-gray-500">{{ metric.metric }}</p>
+                    </div>
+                    <span 
+                      :class="getMatchTypeBadgeClass(metric.matchType || 'EXACT')"
+                      class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                    >
+                      {{ getMatchTypeLabel(metric.matchType || 'EXACT') }}
+                    </span>
+                  </div>
                 </div>
 
                 <div class="border-b pb-4 overflow-x-auto">
-                  <p class="font-medium text-gray-900">Page path</p>
+                  <p class="font-medium text-gray-900">
+                    Page path
+                    <span v-if="metric.matchType && metric.matchType !== 'EXACT'" class="text-violet-500 text-xs">
+                      ({{ metric.matchType.toLowerCase() }})
+                    </span>
+                  </p>
                   <p class="text-gray-500">{{ metric.pagePath }}</p>
                 </div>
 
@@ -103,7 +195,7 @@
                   <p class="font-medium text-gray-900">Form length</p>
                   <p class="text-gray-500">{{ metric.formLength }}</p>
                 </div>
-                
+
                 <div class="overflow-x-auto">
                   <p class="font-medium text-gray-900">Form submit text</p>
                   <p class="text-gray-500">{{ metric.formSubmitText }}</p>
@@ -119,6 +211,25 @@
 
 <script setup>
 import { useStepDetailsTray } from '@/domain/funnels/components/step-details/useStepDetailsTray'
+function getMatchTypeLabel(matchType) {
+  const labels = {
+    'EXACT': 'Exact',
+    'CONTAINS': 'Contains',
+    'BEGINS_WITH': 'Begins with',
+    'ENDS_WITH': 'Ends with'
+  }
+  return labels[matchType] || 'Exact'
+}
+
+function getMatchTypeBadgeClass(matchType) {
+  const classes = {
+    'EXACT': 'bg-gray-50 text-gray-600 ring-gray-500/10',
+    'CONTAINS': 'bg-violet-50 text-violet-600 ring-violet-500/10',
+    'BEGINS_WITH': 'bg-blue-50 text-blue-600 ring-blue-500/10',
+    'ENDS_WITH': 'bg-green-50 text-green-600 ring-green-500/10'
+  }
+  return classes[matchType] || classes['EXACT']
+}
 
 const { selectedStep, isOpen, toggleTray } = useStepDetailsTray()
 </script>
