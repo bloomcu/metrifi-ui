@@ -86,6 +86,8 @@ router.beforeEach(async (to) => {
     'register',
     'forgotPassword',
     'resetPassword',
+    // Allow access to the unauthorized page to avoid redirect loops
+    'NotAuthorized',
   ]
 
   const authRequired = !publicRouteNames.includes(to.name)
@@ -94,7 +96,7 @@ router.beforeEach(async (to) => {
     // TODO: Set the return URL so that when the user logs in, they can return here
     // authStore.returnUrl = to.fullPath
     
-    return '/not-authorized'
+    return '/login'
   }
 })
 
