@@ -204,49 +204,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Accordion 4 - Secret shopper information -->
-      <div class="mb-4 border border-gray-300 rounded-lg overflow-clip">
-        <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion4')">
-          <div class="flex gap-2">
-            <MinusIcon v-if="accordionStates.accordion4" class="h-6 w-6 text-gray-600"/>
-            <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
-            <h2 class="font-medium">Secret shopping study</h2>
-          </div>
-
-          <div class="flex gap-3">
-            <a @click.stop href="https://metrifi.com/secret-shop-your-website/" target="_blank" class="px-2.5 py-1.5 text-sm text-violet-500 bg-violet-50 hover:bg-violet-100 font-medium rounded-full active:translate-y-px disabled:pointer-events-none disabled:opacity-50 disabled:shadow-nonefocus-visible:outline-violet-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Secret shop my website</a>
-            <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>' || recommendationStore.recommendation.secret_shopper_files.length" class="h-7 w-7 text-emerald-600"/>
-          </div>
-        </div>
-        <div v-if="accordionStates.accordion4" class="p-4 bg-gray-50 border-t transition-all duration-300 ease-in-out">
-          <div class="space-y-4">
-            <p class="text-gray-600 mb-2">Add insights from a secret shopping study for MetriFi AI to consider while generating the recommendation.</p>
-
-            <!-- Instructions -->
-            <p class="font-semibold mb-1">Details</p>
-            <AppRichtext v-model="recommendationStore.recommendation.secret_shopper_prompt" :editable="true" class="bg-white"/>
-
-            <!-- Upload files -->
-            <p class="font-semibold mb-1">Files</p>
-            <FileUploader @fileUploaded="handleSecretShopperFileUploaded" class="mb-5"/>
-
-            <!-- Files -->
-            <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
-              <li v-for="file in recommendationStore.recommendation.secret_shopper_files" :key="file.id" class="relative">
-                <div @click="" class="group relative block cursor-pointer overflow-hidden rounded-lg bg-gray-100 border mb-2">
-                  <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-36 object-cover group-hover:opacity-75"/>
-                  <button @click.stop="handleDeleteSecretShopperFile(file.id)" class="absolute hidden top-1 right-1 h-7 w-7 group-hover:flex items-center justify-center bg-white rounded-lg text-gray-600 hover:text-gray-900">
-                    <TrashIcon class="h-4 w-4"/>
-                  </button>
-                </div>
-                <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
-                <p class="block truncate text-sm text-gray-500">{{ file.filename }}</p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
     </div>
   </AppModal>
 </template>
@@ -269,7 +226,6 @@ const props = defineProps({
   dashboardId: '',
   stepIndex: '',
   prompt: '',
-  secretShopperPrompt: '',
 })
 
 const showLoader = ref(false)
@@ -304,8 +260,6 @@ watch(() => isGenerateRecommendationModalOpen.value, (modelOpen) => {
         step_index: props.stepIndex,
         prompt: '',
         files: [],
-        secret_shopper_prompt: '',
-        secret_shopper_files: [],
         metadata: {},
       }
     }
@@ -320,21 +274,9 @@ function handleLocalFileUploaded(file) {
   recommendationStore.recommendation.files.push(file)
 }
 
-function handleSecretShopperFileUploaded(file) {
-  recommendationStore.recommendation.secret_shopper_files.push(file)
-}
 
 function handleDeleteLocalFile(fileId) {
   recommendationStore.recommendation.files = recommendationStore.recommendation.files.filter(file => file.id !== fileId)
-  
-  if (!route.params.recommendation) {
-    // We're not working with an existing recommendation, destroy the file
-    fileStore.destroy(route.params.organization, fileId)
-  }  
-}
-
-function handleDeleteSecretShopperFile(fileId) {
-  recommendationStore.recommendation.secret_shopper_files = recommendationStore.recommendation.secret_shopper_files.filter(file => file.id !== fileId)
   
   if (!route.params.recommendation) {
     // We're not working with an existing recommendation, destroy the file
@@ -353,9 +295,7 @@ async function generateRecommendation() {
 
   // Cache file ids
   let fileIds = recommendationStore.recommendation?.files?.map(file => file.id)
-  let secretShopperFileIds = recommendationStore.recommendation?.secret_shopper_files?.map(file => file.id)
   console.log('Cached fileIds', fileIds)
-  console.log('Cached secretShopperFileIds', secretShopperFileIds)
 
   // Store recommendation
   // Set recommendation status to queued
@@ -371,11 +311,6 @@ async function generateRecommendation() {
     if (fileIds.length) {
       console.log('Attaching files', fileIds)
       recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, fileIds, 'additional-information')
-    }
-
-    if (secretShopperFileIds.length) {
-      console.log('Attaching secret shopper files', secretShopperFileIds)
-      recommendationStore.attachFile(route.params.organization, recommendationStore.recommendation.id, secretShopperFileIds, 'secret-shopper')
     }
 
     recommendationStore.generate(route.params.organization, recommendationStore.recommendation.id).then(() => {
@@ -426,11 +361,7 @@ const canGenerateRecommendation = computed(() => {
 
     // Or has additional information
     (recommendationStore.recommendation.prompt && recommendationStore.recommendation.prompt !== '<p></p>') ||
-    recommendationStore.recommendation.files.length > 0 ||
-
-    // Or has secret shopper information
-    (recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>') ||
-    recommendationStore.recommendation.secret_shopper_files.length > 0
+    recommendationStore.recommendation.files.length > 0
   );
 });
 
