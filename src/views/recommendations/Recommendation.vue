@@ -168,47 +168,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Accordion 3 - Secret shopper information -->
-              <div class="mb-4 border border-gray-300 rounded-lg overflow-hidden">
-                <div class="flex items-center justify-between h-14 px-4 bg-white cursor-pointer" @click="toggleAccordion('accordion3')">
-                  <div class="flex gap-4">
-                    <MinusIcon v-if="accordionStates.accordion3" class="h-6 w-6 text-gray-600"/>
-                    <PlusIcon v-else class="h-6 w-6 text-gray-600"/>
-                    <h2 class="font-medium">Secret shopping study</h2>
-                  </div>
-                  <CheckCircleIcon v-if="recommendationStore.recommendation.secret_shopper_prompt && recommendationStore.recommendation.secret_shopper_prompt !== '<p></p>' || recommendationStore.recommendation.secret_shopper_files.length" class="h-7 w-7 text-emerald-600"/>
-                </div>
-
-                <div v-if="accordionStates.accordion3" class="p-4 border-t transition-all duration-300 ease-in-out">
-                  <div class="space-y-6">
-                    <p class="text-gray-600">Insights from a secret shopping study for MetriFi AI to consider while generating the recommendation.</p>
-
-                    <!-- Prompt content -->
-                    <div v-if="recommendationStore.recommendation.secret_shopper_prompt">
-                      <p class="font-semibold mb-1">Details</p>
-                      <AppRichtext v-model="recommendationStore.recommendation.secret_shopper_prompt" class="mb-2"/>
-                    </div>
-                    <div v-else>
-                      <p class="font-semibold mb-1">Details</p>
-                      <p class="text-gray-600">No details provided</p>
-                    </div>
-
-                    <!-- Files -->
-                    <div v-if="recommendationStore.recommendation.secret_shopper_files.length">
-                      <p class="font-semibold mb-4">Files</p>
-                      <ul role="list" class="grid grid-cols-2 gap-x-4 gap-y-8">
-                        <li v-for="file in recommendationStore.recommendation.secret_shopper_files" :key="file.id" class="relative">
-                          <div class="group relative block overflow-hidden rounded-lg bg-gray-100 border mb-2">
-                            <img :src="file.url" :alt="file.alt" width="400" class="select-none pointer-events-none shrink-0 w-full h-32 object-cover"/>
-                          </div>
-                          <p class="block truncate text-sm font-medium text-gray-900 mb-1">{{ file.title }}</p>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <!-- Analysis (recommendation) -->
@@ -270,7 +229,6 @@
         :dashboardId="recommendationStore.recommendation.dashboard_id" 
         :stepIndex="recommendationStepIndex" 
         :prompt="recommendationPrompt" 
-        :secret-shopper-prompt="recommendationSecretShopperPrompt" 
         :open="isGenerateRecommendationModalOpen"/>
     </div>
     
@@ -313,7 +271,6 @@ provide('isGenerateRecommendationModalOpen', isGenerateRecommendationModalOpen)
 // Recommendation states
 const recommendationStepIndex = ref(null)
 const recommendationPrompt = ref('')
-const recommendationSecretShopperPrompt = ref('')
 
 // Tabs state
 const hasShownAnalysisToUser = ref(false)
@@ -381,7 +338,6 @@ function toggleGenerateRecommendationModal() {
   isGenerateRecommendationModalOpen.value = !isGenerateRecommendationModalOpen.value 
   recommendationStepIndex.value = recommendationStore.recommendation.step_index
   recommendationPrompt.value = recommendationStore.recommendation.prompt
-  recommendationSecretShopperPrompt.value = recommendationStore.recommendation.secret_shopper_prompt
 }
 
 let interval = null
