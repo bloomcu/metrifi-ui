@@ -75,7 +75,7 @@
                   <MenuItems class="absolute bottom-16 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
                       <RouterLink :to="{ name: 'adminDashboards' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Super Dashboard
+                        Super Admin
                       </RouterLink>
                     </MenuItem>
                     <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
@@ -134,13 +134,15 @@ import {
   HomeModernIcon,
   Squares2X2Icon,
   ChartBarIcon,
+  AdjustmentsHorizontalIcon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
   { name: 'All Dashboards', to: { name: 'adminDashboards'}, icon: Squares2X2Icon},
   { name: 'All Funnels', to: { name: 'adminFunnels'}, icon: ChartBarIcon},
-  { name: 'Organizations', to: { name: 'adminOrganizations'}, icon: HomeModernIcon},
+  { name: 'All Organizations', to: { name: 'adminOrganizations'}, icon: HomeModernIcon},
+  { name: 'Organization Limits', to: { name: 'adminOrganizationLimits'}, icon: AdjustmentsHorizontalIcon},
 ]
 </script>
 

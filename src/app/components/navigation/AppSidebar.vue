@@ -144,13 +144,13 @@
                   <div class="flex justify-between items-end mb-3">
                     <h2 class="text-sm text-gray-900 leading-tight">Remaining recommendations</h2>
                     <p class="text-sm text-gray-500 whitespace-nowrap">
-                      {{ organizationSubscriptionStore.recommendationsRemaining }} of {{ organizationSubscriptionStore.subscription.plan.limits.recommendations }}
+                      {{ recommendationsRemaining }} of {{ effectiveLimit }}
                     </p>
                   </div>
                   <div class="w-full h-1 bg-gray-200 rounded-full mb-3">
                     <div 
                       class="h-full bg-violet-500 rounded-full" 
-                      :style="{ width: organizationSubscriptionStore.percentageOfUsageRemaining + '%' }">
+                      :style="{ width: percentageRemaining + '%' }">
                     </div>
                   </div>
                   <!-- Plan will cancel -->
@@ -177,7 +177,7 @@
                   <MenuItems class="absolute bottom-16 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
                       <RouterLink :to="{ name: 'adminDashboards' }" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Super Dashboard
+                        Super Admin
                       </RouterLink>
                     </MenuItem>
                     <MenuItem v-if="authStore.isAdmin" v-slot="{ active }">
@@ -203,7 +203,7 @@
 
 <script setup>
 import moment from "moment"
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 import { useOrganizationStore } from '@/domain/organizations/store/useOrganizationStore'
@@ -229,6 +229,26 @@ const props = defineProps({
 function close() {
   emit('close')
 }
+
+// Calculate effective limit: use organization's custom limit if set, otherwise use plan default
+const effectiveLimit = computed(() => {
+  return organizationStore.effectiveRecommendationsLimit ?? 
+         organizationSubscriptionStore.subscription?.plan?.limits?.recommendations ?? 
+         0
+})
+
+// Calculate recommendations remaining based on effective limit
+const recommendationsRemaining = computed(() => {
+  const used = organizationSubscriptionStore.subscription?.recommendations_used ?? 0
+  return Math.max(effectiveLimit.value - used, 0)
+})
+
+// Calculate percentage remaining based on effective limit
+const percentageRemaining = computed(() => {
+  const used = organizationSubscriptionStore.subscription?.recommendations_used ?? 0
+  if (!effectiveLimit.value) return 100
+  return Math.max(100 - (used / effectiveLimit.value) * 100, 0)
+})
 
 onMounted(() => {
   organizationSubscriptionStore.show(route.params.organization)
