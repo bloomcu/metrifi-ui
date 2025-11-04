@@ -38,9 +38,6 @@
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Recommendations Limit
             </th>
-            <th scope="col" class="relative px-6 py-3">
-              <span class="sr-only">View</span>
-            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -70,14 +67,12 @@
                 Onboarding incomplete
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-6 py-4 whitespace-nowrap w-60">
               <!-- Display mode -->
-              <div v-if="editingOrganizationId !== organization.id" class="flex items-center gap-x-3">
-                <div class="flex items-center gap-x-2">
-                  <span class="text-sm font-medium text-gray-900">
+              <div v-if="editingOrganizationId !== organization.id" class="flex items-center justify-between">
+                <span class="text-sm text-gray-900">
                     {{ organization.recommendations_limit ?? 'Plan default' }}
                   </span>
-                </div>
 
                 <AppButton
                   @click="startEditing(organization)"
@@ -116,11 +111,6 @@
                   Cancel
                 </AppButton>
               </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <a :href="`/${organization.slug}`" class="text-gray-400 hover:text-gray-600">
-                <ChevronRightIcon class="h-5 w-5" aria-hidden="true" />
-              </a>
             </td>
           </tr>
         </tbody>
