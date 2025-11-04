@@ -12,7 +12,13 @@ export const useOrganizationStore = defineStore('organizationStore', {
         destroyModalOpen: false,
     }),
     
-    getters: {},
+    getters: {
+      /**
+       * Gets the effective recommendations limit for the organization.
+       * Uses custom recommendations_limit if set, otherwise returns null to indicate plan default should be used.
+       */
+      effectiveRecommendationsLimit: (state) => state.organization?.recommendations_limit,
+    },
     
     actions: {
       async show(organization_slug) {

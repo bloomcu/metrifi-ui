@@ -20,6 +20,17 @@ const adminOrganizationApi = {
     store(organization) {
         return HttpClient.post('/admin/organizations', organization)
     },
+    
+    /**
+     * Update an organization
+     *
+     * @param Number id [Organization ID]
+     * @param Object organization [Properties to update]
+     * @return promise
+     */
+    update(id, organization) {
+        return HttpClient.put(`/admin/organizations/${id}`, organization)
+    },
 }
 
 export { adminOrganizationApi }

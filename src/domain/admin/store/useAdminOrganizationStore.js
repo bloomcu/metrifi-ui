@@ -35,6 +35,20 @@ export const useAdminOrganizationStore = defineStore('adminOrganizationStore', {
             }
           },
         
+        async update(id, organization) {
+            try {
+              const response = await AdminOrganizationApi.update(id, organization);
+              // Update the organization in the list
+              const index = this.organizations.findIndex(org => org.id === id);
+              if (index !== -1) {
+                this.organizations[index] = response.data.data;
+              }
+              return Promise.resolve(response);
+            } catch (error) {
+              console.log('Error', error.response.data);
+              return Promise.reject(error);
+            }
+          },
         
         toggleCreateModal() {
           this.createModalOpen = !this.createModalOpen

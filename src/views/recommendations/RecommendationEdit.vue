@@ -43,7 +43,7 @@
                     <p class="text-gray-500 mb-6">You've reached the usage limit for your current plan.</p>
 
                     <p class="mb-6">
-                        Your <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.title }} plan</span> allows for <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.limits.recommendations }} recommendations</span> per year. You've used all available recommendations for this billing cycle.
+                        Your <span class="font-bold">{{ organizationSubscriptionStore.subscription.plan.title }} plan</span> allows for <span class="font-bold">{{ organizationSubscriptionStore.subscription?.recommendations_limit }} recommendations</span> per year. You've used all available recommendations for this billing cycle.
                     </p>
 
                     <div class="flex gap-2">
