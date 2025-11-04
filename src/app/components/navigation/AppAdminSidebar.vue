@@ -134,15 +134,13 @@ import {
   HomeModernIcon,
   Squares2X2Icon,
   ChartBarIcon,
-  AdjustmentsHorizontalIcon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
   { name: 'All Dashboards', to: { name: 'adminDashboards'}, icon: Squares2X2Icon},
   { name: 'All Funnels', to: { name: 'adminFunnels'}, icon: ChartBarIcon},
-  { name: 'All Organizations', to: { name: 'adminOrganizations'}, icon: HomeModernIcon},
-  { name: 'Organization Limits', to: { name: 'adminOrganizationLimits'}, icon: AdjustmentsHorizontalIcon},
+  { name: 'Organizations', to: { name: 'adminOrganizations'}, icon: HomeModernIcon},
 ]
 </script>
 

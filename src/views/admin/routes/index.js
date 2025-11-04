@@ -1,7 +1,6 @@
 import AdminDashboards from '@/views/admin/AdminDashboards.vue'
 import AdminFunnels from '@/views/admin/AdminFunnels.vue'
 import AdminOrganizations from '@/views/admin/AdminOrganizations.vue'
-import AdminOrganizationLimits from '@/views/admin/AdminOrganizationLimits.vue'
 import AdminChat from '@/views/admin/AdminChat.vue'
 
 export default [
@@ -27,12 +26,6 @@ export default [
     path: "/admin/organizations",
     name: "adminOrganizations",
     component: AdminOrganizations,
-    meta: { authorize: ['admin'] }
-  },
-  {
-    path: "/admin/organization-limits",
-    name: "adminOrganizationLimits",
-    component: AdminOrganizationLimits,
     meta: { authorize: ['admin'] }
   },
 ]
