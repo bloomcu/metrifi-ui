@@ -5,9 +5,9 @@
     </div>
 
     <div class="text-center">
-      <p class="text-lg font-medium text-violet-500">405</p>
-      <h1 class="mt-4 text-4xl sm:text-6xl font-medium tracking-tight text-gray-900">Not allowed</h1>
-      <p class="mt-6 text-base sm:text-lg leading-7 text-gray-600">You do not have access to this.</p>
+      <p class="text-lg font-medium text-violet-500">403</p>
+      <h1 class="mt-4 text-4xl sm:text-6xl font-medium tracking-tight text-gray-900">Access Denied</h1>
+      <p class="mt-6 text-base sm:text-lg leading-7 text-gray-600">You do not have permission to access this resource.</p>
 
       <div class="mt-6 flex gap-4 justify-center text-violet-500">
         <svg class="inline w-6 h-6 ml-2 animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

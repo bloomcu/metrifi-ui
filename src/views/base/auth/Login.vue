@@ -13,6 +13,10 @@
 
         <div class="mt-10">
           <form action="#" @submit.prevent="login()" class="w-full">
+            <div v-if="sessionExpired" class="bg-amber-50 border border-amber-200 text-amber-700 p-3 rounded-md text-sm mb-4" role="alert">
+              <p class="font-medium">Session expired</p>
+              <p>Your session has expired. Please sign in again.</p>
+            </div>
             <div v-if="errorStore.errors.credentials" class="bg-red-100 text-red-600 p-2 rounded-md text-sm mb-2" role="alert">
               <p>{{ errorStore.errors.credentials[0] }}</p>
             </div>
@@ -67,12 +71,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useErrorStore } from '@/app/store/base/useErrorStore'
 import { useAuthStore } from '@/domain/base/auth/store/useAuthStore'
 
+const route = useRoute()
 const errorStore = useErrorStore()
 const authStore = useAuthStore()
+
+const sessionExpired = computed(() => route.query.session_expired === 'true')
 
 const inputs = ref({
   email: '',

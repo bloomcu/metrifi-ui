@@ -77,11 +77,19 @@ httpClient.interceptors.response.use((response) => {
   }
   
   /**
-  * Catch unauthorized request
-  * Logout if 401 Unauthorized or 403 Forbidden response is returned from api
+  * Catch unauthorized request (expired/invalid token)
+  * Clear stored user data and redirect to login with session expired message
   */
-  if ([401, 403].includes(error.response.status)) {
-    // Todo: Send user to an "Unauthorized" page
+  if ([401].includes(error.response.status)) {
+    localStorage.removeItem('user')
+    document.location.href = '/login?session_expired=true'
+  }
+
+  /**
+  * Catch forbidden request (authenticated but not allowed)
+  * Redirect to not-authorized page
+  */
+  if ([403].includes(error.response.status)) {
     document.location.href = '/not-authorized'
   }
   
