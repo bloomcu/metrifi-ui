@@ -77,16 +77,10 @@
 </template>
 
 <script setup>
-import OpenAI from 'openai'
 import { ref, reactive, nextTick } from 'vue'
 import { useRecommendationStore } from '@/domain/recommendations/store/useRecommendationStore'
 import { useRoute } from 'vue-router'
 import { blocksApi } from '@/domain/blocks/api/blocksApi'
-
-const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-})
 
 const route = useRoute()
 const recommendationStore = useRecommendationStore()
@@ -118,80 +112,32 @@ const sendMessage = async () => {
   
   scrollToBottom() // Scroll when user message is added
 
-  let accumulatedHtml = ''
-  let assistantMessage = null
+  const messageText = newMessage.value
+  newMessage.value = ''
 
   try {
-    const stream = await openai.chat.completions.create({
-    //   model: "grok-beta",
-      model: 'gpt-4o',
-      messages: [
-        { 
-          role: "system", 
-          content: "You are a coding expert. I am requesting changes to an HTML element (a section). " +
-            "Modify the provided element_to_be_changed_in_the_prototype based on the user's request. " +
-            "Stream back ONLY the updated element as a raw HTML string. " +
-            "Do NOT wrap the output in Markdown, code blocks (like ```html), JSON, objects, or any other formatting. " +
-            "Stream ONLY the raw HTML string of the modified element."
-        },
-        { 
-          role: "user",
-          content: JSON.stringify({
-            message: newMessage.value,
-            element_to_be_changed_in_the_prototype: recommendationStore.selectedBlock?.html || null
-          })
-        }
-      ],
-      stream: true
+    const response = await blocksApi.aiEdit(
+      route.params.organization,
+      recommendationStore.selectedBlock.id,
+      messageText
+    )
+
+    Object.assign(recommendationStore.selectedBlock, response.data.data)
+
+    messages.push({
+      role: 'assistant',
+      content: response.data.data.html,
+      timestamp: new Date().toLocaleTimeString()
     })
-
-    // Unset the message input
-    newMessage.value = ''
-
-    for await (const chunk of stream) {
-      const content = chunk.choices[0].delta.content
-      if (content) {
-        accumulatedHtml += content
-
-        if (!assistantMessage) {
-          assistantMessage = {
-            role: 'assistant',
-            content: accumulatedHtml || 'Processing your request...',
-            timestamp: new Date().toLocaleTimeString()
-          }
-          messages.push(assistantMessage)
-        } else {
-          assistantMessage.content = accumulatedHtml
-          messages[messages.length - 1] = { ...assistantMessage }
-        }
-        scrollToBottom() // Scroll on each stream update
-      }
-    }
-
-    // Clean the HTML and remove the highlight-element class
-    const cleanedHtml = accumulatedHtml.replace(/```html\s*|\s*```/g, '').trim()
-
-    // Update the selectedBlock's html property directly
-    // recommendationStore.selectedBlock.html = cleanedHtml
-    
-    // Update the block in the backend
-    await blocksApi.update(
-        route.params.organization,
-        recommendationStore.selectedBlock.id, 
-        { html: cleanedHtml }
-    ).then((response) => {
-        // Update block with the response data
-        Object.assign(recommendationStore.selectedBlock, response.data.data)
-    })
-
+    scrollToBottom()
   } catch (error) {
-    console.error('Error streaming from Grok:', error)
+    console.error('Error editing block:', error)
     messages.push({
       role: 'assistant',
       content: `Error processing request: ${error.message}`,
       timestamp: new Date().toLocaleTimeString()
     })
-    scrollToBottom() // Scroll for error message
+    scrollToBottom()
   } finally {
     isSending.value = false
     
