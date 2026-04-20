@@ -133,6 +133,70 @@
           </div>
         </div>
       </RouterLink>
+
+      <!-- Pagination -->
+      <nav v-if="paginationMeta && paginationMeta.last_page > 1" class="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+        <div class="flex flex-1 justify-between sm:hidden">
+          <AppButton
+            variant="tertiary"
+            size="sm"
+            :disabled="!paginationLinks?.prev"
+            @click="goToPage(paginationMeta.current_page - 1)"
+          >
+            Previous
+          </AppButton>
+          <AppButton
+            variant="tertiary"
+            size="sm"
+            :disabled="!paginationLinks?.next"
+            @click="goToPage(paginationMeta.current_page + 1)"
+          >
+            Next
+          </AppButton>
+        </div>
+        <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+          <p class="text-sm text-gray-700">
+            Showing
+            <span class="font-medium">{{ paginationMeta.from ?? 0 }}</span>
+            to
+            <span class="font-medium">{{ paginationMeta.to ?? 0 }}</span>
+            of
+            <span class="font-medium">{{ paginationMeta.total ?? 0 }}</span>
+            dashboards
+          </p>
+          <div class="flex gap-2 mt-4 sm:mt-0">
+            <button
+              :disabled="!paginationLinks?.prev"
+              @click="goToPage(paginationMeta.current_page - 1)"
+              class="relative inline-flex items-center rounded-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              <ChevronLeftIcon class="h-5 w-5" />
+            </button>
+            <div class="flex items-center gap-1">
+              <button
+                v-for="page in visiblePageNumbers"
+                :key="page"
+                @click="goToPage(page)"
+                :class="[
+                  page === paginationMeta.current_page
+                    ? 'z-10 bg-violet-600 text-white'
+                    : 'text-gray-900 hover:bg-gray-50',
+                  'relative inline-flex items-center rounded-md px-3 py-2 text-sm font-medium ring-1 ring-inset ring-gray-300'
+                ]"
+              >
+                {{ page }}
+              </button>
+            </div>
+            <button
+              :disabled="!paginationLinks?.next"
+              @click="goToPage(paginationMeta.current_page + 1)"
+              class="relative inline-flex items-center rounded-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              <ChevronRightIcon class="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </nav>
     </div>
 
     <!-- State: Loading -->
@@ -177,12 +241,12 @@
 
 <script setup>
 import moment from "moment"
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { adminDashboardApi } from '@/domain/admin/api/adminDashboardApi.js'
 import { Squares2X2Icon } from '@heroicons/vue/24/outline'
 import { ChartBarIcon } from '@heroicons/vue/24/solid'
-import { ChevronUpIcon, MinusIcon } from '@heroicons/vue/20/solid'
+import { ChevronUpIcon, MinusIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 import LayoutAdmin from '@/app/layouts/LayoutAdmin.vue'
 import AnalysisExcerpt from '@/domain/analyses/components/AnalysisExcerpt.vue'
 import AnalysisIssue from '@/domain/analyses/components/AnalysisIssue.vue'
@@ -191,9 +255,13 @@ import AnalysisWarning from '@/domain/analyses/components/AnalysisWarning.vue'
 const route = useRoute()
 const router = useRouter()
 
-const dashboards = ref()
+const dashboards = ref([])
 const isLoading = ref(false)
 const isShowingOrganizations = ref(false)
+
+// Pagination (Laravel format)
+const paginationMeta = ref(null)
+const paginationLinks = ref(null)
 
 const activeAnalysisType = ref('median_analysis')
 
@@ -201,6 +269,7 @@ const activeSort = ref('bofi_performance')
 const activeSortDirection = ref('asc')
 
 const sortedDashboards = computed(() => {
+  if (!dashboards.value?.length) return []
   if (!activeSort.value) {
     return dashboards.value
   }
@@ -250,6 +319,23 @@ const sortedDashboards = computed(() => {
   }
 })
 
+// Pagination: show a window of page numbers (max 7) around current page
+const visiblePageNumbers = computed(() => {
+  const meta = paginationMeta.value
+  if (!meta?.last_page) return []
+  const total = meta.last_page
+  const current = meta.current_page
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const half = 3
+  let start = Math.max(1, current - half)
+  let end = Math.min(total, current + half)
+  if (end - start < 6) {
+    if (start === 1) end = Math.min(total, start + 6)
+    else end = Math.min(total, end + (6 - (end - start)))
+  }
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+})
+
 function setActiveSort(sort) {
   // Toggle current sort off
   if (activeSort.value == sort) {
@@ -273,13 +359,27 @@ function toggleActiveSortDirection(sort) {
   activeSortDirection.value = activeSortDirection.value == 'desc' ? 'asc' : 'desc'
 }
 
-function loadDashboards() {
+function loadDashboards(page = 1) {
   isLoading.value = true
 
-  adminDashboardApi.index().then(response => {
+  const params = {
+    page,
+    sort: activeSort.value,
+    direction: activeSortDirection.value,
+  }
+
+  adminDashboardApi.index(params).then(response => {
     isLoading.value = false
     dashboards.value = response.data.data
+    paginationMeta.value = response.data.meta
+    paginationLinks.value = response.data.links
   })
+}
+
+function goToPage(page) {
+  if (page >= 1 && page <= (paginationMeta.value?.last_page ?? 1)) {
+    loadDashboards(page)
+  }
 }
 
 function analyzeAllDashboards() {
@@ -287,9 +387,18 @@ function analyzeAllDashboards() {
 
   adminDashboardApi.analyzeAll().then(response => {
     isLoading.value = false
-    dashboards.value = response.data.data
+    // Analyze endpoint may return paginated or flat; handle both
+    const data = response.data.data
+    dashboards.value = Array.isArray(data) ? data : []
+    paginationMeta.value = response.data.meta ?? null
+    paginationLinks.value = response.data.links ?? null
   })
 }
+
+// Refetch when sort changes (reset to page 1)
+watch([activeSort, activeSortDirection], () => {
+  loadDashboards(1)
+})
 
 onMounted(() => {
   loadDashboards()

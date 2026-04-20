@@ -28,6 +28,18 @@ const blocksApi = {
     async reorder(organizationSlug, blockId, order) {
         return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/reorder`, { order: order})
       },
+
+    async aiEdit(organizationSlug, blockId, message) {
+        return await HttpClient.put(`/${organizationSlug}/blocks/${blockId}/ai-edit`, { message })
+    },
+
+    async predictCategory(organizationSlug, blockId) {
+        return await HttpClient.post(`/${organizationSlug}/blocks/${blockId}/predict-category`)
+    },
+
+    async writeContent(organizationSlug, blockId, schema) {
+        return await HttpClient.post(`/${organizationSlug}/blocks/${blockId}/write-content`, { schema })
+    },
 }
 
 export { blocksApi }
