@@ -169,34 +169,32 @@ provide('isWordpressBlocksPanelOpen', isWordpressBlocksPanelOpen)
 
 // Retry block match
 const retryBlockMatch = async (block) => {
-    // Reset the block
-    // block.status = 'Matching block';
     block.error = null;
     block.type = null;
     block.layout = null;
     block.wordpress_category = null;
     block.schema_with_content = null;
 
-    // Reset the wordpress page url
     wordpressStore.wordpressPageUrl = null
 
-    // Predict block type and layout
-    const predictedCMSBlockCategory = await wordpressStore.predictCMSBlockWithAssistant(block.html);
+    // predictCMSBlockWithAssistant expects the block object (it reads
+    // organization.slug and id off it), not the html string.
+    const predictedCMSBlockCategory = await wordpressStore.predictCMSBlockWithAssistant(block);
 
-    // Split the wordpress category into acf_fc_layout and layout
-    let splitBlockId = predictedCMSBlockCategory['data-block-id'].split('--');
-    block.type = splitBlockId[0];
-    block.layout = splitBlockId[1];
+    const dataBlockId = predictedCMSBlockCategory?.['data-block-id'];
+    if (typeof dataBlockId !== 'string' || !dataBlockId.includes('--') || dataBlockId.length > 100) {
+        block.error = 'Assistant returned invalid block category';
+        return;
+    }
 
-    // Update the block type and layout in the database
+    const [type, layout] = dataBlockId.split('--');
+    block.type = type;
+    block.layout = layout;
+
     blocksApi.update(
         block.organization.slug,
         block.id,
-        { 
-            type: splitBlockId[0], 
-            layout: splitBlockId[1], 
-            wordpress_category: predictedCMSBlockCategory['data-block-id'] 
-        }
+        { type, layout, wordpress_category: dataBlockId }
     )
 
     wordpressStore.writeBlockContent(block)

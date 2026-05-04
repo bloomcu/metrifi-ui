@@ -46,24 +46,33 @@ export const useWordPressStore = defineStore('wordpressStore', {
             const predictedCMSBlockCategory = await this.predictCMSBlockWithAssistant(block);
             block.status = null;
 
-            // Split the wordpress category into acf_fc_layout and layout
-            let splitBlockId = predictedCMSBlockCategory['data-block-id'].split('--');
-            block.type = splitBlockId[0];
-            block.layout = splitBlockId[1];
+            // Validate the assistant response shape before splitting — protects against
+            // the assistant returning HTML or other garbage in `data-block-id`.
+            const dataBlockId = predictedCMSBlockCategory?.['data-block-id'];
+            if (typeof dataBlockId !== 'string' || !dataBlockId.includes('--') || dataBlockId.length > 100) {
+              console.warn('Invalid data-block-id from assistant:', dataBlockId);
+              Sentry.captureException(new Error('Invalid data-block-id from assistant'));
+              block.error = 'Assistant returned invalid block category';
+              return { success: false, block };
+            }
+
+            const [type, layout] = dataBlockId.split('--');
+            block.type = type;
+            block.layout = layout;
 
             // Update the block type and layout in the database
             blocksApi.update(
                 block.organization.slug,
                 block.id,
-                { 
-                    type: splitBlockId[0], 
-                    layout: splitBlockId[1], 
-                    wordpress_category: predictedCMSBlockCategory['data-block-id'] 
+                {
+                    type,
+                    layout,
+                    wordpress_category: dataBlockId
                 }
             )
 
             this.writeBlockContent(block)
-            
+
             return { success: true, block };
           } catch (err) {
             console.log('Assistant failed to predict CMS block type:', err);
@@ -143,8 +152,10 @@ export const useWordPressStore = defineStore('wordpressStore', {
 
         // Set block.schema to the matching schema or undefined if not found
         block.schema = matchingSchema;
-        block.schema.layout = block.layout;
-        
+        if (matchingSchema) {
+          block.schema.layout = block.layout;
+        }
+
         // If no schema is found, retry with predictCMSBlockWithAssistant up to 2 more times
         if (!matchingSchema) {
           // Initialize retry count if it doesn't exist
